@@ -46,10 +46,10 @@ jobs:
         if: steps.version-updated.outputs.has-updated
       - run: npm run build
         if: steps.version-updated.outputs.has-updated
-      - run: npm publish
-        if: steps.version-updated.outputs.has-updated
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      # - run: npm publish
+      #   if: steps.version-updated.outputs.has-updated
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
   #publish-gpr:
     #needs: build
