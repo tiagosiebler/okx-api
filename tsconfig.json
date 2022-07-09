@@ -1,0 +1,26 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "lib": ["es2017","dom"],
+    "outDir": "lib"
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "coverage",
+    "doc"
+  ]
+}
