@@ -353,6 +353,32 @@ export class RestClient extends BaseRestClient {
    *
    */
 
+  getConvertCurrencies(): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/asset/convert/currencies');
+  }
+
+  getConvertCurrencyPair(
+    fromCcy: string,
+    toCcy: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/asset/convert/currency-pair', {
+      fromCcy,
+      toCcy,
+    });
+  }
+
+  estimateConvertQuote(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/asset/convert/estimate-quote', params);
+  }
+
+  convertTrade(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/asset/convert/trade', params);
+  }
+
+  getConvertHistory(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/asset/convert/history', params);
+  }
+
   /**
    *
    * Account endpoints (private)
