@@ -5,7 +5,12 @@ import {
   RestClientOptions,
 } from './util/requestUtils';
 import BaseRestClient, { APICredentials } from './util/BaseRestClient';
-import { APIResponse, InstrumentType, numberInString } from './types/rest';
+import {
+  APIResponse,
+  InstrumentType,
+  MarginMode,
+  numberInString,
+} from './types/rest';
 import { Ticker } from './types/rest/response';
 import {
   AlgoOrderRequest,
@@ -385,9 +390,162 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  // getFeeRates(): Promise<unknown> {
-  //   return this.getPrivate('/api/v5/account/trade-fee');
-  // }
+  getBalance(ccy?: string): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/balance', { ccy });
+  }
+
+  getPositions(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/positions', params);
+  }
+
+  getPositionsHistory(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/positions-history', params);
+  }
+
+  getAccountPositionRisk(
+    instType?: Omit<'SPOT', InstrumentType>
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/account-position-risk', {
+      instType,
+    });
+  }
+
+  /** Up to last 7 days */
+  getBills(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/bills', params);
+  }
+
+  /** Last 3 months */
+  getBillsArchive(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/bills-archive', params);
+  }
+
+  getAccountConfiguration(): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/config');
+  }
+
+  setPositionMode(
+    posMode: 'long_short_mode' | 'net'
+  ): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
+  }
+
+  setLeverage(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/set-leverage', params);
+  }
+
+  /** Max buy/sell amount or open amount */
+  getMaxOrderAmount(params: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/max-size', params);
+  }
+
+  getMaxAvailableTradableAmount(
+    params: unknown
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/max-avail-size', params);
+  }
+
+  changePositionMargin(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/position/margin-balance', params);
+  }
+
+  getLeverage(
+    instId: string,
+    mgnMode: MarginMode
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/leverage-info', {
+      instId,
+      mgnMode,
+    });
+  }
+
+  getMaxLoan(
+    instId: string,
+    mgnMode: MarginMode,
+    mgnCcy?: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/max-loan', {
+      instId,
+      mgnMode,
+      mgnCcy,
+    });
+  }
+
+  getFeeRates(
+    instType: InstrumentType,
+    instId?: string,
+    uly?: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/trade-fee', {
+      instType,
+      instId,
+      uly,
+    });
+  }
+
+  getInterestAccrued(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/interest-accrued', params);
+  }
+
+  getInterestRate(ccy?: string): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/interest-rate', { ccy });
+  }
+
+  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/set-greeks', { greeksType });
+  }
+
+  setIsolatedMode(
+    isoMode: 'automatic' | 'autonomy',
+    type: 'MARGIN' | 'CONTRACTS'
+  ): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/set-isolated-mode', {
+      isoMode,
+      type,
+    });
+  }
+
+  getMaxWithdrawals(ccy?: string): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
+  }
+
+  getAccountRiskState(): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/risk-state');
+  }
+
+  VIPLoanBorrowRepay(
+    ccy: string,
+    side: 'borrow' | 'repay',
+    amt: numberInString
+  ): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/borrow-repay', { ccy, side, amt });
+  }
+
+  getVIPLoanBorrowRepayHistory(params: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/borrow-repay-history', params);
+  }
+
+  getBorrowInterestLimits(params?: {
+    type?: '1' | '2';
+    ccy?: string;
+  }): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/interest-limits', params);
+  }
+
+  positionBuilder(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/account/simulated_margin', params);
+  }
+
+  getGreeks(ccy?: string): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/greeks', { ccy });
+  }
+
+  getPMLimitation(
+    instType: 'SWAP' | 'FUTURES' | 'OPTION',
+    uly: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/position-tiers', { instType, uly });
+  }
 
   /**
    *
