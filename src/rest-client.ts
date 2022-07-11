@@ -521,7 +521,9 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/borrow-repay', { ccy, side, amt });
   }
 
-  getVIPLoanBorrowRepayHistory(params: unknown): Promise<APIResponse<unknown>> {
+  getVIPLoanBorrowRepayHistory(
+    params?: unknown
+  ): Promise<APIResponse<unknown>> {
     return this.getPrivate('/api/v5/account/borrow-repay-history', params);
   }
 
@@ -532,7 +534,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/interest-limits', params);
   }
 
-  positionBuilder(params: unknown): Promise<APIResponse<unknown>> {
+  positionBuilder(params?: unknown): Promise<APIResponse<unknown>> {
     return this.postPrivate('/api/v5/account/simulated_margin', params);
   }
 
@@ -552,6 +554,52 @@ export class RestClient extends BaseRestClient {
    * SubAccount endpoints (private)
    *
    */
+
+  getSubAccountList(params?: unknown): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/users/subaccount/list', params);
+  }
+
+  getSubAccountBalances(subAcct: string): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/account/subaccount/balances', { subAcct });
+  }
+
+  getSubAccountFundingBalances(
+    subAcct: string,
+    ccy?: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/asset/subaccount/balances', {
+      subAcct,
+      ccy,
+    });
+  }
+
+  getSubAccountTransferHistory(
+    params?: unknown
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/asset/subaccount/bills', params);
+  }
+
+  transferSubAccountBalance(params: unknown): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/asset/subaccount/transfer', params);
+  }
+
+  setSubAccountTransferOutPermission(
+    subAcct: string,
+    canTransOut: boolean = true
+  ): Promise<APIResponse<unknown>> {
+    return this.postPrivate('/api/v5/users/subaccount/set-transfer-out', {
+      subAcct,
+      canTransOut,
+    });
+  }
+
+  getSubAccountListCustodyTrading(
+    subAcct?: string
+  ): Promise<APIResponse<unknown>> {
+    return this.getPrivate('/api/v5/users/entrust-subaccount-list', {
+      subAcct,
+    });
+  }
 
   /**
    *
