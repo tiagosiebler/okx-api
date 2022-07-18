@@ -1,7 +1,5 @@
 export type numberInString<T = string> = T;
 
-export type AlgoState = 'effective' | 'canceled' | 'order_failed';
-
 export type AlgoOrderType =
   | 'conditional'
   | 'oco'
@@ -9,6 +7,14 @@ export type AlgoOrderType =
   | 'move_order_stop'
   | 'iceberg'
   | 'twap';
+
+export type AlgoState = 'effective' | 'canceled' | 'order_failed';
+
+export type ContractGridDirection = 'long' | 'short' | 'neutral';
+
+export type GridAlgoOrderType = 'grid' | 'contract_grid';
+
+export type GridAlgoSubOrderType = 'live' | 'filled';
 
 export type InstrumentType = 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION';
 
