@@ -6,7 +6,9 @@
 
 [1]: https://www.npmjs.com/package/okx-api
 
-WARNING: This package is still early beta, following the designs of my other connectors. If you want to stay informed when this may be ready for testing, please get in touch via telegram.
+WARNING: This package is still early beta, following the designs of my other connectors. Expect breaking changes until this sees a major release.
+
+If you want to stay informed when this may be ready for testing, please get in touch via telegram.
 
 Node.js connector for the okx APIs and WebSockets, with TypeScript & browser support.
 
