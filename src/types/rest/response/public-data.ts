@@ -1,11 +1,5 @@
 import { InstrumentType, numberInString } from '../shared';
 
-export interface APIResponse<T> {
-  code: '0';
-  msg: '';
-  data: T;
-}
-
 export interface Ticker {
   instType: InstrumentType;
   instId: string;
@@ -23,4 +17,61 @@ export interface Ticker {
   sodUtc0: numberInString;
   sodUtc8: numberInString;
   ts: numberInString;
+}
+
+export interface IndexTicker {
+  instId: string;
+  idxPx: string;
+  high24h: string;
+  sodUtc0: string;
+  open24h: string;
+  low24h: string;
+  sodUtc8: string;
+  ts: string;
+}
+
+type OBPrice = string;
+type OBAssetQty = string;
+type OBOrderCount = string;
+type OrderBookLevel = [OBPrice, OBAssetQty, '0', OBOrderCount];
+
+export interface OrderBook {
+  asks: OrderBookLevel[];
+  bids: OrderBookLevel[];
+  ts: string;
+}
+
+type timestamp = string;
+type openPrice = string;
+type highPrice = string;
+type lowPrice = string;
+type closePrice = string;
+type vol = string;
+type volCcy = string;
+
+export type Candle = [
+  timestamp,
+  openPrice,
+  highPrice,
+  lowPrice,
+  closePrice,
+  vol,
+  volCcy
+];
+
+export type CandleNoVolume = [
+  timestamp,
+  openPrice,
+  highPrice,
+  lowPrice,
+  closePrice
+];
+
+export interface Trade {
+  instId: string;
+  side: string;
+  sz: string;
+  px: string;
+  tradeId: string;
+  ts: string;
 }

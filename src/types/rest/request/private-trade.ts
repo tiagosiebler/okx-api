@@ -9,7 +9,7 @@ import {
   MarginMode,
   InstrumentType,
   AlgoState,
-} from './shared';
+} from '../shared';
 
 export interface AlgoRecentHistoryRequest {
   ordType: AlgoOrderType;
@@ -135,11 +135,4 @@ export interface OrderRequest {
   reduceOnly?: boolean;
   tgtCcy?: string;
   banAmend?: boolean;
-}
-
-export interface PaginatedSymbolRequest {
-  ccy?: string;
-  after?: numberInString;
-  before?: numberInString;
-  limit?: numberInString;
 }

@@ -1,5 +1,11 @@
 export type numberInString<T = string> = T;
 
+export interface APIResponse<T> {
+  code: '0';
+  msg: '';
+  data: T;
+}
+
 export type AlgoOrderType =
   | 'conditional'
   | 'oco'
@@ -34,4 +40,25 @@ export type PositionSide = 'net' | 'long' | 'short';
 
 export type PriceTriggerType = 'last' | 'index' | 'mark';
 
+export interface RFQLeg {
+  instId: string;
+  sz: string;
+  side: OrderSide;
+  tgtCcy?: string;
+}
+
+export interface RFQQuoteLegExtended {
+  px: string;
+  sz: string;
+  instId: string;
+  side: string;
+  fee: string;
+  feeCcy: string;
+  tradeId: string;
+}
+
 export type TradeMode = 'cross' | 'isolated' | 'cash';
+
+export interface TimestampObject {
+  ts: numberInString;
+}

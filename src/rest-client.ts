@@ -6,16 +6,13 @@ import {
 } from './util/requestUtils';
 import BaseRestClient, { APICredentials } from './util/BaseRestClient';
 import {
-  APIResponse,
   ContractGridDirection,
   GridAlgoOrderType,
   GridAlgoSubOrderType,
   InstrumentType,
   MarginMode,
   numberInString,
-} from './types/rest';
-import { Ticker } from './types/rest/response';
-import {
+  Ticker,
   AlgoOrderRequest,
   AmendOrderRequest,
   CancelAlgoOrderRequest,
@@ -27,7 +24,68 @@ import {
   AlgoRecentHistoryRequest,
   AlgoLongHistoryRequest,
   PaginatedSymbolRequest,
-} from './types/rest/request';
+  OrderResult,
+  CancelledOrderResult,
+  AmendedOrder,
+  ClosedPositions,
+  OrderDetails,
+  OrderListItem,
+  HistoricOrder,
+  OrderFill,
+  AlgoOrderResult,
+  AlgoOrderListItem,
+  HistoricAlgoOrder,
+  BlockCounterParty,
+  CreateBlockRFQRequest,
+  CreateRFQResult,
+  CancelBlockRFQRequest,
+  CancelBlockQuoteResult,
+  CancelMultipleBlockRFQRequest,
+  TimestampObject,
+  ExecuteBlockQuoteResult,
+  ExecuteBlockQuoteRequest,
+  CreateBlockQuoteRequest,
+  CreateBlockQuoteResult,
+  CancelBlockRFQResult,
+  CancelBlockQuoteRequest,
+  CancelMultipleBlockQuoteRequest,
+  BlockRFQResult,
+  GetBlockRFQSParams,
+  GetBlockQuoteParams,
+  GetBlockQuoteResult,
+  FundingCurrency,
+  FundingBalance,
+  AccountAssetValuation,
+  FundTransferResult,
+  FundTransferState,
+  AssetBillDetails,
+  AccountBalance,
+  GetPositionsParams,
+  AccountPosition,
+  GetHistoricPositionParams,
+  HistoricAccountPosition,
+  AccountPositionRisk,
+  AccountBill,
+  AccountConfiguration,
+  AccountPositionModeResult,
+  AccountLeverageResult,
+  AccountMaxOrderAmount,
+  AccountMaxTradableAmount,
+  AccountChangeMarginResult,
+  AccountLeverage,
+  AccountMaxLoan,
+  AccountFeeRate,
+  AccountIsolatedMode,
+  SubAccount,
+  SubAccountAPIReset,
+  SubAccountBalances,
+  SubAccountTransferResult,
+  IndexTicker,
+  OrderBook,
+  Candle,
+  CandleNoVolume,
+  Trade,
+} from './types/rest';
 
 export class RestClient extends BaseRestClient {
   /**
@@ -69,50 +127,48 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  placeOrder(params: OrderRequest): Promise<APIResponse<unknown>> {
+  placeOrder(params: OrderRequest): Promise<OrderResult[]> {
     return this.postPrivate('/api/v5/trade/order', params);
   }
 
-  placeMultipleOrders(params: OrderRequest[]): Promise<APIResponse<unknown>> {
+  placeMultipleOrders(params: OrderRequest[]): Promise<OrderResult[]> {
     return this.postPrivate('/api/v5/trade/batch-orders', params);
   }
 
-  cancelOrder(params: OrderIdRequest): Promise<APIResponse<unknown>> {
+  cancelOrder(params: OrderIdRequest): Promise<CancelledOrderResult[]> {
     return this.postPrivate('/api/v5/trade/cancel-order', params);
   }
 
   cancelMultipleOrders(
     params: OrderIdRequest[]
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<CancelledOrderResult[]> {
     return this.postPrivate('/api/v5/trade/cancel-batch-orders', params);
   }
 
-  amendOrder(params: AmendOrderRequest): Promise<APIResponse<unknown>> {
+  amendOrder(params: AmendOrderRequest): Promise<AmendedOrder[]> {
     return this.postPrivate('/api/v5/trade/amend-order', params);
   }
 
-  amendMultipleOrders(
-    params: AmendOrderRequest[]
-  ): Promise<APIResponse<unknown>> {
+  amendMultipleOrders(params: AmendOrderRequest[]): Promise<AmendedOrder[]> {
     return this.postPrivate('/api/v5/trade/amend-batch-orders', params);
   }
 
-  closePositions(params: ClosePositionRequest): Promise<APIResponse<unknown>> {
+  closePositions(params: ClosePositionRequest): Promise<ClosedPositions[]> {
     return this.postPrivate('/api/v5/trade/close-position', params);
   }
 
-  getOrderDetails(params: OrderIdRequest): Promise<APIResponse<unknown>> {
+  getOrderDetails(params: OrderIdRequest): Promise<OrderDetails[]> {
     return this.getPrivate('/api/v5/trade/order', params);
   }
 
-  getOrderList(params?: OrderHistoryRequest): Promise<APIResponse<unknown>> {
+  getOrderList(params?: OrderHistoryRequest): Promise<OrderListItem[]> {
     return this.getPrivate('/api/v5/trade/orders-pending', params);
   }
 
   /**
    * Get history for last 7 days
    */
-  getOrderHistory(params: OrderHistoryRequest): Promise<APIResponse<unknown>> {
+  getOrderHistory(params: OrderHistoryRequest): Promise<HistoricOrder[]> {
     return this.getPrivate('/api/v5/trade/orders-history', params);
   }
 
@@ -121,49 +177,49 @@ export class RestClient extends BaseRestClient {
    */
   getOrderHistoryArchive(
     params: OrderHistoryRequest
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<HistoricOrder[]> {
     return this.getPrivate('/api/v5/trade/orders-history-archive', params);
   }
 
   /**
    * Get history for last 7 days
    */
-  getFills(params?: FillsHistoryRequest): Promise<APIResponse<unknown>> {
+  getFills(params?: FillsHistoryRequest): Promise<OrderFill[]> {
     return this.getPrivate('/api/v5/trade/fills', params);
   }
 
   /**
    * Get history for last 3 months
    */
-  getFillsHistory(params: FillsHistoryRequest): Promise<APIResponse<unknown>> {
+  getFillsHistory(params: FillsHistoryRequest): Promise<OrderFill[]> {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
-  placeAlgoOrder(params: AlgoOrderRequest): Promise<APIResponse<unknown>> {
+  placeAlgoOrder(params: AlgoOrderRequest): Promise<AlgoOrderResult[]> {
     return this.postPrivate('/api/v5/trade/order-algo', params);
   }
 
   cancelAlgoOrder(
     params: CancelAlgoOrderRequest[]
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AlgoOrderResult[]> {
     return this.postPrivate('/api/v5/trade/cancel-algos', params);
   }
 
   cancelAdvanceAlgoOrder(
     params: CancelAlgoOrderRequest[]
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AlgoOrderResult[]> {
     return this.postPrivate('/api/v5/trade/cancel-advance-algos', params);
   }
 
   getAlgoOrderList(
     params: AlgoRecentHistoryRequest
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AlgoOrderListItem[]> {
     return this.getPrivate('/api/v5/trade/orders-algo-pending', params);
   }
 
   getAlgoOrderHistory(
     params: AlgoLongHistoryRequest
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<HistoricAlgoOrder[]> {
     return this.getPrivate('/api/v5/trade/orders-algo-history', params);
   }
 
@@ -173,59 +229,71 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getBlockCounterparties(): Promise<APIResponse<unknown>> {
+  getBlockCounterParties(): Promise<BlockCounterParty[]> {
     return this.getPrivate('/api/v5/rfq/counterparties');
   }
 
-  createBlockRFQ(params: unknown): Promise<APIResponse<unknown>> {
+  createBlockRFQ(params: CreateBlockRFQRequest): Promise<CreateRFQResult[]> {
     return this.postPrivate('/api/v5/rfq/create-rfq', params);
   }
 
-  cancelBlockRFQ(params: unknown): Promise<APIResponse<unknown>> {
-    return this.postPrivate('/api/v5/rfq/cancel-rfq');
+  cancelBlockRFQ(
+    params?: CancelBlockRFQRequest
+  ): Promise<CancelBlockRFQResult[]> {
+    return this.postPrivate('/api/v5/rfq/cancel-rfq', params);
   }
 
-  cancelMultipleBlockRFQs(params: unknown): Promise<APIResponse<unknown>> {
-    return this.postPrivate('/api/v5/rfq/cancel-batch-rfqs');
+  cancelMultipleBlockRFQs(
+    params: CancelMultipleBlockRFQRequest
+  ): Promise<CancelBlockRFQResult[]> {
+    return this.postPrivate('/api/v5/rfq/cancel-batch-rfqs', params);
   }
 
-  cancelAllRFQs(): Promise<APIResponse<unknown>> {
+  cancelAllRFQs(): Promise<TimestampObject[]> {
     return this.postPrivate('/api/v5/rfq/cancel-all-rfqs');
   }
 
-  executeBlockQuote(params: unknown): Promise<APIResponse<unknown>> {
+  executeBlockQuote(
+    params: ExecuteBlockQuoteRequest
+  ): Promise<ExecuteBlockQuoteResult[]> {
     return this.postPrivate('/api/v5/rfq/execute-quote', params);
   }
 
-  createBlockQuote(params: unknown): Promise<APIResponse<unknown>> {
+  createBlockQuote(
+    params: CreateBlockQuoteRequest
+  ): Promise<CreateBlockQuoteResult[]> {
     return this.postPrivate('/api/v5/rfq/create-quote', params);
   }
 
-  cancelBlockQuote(params: unknown): Promise<APIResponse<unknown>> {
+  cancelBlockQuote(
+    params: CancelBlockQuoteRequest
+  ): Promise<CancelBlockQuoteResult[]> {
     return this.postPrivate('/api/v5/rfq/cancel-quote', params);
   }
 
-  cancelMultipleBlockQuotes(params: unknown): Promise<APIResponse<unknown>> {
+  cancelMultipleBlockQuotes(
+    params: CancelMultipleBlockQuoteRequest
+  ): Promise<CancelBlockQuoteResult[]> {
     return this.postPrivate('/api/v5/rfq/cancel-batch-quotes', params);
   }
 
-  cancelAllBlockQuotes(): Promise<APIResponse<unknown>> {
+  cancelAllBlockQuotes(): Promise<TimestampObject[]> {
     return this.postPrivate('/api/v5/rfq/cancel-all-quotes');
   }
 
-  getBlockRFQs(params: unknown): Promise<APIResponse<unknown>> {
+  getBlockRFQs(params?: GetBlockRFQSParams): Promise<BlockRFQResult[]> {
     return this.getPrivate('/api/v5/rfq/rfqs', params);
   }
 
-  getBlockQuotes(params: unknown): Promise<APIResponse<unknown>> {
+  getBlockQuotes(params?: GetBlockQuoteParams): Promise<GetBlockQuoteResult[]> {
     return this.getPrivate('/api/v5/rfq/quotes', params);
   }
 
-  getBlockTrades(params: unknown): Promise<APIResponse<unknown>> {
+  getBlockTrades(params: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/rfq/trades', params);
   }
 
-  getPublicRFQBlockTrades(params: unknown): Promise<APIResponse<unknown>> {
+  getPublicRFQBlockTrades(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/rfq/public-trades', params);
   }
 
@@ -235,19 +303,19 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getCurrencies(ccy?: string): Promise<APIResponse<unknown>> {
+  getCurrencies(ccy?: string): Promise<FundingCurrency[]> {
     return this.getPrivate('/api/v5/asset/currencies', { ccy });
   }
 
-  getBalances(ccy?: string): Promise<APIResponse<unknown>> {
+  getBalances(ccy?: string): Promise<FundingBalance[]> {
     return this.getPrivate('/api/v5/asset/balances', { ccy });
   }
 
-  getAccountAssetValuation(ccy?: string): Promise<APIResponse<unknown>> {
+  getAccountAssetValuation(ccy?: string): Promise<AccountAssetValuation[]> {
     return this.getPrivate('/api/v5/asset/asset-valuation', { ccy });
   }
 
-  fundsTransfer(params: unknown): Promise<APIResponse<unknown>> {
+  fundsTransfer(params: unknown): Promise<FundTransferResult[]> {
     return this.postPrivate('/api/v5/asset/transfer', params);
   }
 
@@ -255,8 +323,8 @@ export class RestClient extends BaseRestClient {
     transId?: string;
     clientId?: string;
     type?: '0' | '1' | '2';
-  }): Promise<APIResponse<unknown>> {
-    return this.getPrivate('asdfadsfdsfasfasfasfasdf', params);
+  }): Promise<FundTransferState[]> {
+    return this.getPrivate('/api/v5/asset/transfer-state', params);
   }
 
   getAssetBillsDetails(params?: {
@@ -266,7 +334,7 @@ export class RestClient extends BaseRestClient {
     after?: numberInString;
     before?: numberInString;
     limit?: numberInString;
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<AssetBillDetails[]> {
     return this.getPrivate('/api/v5/asset/bills', params);
   }
 
@@ -274,19 +342,19 @@ export class RestClient extends BaseRestClient {
     ccy: string,
     amt: numberInString,
     to?: '6' | '18'
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/deposit-lightning', { ccy, amt, to });
   }
 
-  getDepositAddress(ccy: string): Promise<APIResponse<unknown>> {
+  getDepositAddress(ccy: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/deposit-address', { ccy });
   }
 
-  getDepositHistory(params: unknown): Promise<APIResponse<unknown>> {
+  getDepositHistory(params: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/deposit-history', params);
   }
 
-  withdraw(params: unknown): Promise<APIResponse<unknown>> {
+  withdraw(params: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/withdrawal', params);
   }
 
@@ -294,7 +362,7 @@ export class RestClient extends BaseRestClient {
     ccy: string,
     invoice: string,
     memo?: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/withdrawal-lightning', {
       ccy,
       invoice,
@@ -302,19 +370,19 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  cancelWithdrawal(wdId: string): Promise<APIResponse<unknown>> {
+  cancelWithdrawal(wdId: string): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/cancel-withdrawal', { wdId });
   }
 
-  getWithdrawalHistory(params?: unknown): Promise<APIResponse<unknown>> {
+  getWithdrawalHistory(params?: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/withdrawal-history', params);
   }
 
-  smallAssetsConvert(ccy: string[]): Promise<APIResponse<unknown>> {
+  smallAssetsConvert(ccy: string[]): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/convert-dust-assets', { ccy });
   }
 
-  getSavingBalance(ccy?: string): Promise<APIResponse<unknown>> {
+  getSavingBalance(ccy?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/saving-balance', { ccy });
   }
 
@@ -323,7 +391,7 @@ export class RestClient extends BaseRestClient {
     amt: numberInString,
     side: 'purchase' | 'redempt',
     rate: numberInString
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/purchase_redempt', {
       ccy,
       amt,
@@ -332,26 +400,19 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  setLendingRate(
-    ccy: string,
-    rate: numberInString
-  ): Promise<APIResponse<unknown>> {
+  setLendingRate(ccy: string, rate: numberInString): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/set-lending-rate', { ccy, rate });
   }
 
-  getLendingHistory(
-    params?: PaginatedSymbolRequest
-  ): Promise<APIResponse<unknown>> {
+  getLendingHistory(params?: PaginatedSymbolRequest): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/lending-history', params);
   }
 
-  getPublicBorrowInfo(ccy?: string): Promise<APIResponse<unknown>> {
+  getPublicBorrowInfo(ccy?: string): Promise<unknown[]> {
     return this.get('/api/v5/asset/lending-rate-summary', { ccy });
   }
 
-  getPublicBorrowHistory(
-    params?: PaginatedSymbolRequest
-  ): Promise<APIResponse<unknown>> {
+  getPublicBorrowHistory(params?: PaginatedSymbolRequest): Promise<unknown[]> {
     return this.get('/api/v5/asset/lending-rate-history', params);
   }
 
@@ -361,29 +422,26 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getConvertCurrencies(): Promise<APIResponse<unknown>> {
+  getConvertCurrencies(): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/convert/currencies');
   }
 
-  getConvertCurrencyPair(
-    fromCcy: string,
-    toCcy: string
-  ): Promise<APIResponse<unknown>> {
+  getConvertCurrencyPair(fromCcy: string, toCcy: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/convert/currency-pair', {
       fromCcy,
       toCcy,
     });
   }
 
-  estimateConvertQuote(params: unknown): Promise<APIResponse<unknown>> {
+  estimateConvertQuote(params: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/convert/estimate-quote', params);
   }
 
-  convertTrade(params: unknown): Promise<APIResponse<unknown>> {
+  convertTrade(params: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/convert/trade', params);
   }
 
-  getConvertHistory(params?: unknown): Promise<APIResponse<unknown>> {
+  getConvertHistory(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/convert/history', params);
   }
 
@@ -393,69 +451,68 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getBalance(ccy?: string): Promise<APIResponse<unknown>> {
+  getBalance(ccy?: string): Promise<AccountBalance[]> {
     return this.getPrivate('/api/v5/account/balance', { ccy });
   }
 
-  getPositions(params?: unknown): Promise<APIResponse<unknown>> {
+  getPositions(params?: GetPositionsParams): Promise<AccountPosition[]> {
     return this.getPrivate('/api/v5/account/positions', params);
   }
 
-  getPositionsHistory(params?: unknown): Promise<APIResponse<unknown>> {
+  getPositionsHistory(
+    params?: GetHistoricPositionParams
+  ): Promise<HistoricAccountPosition[]> {
     return this.getPrivate('/api/v5/account/positions-history', params);
   }
 
   getAccountPositionRisk(
     instType?: Omit<'SPOT', InstrumentType>
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountPositionRisk[]> {
     return this.getPrivate('/api/v5/account/account-position-risk', {
       instType,
     });
   }
 
   /** Up to last 7 days */
-  getBills(params?: unknown): Promise<APIResponse<unknown>> {
+  getBills(params?: unknown): Promise<AccountBill[]> {
     return this.getPrivate('/api/v5/account/bills', params);
   }
 
   /** Last 3 months */
-  getBillsArchive(params?: unknown): Promise<APIResponse<unknown>> {
+  getBillsArchive(params?: unknown): Promise<AccountBill[]> {
     return this.getPrivate('/api/v5/account/bills-archive', params);
   }
 
-  getAccountConfiguration(): Promise<APIResponse<unknown>> {
+  getAccountConfiguration(): Promise<AccountConfiguration[]> {
     return this.getPrivate('/api/v5/account/config');
   }
 
   setPositionMode(
     posMode: 'long_short_mode' | 'net'
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 
-  setLeverage(params: unknown): Promise<APIResponse<unknown>> {
+  setLeverage(params: unknown): Promise<AccountLeverageResult[]> {
     return this.postPrivate('/api/v5/account/set-leverage', params);
   }
 
   /** Max buy/sell amount or open amount */
-  getMaxOrderAmount(params: unknown): Promise<APIResponse<unknown>> {
+  getMaxOrderAmount(params: unknown): Promise<AccountMaxOrderAmount[]> {
     return this.getPrivate('/api/v5/account/max-size', params);
   }
 
   getMaxAvailableTradableAmount(
     params: unknown
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountMaxTradableAmount[]> {
     return this.getPrivate('/api/v5/account/max-avail-size', params);
   }
 
-  changePositionMargin(params: unknown): Promise<APIResponse<unknown>> {
+  changePositionMargin(params: unknown): Promise<AccountChangeMarginResult[]> {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
-  getLeverage(
-    instId: string,
-    mgnMode: MarginMode
-  ): Promise<APIResponse<unknown>> {
+  getLeverage(instId: string, mgnMode: MarginMode): Promise<AccountLeverage[]> {
     return this.getPrivate('/api/v5/account/leverage-info', {
       instId,
       mgnMode,
@@ -466,7 +523,7 @@ export class RestClient extends BaseRestClient {
     instId: string,
     mgnMode: MarginMode,
     mgnCcy?: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountMaxLoan[]> {
     return this.getPrivate('/api/v5/account/max-loan', {
       instId,
       mgnMode,
@@ -478,7 +535,7 @@ export class RestClient extends BaseRestClient {
     instType: InstrumentType,
     instId?: string,
     uly?: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountFeeRate[]> {
     return this.getPrivate('/api/v5/account/trade-fee', {
       instType,
       instId,
@@ -486,33 +543,33 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getInterestAccrued(params?: unknown): Promise<APIResponse<unknown>> {
+  getInterestAccrued(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/interest-accrued', params);
   }
 
-  getInterestRate(ccy?: string): Promise<APIResponse<unknown>> {
+  getInterestRate(ccy?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/interest-rate', { ccy });
   }
 
-  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<APIResponse<unknown>> {
+  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<unknown[]> {
     return this.postPrivate('/api/v5/account/set-greeks', { greeksType });
   }
 
   setIsolatedMode(
     isoMode: 'automatic' | 'autonomy',
     type: 'MARGIN' | 'CONTRACTS'
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<AccountIsolatedMode[]> {
     return this.postPrivate('/api/v5/account/set-isolated-mode', {
       isoMode,
       type,
     });
   }
 
-  getMaxWithdrawals(ccy?: string): Promise<APIResponse<unknown>> {
+  getMaxWithdrawals(ccy?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
   }
 
-  getAccountRiskState(): Promise<APIResponse<unknown>> {
+  getAccountRiskState(): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/risk-state');
   }
 
@@ -520,35 +577,33 @@ export class RestClient extends BaseRestClient {
     ccy: string,
     side: 'borrow' | 'repay',
     amt: numberInString
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/account/borrow-repay', { ccy, side, amt });
   }
 
-  getVIPLoanBorrowRepayHistory(
-    params?: unknown
-  ): Promise<APIResponse<unknown>> {
+  getVIPLoanBorrowRepayHistory(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/borrow-repay-history', params);
   }
 
   getBorrowInterestLimits(params?: {
     type?: '1' | '2';
     ccy?: string;
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/interest-limits', params);
   }
 
-  positionBuilder(params?: unknown): Promise<APIResponse<unknown>> {
+  positionBuilder(params?: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/account/simulated_margin', params);
   }
 
-  getGreeks(ccy?: string): Promise<APIResponse<unknown>> {
+  getGreeks(ccy?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/greeks', { ccy });
   }
 
   getPMLimitation(
     instType: 'SWAP' | 'FUTURES' | 'OPTION',
     uly: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.getPrivate('/api/v5/account/position-tiers', { instType, uly });
   }
 
@@ -558,47 +613,61 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSubAccountList(params?: unknown): Promise<APIResponse<unknown>> {
+  getSubAccountList(params?: unknown): Promise<SubAccount[]> {
     return this.getPrivate('/api/v5/users/subaccount/list', params);
   }
 
-  getSubAccountBalances(subAcct: string): Promise<APIResponse<unknown>> {
+  resetSubAccountAPIKey(
+    subAcct: string,
+    apiKey: string,
+    options?: {
+      label?: string;
+      perm?: string;
+      ip?: string;
+    }
+  ): Promise<SubAccountAPIReset[]> {
+    return this.postPrivate('/api/v5/account/subaccount/balances', {
+      subAcct,
+      apiKey,
+      ...options,
+    });
+  }
+
+  getSubAccountBalances(subAcct: string): Promise<SubAccountBalances[]> {
     return this.getPrivate('/api/v5/account/subaccount/balances', { subAcct });
   }
 
   getSubAccountFundingBalances(
     subAcct: string,
     ccy?: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<FundingBalance[]> {
     return this.getPrivate('/api/v5/asset/subaccount/balances', {
       subAcct,
       ccy,
     });
   }
 
-  getSubAccountTransferHistory(
-    params?: unknown
-  ): Promise<APIResponse<unknown>> {
+  getSubAccountTransferHistory(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/subaccount/bills', params);
   }
 
-  transferSubAccountBalance(params: unknown): Promise<APIResponse<unknown>> {
+  transferSubAccountBalance(
+    params: unknown
+  ): Promise<SubAccountTransferResult[]> {
     return this.postPrivate('/api/v5/asset/subaccount/transfer', params);
   }
 
   setSubAccountTransferOutPermission(
     subAcct: string,
     canTransOut: boolean = true
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/users/subaccount/set-transfer-out', {
       subAcct,
       canTransOut,
     });
   }
 
-  getSubAccountListCustodyTrading(
-    subAcct?: string
-  ): Promise<APIResponse<unknown>> {
+  getSubAccountListCustodyTrading(subAcct?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/users/entrust-subaccount-list', {
       subAcct,
     });
@@ -610,7 +679,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  placeGridAlgoOrder(params: unknown): Promise<APIResponse<unknown>> {
+  placeGridAlgoOrder(params: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/order-algo', params);
   }
 
@@ -618,7 +687,7 @@ export class RestClient extends BaseRestClient {
     algoId: string,
     instId: string,
     triggerPx: { slTriggerPx?: numberInString; tpTriggerPx?: numberInString }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/amend-order-algo', {
       algoId,
       instId,
@@ -631,7 +700,7 @@ export class RestClient extends BaseRestClient {
     instId: string,
     algoOrdType: GridAlgoOrderType,
     stopType: '1' | '2'
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/stop-order-algo', {
       algoId,
       instId,
@@ -640,14 +709,14 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getGridAlgoOrderList(params: unknown): Promise<APIResponse<unknown>> {
+  getGridAlgoOrderList(params: unknown): Promise<unknown[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/grid/orders-algo-pending',
       params
     );
   }
 
-  getGridAlgoOrderHistory(params: unknown): Promise<APIResponse<unknown>> {
+  getGridAlgoOrderHistory(params: unknown): Promise<unknown[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/grid/orders-algo-history',
       params
@@ -657,7 +726,7 @@ export class RestClient extends BaseRestClient {
   getGridAlgoOrderDetails(
     algoOrdType: GridAlgoOrderType,
     algoId: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.getPrivate('/api/v5/tradingBot/grid/orders-algo-details', {
       algoOrdType,
       algoId,
@@ -674,7 +743,7 @@ export class RestClient extends BaseRestClient {
       before?: numberInString;
       limit?: number;
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.getPrivate('/api/v5/tradingBot/grid/sub-orders', {
       algoOrdType,
       algoId,
@@ -688,14 +757,14 @@ export class RestClient extends BaseRestClient {
   getGridAlgoOrderPositions(
     algoOrdType: 'contract_grid',
     algoId: string
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.getPrivate('/api/v5/tradingBot/grid/positions', {
       algoOrdType,
       algoId,
     });
   }
 
-  spotGridWithdrawIncome(algoId: string): Promise<APIResponse<unknown>> {
+  spotGridWithdrawIncome(algoId: string): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/withdraw-income', {
       algoId,
     });
@@ -705,7 +774,7 @@ export class RestClient extends BaseRestClient {
     algoId: string,
     type: 'add' | 'reduce',
     amt?: numberInString
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/compute-margin-balance', {
       algoId,
       type,
@@ -717,7 +786,7 @@ export class RestClient extends BaseRestClient {
     algoId: string,
     type: 'add' | 'reduce',
     change: { amt?: numberInString; percent?: numberInString }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/margin-balance', {
       algoId,
       type,
@@ -730,7 +799,7 @@ export class RestClient extends BaseRestClient {
     instId: string,
     direction?: ContractGridDirection,
     duration?: '7D' | '30D' | '180D'
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<unknown[]> {
     return this.get('/api/v5/tradingBot/grid/ai-param', {
       algoOrdType,
       instId,
@@ -745,17 +814,14 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getTickers(
-    instrumentType: InstrumentType,
-    uly?: string
-  ): Promise<APIResponse<Ticker[]>> {
+  getTickers(instrumentType: InstrumentType, uly?: string): Promise<Ticker[]> {
     return this.get('/api/v5/market/tickers', {
       instType: instrumentType,
       uly,
     });
   }
 
-  getTicker(instId: string): Promise<APIResponse<Ticker[]>> {
+  getTicker(instId: string): Promise<Ticker[]> {
     return this.get('/api/v5/market/ticker', {
       instId,
     });
@@ -764,14 +830,11 @@ export class RestClient extends BaseRestClient {
   getIndexTickers(params: {
     quoteCcy?: string;
     instId?: string;
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<IndexTicker[]> {
     return this.get('/api/v5/market/index-tickers', { ...params });
   }
 
-  getOrderBook(
-    instId: string,
-    sz?: numberInString
-  ): Promise<APIResponse<unknown>> {
+  getOrderBook(instId: string, sz?: numberInString): Promise<OrderBook[]> {
     return this.get('/api/v5/market/books', { instId, sz });
   }
 
@@ -783,7 +846,7 @@ export class RestClient extends BaseRestClient {
       before?: numberInString;
       limit?: numberInString;
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<Candle[]> {
     return this.get('/api/v5/market/candles', {
       inst: instId,
       bar,
@@ -799,7 +862,7 @@ export class RestClient extends BaseRestClient {
       before?: numberInString;
       limit?: numberInString;
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<Candle[]> {
     return this.get('/api/v5/market/history-candles', {
       instId,
       bar,
@@ -815,7 +878,7 @@ export class RestClient extends BaseRestClient {
       before?: numberInString;
       limit?: numberInString;
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/index-candles', {
       instId,
       bar,
@@ -831,7 +894,7 @@ export class RestClient extends BaseRestClient {
       before?: numberInString;
       limit?: numberInString;
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/mark-price-candles', {
       instId,
       bar,
@@ -839,7 +902,7 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getTrades(instId: string, limit?: number): Promise<APIResponse<unknown>> {
+  getTrades(instId: string, limit?: number): Promise<Trade[]> {
     return this.get('/api/v5/market/trades', { instId, limit });
   }
 
@@ -851,38 +914,35 @@ export class RestClient extends BaseRestClient {
       limit?: numberInString;
       type?: '1' | '2';
     }
-  ): Promise<APIResponse<unknown>> {
+  ): Promise<Trade[]> {
     return this.get('/api/v5/market/history-trades', { instId, ...pagination });
   }
 
-  get24hrTotalVolume(): Promise<APIResponse<unknown>> {
+  get24hrTotalVolume(): Promise<unknown[]> {
     return this.get('/api/v5/market/platform-24-volume');
   }
 
-  getOracle(): Promise<APIResponse<unknown>> {
+  getOracle(): Promise<unknown[]> {
     return this.get('/api/v5/market/open-oracle');
   }
 
-  getExchangeRate(): Promise<APIResponse<unknown>> {
+  getExchangeRate(): Promise<unknown[]> {
     return this.get('/api/v5/market/exchange-rate');
   }
 
-  getIndexComponents(index: string): Promise<APIResponse<unknown>> {
+  getIndexComponents(index: string): Promise<unknown[]> {
     return this.get('/api/v5/market/index-components', { index });
   }
 
-  getBlockTickers(
-    instType: InstrumentType,
-    uly?: string
-  ): Promise<APIResponse<unknown>> {
+  getBlockTickers(instType: InstrumentType, uly?: string): Promise<unknown[]> {
     return this.get('/api/v5/market/block-tickers', { instType, uly });
   }
 
-  getBlockTicker(instId: string): Promise<APIResponse<unknown>> {
+  getBlockTicker(instId: string): Promise<unknown[]> {
     return this.get('/api/v5/market/block-ticker', { instId });
   }
 
-  getPublicBlockTrades(instId: string): Promise<APIResponse<unknown>> {
+  getPublicBlockTrades(instId: string): Promise<unknown[]> {
     return this.get('/api/v5/market/block-trades', { instId });
   }
 
@@ -892,81 +952,75 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(params: unknown): Promise<APIResponse<unknown>> {
+  getInstruments(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/instruments', params);
   }
 
-  getDeliveryExerciseHistory(params: unknown): Promise<APIResponse<unknown>> {
+  getDeliveryExerciseHistory(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/delivery-exercise-history', params);
   }
 
-  getOpenInterest(params: unknown): Promise<APIResponse<unknown>> {
+  getOpenInterest(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/open-interest', params);
   }
 
-  getFundingRate(params: unknown): Promise<APIResponse<unknown>> {
+  getFundingRate(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/funding-rate', params);
   }
 
-  getFundingRateHistory(params: unknown): Promise<APIResponse<unknown>> {
+  getFundingRateHistory(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/funding-rate-history', params);
   }
 
-  getMinMaxLimitPrice(params: unknown): Promise<APIResponse<unknown>> {
+  getMinMaxLimitPrice(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/price-limit', params);
   }
 
-  getOptionMarketData(params: unknown): Promise<APIResponse<unknown>> {
+  getOptionMarketData(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/opt-summary', params);
   }
 
-  getEstimatedDeliveryExercisePrice(
-    params: unknown
-  ): Promise<APIResponse<unknown>> {
+  getEstimatedDeliveryExercisePrice(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/estimated-price', params);
   }
 
-  getDiscountRateAndInterestFreeQuota(
-    params: unknown
-  ): Promise<APIResponse<unknown>> {
+  getDiscountRateAndInterestFreeQuota(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/discount-rate-interest-free-quota', params);
   }
 
-  getSystemTime(params: unknown): Promise<APIResponse<unknown>> {
+  getSystemTime(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/time', params);
   }
 
-  getLiquidationOrders(params: unknown): Promise<APIResponse<unknown>> {
+  getLiquidationOrders(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/liquidation-orders', params);
   }
 
-  getMarkPrice(params: unknown): Promise<APIResponse<unknown>> {
+  getMarkPrice(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/mark-price', params);
   }
 
-  getPositionTiers(params: unknown): Promise<APIResponse<unknown>> {
+  getPositionTiers(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/position-tiers', params);
   }
 
-  getInterestRateAndLoanQuota(params: unknown): Promise<APIResponse<unknown>> {
+  getInterestRateAndLoanQuota(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/interest-rate-loan-quota', params);
   }
 
-  getVIPInterestRateAndLoanQuota(
-    params: unknown
-  ): Promise<APIResponse<unknown>> {
+  getVIPInterestRateAndLoanQuota(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/vip-interest-rate-loan-quota', params);
   }
 
-  getUnderlying(params: unknown): Promise<APIResponse<unknown>> {
+  getUnderlying(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/underlying', params);
   }
 
-  getInsuranceFund(params: unknown): Promise<APIResponse<unknown>> {
+  getInsuranceFund(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/insurance-fund', params);
   }
 
-  getUnitConvert(params: unknown): Promise<APIResponse<unknown>> {
+  getUnitConvert(params: unknown): Promise<unknown[]> {
     return this.get('/api/v5/public/convert-contract-coin', params);
   }
 
@@ -976,11 +1030,11 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSupportCoin(): Promise<APIResponse<unknown>> {
+  getSupportCoin(): Promise<unknown[]> {
     return this.get('/api/v5/rubik/stat/trading-data/support-coin');
   }
 
-  getTakerVolume(): Promise<APIResponse<unknown>> {
+  getTakerVolume(): Promise<unknown[]> {
     return this.get('/api/v5/rubik/stat/taker-volume');
   }
 
@@ -989,7 +1043,7 @@ export class RestClient extends BaseRestClient {
     begin?: numberInString;
     end?: numberInString;
     period: '5m' | '1H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get('/api/v5/rubik/stat/margin/loan-ratio', params);
   }
 
@@ -998,7 +1052,7 @@ export class RestClient extends BaseRestClient {
     begin?: numberInString;
     end?: numberInString;
     period: '5m' | '1H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get(
       '/api/v5/rubik/stat/contracts/long-short-account-ratio',
       params
@@ -1010,7 +1064,7 @@ export class RestClient extends BaseRestClient {
     begin?: numberInString;
     end?: numberInString;
     period: '5m' | '1H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get(
       '/api/v5/rubik/stat/contracts/open-interest-volume',
       params
@@ -1020,14 +1074,14 @@ export class RestClient extends BaseRestClient {
   getOptionsOpenInterestAndVolume(params: {
     ccy: string;
     period: '8H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get('/api/v5/rubik/stat/option/open-interest-volume', params);
   }
 
   getPutCallRatio(params: {
     ccy: string;
     period: '8H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get(
       '/api/v5/rubik/stat/option/open-interest-volume-ratio',
       params
@@ -1037,7 +1091,7 @@ export class RestClient extends BaseRestClient {
   getOpenInterestAndVolumeExpiry(params: {
     ccy: string;
     period: '8H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get(
       '/api/v5/rubik/stat/option/open-interest-volume-expiry',
       params
@@ -1048,7 +1102,7 @@ export class RestClient extends BaseRestClient {
     ccy: string;
     expTime: string;
     period: '8H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get(
       '/api/v5/rubik/stat/option/open-interest-volume-strike',
       params
@@ -1058,7 +1112,7 @@ export class RestClient extends BaseRestClient {
   getTakerFlow(params: {
     ccy: string;
     period: '8H' | '1D';
-  }): Promise<APIResponse<unknown>> {
+  }): Promise<unknown[]> {
     return this.get('/api/v5/rubik/stat/option/taker-block-volume', params);
   }
 
@@ -1068,7 +1122,9 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSystemStatus(state?: string): Promise<APIResponse<unknown>> {
+  getSystemStatus(
+    state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled'
+  ): Promise<unknown[]> {
     return this.get('/api/v5/system/status', { state });
   }
 }

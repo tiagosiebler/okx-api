@@ -35,8 +35,8 @@ Most methods accept JS objects. These can be populated using parameters specifie
 ## Structure
 This project uses typescript. Resources are stored in 3 key structures:
 - [src](./src) - the whole connector written in typescript
-- [lib](./lib) - the javascript version of the project (compiled from typescript). This should not be edited directly, as it will be overwritten with each release.
-- [dist](./dist) - the packed bundle of the project for use in browser environments.
+- [lib](./lib) - the javascript version of the project (compiled from typescript). This should not be edited directly, as it will be overwritten with each release. This is also the version published to npm.
+- [dist](./dist) - the packed bundle of the project for use in browser environments (manual, using webpack).
 - [examples](./examples) - some implementation examples & demonstrations. Contributions are welcome!
 
 ---
@@ -44,6 +44,15 @@ This project uses typescript. Resources are stored in 3 key structures:
 # Usage
 Create API credentials at okx
 - [OKX my-api](https://www.okx.com/account/my-api)
+
+## REST Client
+
+### Requests & Responses
+- If your IDE doesn't have IntelliSense, check the [rest-client.ts](./src/rest-client.ts) for a list of methods, params & return types.
+- Requests follow the same ordering and format as the categories in the [API docs](https://www.okx.com/docs-v5/en/#rest-api).
+- Responses are parsed automatically for less nesting. Error responses are thrown in full:
+  - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
+  - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
 
 ## Browser Usage
 Build a bundle using webpack:

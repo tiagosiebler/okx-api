@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+import { APIResponse } from '../types/rest';
 import { signMessage } from './node-support';
 
 import {
@@ -8,6 +9,7 @@ import {
   programKey,
   programId,
 } from './requestUtils';
+import { isRawAPIResponse } from './typeGuards';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -194,25 +196,31 @@ export default abstract class BaseRestClient {
     // });
 
     return axios(options)
-      .then((response) => {
-        // console.log('request: ', JSON.stringify(options, null, 2));
-        // console.log(
-        //   'response: ',
-        //   JSON.stringify(
-        //     {
-        //       data: response.data,
-        //       headers: response.headers,
-        //     },
-        //     null,
-        //     2
-        //   )
-        // );
-
-        // Also throw if API returned error code
-        if (response.status == 200 && response.data?.code === '0') {
-          return response.data;
+      .then((response: AxiosResponse<APIResponse<unknown>>) => {
+        // Check this is an API response without an error code.
+        // If so, resolve the nested data property, else throw the full response body
+        if (
+          isRawAPIResponse(response.data) &&
+          response.status == 200 &&
+          response.data?.code === '0'
+        ) {
+          return response.data.data;
         }
 
+        console.log('request: ', JSON.stringify(options, null, 2));
+        console.log(
+          'bad response: ',
+          JSON.stringify(
+            {
+              data: response.data,
+              headers: response.headers,
+            },
+            null,
+            2
+          )
+        );
+
+        // Also throw if API returned error code
         // This API error thrown by the exchange will be post-processed by the exception parser
         throw { response };
       })
