@@ -36,10 +36,6 @@ import { isRawAPIResponse } from './typeGuards';
 export const MISSING_CREDENTIALS_ERROR =
   'Private endpoints require api and secret to be provided in the REST client constructor';
 
-// interface SignedRequestContext {
-//   timestamp: number;
-// }
-
 interface SignedRequest<T> {
   requestBody: T | undefined;
   method: Method;
