@@ -207,18 +207,18 @@ export default abstract class BaseRestClient {
           return response.data.data;
         }
 
-        console.log('request: ', JSON.stringify(options, null, 2));
-        console.log(
-          'bad response: ',
-          JSON.stringify(
-            {
-              data: response.data,
-              headers: response.headers,
-            },
-            null,
-            2
-          )
-        );
+        // console.log('request: ', JSON.stringify(options, null, 2));
+        // console.log(
+        //   'bad response: ',
+        //   JSON.stringify(
+        //     {
+        //       data: response.data,
+        //       headers: response.headers,
+        //     },
+        //     null,
+        //     2
+        //   )
+        // );
 
         // Also throw if API returned error code
         // This API error thrown by the exchange will be post-processed by the exception parser

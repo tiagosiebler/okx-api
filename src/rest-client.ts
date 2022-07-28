@@ -110,9 +110,9 @@ export class RestClient extends BaseRestClient {
   async getServerTime(): Promise<number> {
     const response = await this.get('/api/v5/public/time');
 
-    const timestamp = Number(response?.data[0]?.ts);
+    const timestamp = Array.isArray(response) ? Number(response[0]?.ts) : NaN;
     if (
-      !Array.isArray(response.data) ||
+      !Array.isArray(response) ||
       isNaN(timestamp) ||
       typeof timestamp !== 'number'
     ) {
@@ -848,7 +848,7 @@ export class RestClient extends BaseRestClient {
     }
   ): Promise<Candle[]> {
     return this.get('/api/v5/market/candles', {
-      inst: instId,
+      instId,
       bar,
       ...pagination,
     });
