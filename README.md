@@ -6,7 +6,7 @@
 
 [1]: https://www.npmjs.com/package/okx-api
 
-WARNING: This package is still early beta, following the designs of my other connectors. Expect breaking changes until this sees a major release.
+**WARNING: This package is still early beta! Expect breaking changes until this sees a major release.**
 
 If you want to stay informed when this may be ready for testing, please get in touch via telegram.
 
