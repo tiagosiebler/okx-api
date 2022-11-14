@@ -25,21 +25,20 @@ export function serializeParams(
     return JSON.stringify(params);
   }
 
-  // Original order should be preserved, no sorting allowed here or sign will fail
-  return (
-    '?' +
-    Object.keys(params)
-      .map((key) => {
-        const value = params[key];
-        if (strict_validation === true && typeof value === 'undefined') {
-          throw new Error(
-            'Failed to sign API request due to undefined parameter'
-          );
-        }
-        return `${key}=${value}`;
-      })
-      .join('&')
-  );
+  const queryString = Object.keys(params)
+    .map((key) => {
+      const value = params[key];
+      if (strict_validation === true && typeof value === 'undefined') {
+        throw new Error(
+          'Failed to sign API request due to undefined parameter'
+        );
+      }
+      return `${key}=${value}`;
+    })
+    .join('&');
+
+  // Prevent trailing `?` if no params are provided
+  return queryString ? '?' + queryString : queryString;
 }
 export const programKey = 'tag';
 export const programId = '159881cb7207BCDE';

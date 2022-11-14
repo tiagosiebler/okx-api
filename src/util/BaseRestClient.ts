@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import { APIResponse } from '../types/rest';
 import { signMessage } from './node-support';
-
 import {
   RestClientOptions,
   serializeParams,
@@ -46,7 +45,7 @@ interface SignedRequest<T> {
 export interface APICredentials {
   apiKey: string;
   apiSecret: string;
-  apiPassphrase: string;
+  apiPass: string;
 }
 
 export default abstract class BaseRestClient {
@@ -57,7 +56,7 @@ export default abstract class BaseRestClient {
   private apiSecret: string | undefined;
   private apiPassphrase: string | undefined;
 
-  private environment: OKXEnvironment;
+  // private environment: OKXEnvironment;
 
   constructor(
     credentials: APICredentials | undefined | null,
@@ -66,7 +65,7 @@ export default abstract class BaseRestClient {
     requestOptions: AxiosRequestConfig = {},
     environment: OKXEnvironment
   ) {
-    this.environment = environment;
+    // this.environment = environment;
 
     this.options = {
       // if true, we'll throw errors if any params are undefined
@@ -79,9 +78,7 @@ export default abstract class BaseRestClient {
     // Allow empty object
     if (
       credentials &&
-      (!credentials.apiKey ||
-        !credentials.apiSecret ||
-        !credentials.apiPassphrase)
+      (!credentials.apiKey || !credentials.apiSecret || !credentials.apiPass)
     ) {
       throw new Error(
         'API Key, Secret AND Passphrase are ALL required for private enpoints'
@@ -105,7 +102,7 @@ export default abstract class BaseRestClient {
 
     this.apiKey = credentials?.apiKey;
     this.apiSecret = credentials?.apiSecret;
-    this.apiPassphrase = credentials?.apiPassphrase;
+    this.apiPassphrase = credentials?.apiPass;
   }
 
   // private isDemoTrading(): boolean {
@@ -189,6 +186,7 @@ export default abstract class BaseRestClient {
     //   method,
     //   params: signResult.requestBody,
     //   sign: signResult.sign,
+    //   options,
     // });
 
     return axios(options)

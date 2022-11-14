@@ -1,3 +1,5 @@
+import { ASSET_BILL_TYPE } from '../../../constants';
+
 export interface FundingCurrency {
   canDep: boolean;
   canInternal: boolean;
@@ -66,6 +68,6 @@ export interface AssetBillDetails {
   clientId: string;
   balChg: string;
   bal: string;
-  type: string;
+  type: `${ASSET_BILL_TYPE}`;
   ts: string;
 }

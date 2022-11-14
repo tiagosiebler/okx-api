@@ -20,6 +20,14 @@ export function errorResponseObject(
   };
 }
 
+export function minimumAssetRequirementError() {
+  return errorResponseObject(
+    '70006',
+    [],
+    expect.stringMatching(/minimum asset requirement/gim)
+  );
+}
+
 export function notAuthenticatedError() {
   return new Error(MISSING_CREDENTIALS_ERROR);
 }

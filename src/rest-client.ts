@@ -85,7 +85,10 @@ import {
   Candle,
   CandleNoVolume,
   Trade,
+  Pagination,
+  APIResponse,
 } from './types/rest';
+import { ASSET_BILL_TYPE } from './constants';
 
 export class RestClient extends BaseRestClient {
   /**
@@ -127,11 +130,11 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  placeOrder(params: OrderRequest): Promise<OrderResult[]> {
+  submitOrder(params: OrderRequest): Promise<OrderResult[]> {
     return this.postPrivate('/api/v5/trade/order', params);
   }
 
-  placeMultipleOrders(params: OrderRequest[]): Promise<OrderResult[]> {
+  submitMultipleOrders(params: OrderRequest[]): Promise<OrderResult[]> {
     return this.postPrivate('/api/v5/trade/batch-orders', params);
   }
 
@@ -223,6 +226,62 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/orders-algo-history', params);
   }
 
+  /** Get easy convert currency list */
+  getEasyConvertCurrencies(): Promise<any> {
+    return this.getPrivate('/api/v5/trade/easy-convert-currency-list');
+  }
+
+  /**
+   * Place easy convert : Convert small currencies to mainstream currencies.
+   * Only applicable to the crypto balance less than $10.
+   *
+   * Maximum 5 currencies can be selected in one order.
+   * If there are multiple currencies, separate them with commas in the "from" field.
+   */
+  submitEasyConvert(fromCcy: string, toCcy: string): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/trade/easy-convert', {
+      fromCcy,
+      toCcy,
+    });
+  }
+
+  /** Get easy convert history : Get the history and status of easy convert trades. */
+  getEasyConvertHistory(params?: Pagination): Promise<APIResponse<any>> {
+    return this.getPrivate('/api/v5/trade/easy-convert-history', params);
+  }
+
+  /**
+   * Get one-click repay currency list : Get list of debt currency data and repay currencies.
+   * Debt currencies include both cross and isolated debts.
+   */
+  getOneClickRepayCurrencyList(
+    debtType?: 'cross' | 'isolated'
+  ): Promise<APIResponse<any>> {
+    return this.getPrivate('/api/v5/trade/one-click-repay-currency-list', {
+      debtType,
+    });
+  }
+
+  /**
+   * Trade one-click repay to repay cross debts.
+   * Isolated debts are not applicable.
+   * The maximum repayment amount is based on the remaining available balance of funding and trading accounts.
+   */
+  submitOneClickRepay(
+    debtCcy: string[],
+    repayCcy: string
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/trade/one-click-repay', {
+      debtCcy,
+      repayCcy,
+    });
+  }
+
+  /** Get the history and status of one-click repay trades. */
+  getOneClickRepayHistory(params?: Pagination): Promise<APIResponse<any>> {
+    return this.getPrivate('/api/v5/trade/one-click-repay-history', params);
+  }
+
   /**
    *
    * Block trading endpoints (private)
@@ -289,11 +348,11 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/rfq/quotes', params);
   }
 
-  getBlockTrades(params: unknown): Promise<unknown[]> {
+  getBlockTrades(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/rfq/trades', params);
   }
 
-  getPublicRFQBlockTrades(params: unknown): Promise<unknown[]> {
+  getPublicRFQBlockTrades(params?: unknown): Promise<unknown[]> {
     return this.get('/api/v5/rfq/public-trades', params);
   }
 
@@ -319,6 +378,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/transfer', params);
   }
 
+  /** Either parameter transId or clientId is required. */
   getFundsTransferState(params: {
     transId?: string;
     clientId?: string;
@@ -329,7 +389,7 @@ export class RestClient extends BaseRestClient {
 
   getAssetBillsDetails(params?: {
     ccy?: string;
-    type?: numberInString;
+    type?: `${ASSET_BILL_TYPE}`;
     clientId?: string;
     after?: numberInString;
     before?: numberInString;
@@ -350,15 +410,15 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/deposit-address', { ccy });
   }
 
-  getDepositHistory(params: unknown): Promise<unknown[]> {
+  getDepositHistory(params?: unknown): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/deposit-history', params);
   }
 
-  withdraw(params: unknown): Promise<unknown[]> {
+  submitWithdraw(params: unknown): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/withdrawal', params);
   }
 
-  withdrawLightning(
+  submitWithdrawLightning(
     ccy: string,
     invoice: string,
     memo?: string
@@ -375,7 +435,7 @@ export class RestClient extends BaseRestClient {
   }
 
   getWithdrawalHistory(params?: unknown): Promise<unknown[]> {
-    return this.postPrivate('/api/v5/asset/withdrawal-history', params);
+    return this.getPrivate('/api/v5/asset/withdrawal-history', params);
   }
 
   smallAssetsConvert(ccy: string[]): Promise<unknown[]> {
@@ -498,13 +558,24 @@ export class RestClient extends BaseRestClient {
   }
 
   /** Max buy/sell amount or open amount */
-  getMaxOrderAmount(params: unknown): Promise<AccountMaxOrderAmount[]> {
+  getMaxBuySellAmount(params: {
+    instId: string;
+    tdMode: 'cross' | 'isolated' | 'cash';
+    ccy?: string;
+    px?: string;
+    leverage?: string;
+    unSpotOffset?: boolean;
+  }): Promise<AccountMaxOrderAmount[]> {
     return this.getPrivate('/api/v5/account/max-size', params);
   }
 
-  getMaxAvailableTradableAmount(
-    params: unknown
-  ): Promise<AccountMaxTradableAmount[]> {
+  getMaxAvailableTradableAmount(params: {
+    instId: string;
+    ccy?: string;
+    tdMode: 'cross' | 'isolated' | 'cash';
+    reduceOnly?: boolean;
+    unSpotOffset?: boolean;
+  }): Promise<AccountMaxTradableAmount[]> {
     return this.getPrivate('/api/v5/account/max-avail-size', params);
   }
 
@@ -573,7 +644,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/risk-state');
   }
 
-  VIPLoanBorrowRepay(
+  borrowRepayVIPLoan(
     ccy: string,
     side: 'borrow' | 'repay',
     amt: numberInString
@@ -600,11 +671,12 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/greeks', { ccy });
   }
 
-  getPMLimitation(
-    instType: 'SWAP' | 'FUTURES' | 'OPTION',
-    uly: string
-  ): Promise<unknown[]> {
-    return this.getPrivate('/api/v5/account/position-tiers', { instType, uly });
+  getPMLimitation(params: {
+    instType: 'SWAP' | 'FUTURES' | 'OPTION';
+    uly?: string;
+    instFamily?: string;
+  }): Promise<unknown[]> {
+    return this.getPrivate('/api/v5/account/position-tiers', params);
   }
 
   /**
@@ -613,10 +685,12 @@ export class RestClient extends BaseRestClient {
    *
    */
 
+  /** View sub-account list */
   getSubAccountList(params?: unknown): Promise<SubAccount[]> {
     return this.getPrivate('/api/v5/users/subaccount/list', params);
   }
 
+  /** Reset the APIKey of a sub-account */
   resetSubAccountAPIKey(
     subAcct: string,
     apiKey: string,
@@ -633,10 +707,12 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  /** Get sub-account trading balance */
   getSubAccountBalances(subAcct: string): Promise<SubAccountBalances[]> {
     return this.getPrivate('/api/v5/account/subaccount/balances', { subAcct });
   }
 
+  /** Get sub-account funding balance */
   getSubAccountFundingBalances(
     subAcct: string,
     ccy?: string
@@ -647,16 +723,26 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getSubAccountTransferHistory(params?: unknown): Promise<unknown[]> {
+  /** History of sub-account transfer */
+  getSubAccountTransferHistory(params?: {
+    ccy?: string;
+    type?: '0' | '1';
+    subAcct?: string;
+    after?: string;
+    before?: string;
+    limit?: string;
+  }): Promise<unknown[]> {
     return this.getPrivate('/api/v5/asset/subaccount/bills', params);
   }
 
+  /** Master accounts manage the transfers between sub-accounts */
   transferSubAccountBalance(
     params: unknown
   ): Promise<SubAccountTransferResult[]> {
     return this.postPrivate('/api/v5/asset/subaccount/transfer', params);
   }
 
+  /** Set Permission Of Transfer Out */
   setSubAccountTransferOutPermission(
     subAcct: string,
     canTransOut: boolean = true
@@ -667,7 +753,8 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getSubAccountListCustodyTrading(subAcct?: string): Promise<unknown[]> {
+  /** Get custody trading sub-account list */
+  getSubAccountCustodyTradingList(subAcct?: string): Promise<unknown[]> {
     return this.getPrivate('/api/v5/users/entrust-subaccount-list', {
       subAcct,
     });
@@ -810,6 +897,89 @@ export class RestClient extends BaseRestClient {
 
   /**
    *
+   * Earn/staking endpoints (private)
+   *
+   */
+
+  /** Get earn offers */
+  getStakingOffers(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate('/api/v5/finance/staking-defi/offers', params);
+  }
+
+  /** Earn/staking purchase */
+  submitStake(
+    productId: string,
+    investData: {
+      ccy: string;
+      amt: string;
+    }[],
+    term?: string
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/purchase', {
+      productId,
+      investData,
+      term,
+    });
+  }
+
+  /** Earn/staking redeem */
+  redeemStake(
+    orderId: string,
+    protocolType: 'staking' | 'defi',
+    allowEarlyRedeem?: boolean
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
+      orderId,
+      protocolType,
+      allowEarlyRedeem,
+    });
+  }
+
+  /** Earn/staking cancel purchases/redemptions */
+  cancelStakingRequest(
+    ordId: string,
+    protocolType: 'staking' | 'defi'
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/cancel', {
+      ordId,
+      protocolType,
+    });
+  }
+
+  /** Earn/staking get active orders */
+  getActiveStakingOrders(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+    state?: '8' | '13' | '9' | '1' | '2';
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate(
+      '/api/v5/finance/staking-defi/orders-active',
+      params
+    );
+  }
+
+  /** Earn/staking get order history */
+  getStakingOrderHistory(params?: {
+    productId?: string;
+    protocolType?: string;
+    ccy?: string;
+    after?: string;
+    before?: string;
+    limit?: string;
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate(
+      '/api/v5/finance/staking-defi/orders-history',
+      params
+    );
+  }
+
+  /**
+   *
    * Market data endpoints (public)
    *
    */
@@ -841,11 +1011,7 @@ export class RestClient extends BaseRestClient {
   getCandles(
     instId: string,
     bar: string = '1m',
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: numberInString;
-    }
+    pagination?: Pagination
   ): Promise<Candle[]> {
     return this.get('/api/v5/market/candles', {
       instId,
@@ -857,11 +1023,7 @@ export class RestClient extends BaseRestClient {
   getHistoricCandles(
     instId: string,
     bar: string = '1m',
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: numberInString;
-    }
+    pagination?: Pagination
   ): Promise<Candle[]> {
     return this.get('/api/v5/market/history-candles', {
       instId,
@@ -873,13 +1035,21 @@ export class RestClient extends BaseRestClient {
   getIndexCandles(
     instId: string,
     bar: string = '1m',
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: numberInString;
-    }
+    pagination?: Pagination
   ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/index-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getHistoricIndexCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/history-index-candles', {
       instId,
       bar,
       ...pagination,
@@ -889,13 +1059,21 @@ export class RestClient extends BaseRestClient {
   getMarkPriceCandles(
     instId: string,
     bar: string = '1m',
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: numberInString;
-    }
+    pagination?: Pagination
   ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/mark-price-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getHistoricMarkPriceCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/historic-mark-price-candles', {
       instId,
       bar,
       ...pagination,
@@ -1126,5 +1304,17 @@ export class RestClient extends BaseRestClient {
     state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled'
   ): Promise<unknown[]> {
     return this.get('/api/v5/system/status', { state });
+  }
+
+  /**
+   *
+   * Broker endpoints (private)
+   *
+   */
+
+  // TODO: add missing broker endpoints
+
+  getBrokerAccountInformation(): Promise<unknown[]> {
+    return this.getPrivate('/api/v5/broker/nd/info');
   }
 }

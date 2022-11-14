@@ -130,9 +130,11 @@ export interface OrderRequest {
   side: OrderSide;
   posSide?: PositionSide;
   ordType: OrderType;
+  /** Quantity to buy or sell */
   sz: numberInString;
   px?: string;
   reduceOnly?: boolean;
-  tgtCcy?: string;
+  /** A spot buy on BTC-USDT with "base_ccy" would mean the QTY (sz) is in USDT */
+  tgtCcy?: 'base_ccy' | 'quote_ccy';
   banAmend?: boolean;
 }

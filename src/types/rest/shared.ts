@@ -62,3 +62,9 @@ export type TradeMode = 'cross' | 'isolated' | 'cash';
 export interface TimestampObject {
   ts: numberInString;
 }
+
+export interface Pagination {
+  after?: string;
+  before?: string;
+  limit?: string;
+}
