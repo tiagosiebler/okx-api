@@ -87,6 +87,7 @@ import {
   Trade,
   Pagination,
   APIResponse,
+  GetGridAlgoOrdersRequest,
 } from './types/rest';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -796,14 +797,16 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getGridAlgoOrderList(params: unknown): Promise<unknown[]> {
+  getGridAlgoOrderList(params: GetGridAlgoOrdersRequest): Promise<unknown[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/grid/orders-algo-pending',
       params
     );
   }
 
-  getGridAlgoOrderHistory(params: unknown): Promise<unknown[]> {
+  getGridAlgoOrderHistory(
+    params: GetGridAlgoOrdersRequest
+  ): Promise<unknown[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/grid/orders-algo-history',
       params
@@ -884,7 +887,7 @@ export class RestClient extends BaseRestClient {
   getGridAIParameter(
     algoOrdType: GridAlgoOrderType,
     instId: string,
-    direction?: ContractGridDirection,
+    direction: ContractGridDirection,
     duration?: '7D' | '30D' | '180D'
   ): Promise<unknown[]> {
     return this.get('/api/v5/tradingBot/grid/ai-param', {

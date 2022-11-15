@@ -1,15 +1,18 @@
-# okx-api
+# Node.js & Typescript OKX (OKEX) API SDK
 [![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml) [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1] [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1]
 [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1]
 [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 
 [1]: https://www.npmjs.com/package/okx-api
 
+## BETA RELEASE
+```
 **WARNING: This package is still early beta! Expect breaking changes until this sees a major release.**
 
 If you want to stay informed when this may be ready for testing, please get in touch via telegram.
+```
 
-Node.js connector for the okx APIs and WebSockets, with TypeScript & browser support.
+Node.js connector for the OKX (OKEX) APIs and WebSockets, with TypeScript & browser support.
 
 ## Installation
 `npm install --save okx-api`
@@ -30,7 +33,8 @@ Node.js connector for the okx APIs and WebSockets, with TypeScript & browser sup
   - [awesome-crypto-examples](https://github.com/tiagosiebler/awesome-crypto-examples)
 
 ## Documentation
-Most methods accept JS objects. These can be populated using parameters specified by okx's API documentation.
+Most methods accept JS objects. These can be populated using parameters specified by okx's API documentation, or check the type definition in the rest-client class methods.
+- [RestClient](src/rest-client.ts).
 - [OKX API Documentation](https://www.okx.com/docs-v5/en/#rest-api).
 
 ## Structure

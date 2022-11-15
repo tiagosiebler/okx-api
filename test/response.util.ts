@@ -28,6 +28,14 @@ export function minimumAssetRequirementError() {
   );
 }
 
+export function algoIdParamError() {
+  return errorResponseObject(
+    '51000',
+    [],
+    expect.stringMatching(/Parameter algoId/gim)
+  );
+}
+
 export function notAuthenticatedError() {
   return new Error(MISSING_CREDENTIALS_ERROR);
 }

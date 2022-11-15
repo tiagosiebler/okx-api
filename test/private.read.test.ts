@@ -1,5 +1,6 @@
 import { RestClient } from '../src';
 import {
+  algoIdParamError,
   errorResponseObject,
   minimumAssetRequirementError,
   successResponseList,
@@ -605,6 +606,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         );
       }
     });
+
     it('getSubAccountBalances()', async () => {
       try {
         expect(await api.getSubAccountBalances(subAccount)).toBeFalsy();
@@ -618,6 +620,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         );
       }
     });
+
     it('getSubAccountFundingBalances()', async () => {
       try {
         expect(await api.getSubAccountFundingBalances(subAccount)).toBeFalsy();
@@ -631,6 +634,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         );
       }
     });
+
     it('getSubAccountTransferHistory()', async () => {
       try {
         expect(await api.getSubAccountTransferHistory()).toMatchObject(
@@ -640,6 +644,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         expect(e).toBeFalsy();
       }
     });
+
     it('getSubAccountCustodyTradingList()', async () => {
       try {
         expect(await api.getSubAccountCustodyTradingList()).toMatchObject(
@@ -651,10 +656,100 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     });
   });
 
-  describe('asdfasfsadfasfdf Endpoints', () => {
-    it('asdfasfadfdasf()', async () => {
+  describe('Grid Trading Endpoints', () => {
+    const algoId = 'someFakeAlgoId';
+
+    it('getGridAlgoOrderList()', async () => {
       try {
-        expect(await api.getBalance()).toMatchObject(successResponseList());
+        expect(
+          await api.getGridAlgoOrderList({
+            algoOrdType: 'grid',
+          })
+        ).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('getGridAlgoOrderHistory()', async () => {
+      try {
+        expect(
+          await api.getGridAlgoOrderHistory({
+            algoOrdType: 'grid',
+          })
+        ).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('getGridAlgoOrderDetails()', async () => {
+      try {
+        expect(
+          await api.getGridAlgoOrderDetails('contract_grid', algoId)
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(algoIdParamError());
+      }
+    });
+
+    it('getGridAlgoSubOrders()', async () => {
+      try {
+        expect(
+          await api.getGridAlgoSubOrders('contract_grid', algoId, 'filled')
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(algoIdParamError());
+      }
+    });
+
+    it('getGridAlgoOrderPositions()', async () => {
+      try {
+        expect(
+          await api.getGridAlgoOrderPositions('contract_grid', algoId)
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(algoIdParamError());
+      }
+    });
+
+    it('getGridAIParameter()', async () => {
+      try {
+        expect(
+          await api.getGridAIParameter('grid', 'BTC-USDT', 'long')
+        ).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+  });
+
+  describe('Staking Endpoints', () => {
+    it('getStakingOffers()', async () => {
+      try {
+        expect(await api.getStakingOffers()).toMatchObject(
+          successResponseList()
+        );
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('getActiveStakingOrders()', async () => {
+      try {
+        expect(await api.getActiveStakingOrders()).toMatchObject(
+          successResponseList()
+        );
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('getStakingOrderHistory()', async () => {
+      try {
+        expect(await api.getStakingOrderHistory()).toMatchObject(
+          successResponseList()
+        );
       } catch (e) {
         expect(e).toBeFalsy();
       }
