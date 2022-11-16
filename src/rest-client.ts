@@ -239,9 +239,12 @@ export class RestClient extends BaseRestClient {
    * Maximum 5 currencies can be selected in one order.
    * If there are multiple currencies, separate them with commas in the "from" field.
    */
-  submitEasyConvert(fromCcy: string, toCcy: string): Promise<APIResponse<any>> {
+  submitEasyConvert(
+    fromCcys: string[],
+    toCcy: string
+  ): Promise<APIResponse<any>> {
     return this.postPrivate('/api/v5/trade/easy-convert', {
-      fromCcy,
+      fromCcy: fromCcys,
       toCcy,
     });
   }
@@ -269,11 +272,11 @@ export class RestClient extends BaseRestClient {
    * The maximum repayment amount is based on the remaining available balance of funding and trading accounts.
    */
   submitOneClickRepay(
-    debtCcy: string[],
+    debtCcys: string[],
     repayCcy: string
   ): Promise<APIResponse<any>> {
     return this.postPrivate('/api/v5/trade/one-click-repay', {
-      debtCcy,
+      debtCcy: debtCcys.join(','),
       repayCcy,
     });
   }
@@ -298,7 +301,7 @@ export class RestClient extends BaseRestClient {
   }
 
   cancelBlockRFQ(
-    params?: CancelBlockRFQRequest
+    params: CancelBlockRFQRequest
   ): Promise<CancelBlockRFQResult[]> {
     return this.postPrivate('/api/v5/rfq/cancel-rfq', params);
   }

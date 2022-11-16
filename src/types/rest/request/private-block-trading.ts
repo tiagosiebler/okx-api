@@ -13,8 +13,8 @@ export interface CancelBlockRFQRequest {
 }
 
 export interface CancelMultipleBlockRFQRequest {
-  rfqId?: string[];
-  clRfqId?: string[];
+  rfqIds?: string[];
+  clRfqIds?: string[];
 }
 
 export interface ExecuteBlockQuoteRequest {
@@ -25,7 +25,7 @@ export interface ExecuteBlockQuoteRequest {
 export interface CreateBlockQuoteRequest {
   rfqId: string;
   clQuoteId?: string;
-  quoteSide: string;
+  quoteSide: OrderSide;
   anonymous?: boolean;
   expiresIn?: string;
   legs: CreateBlockQuoteLeg[];
@@ -45,8 +45,8 @@ export interface CancelBlockQuoteRequest {
 }
 
 export interface CancelMultipleBlockQuoteRequest {
-  quoteId?: string[];
-  clQuoteId?: string[];
+  quoteIds?: string[];
+  clQuoteIds?: string[];
 }
 
 export interface GetBlockRFQSParams {

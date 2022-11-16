@@ -1,5 +1,6 @@
 import { RestClient } from '../src';
-import { errorResponseObject } from './response.util';
+import { RFQLeg } from '../src/types/rest';
+import { errorResponseObject, successResponseList } from './response.util';
 
 // These tests primarily check auth is working by expecting balance or order not found style errors
 describe('Private REST API Endpoints (POST)', () => {
@@ -35,20 +36,20 @@ describe('Private REST API Endpoints (POST)', () => {
             ordType: 'market',
             sz: '1000000',
           })
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
               {
                 sCode: '51008',
-                sMsg: 'Order placement failed due to insufficient balance ',
+                sMsg: expect.stringMatching(/insufficient/gim),
               },
             ],
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -71,24 +72,24 @@ describe('Private REST API Endpoints (POST)', () => {
               sz: '1000000',
             },
           ])
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
               {
                 sCode: '51008',
-                sMsg: 'Order placement failed due to insufficient balance ',
+                sMsg: expect.stringMatching(/insufficient/gim),
               },
               {
                 sCode: '51008',
-                sMsg: 'Order placement failed due to insufficient balance ',
+                sMsg: expect.stringMatching(/insufficient/gim),
               },
             ],
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -99,7 +100,9 @@ describe('Private REST API Endpoints (POST)', () => {
             instId: instrumentId,
             ordId: '12313123123',
           })
-        ).rejects.toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -112,8 +115,6 @@ describe('Private REST API Endpoints (POST)', () => {
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -130,7 +131,9 @@ describe('Private REST API Endpoints (POST)', () => {
               ordId: '12313123124',
             },
           ])
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -148,8 +151,6 @@ describe('Private REST API Endpoints (POST)', () => {
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -161,7 +162,9 @@ describe('Private REST API Endpoints (POST)', () => {
             ordId: '12313123123',
             newSz: '500000',
           })
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -174,8 +177,6 @@ describe('Private REST API Endpoints (POST)', () => {
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -194,7 +195,9 @@ describe('Private REST API Endpoints (POST)', () => {
               newSz: '500000',
             },
           ])
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -212,8 +215,6 @@ describe('Private REST API Endpoints (POST)', () => {
             'Operation failed.'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -224,15 +225,15 @@ describe('Private REST API Endpoints (POST)', () => {
             instId: instrumentId,
             mgnMode: 'isolated',
           })
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '51010',
             [],
             'Operation is not supported under the current account mode'
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -250,9 +251,11 @@ describe('Private REST API Endpoints (POST)', () => {
             pxVar: '0.5',
             timeInterval: '20',
           })
-        ).toMatchObject(errorResponseObject('1', [{ sCode: '51282' }], ''));
+        ).toBeFalsy();
       } catch (e) {
-        expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('1', [{ sCode: '51282' }], '')
+        );
       }
     });
 
@@ -269,7 +272,9 @@ describe('Private REST API Endpoints (POST)', () => {
               algoId: '123123124',
             },
           ])
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -287,8 +292,6 @@ describe('Private REST API Endpoints (POST)', () => {
             ''
           )
         );
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
 
@@ -305,7 +308,9 @@ describe('Private REST API Endpoints (POST)', () => {
               algoId: '123123124',
             },
           ])
-        ).toMatchObject(
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
           errorResponseObject(
             '1',
             [
@@ -323,11 +328,223 @@ describe('Private REST API Endpoints (POST)', () => {
             'Operation failed.'
           )
         );
+      }
+    });
+
+    it.skip('submitEasyConvert()', async () => {
+      try {
+        expect(await api.submitEasyConvert(['BTC'], 'USDT')).toBeFalsy();
+      } catch (e) {
+        // currently failing. Asked OKX.
+        // {"code": "50013", "data": [], "msg": "System busy, please try again later."}
+        expect(e).toBe('');
+        // .toMatchObject(
+        //   errorResponseObject('1', [{ lkml: true }], 'Operation failed.')
+        // );
+      }
+    });
+
+    it('submitOneClickRepay()', async () => {
+      try {
+        expect(await api.submitOneClickRepay(['BTC'], 'USDT')).toBeFalsy();
+      } catch (e) {
+        // Requires account to be in a certain state
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '51000',
+            [],
+            expect.stringMatching(/Parameter acctLv/gim)
+          )
+        );
+      }
+    });
+  });
+
+  describe('Block Trading Endpoints', () => {
+    const instId = 'ETH-USDT';
+    const rfqLeg: RFQLeg = {
+      instId,
+      sz: '25',
+      side: 'buy',
+    };
+
+    it('createBlockRFQ()', async () => {
+      try {
+        expect(
+          await api.createBlockRFQ({
+            counterparties: ['Trader1'],
+            legs: [rfqLeg],
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelBlockRFQ()', async () => {
+      try {
+        expect(await api.cancelBlockRFQ({ rfqId: 'fakeId1' })).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelMultipleBlockRFQs()', async () => {
+      try {
+        expect(
+          await api.cancelMultipleBlockRFQs({ rfqIds: ['fakeId1'] })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelAllRFQs()', async () => {
+      try {
+        expect(await api.cancelAllRFQs()).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('executeBlockQuote()', async () => {
+      try {
+        expect(
+          await api.executeBlockQuote({
+            quoteId: 'fakeQuoteId',
+            rfqId: 'fkeId1',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('createBlockQuote()', async () => {
+      try {
+        expect(
+          await api.createBlockQuote({
+            rfqId: 'fakeId1',
+            legs: [
+              {
+                instId,
+                px: '10000',
+                side: 'buy',
+                sz: '100',
+              },
+            ],
+            quoteSide: 'buy',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelBlockQuote()', async () => {
+      try {
+        expect(
+          await api.cancelBlockQuote({
+            quoteId: 'fakeId1',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelMultipleBlockQuotes()', async () => {
+      try {
+        expect(
+          await api.cancelMultipleBlockQuotes({
+            quoteIds: ['10123'],
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+
+    it('cancelAllBlockQuotes()', async () => {
+      try {
+        expect(await api.cancelAllBlockQuotes()).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '70006',
+            [],
+            expect.stringMatching(/minimum asset/gim)
+          )
+        );
+      }
+    });
+  });
+
+  describe('Funding Endpoints', () => {
+    it('asdfasfadfdasf()', async () => {
+      try {
+        expect(await api.getBalance()).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
       }
     });
   });
 
-  describe('Block Trading Endpoints', () => {});
+  describe('asdfasfsadfasfdf Endpoints', () => {
+    it('asdfasfadfdasf()', async () => {
+      try {
+        expect(await api.getBalance()).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+  });
 });
