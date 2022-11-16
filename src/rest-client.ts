@@ -88,6 +88,13 @@ import {
   Pagination,
   APIResponse,
   GetGridAlgoOrdersRequest,
+  FundsTransferRequest,
+  WithdrawRequest,
+  ConvertTradeRequest,
+  ConvertQuoteEstimateRequest,
+  SetLeverageRequest,
+  ChangePositionMarginRequest,
+  SubAccountTransferRequest,
 } from './types/rest';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -378,7 +385,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/asset-valuation', { ccy });
   }
 
-  fundsTransfer(params: unknown): Promise<FundTransferResult[]> {
+  fundsTransfer(params: FundsTransferRequest): Promise<FundTransferResult[]> {
     return this.postPrivate('/api/v5/asset/transfer', params);
   }
 
@@ -418,7 +425,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/deposit-history', params);
   }
 
-  submitWithdraw(params: unknown): Promise<unknown[]> {
+  submitWithdraw(params: WithdrawRequest): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/withdrawal', params);
   }
 
@@ -497,11 +504,13 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  estimateConvertQuote(params: unknown): Promise<unknown[]> {
+  estimateConvertQuote(
+    params: ConvertQuoteEstimateRequest
+  ): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/convert/estimate-quote', params);
   }
 
-  convertTrade(params: unknown): Promise<unknown[]> {
+  convertTrade(params: ConvertTradeRequest): Promise<unknown[]> {
     return this.postPrivate('/api/v5/asset/convert/trade', params);
   }
 
@@ -557,7 +566,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 
-  setLeverage(params: unknown): Promise<AccountLeverageResult[]> {
+  setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
     return this.postPrivate('/api/v5/account/set-leverage', params);
   }
 
@@ -583,7 +592,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/max-avail-size', params);
   }
 
-  changePositionMargin(params: unknown): Promise<AccountChangeMarginResult[]> {
+  changePositionMargin(
+    params: ChangePositionMarginRequest
+  ): Promise<AccountChangeMarginResult[]> {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
@@ -704,7 +715,7 @@ export class RestClient extends BaseRestClient {
       ip?: string;
     }
   ): Promise<SubAccountAPIReset[]> {
-    return this.postPrivate('/api/v5/account/subaccount/balances', {
+    return this.postPrivate('/api/v5/users/subaccount/modify-apikey', {
       subAcct,
       apiKey,
       ...options,
@@ -741,7 +752,7 @@ export class RestClient extends BaseRestClient {
 
   /** Master accounts manage the transfers between sub-accounts */
   transferSubAccountBalance(
-    params: unknown
+    params: SubAccountTransferRequest
   ): Promise<SubAccountTransferResult[]> {
     return this.postPrivate('/api/v5/asset/subaccount/transfer', params);
   }

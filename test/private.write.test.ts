@@ -529,11 +529,278 @@ describe('Private REST API Endpoints (POST)', () => {
   });
 
   describe('Funding Endpoints', () => {
-    it('asdfasfadfdasf()', async () => {
+    it('fundsTransfer()', async () => {
       try {
-        expect(await api.getBalance()).toMatchObject(successResponseList());
+        expect(
+          await api.fundsTransfer({
+            ccy: 'USDT',
+            amt: '1.5',
+            from: '18',
+            to: '6',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '58350',
+            [],
+            expect.stringMatching(/Insufficient/gim)
+          )
+        );
+      }
+    });
+
+    it('submitWithdraw()', async () => {
+      try {
+        expect(
+          await api.submitWithdraw({
+            amt: '1',
+            fee: '0.0005',
+            dest: '4',
+            toAddr: '0x00000:00000',
+            ccy: 'USDT',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject({
+          code: '50114',
+          msg: expect.stringMatching(/Authority/gim),
+        });
+      }
+    });
+
+    it('submitWithdrawLightning()', async () => {
+      try {
+        expect(await api.submitWithdrawLightning('USDT', '12345')).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject({
+          code: '50114',
+          msg: expect.stringMatching(/Authority/gim),
+        });
+      }
+    });
+
+    it('cancelWithdrawal()', async () => {
+      try {
+        expect(await api.cancelWithdrawal('fakeId')).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject({
+          code: '50114',
+          msg: expect.stringMatching(/Authority/gim),
+        });
+      }
+    });
+
+    it('savingsPurchaseRedemption()', async () => {
+      try {
+        expect(
+          await api.savingsPurchaseRedemption('BTC', '1', 'redempt', '1')
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '58350',
+            [],
+            expect.stringMatching(/Insufficient/gim)
+          )
+        );
+      }
+    });
+
+    it('setLendingRate()', async () => {
+      try {
+        expect(await api.setLendingRate('USDT', '1')).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '58008',
+            [],
+            expect.stringMatching(/do not have assets/gim)
+          )
+        );
+      }
+    });
+  });
+
+  describe.only('Convert Endpoints', () => {
+    it('estimateConvertQuote()', async () => {
+      try {
+        expect(
+          await api.estimateConvertQuote({
+            baseCcy: 'ETH',
+            quoteCcy: 'USDT',
+            side: 'buy',
+            rfqSz: '30',
+            rfqSzCcy: 'USDT',
+          })
+        ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
+      }
+    });
+
+    it('convertTrade()', async () => {
+      try {
+        expect(
+          await api.convertTrade({
+            baseCcy: 'ETH',
+            quoteCcy: 'USDT',
+            side: 'buy',
+            sz: '30',
+            szCcy: 'USDT',
+            quoteId: 'quoterETH-USDT16461885104612381',
+          })
+        ).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+  });
+
+  describe('Account Endpoints', () => {
+    it('setPositionMode()', async () => {
+      try {
+        expect(await api.setPositionMode('long_short_mode')).toMatchObject(
+          successResponseList()
+        );
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('setLeverage()', async () => {
+      try {
+        expect(
+          await api.setLeverage({
+            lever: '5',
+            instId: 'BTC-USDT',
+            mgnMode: 'cross',
+          })
+        ).toMatchObject(successResponseList());
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('changePositionMargin()', async () => {
+      try {
+        expect(
+          await api.changePositionMargin({
+            instId: 'BTC-USDT',
+            posSide: 'long',
+            type: 'add',
+            amt: '1',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/posSide/gim))
+        );
+      }
+    });
+
+    it('setGreeksDisplayType()', async () => {
+      try {
+        expect(await api.setGreeksDisplayType('PA')).toMatchObject(
+          successResponseList()
+        );
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+
+    it('setIsolatedMode()', async () => {
+      try {
+        expect(await api.setIsolatedMode('automatic', 'CONTRACTS')).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '51010',
+            [],
+            expect.stringMatching(/current account mode/gim)
+          )
+        );
+      }
+    });
+
+    it('borrowRepayVIPLoan()', async () => {
+      try {
+        expect(await api.borrowRepayVIPLoan('BTC', 'repay', '1')).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '59310',
+            [],
+            expect.stringMatching(/support VIP loan/gim)
+          )
+        );
+      }
+    });
+
+    it('positionBuilder()', async () => {
+      try {
+        expect(await api.positionBuilder()).toMatchObject(
+          successResponseList()
+        );
+      } catch (e) {
+        expect(e).toBeFalsy();
+      }
+    });
+  });
+
+  describe.only('SubAccount Endpoints', () => {
+    it('resetSubAccountAPIKey()', async () => {
+      try {
+        expect(
+          await api.resetSubAccountAPIKey('fakeSubAcc', 'fakeApiKey')
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '59500',
+            [],
+            expect.stringMatching(/main account/gim)
+          )
+        );
+      }
+    });
+
+    it('transferSubAccountBalance()', async () => {
+      try {
+        expect(
+          await api.transferSubAccountBalance({
+            ccy: 'USDT',
+            amt: '1.5',
+            from: '6',
+            to: '6',
+            fromSubAccount: 'test-1',
+            toSubAccount: 'test-2',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '59500',
+            [],
+            expect.stringMatching(/main account/gim)
+          )
+        );
+      }
+    });
+
+    it('setSubAccountTransferOutPermission()', async () => {
+      try {
+        expect(
+          await api.setSubAccountTransferOutPermission('test-1', true)
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '59500',
+            [],
+            expect.stringMatching(/main account/gim)
+          )
+        );
       }
     });
   });
