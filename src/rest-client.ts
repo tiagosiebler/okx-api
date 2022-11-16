@@ -95,6 +95,8 @@ import {
   SetLeverageRequest,
   ChangePositionMarginRequest,
   SubAccountTransferRequest,
+  GridAlgoOrderRequest,
+  StopGridAlgoOrderRequest,
 } from './types/rest';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -781,7 +783,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  placeGridAlgoOrder(params: unknown): Promise<unknown[]> {
+  placeGridAlgoOrder(params: GridAlgoOrderRequest): Promise<unknown[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/order-algo', params);
   }
 
@@ -797,18 +799,8 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  stopGridAlgoOrder(
-    algoId: string,
-    instId: string,
-    algoOrdType: GridAlgoOrderType,
-    stopType: '1' | '2'
-  ): Promise<unknown[]> {
-    return this.postPrivate('/api/v5/tradingBot/grid/stop-order-algo', {
-      algoId,
-      instId,
-      algoOrdType,
-      stopType,
-    });
+  stopGridAlgoOrder(orders: StopGridAlgoOrderRequest[]): Promise<unknown[]> {
+    return this.postPrivate('/api/v5/tradingBot/grid/stop-order-algo', orders);
   }
 
   getGridAlgoOrderList(params: GetGridAlgoOrdersRequest): Promise<unknown[]> {
@@ -945,12 +937,12 @@ export class RestClient extends BaseRestClient {
 
   /** Earn/staking redeem */
   redeemStake(
-    orderId: string,
+    ordId: string,
     protocolType: 'staking' | 'defi',
     allowEarlyRedeem?: boolean
   ): Promise<APIResponse<any>> {
     return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
-      orderId,
+      ordId,
       protocolType,
       allowEarlyRedeem,
     });

@@ -622,7 +622,7 @@ describe('Private REST API Endpoints (POST)', () => {
     });
   });
 
-  describe.only('Convert Endpoints', () => {
+  describe.skip('Convert Endpoints', () => {
     it('estimateConvertQuote()', async () => {
       try {
         expect(
@@ -748,7 +748,7 @@ describe('Private REST API Endpoints (POST)', () => {
     });
   });
 
-  describe.only('SubAccount Endpoints', () => {
+  describe('SubAccount Endpoints', () => {
     it('resetSubAccountAPIKey()', async () => {
       try {
         expect(
@@ -800,6 +800,170 @@ describe('Private REST API Endpoints (POST)', () => {
             [],
             expect.stringMatching(/main account/gim)
           )
+        );
+      }
+    });
+  });
+
+  describe('Grid Trading Endpoints', () => {
+    const algoId = 'fakeAlgoId';
+    const instId = 'BTC-USDT';
+
+    it('placeGridAlgoOrder()', async () => {
+      try {
+        expect(
+          await api.placeGridAlgoOrder({
+            instId: 'BTC-USDT',
+            algoOrdType: 'moon_grid',
+            maxPx: '5000',
+            minPx: '400',
+            gridNum: '10',
+            runType: '2',
+            quoteSz: '25',
+          })
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject({
+          code: '1',
+          data: [
+            {
+              sCode: '51008',
+              sMsg: expect.stringMatching(/insufficient/gim),
+            },
+          ],
+        });
+      }
+    });
+
+    it('amendGridAlgoOrder()', async () => {
+      try {
+        expect(
+          await api.amendGridAlgoOrder(algoId, instId, { tpTriggerPx: '10' })
+        ).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '50013',
+            [],
+            expect.stringMatching(/system busy/gim)
+          )
+        );
+      }
+    });
+
+    it('stopGridAlgoOrder()', async () => {
+      try {
+        expect(
+          await api.stopGridAlgoOrder([
+            {
+              algoId,
+              instId,
+              algoOrdType: 'moon_grid',
+              stopType: '1',
+            },
+          ])
+        ).toBeFalsy();
+      } catch (e) {
+        expect(e).toMatchObject({
+          code: '1',
+          data: [
+            {
+              sCode: '51000',
+              sMsg: expect.stringMatching(/algoId/gim),
+            },
+          ],
+        });
+      }
+    });
+
+    it('spotGridWithdrawIncome()', async () => {
+      try {
+        expect(await api.spotGridWithdrawIncome(algoId)).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/algoId/gim))
+        );
+      }
+    });
+
+    it('computeGridMarginBalance()', async () => {
+      try {
+        expect(
+          await api.computeGridMarginBalance(algoId, 'reduce')
+        ).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/algoId/gim))
+        );
+      }
+    });
+
+    it('adjustGridMarginBalance()', async () => {
+      try {
+        expect(
+          await api.adjustGridMarginBalance(algoId, 'reduce', { percent: '50' })
+        ).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/algoId/gim))
+        );
+      }
+    });
+  });
+
+  describe('Staking Endpoints', () => {
+    const productId = '1234';
+
+    it('submitStake()', async () => {
+      try {
+        expect(
+          await api.submitStake(
+            productId,
+            [
+              {
+                ccy: 'ZIL',
+                amt: '100',
+              },
+            ],
+            '30'
+          )
+        ).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '51000',
+            [],
+            expect.stringMatching(/Parameter/gim)
+          )
+        );
+      }
+    });
+
+    it('redeemStake()', async () => {
+      try {
+        expect(await api.redeemStake('fakeOrderId', 'staking')).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/ordId/gim))
+        );
+      }
+    });
+
+    it('cancelStakingRequest()', async () => {
+      try {
+        expect(
+          await api.cancelStakingRequest('fakeOrderId', 'staking')
+        ).toBeFalsy();
+      } catch (e) {
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('51000', [], expect.stringMatching(/ordId/gim))
         );
       }
     });
