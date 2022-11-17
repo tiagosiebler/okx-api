@@ -10,7 +10,7 @@ on: [push]
 #     branches:
 
 jobs:
-  build:
+  buildtest:
     name: "Build & Test"
     runs-on: ubuntu-latest
 
