@@ -622,6 +622,7 @@ describe('Private REST API Endpoints (POST)', () => {
     });
   });
 
+  // Currently not working. OKX working on a fix server-side
   describe.skip('Convert Endpoints', () => {
     it('estimateConvertQuote()', async () => {
       try {
@@ -846,7 +847,8 @@ describe('Private REST API Endpoints (POST)', () => {
           errorResponseObject(
             '50013',
             [],
-            expect.stringMatching(/system busy/gim)
+            // OKX will improve this error soon
+            expect.stringMatching(/busy/gim)
           )
         );
       }
@@ -965,16 +967,6 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(e).toMatchObject(
           errorResponseObject('51000', [], expect.stringMatching(/ordId/gim))
         );
-      }
-    });
-  });
-
-  describe('asdfasfsadfasfdf Endpoints', () => {
-    it('asdfasfadfdasf()', async () => {
-      try {
-        expect(await api.getBalance()).toMatchObject(successResponseList());
-      } catch (e) {
-        expect(e).toBeFalsy();
       }
     });
   });

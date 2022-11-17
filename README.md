@@ -3,16 +3,22 @@
 [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1]
 [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 
+[![connector logo](https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logo1.png?raw=true)][1]
+
 [1]: https://www.npmjs.com/package/okx-api
 
-## BETA RELEASE
-```
-**WARNING: This package is still early beta! Expect breaking changes until this sees a major release.**
+Node.js connector for the OKX APIs ~~and WebSockets~~:
+- Complete integration with all OKX APIs.
+- WebSocket support coming soon.
+- TypeScript support (with type declarations for most API requests & responses).
+- Over 100 end-to-end tests making real API calls ~~& WebSocket connections~~, validating any changes before they reach npm.
+- Coming soon: robust WebSocket integration with configurable connection heartbeats & automatic reconnect then resubscribe workflows.
+- Browser support (via webpack bundle - see "Browser Usage" below).
 
-If you want to stay informed when this may be ready for testing, please get in touch via telegram.
-```
+## Beta Release
 
-Node.js connector for the OKX (OKEX) APIs and WebSockets, with TypeScript & browser support.
+- [x] REST APIs are fully integrated with end to end test coverage
+- [ ] WebSocket support is coming soon.
 
 ## Installation
 `npm install --save okx-api`
@@ -76,7 +82,6 @@ Support my efforts to make algo trading accessible to all - register with my ref
 - [Bybit](https://www.bybit.com/en-US/register?affiliate_id=9410&language=en-US&group_id=0&group_type=1)
 - [Binance](https://www.binance.com/en/register?ref=20983262)
 - [OKX](https://www.okx.com/join/18504944)
-- [FTX](https://ftx.com/referrals#a=ftxapigithub)
 
 Or buy me a coffee using any of these:
 - BTC: `1C6GWZL1XW3jrjpPTS863XtZiXL1aTK7Jk`
@@ -84,3 +89,7 @@ Or buy me a coffee using any of these:
 
 ### Contributions & Pull Requests
 Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/ftx-api,tiagosiebler/bybit-api,tiagosiebler/binance,tiagosiebler/orderbooks,tiagosiebler/okx-api,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/ftx-api&tiagosiebler/bybit-api&tiagosiebler/binance&tiagosiebler/orderbooks&tiagosiebler/okx-api&tiagosiebler/awesome-crypto-examples&Date)
