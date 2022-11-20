@@ -1,8 +1,7 @@
-import { RestClient } from '../src/index';
-import { AccountBalanceDetail, OrderRequest } from '../src/types/rest';
+import { RestClient, OrderRequest } from '../src/index';
 
 // or
-// import { SpotClient } from 'okx-api';
+// import { RestClient, OrderRequest } from 'okx-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
