@@ -1,6 +1,6 @@
 {
   "name": "okx-api",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Node.js connector for OKX REST APIs and WebSockets, with TypeScript & integration tests.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
