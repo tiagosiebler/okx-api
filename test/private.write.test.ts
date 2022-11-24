@@ -845,10 +845,15 @@ describe('Private REST API Endpoints (POST)', () => {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(
           errorResponseObject(
-            '50013',
-            [],
-            // OKX will improve this error soon
-            expect.stringMatching(/busy/gim)
+            '1',
+            [
+              {
+                algoId,
+                sCode: '51000',
+                sMsg: expect.stringMatching(/parameter algoId/gim),
+              },
+            ],
+            ''
           )
         );
       }
