@@ -12,6 +12,7 @@ Node.js connector for the OKX APIs and WebSockets:
 - Robust WebSocket integration
   - Configurable connection heartbeats (automatically detect failing connections).
   - Automatic reconnect then resubscribe workflows.
+  - Automatic authentication and heartbeat handling.
 - Browser support (via webpack bundle - see "Browser Usage" below).
 
 ## Installation
@@ -65,8 +66,6 @@ Create API credentials at okx
 
 This connector includes a high-performance node.js & typescript websocket client for the OKX public & private websockets.
 
-![typescript-events](./docs/images/subscribe-events.gif)
-
 - If your IDE doesn't have IntelliSense, check the [websocket-client.ts](./src/websocket-client.ts) for a list of methods, params & return types.
 - When subscribing to channels, only the "args" should be passed as an object or array when calling the websocket client subcribe() function: [API docs](https://www.okx.com/docs-v5/en/#websocket-api-subscribe).
 - TypeScript recommended (but it is not required) for a richer experience:
@@ -80,7 +79,7 @@ This connector includes a high-performance node.js & typescript websocket client
   - Resume producing events as before, without extra handling needed in your logic.
 - The ws client will automatically authenticate if accounts are provided and a private channel is subscribed to.
 - Up to 100 accounts are supported on the private connection, as per the [API docs](https://www.okx.com/docs-v5/en/#websocket-api-login). Authentication is automatic if accounts are provided.
--
+
 - For examples in using the websocket client, check the examples in the repo:
   - Private channels (account data): [examples/ws-private.ts](./examples/ws-private.ts)
   - Public chanels (market data): [examples/ws-public.ts](./examples/ws-public.ts)
@@ -90,6 +89,16 @@ This connector includes a high-performance node.js & typescript websocket client
     - Change the `import { ... } from 'okx-api'` to `const { ... } = require('okx-api');`
     - Rename the file to `ws-private.js`
     - And execute with node: `node examples/ws-private.js`
+
+### Public Events
+See [examples/ws-public.ts](./examples/ws-public.ts) for a full example:
+
+![typescript-events-public](./docs/images/subscribe-events-public.gif)
+
+### Private Events
+See [examples/ws-private.ts](./examples/ws-private.ts) for a full example:
+
+![typescript-events](./docs/images/subscribe-events.gif)
 
 ## Browser Usage
 Build a bundle using webpack:
