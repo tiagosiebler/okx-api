@@ -10,7 +10,7 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
 const logger = {
   ...DefaultLogger,
-  silly: (...params) => console.log('silly', ...params),
+  // silly: (...params) => console.log('silly', ...params),
 };
 
 const wsClient = new WebsocketClient(
