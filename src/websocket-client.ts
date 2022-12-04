@@ -780,8 +780,4 @@ export class WebsocketClient extends EventEmitter {
       this.emit('close', { wsKey, event });
     }
   }
-
-  // private setWsState(wsKey: WsKey, state: WsConnectionStateEnum) {
-  //   this.wsStore.setConnectionState(wsKey, state);
-  // }
 }
