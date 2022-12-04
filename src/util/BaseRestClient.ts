@@ -1,13 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
-import { APIResponse } from '../types/rest';
-import { signMessage } from './node-support';
 import {
+  APICredentials,
+  APIMarket,
+  APIResponse,
   RestClientOptions,
-  serializeParams,
-  OKXEnvironment,
-  programKey,
-  programId,
-} from './requestUtils';
+} from '../types';
+import { signMessage } from './node-support';
+import { serializeParams, programKey, programId } from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
 
 // axios.interceptors.request.use((request) => {
@@ -42,12 +41,6 @@ interface SignedRequest<T> {
   sign: string;
 }
 
-export interface APICredentials {
-  apiKey: string;
-  apiSecret: string;
-  apiPass: string;
-}
-
 export default abstract class BaseRestClient {
   private options: RestClientOptions;
   private baseUrl: string;
@@ -56,14 +49,12 @@ export default abstract class BaseRestClient {
   private apiSecret: string | undefined;
   private apiPassphrase: string | undefined;
 
-  // private environment: OKXEnvironment;
-
   constructor(
     credentials: APICredentials | undefined | null,
     baseUrl: string,
     options: RestClientOptions = {},
     requestOptions: AxiosRequestConfig = {},
-    environment: OKXEnvironment
+    market: APIMarket
   ) {
     // this.environment = environment;
 
@@ -94,7 +85,7 @@ export default abstract class BaseRestClient {
     };
 
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
-    if (environment === 'demo') {
+    if (market === 'demo') {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
     this.globalRequestOptions.headers['Content-Type'] = 'application/json';
@@ -182,10 +173,10 @@ export default abstract class BaseRestClient {
     }
 
     // console.log(new Date(), 'request: ', {
-    //   url: options.url,
-    //   method,
-    //   params: signResult.requestBody,
-    //   sign: signResult.sign,
+    // url: options.url,
+    // method,
+    // params: signResult.requestBody,
+    // sign: signResult.sign,
     //   options,
     // });
 

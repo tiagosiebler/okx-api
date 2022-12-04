@@ -17,7 +17,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       apiSecret: API_SECRET!,
       apiPass: API_PASSPHRASE!,
     },
-    'live'
+    'prod'
   );
 
   const instrumentId = 'BTC-USDT';
@@ -126,7 +126,14 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           successResponseList()
         );
       } catch (e) {
-        expect(e).toBeFalsy();
+        // expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject(
+            '59120',
+            [],
+            expect.stringMatching(/repay function closed/gim)
+          )
+        );
       }
     });
 
@@ -136,9 +143,11 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
-            '51000',
+            '51010',
             [],
-            expect.stringMatching(/Parameter acctLv/gim)
+            expect.stringMatching(
+              /not supported under the current account mode/gim
+            )
           )
         );
       }
@@ -150,9 +159,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
-            '51000',
+            '59119',
             [],
-            expect.stringMatching(/Parameter acctLv/gim)
+            expect.stringMatching(/repay function closed/gim)
           )
         );
       }

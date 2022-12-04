@@ -1,16 +1,5 @@
 import { Method } from 'axios';
-
-export interface RestClientOptions {
-  // Default: false. If true, we'll throw errors if any params are undefined
-  strict_param_validation?: boolean;
-
-  // Optionally override API protocol + domain
-  // e.g 'https://api.bytick.com'
-  baseUrl?: string;
-
-  // Default: true. whether to try and post-process request exceptions.
-  parse_exceptions?: boolean;
-}
+import { APIMarket, RestClientOptions } from '../types';
 
 export function serializeParams(
   params: object | undefined,
@@ -43,25 +32,18 @@ export function serializeParams(
 export const programKey = 'tag';
 export const programId = '159881cb7207BCDE';
 
-/**
- * - live: production,
- * - aws: aws subdomain,
- * - demo: demo environment
- */
-export type OKXEnvironment = 'live' | 'aws' | 'demo';
-
 export function getRestBaseUrl(
-  environment: OKXEnvironment,
+  market: APIMarket,
   restClientOptions: RestClientOptions
 ) {
   if (restClientOptions.baseUrl) {
     return restClientOptions.baseUrl;
   }
 
-  switch (environment) {
+  switch (market) {
     default:
     case 'demo':
-    case 'live': {
+    case 'prod': {
       return 'https://www.okx.com';
     }
     case 'aws': {
