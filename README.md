@@ -62,6 +62,11 @@ Create API credentials at okx
   - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
 
 ## Websocket Client
+
+This connector includes a high-performance node.js & typescript websocket client for the OKX public & private websockets.
+
+![typescript-events](./docs/images/subscribe-events.gif)
+
 - If your IDE doesn't have IntelliSense, check the [websocket-client.ts](./src/websocket-client.ts) for a list of methods, params & return types.
 - When subscribing to channels, only the "args" should be passed as an object or array when calling the websocket client subcribe() function: [API docs](https://www.okx.com/docs-v5/en/#websocket-api-subscribe).
 - TypeScript recommended (but it is not required) for a richer experience:
