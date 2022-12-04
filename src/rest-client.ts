@@ -1,10 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
-import {
-  getRestBaseUrl,
-  OKXEnvironment,
-  RestClientOptions,
-} from './util/requestUtils';
-import BaseRestClient, { APICredentials } from './util/BaseRestClient';
+import { getRestBaseUrl } from './util/requestUtils';
+import BaseRestClient from './util/BaseRestClient';
 import {
   ContractGridDirection,
   GridAlgoOrderType,
@@ -97,7 +93,10 @@ import {
   SubAccountTransferRequest,
   GridAlgoOrderRequest,
   StopGridAlgoOrderRequest,
-} from './types/rest';
+  APICredentials,
+  RestClientOptions,
+  APIMarket,
+} from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
 export class RestClient extends BaseRestClient {
@@ -106,7 +105,7 @@ export class RestClient extends BaseRestClient {
    */
   constructor(
     credentials?: APICredentials | null,
-    environment: OKXEnvironment = 'live',
+    environment: APIMarket = 'prod',
     restClientOptions: RestClientOptions = {},
     requestOptions: AxiosRequestConfig = {}
   ) {

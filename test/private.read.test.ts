@@ -17,7 +17,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       apiSecret: API_SECRET!,
       apiPass: API_PASSPHRASE!,
     },
-    'live'
+    'prod'
   );
 
   const instrumentId = 'BTC-USDT';
