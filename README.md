@@ -5,21 +5,19 @@
 
 [1]: https://www.npmjs.com/package/okx-api
 
-Node.js connector for the OKX APIs ~~and WebSockets~~:
+Node.js connector for the OKX APIs and WebSockets:
 - Complete integration with all OKX APIs.
-- WebSocket support coming soon.
 - TypeScript support (with type declarations for most API requests & responses).
-- Over 100 end-to-end tests making real API calls ~~& WebSocket connections~~, validating any changes before they reach npm.
-- Coming soon: robust WebSocket integration with configurable connection heartbeats & automatic reconnect then resubscribe workflows.
+- Over 100 end-to-end tests making real API calls & WebSocket connections, validating any changes before they reach npm.
+- Robust WebSocket integration
+  - Configurable connection heartbeats (automatically detect failing connections).
+  - Automatic reconnect then resubscribe workflows.
 - Browser support (via webpack bundle - see "Browser Usage" below).
 
-## Beta Release
-
-- [x] REST APIs are fully integrated with end to end test coverage
-- [ ] WebSocket support is coming soon.
-
 ## Installation
-`npm install --save okx-api`
+```bash
+npm install okx-api
+```
 
 ## Issues & Discussion
 - Issues? Check the [issues tab](https://github.com/tiagosiebler/okx-api/issues).
@@ -62,6 +60,31 @@ Create API credentials at okx
 - Responses are parsed automatically for less nesting. Error responses are thrown in full:
   - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
   - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
+
+## Websocket Client
+- If your IDE doesn't have IntelliSense, check the [websocket-client.ts](./src/websocket-client.ts) for a list of methods, params & return types.
+- When subscribing to channels, only the "args" should be passed as an object or array when calling the websocket client subcribe() function: [API docs](https://www.okx.com/docs-v5/en/#websocket-api-subscribe).
+- TypeScript recommended (but it is not required) for a richer experience:
+![typescript-subscribe](./docs/images/subscribe-with-typescript.gif)
+- The ws client will automatically open connections as needed when subscribing to a channel.
+- If the connection is lost for any reason, the ws client will detect this (via the connection heartbeats). It will then:
+  - Automatically teardown the dead connection.
+  - Automatically respawn a fresh connection.
+  - Automatically reauthenticate, if using private channels.
+  - Automatically resubscribe to previously subscribed topics.
+  - Resume producing events as before, without extra handling needed in your logic.
+- The ws client will automatically authenticate if accounts are provided and a private channel is subscribed to.
+- Up to 100 accounts are supported on the private connection, as per the [API docs](https://www.okx.com/docs-v5/en/#websocket-api-login). Authentication is automatic if accounts are provided.
+-
+- For examples in using the websocket client, check the examples in the repo:
+  - Private channels (account data): [examples/ws-private.ts](./examples/ws-private.ts)
+  - Public chanels (market data): [examples/ws-public.ts](./examples/ws-public.ts)
+  - These examples are written in TypeScript, so can be executed with ts-node for easy testing:
+    `ts-node examples/ws-private.ts`
+  - Or convert them to javascript:
+    - Change the `import { ... } from 'okx-api'` to `const { ... } = require('okx-api');`
+    - Rename the file to `ws-private.js`
+    - And execute with node: `node examples/ws-private.js`
 
 ## Browser Usage
 Build a bundle using webpack:

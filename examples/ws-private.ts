@@ -1,94 +1,97 @@
+// If you cloned the repo and are using typescript, you can import from src directly:
 import { WebsocketClient, DefaultLogger } from '../src';
 
-// or
-// import { WebsocketClient, WS_KEY_MAP, DefaultLogger } from 'okx-api';
+// or use the module installed via `npm install okx-api`:
+// import { WebsocketClient, DefaultLogger } from 'okx-api';
 
-(async () => {
-  // Optional: Inject a custom logger.
-  // This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
-  const logger = {
-    ...DefaultLogger,
-    // silly: (...params) => console.log('silly', ...params),
-  };
+// or if you're not using typescript (e.g. pure nodejs), change the "import" to "require":
+// const { WebsocketClient, DefaultLogger } = require('okx-api');
 
-  // For private events, all 3 of the following are required (per account):
-  const API_KEY = process.env.API_KEY_COM;
-  const API_SECRET = process.env.API_SECRET_COM;
-  const API_PASSPHRASE = process.env.API_PASSPHRASE_COM;
+// Optional: Inject a custom logger.
+// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+const logger = {
+  ...DefaultLogger,
+  // silly: (...params) => console.log('silly', ...params),
+};
 
-  if (!API_KEY) {
-    throw new Error('API_KEY is missing');
-  }
+// For private events, all 3 of the following are required (per account):
+const API_KEY = process.env.API_KEY_COM;
+const API_SECRET = process.env.API_SECRET_COM;
+const API_PASSPHRASE = process.env.API_PASSPHRASE_COM;
 
-  if (!API_SECRET) {
-    throw new Error('API_SECRET is missing');
-  }
+if (!API_KEY) {
+  throw new Error('API_KEY is missing');
+}
 
-  if (!API_PASSPHRASE) {
-    throw new Error('API_PASSPHRASE is missing');
-  }
+if (!API_SECRET) {
+  throw new Error('API_SECRET is missing');
+}
 
-  const wsClient = new WebsocketClient(
-    {
-      // The market defaults to "prod" for the live environment, but you can also ask to use the aws or demo environments:
-      // market: 'prod',
-      // market: 'aws',
-      // market: 'demo',
+if (!API_PASSPHRASE) {
+  throw new Error('API_PASSPHRASE is missing');
+}
 
-      accounts: [
-        // For private topics, include one or more accounts in an array. Otherwise only public topics will work
-        {
-          apiKey: API_KEY,
-          apiSecret: API_SECRET,
-          apiPass: API_PASSPHRASE,
-        },
-        // {
-        //   apiKey: 'yourApiKeyHere',
-        //   apiSecret: 'yourApiSecretHere',
-        //   apiPass: 'yourApiPassHere',
-        // },
-        // {
-        //   apiKey: 'anotherAccountKey',
-        //   apiSecret: 'anotherAccountSecret',
-        //   apiPass: 'anotherAccountPass',
-        // },
-      ],
-    },
-    logger
-  );
+const wsClient = new WebsocketClient(
+  {
+    // The market defaults to "prod" for the live environment, but you can also ask to use the aws or demo environments:
+    // market: 'prod',
+    // market: 'aws',
+    // market: 'demo',
 
-  // Raw data will arrive on the 'update' event
-  wsClient.on('update', (data) => {
-    // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
-    console.log('ws update (raw data received)', JSON.stringify(data));
-  });
+    accounts: [
+      // For private topics, include one or more accounts in an array. Otherwise only public topics will work
+      {
+        apiKey: API_KEY,
+        apiSecret: API_SECRET,
+        apiPass: API_PASSPHRASE,
+      },
+      // {
+      //   apiKey: 'yourApiKeyHere',
+      //   apiSecret: 'yourApiSecretHere',
+      //   apiPass: 'yourApiPassHere',
+      // },
+      // {
+      //   apiKey: 'anotherAccountKey',
+      //   apiSecret: 'anotherAccountSecret',
+      //   apiPass: 'anotherAccountPass',
+      // },
+    ],
+  },
+  logger
+);
 
-  wsClient.on('open', (data) => {
-    console.log('connection opened open:', data.wsKey);
-  });
+// Raw data will arrive on the 'update' event
+wsClient.on('update', (data) => {
+  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+  console.log('ws update (raw data received)', JSON.stringify(data));
+});
 
-  // Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
-  wsClient.on('response', (data) => {
-    // console.log('ws response: ', JSON.stringify(data, null, 2));
-    console.log('ws response: ', JSON.stringify(data));
-  });
+wsClient.on('open', (data) => {
+  console.log('connection opened open:', data.wsKey);
+});
 
-  wsClient.on('reconnect', ({ wsKey }) => {
-    console.log('ws automatically reconnecting.... ', wsKey);
-  });
-  wsClient.on('reconnected', (data) => {
-    console.log('ws has reconnected ', data?.wsKey);
-  });
-  wsClient.on('error', (data) => {
-    console.error('ws exception: ', data);
-  });
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+wsClient.on('response', (data) => {
+  // console.log('ws response: ', JSON.stringify(data, null, 2));
+  console.log('ws response: ', JSON.stringify(data));
+});
 
-  // Optional, connect before subscribing:
-  // wsClient.connectPrivate();
+wsClient.on('reconnect', ({ wsKey }) => {
+  console.log('ws automatically reconnecting.... ', wsKey);
+});
+wsClient.on('reconnected', (data) => {
+  console.log('ws has reconnected ', data?.wsKey);
+});
+wsClient.on('error', (data) => {
+  console.error('ws exception: ', data);
+});
 
-  // This is optional though. The wsclient will automatically open and subscribe if the connection doesn't exist yet.
+// Optional, connect before subscribing:
+// wsClient.connectPrivate();
 
-  /**
+// This is optional though. The wsclient will automatically open and subscribe if the connection doesn't exist yet.
+
+/**
    * # Subscribing to channels
    *
    * Subscribe to channels using the inner "args" part of the subscription request described in the OKX API docs.
@@ -117,126 +120,125 @@ import { WebsocketClient, DefaultLogger } from '../src';
    ])
    */
 
-  // Subscribe one event at a time:
-  wsClient.subscribe({
+// Subscribe one event at a time:
+wsClient.subscribe({
+  channel: 'account',
+});
+
+// OR, combine multiple subscription events into one request using an array instead of an object:
+wsClient.subscribe([
+  {
     channel: 'account',
-  });
-
-  // OR, combine multiple subscription events into one request using an array instead of an object:
-  wsClient.subscribe([
-    {
-      channel: 'account',
-    },
-    {
-      channel: 'positions',
-      instType: 'ANY',
-    },
-  ]);
-
-  /**
-   * Examples for each private channel listed in the API docs:
-   * https://www.okx.com/docs-v5/en/#websocket-api-private-channel
-   */
-
-  // Account events for all symbols
-  wsClient.subscribe({
-    channel: 'account',
-  });
-
-  // Account events for specific symbol only
-  wsClient.subscribe({
-    channel: 'account',
-    ccy: 'BTC',
-  });
-
-  // Position events on any instrument type
-  wsClient.subscribe({
+  },
+  {
     channel: 'positions',
     instType: 'ANY',
-  });
+  },
+]);
 
-  // Position events on specific instruments
-  wsClient.subscribe({
-    channel: 'positions',
-    instType: 'SWAP',
-    instFamily: 'ETH-USD',
-    instId: 'ETH-USD-SWAP',
-  });
+/**
+ * Examples for each private channel listed in the API docs:
+ * https://www.okx.com/docs-v5/en/#websocket-api-private-channel
+ */
 
-  // Balance & position channel
-  wsClient.subscribe({
-    channel: 'balance_and_position',
-  });
+// Account events for all symbols
+wsClient.subscribe({
+  channel: 'account',
+});
 
-  // Order channel
-  wsClient.subscribe({
-    channel: 'orders',
-    instType: 'ANY',
-  });
+// Account events for specific symbol only
+wsClient.subscribe({
+  channel: 'account',
+  ccy: 'BTC',
+});
 
-  // Order channel with extra args
-  wsClient.subscribe({
-    channel: 'orders',
-    instType: 'FUTURES',
-    instFamily: 'BTC-USD',
-  });
+// Position events on any instrument type
+wsClient.subscribe({
+  channel: 'positions',
+  instType: 'ANY',
+});
 
-  // Algo orders channel
-  wsClient.subscribe({
-    channel: 'orders-algo',
-    instType: 'ANY',
-  });
+// Position events on specific instruments
+wsClient.subscribe({
+  channel: 'positions',
+  instType: 'SWAP',
+  instFamily: 'ETH-USD',
+  instId: 'ETH-USD-SWAP',
+});
 
-  // Advance algo orders channel
-  wsClient.subscribe({
-    channel: 'algo-advance',
-    instType: 'ANY',
-  });
+// Balance & position channel
+wsClient.subscribe({
+  channel: 'balance_and_position',
+});
 
-  // Position risk warning channel
-  wsClient.subscribe({
-    channel: 'liquidation-warning',
-    instType: 'ANY',
-  });
+// Order channel
+wsClient.subscribe({
+  channel: 'orders',
+  instType: 'ANY',
+});
 
-  // Account greeks channel
-  wsClient.subscribe({
-    channel: 'account-greeks',
-  });
+// Order channel with extra args
+wsClient.subscribe({
+  channel: 'orders',
+  instType: 'FUTURES',
+  instFamily: 'BTC-USD',
+});
 
-  // Spot grid algo orders channel
-  wsClient.subscribe({
-    channel: 'grid-orders-spot',
-    instType: 'SPOT',
-  });
+// Algo orders channel
+wsClient.subscribe({
+  channel: 'orders-algo',
+  instType: 'ANY',
+});
 
-  // Contract grid orders channel
-  wsClient.subscribe({
-    channel: 'grid-orders-contract',
-    instType: 'ANY',
-  });
+// Advance algo orders channel
+wsClient.subscribe({
+  channel: 'algo-advance',
+  instType: 'ANY',
+});
 
-  // Moon grid orders channel
-  wsClient.subscribe({
-    channel: 'grid-orders-moon',
-    instType: 'ANY',
-  });
+// Position risk warning channel
+wsClient.subscribe({
+  channel: 'liquidation-warning',
+  instType: 'ANY',
+});
 
-  // Moon grid orders channel
-  wsClient.subscribe({
-    channel: 'grid-orders-moon',
-    instType: 'ANY',
-  });
+// Account greeks channel
+wsClient.subscribe({
+  channel: 'account-greeks',
+});
 
-  // Grid positions channel
-  wsClient.subscribe({
-    channel: 'grid-positions',
-    algoId: '449327675342323712',
-  });
+// Spot grid algo orders channel
+wsClient.subscribe({
+  channel: 'grid-orders-spot',
+  instType: 'SPOT',
+});
 
-  // Grid sub orders channel
-  wsClient.subscribe({
-    channel: 'grid-sub-orders',
-    algoId: '449327675342323712',
-  });
-})();
+// Contract grid orders channel
+wsClient.subscribe({
+  channel: 'grid-orders-contract',
+  instType: 'ANY',
+});
+
+// Moon grid orders channel
+wsClient.subscribe({
+  channel: 'grid-orders-moon',
+  instType: 'ANY',
+});
+
+// Moon grid orders channel
+wsClient.subscribe({
+  channel: 'grid-orders-moon',
+  instType: 'ANY',
+});
+
+// Grid positions channel
+wsClient.subscribe({
+  channel: 'grid-positions',
+  algoId: '449327675342323712',
+});
+
+// Grid sub orders channel
+wsClient.subscribe({
+  channel: 'grid-sub-orders',
+  algoId: '449327675342323712',
+});
