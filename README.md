@@ -79,7 +79,6 @@ This connector includes a high-performance node.js & typescript websocket client
   - Resume producing events as before, without extra handling needed in your logic.
 - The ws client will automatically authenticate if accounts are provided and a private channel is subscribed to.
 - Up to 100 accounts are supported on the private connection, as per the [API docs](https://www.okx.com/docs-v5/en/#websocket-api-login). Authentication is automatic if accounts are provided.
-
 - For examples in using the websocket client, check the examples in the repo:
   - Private channels (account data): [examples/ws-private.ts](./examples/ws-private.ts)
   - Public chanels (market data): [examples/ws-public.ts](./examples/ws-public.ts)
