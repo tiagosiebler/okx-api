@@ -12,7 +12,6 @@ import {
   WSClientConfigurableOptions,
   WsDataEvent,
   WsEvent,
-  WsResponse,
   WsSubRequest,
   WsUnsubRequest,
 } from './types';
@@ -185,10 +184,6 @@ export class WebsocketClient extends EventEmitter {
   /** Get the WsStore that tracks websocket & topic state */
   public getWsStore(): WsStore<WsChannelSubUnSubRequestArg> {
     return this.wsStore;
-  }
-
-  public isTestnet(): boolean {
-    return this.options.market === 'demo';
   }
 
   public close(wsKey: WsKey, force?: boolean) {
@@ -658,7 +653,6 @@ export class WebsocketClient extends EventEmitter {
       this.logger.info('Websocket connected', {
         ...loggerCategory,
         wsKey,
-        testnet: this.isTestnet(),
         market: this.options.market,
       });
       this.emit('open', { wsKey, event });
@@ -729,7 +723,7 @@ export class WebsocketClient extends EventEmitter {
             ...this.wsStore.getTopics(wsKey),
           ] as WsChannelSubUnSubRequestArg[];
 
-          // Since private topics have a dedicated WsKey, these are automatically all private topics
+          // Since private topics have a dedicated WsKey, these are automatically all private topics (no filtering required before the subscribe call)
           this.requestSubscribeTopics(wsKey, topics);
 
           return;
