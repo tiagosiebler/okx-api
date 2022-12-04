@@ -5,10 +5,6 @@ import {
   WsPrivateChannel,
 } from '../types';
 import { neverGuard } from './typeGuards';
-
-/** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
-export type WsKey = typeof WS_KEY_MAP[keyof typeof WS_KEY_MAP];
-
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
   Record<'public' | 'private', string>
@@ -35,6 +31,9 @@ export const WS_KEY_MAP = {
   demoPublic: 'demoPublic',
   demoPrivate: 'demoPrivate',
 } as const;
+
+/** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
+export type WsKey = typeof WS_KEY_MAP[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
