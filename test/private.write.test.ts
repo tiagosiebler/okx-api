@@ -351,7 +351,7 @@ describe('Private REST API Endpoints (POST)', () => {
         // Requires account to be in a certain state
         expect(e).toMatchObject(
           errorResponseObject(
-            '5105101000',
+            '51010',
             [],
             expect.stringMatching(
               /not supported under the current account mode/gim
