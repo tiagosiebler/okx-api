@@ -3,7 +3,7 @@ import { notAuthenticatedError, successResponseList } from './response.util';
 
 describe('Public Inverse REST API Endpoints', () => {
   const useLivenet = true;
-  const api = new RestClient(null, 'live');
+  const api = new RestClient(null, 'prod');
 
   const instId = 'BTC-USDT';
   const interval = '15';
