@@ -28,6 +28,7 @@ npm install okx-api
 - Try my connectors:
   - [binance](https://www.npmjs.com/package/binance)
   - [bybit-api](https://www.npmjs.com/package/bybit-api)
+  - [bitget-api](https://www.npmjs.com/package/bitget-api)
   - [okx-api](https://www.npmjs.com/package/okx-api)
   - [ftx-api](https://www.npmjs.com/package/ftx-api)
 - Try my misc utilities:

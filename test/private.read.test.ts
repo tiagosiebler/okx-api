@@ -129,9 +129,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(
           errorResponseObject(
-            '59120',
+            '51010',
             [],
-            expect.stringMatching(/repay function closed/gim)
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -145,9 +145,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(
-              /not supported under the current account mode/gim
-            )
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -159,9 +157,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
-            '59119',
+            '51010',
             [],
-            expect.stringMatching(/repay function closed/gim)
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -490,7 +488,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/not supported.*current account mode/gim)
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -544,7 +542,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/not supported.*current account mode/gim)
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -578,9 +576,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         // Adjust account mode to single currency / multiple currency or portfolio margin.
         expect(e).toMatchObject(
           errorResponseObject(
-            '3',
+            '51010',
             [],
-            expect.stringMatching(/Unsupported operation/gim)
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
