@@ -663,9 +663,15 @@ export class RestClient extends BaseRestClient {
   borrowRepayVIPLoan(
     ccy: string,
     side: 'borrow' | 'repay',
-    amt: numberInString
+    amt: numberInString,
+    ordId?: string
   ): Promise<unknown[]> {
-    return this.postPrivate('/api/v5/account/borrow-repay', { ccy, side, amt });
+    return this.postPrivate('/api/v5/account/borrow-repay', {
+      ccy,
+      side,
+      amt,
+      ordId,
+    });
   }
 
   getVIPLoanBorrowRepayHistory(params?: unknown): Promise<unknown[]> {

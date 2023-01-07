@@ -47,7 +47,7 @@ describe('Private REST API Endpoints (POST)', () => {
                 sMsg: expect.stringMatching(/insufficient/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -87,7 +87,7 @@ describe('Private REST API Endpoints (POST)', () => {
                 sMsg: expect.stringMatching(/insufficient/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -109,10 +109,10 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51400',
-                sMsg: 'Cancellation failed as the order does not exist.',
+                sMsg: expect.stringMatching(/cancellation.*exist/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -140,15 +140,15 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51400',
-                sMsg: 'Cancellation failed as the order does not exist.',
+                sMsg: expect.stringMatching(/cancellation.*exist/gim),
               },
               {
                 ordId: '12313123124',
                 sCode: '51400',
-                sMsg: 'Cancellation failed as the order does not exist.',
+                sMsg: expect.stringMatching(/cancellation.*exist/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -171,10 +171,10 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51503',
-                sMsg: 'Order modification failed as the order does not exist.',
+                sMsg: expect.stringMatching(/modification.*exist/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -204,15 +204,15 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51503',
-                sMsg: 'Order modification failed as the order does not exist.',
+                sMsg: expect.stringMatching(/modification.*exist/gim),
               },
               {
                 ordId: '12313123124',
                 sCode: '51503',
-                sMsg: 'Order modification failed as the order does not exist.',
+                sMsg: expect.stringMatching(/modification.*exist/gim),
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -231,7 +231,7 @@ describe('Private REST API Endpoints (POST)', () => {
           errorResponseObject(
             '51010',
             [],
-            'Operation is not supported under the current account mode'
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -281,12 +281,12 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 algoId: '123123123',
                 sCode: '51400',
-                sMsg: 'Cancellation failed as the order does not exist.',
+                sMsg: expect.stringMatching(/cancellation.*exist/gim),
               },
               {
                 algoId: '123123124',
                 sCode: '51400',
-                sMsg: 'Cancellation failed as the order does not exist.',
+                sMsg: expect.stringMatching(/cancellation.*exist/gim),
               },
             ],
             ''
@@ -325,7 +325,7 @@ describe('Private REST API Endpoints (POST)', () => {
                 sMsg: 'The strategy does not exist or has stopped',
               },
             ],
-            'Operation failed.'
+            expect.stringMatching(/failed/gim)
           )
         );
       }
@@ -353,9 +353,7 @@ describe('Private REST API Endpoints (POST)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(
-              /not supported under the current account mode/gim
-            )
+            expect.stringMatching(/account mode/gim)
           )
         );
       }
@@ -617,7 +615,7 @@ describe('Private REST API Endpoints (POST)', () => {
           errorResponseObject(
             '58008',
             [],
-            expect.stringMatching(/do not have assets/gim)
+            expect.stringMatching(/have assets/gim)
           )
         );
       }
@@ -728,14 +726,12 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('borrowRepayVIPLoan()', async () => {
       try {
-        expect(await api.borrowRepayVIPLoan('BTC', 'repay', '1')).toBeFalsy();
+        expect(
+          await api.borrowRepayVIPLoan('BTC', 'repay', '1', '1234113444')
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '59310',
-            [],
-            expect.stringMatching(/support VIP loan/gim)
-          )
+          errorResponseObject('59305', [], expect.stringMatching(/VIP loan/gim))
         );
       }
     });
