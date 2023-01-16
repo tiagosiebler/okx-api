@@ -2,7 +2,7 @@ export interface FundsTransferRequest {
   ccy: string;
   amt: string;
   from: '6' | '18';
-  to: '6' | '16';
+  to: '6' | '18';
   subAcct?: string;
   type?: '0' | '1' | '2' | '3' | '4';
   loanTrans?: boolean;
