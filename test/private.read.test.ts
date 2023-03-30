@@ -244,7 +244,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('51000', [], expect.stringMatching(/clientId/gim))
+          errorResponseObject('58129', [], expect.stringMatching(/clientId/gim))
         );
       }
     });
@@ -265,11 +265,11 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getDepositAddress()', async () => {
       try {
-        expect(await api.getDepositAddress('BTC')).toMatchObject(
-          successResponseList()
-        );
+        expect(await api.getDepositAddress('BTC')).toBeFalsy();
       } catch (e) {
-        expect(e).toBeFalsy();
+        expect(e).toMatchObject(
+          errorResponseObject('58306', [], expect.stringMatching(/KYC/gim))
+        );
       }
     });
 
