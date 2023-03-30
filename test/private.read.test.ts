@@ -268,7 +268,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         expect(await api.getDepositAddress('BTC')).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('58306', [], expect.stringMatching(/KYC/gim))
+          errorResponseObject('58306', [], expect.stringMatching(/identity/gim))
         );
       }
     });
