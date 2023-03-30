@@ -28,7 +28,7 @@ wsClient.on('update', (data) => {
   console.log(
     new Date(),
     'ws update (raw data received)',
-    JSON.stringify(data)
+    JSON.stringify(data, null, 2)
   );
   // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
 });
@@ -164,4 +164,15 @@ wsClient.subscribe({
 // Status channel
 wsClient.subscribe({
   channel: 'status',
+});
+
+// Liquidation orders channel
+wsClient.subscribe({
+  channel: 'liquidation-orders',
+  instType: 'FUTURES',
+});
+
+wsClient.subscribe({
+  channel: 'liquidation-orders',
+  instType: 'SWAP',
 });
