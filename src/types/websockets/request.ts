@@ -144,7 +144,8 @@ export type WsPublicChannel =
   | 'opt-summary'
   | 'funding-rate'
   | 'index-tickers'
-  | 'status';
+  | 'status'
+  | 'liquidation-orders';
 
 export type WsChannel = WsPublicChannel | WsPrivateChannel;
 
@@ -261,6 +262,11 @@ export interface WsPublicChannelArgStatus extends WsBaseRequestArg {
   channel: 'status';
 }
 
+export interface WsPublicChannelArgLiquidationOrders extends WsBaseRequestArg {
+  channel: 'liquidation-orders';
+  instType: 'SWAP' | 'FUTURES';
+}
+
 export type WsChannelSubUnSubRequestArg =
   | WsPrivateChannelArgTickers
   | WsPrivateChannelArgWithCcy
@@ -273,7 +279,8 @@ export type WsChannelSubUnSubRequestArg =
   | WsPublicChannelArgInstId
   | WsPublicChannelArgInstIdOrFamily
   | WsPublicChannelArgOptionSummary
-  | WsPublicChannelArgStatus;
+  | WsPublicChannelArgStatus
+  | WsPublicChannelArgLiquidationOrders;
 
 /**
  *
