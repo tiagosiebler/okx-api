@@ -145,5 +145,5 @@ export interface OrderRequest {
   tpTriggerPxType?: PriceTriggerType;
   slTriggerPxType?: PriceTriggerType;
   /** Quick margin type */
-  quickMgnType?: string;
+  quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
 }
