@@ -89,6 +89,8 @@ export interface ClosePositionRequest {
   mgnMode: MarginMode;
   ccy?: string;
   autoCxl?: boolean;
+  clOrdId?: string;
+  tag?: string;
 }
 
 export interface FillsHistoryRequest {
