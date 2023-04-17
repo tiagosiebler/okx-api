@@ -75,3 +75,34 @@ export interface Trade {
   tradeId: string;
   ts: string;
 }
+
+export interface Instrument {
+  instType: InstrumentType;
+  instId: string;
+  uly: string;
+  instFamily: string;
+  category: string;
+  baseCcy: string;
+  quoteCcy: string;
+  settCcy: string;
+  ctVal: string;
+  ctMult: string;
+  ctValCcy: string;
+  optType: string;
+  stk: string;
+  listTime: string;
+  expTime: string;
+  lever: string;
+  tickSz: string;
+  lotSz: string;
+  minSz: string;
+  ctType: string;
+  alias: string;
+  state: string;
+  maxLmtSz: string;
+  maxMktSz: string;
+  maxTwapSz: string;
+  maxIcebergSz: string;
+  maxTriggerSz: string;
+  maxStopSz: string;
+}

@@ -89,6 +89,8 @@ export interface ClosePositionRequest {
   mgnMode: MarginMode;
   ccy?: string;
   autoCxl?: boolean;
+  clOrdId?: string;
+  tag?: string;
 }
 
 export interface FillsHistoryRequest {
@@ -137,4 +139,13 @@ export interface OrderRequest {
   /** A spot buy on BTC-USDT with "base_ccy" would mean the QTY (sz) is in USDT */
   tgtCcy?: 'base_ccy' | 'quote_ccy';
   banAmend?: boolean;
+  /** Take Profit & Stop Loss params */
+  tpTriggerPx?: string;
+  tpOrdPx?: string;
+  slTriggerPx?: string;
+  slOrdPx?: string;
+  tpTriggerPxType?: PriceTriggerType;
+  slTriggerPxType?: PriceTriggerType;
+  /** Quick margin type */
+  quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
 }
