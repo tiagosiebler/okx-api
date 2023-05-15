@@ -1,4 +1,9 @@
-import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
+import {
+  APIMarket,
+  WebsocketClientOptions,
+  WsBusinessChannel,
+  WsChannel,
+} from '../types';
 import { neverGuard } from './typeGuards';
 
 export const WS_BASE_URL_MAP: Record<
@@ -84,6 +89,109 @@ const PRIVATE_CHANNELS = [
   'grid-sub-orders',
 ];
 
+/**
+ * The following channels only support the new business wss endpoint:
+ * https://www.okx.com/help-center/changes-to-v5-api-websocket-subscription-parameter-and-url
+ */
+const BUSINESS_CHANNELS = [
+  'orders-algo',
+  'algo-advance',
+  'deposit-info',
+  'withdrawal-info',
+  'grid-orders-spot',
+  'grid-orders-contract',
+  'grid-orders-moon',
+  'grid-positions',
+  'grid-sub-orders',
+  'algo-recurring-buy',
+  'candle1Y',
+  'candle6M',
+  'candle3M',
+  'candle1M',
+  'candle1W',
+  'candle1D',
+  'candle2D',
+  'candle3D',
+  'candle5D',
+  'candle12H',
+  'candle6H',
+  'candle4H',
+  'candle2H',
+  'candle1H',
+  'candle30m',
+  'candle15m',
+  'candle5m',
+  'candle3m',
+  'candle1m',
+  'candle1Yutc',
+  'candle3Mutc',
+  'candle1Mutc',
+  'candle1Wutc',
+  'candle1Dutc',
+  'candle2Dutc',
+  'candle3Dutc',
+  'candle5Dutc',
+  'candle12Hutc',
+  'candle6Hutc',
+  'mark-price-candle1Y',
+  'mark-price-candle6M',
+  'mark-price-candle3M',
+  'mark-price-candle1M',
+  'mark-price-candle1W',
+  'mark-price-candle1D',
+  'mark-price-candle2D',
+  'mark-price-candle3D',
+  'mark-price-candle5D',
+  'mark-price-candle12H',
+  'mark-price-candle6H',
+  'mark-price-candle4H',
+  'mark-price-candle2H',
+  'mark-price-candle1H',
+  'mark-price-candle30m',
+  'mark-price-candle15m',
+  'mark-price-candle5m',
+  'mark-price-candle3m',
+  'mark-price-candle1m',
+  'mark-price-candle1Yutc',
+  'mark-price-candle3Mutc',
+  'mark-price-candle1Mutc',
+  'mark-price-candle1Wutc',
+  'mark-price-candle1Dutc',
+  'mark-price-candle2Dutc',
+  'mark-price-candle3Dutc',
+  'mark-price-candle5Dutc',
+  'mark-price-candle12Hutc',
+  'mark-price-candle6Hutc',
+  'index-candle1Y',
+  'index-candle6M',
+  'index-candle3M',
+  'index-candle1M',
+  'index-candle1W',
+  'index-candle1D',
+  'index-candle2D',
+  'index-candle3D',
+  'index-candle5D',
+  'index-candle12H',
+  'index-candle6H',
+  'index-candle4H index -candle2H',
+  'index-candle1H',
+  'index-candle30m',
+  'index-candle15m',
+  'index-candle5m',
+  'index-candle3m',
+  'index-candle1m',
+  'index-candle1Yutc',
+  'index-candle3Mutc',
+  'index-candle1Mutc',
+  'index-candle1Wutc',
+  'index-candle1Dutc',
+  'index-candle2Dutc',
+  'index-candle3Dutc',
+  'index-candle5Dutc',
+  'index-candle12Hutc',
+  'index-candle6Hutc',
+];
+
 /** Determine which WsKey (ws connection) to route an event to */
 export function getWsKeyForTopicChannel(
   market: APIMarket,
@@ -92,28 +200,48 @@ export function getWsKeyForTopicChannel(
 ): WsKey {
   const isPrivateTopic =
     isPrivate === true || PRIVATE_CHANNELS.includes(channel);
-  return getWsKeyForMarket(market, isPrivateTopic);
+  const isBusinessChannel = BUSINESS_CHANNELS.includes(channel);
+
+  return getWsKeyForMarket(market, isPrivateTopic, isBusinessChannel);
 }
 
 export function getWsKeyForMarket(
   market: APIMarket,
-  isPrivate: boolean
+  isPrivate: boolean,
+  isBusinessChannel: boolean
 ): WsKey {
   switch (market) {
     case 'prod': {
+      if (isBusinessChannel) {
+        return isPrivate
+          ? WS_KEY_MAP.businessPrivate
+          : WS_KEY_MAP.businessPublic;
+      }
       return isPrivate ? WS_KEY_MAP.prodPrivate : WS_KEY_MAP.prodPublic;
     }
     case 'aws': {
-      return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
-    }
-    case 'business': {
-      return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
-    }
-    case 'businessAws': {
+      if (isBusinessChannel) {
+        return isPrivate
+          ? WS_KEY_MAP.businessAwsPrivate
+          : WS_KEY_MAP.businessAwsPublic;
+      }
       return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
     }
     case 'demo': {
+      if (isBusinessChannel) {
+        return isPrivate
+          ? WS_KEY_MAP.businessDemoPrivate
+          : WS_KEY_MAP.businessDemoPublic;
+      }
       return isPrivate ? WS_KEY_MAP.demoPrivate : WS_KEY_MAP.demoPublic;
+    }
+    case 'business': {
+      return isPrivate ? WS_KEY_MAP.businessPrivate : WS_KEY_MAP.businessPublic;
+    }
+    case 'businessAws': {
+      return isPrivate
+        ? WS_KEY_MAP.businessAwsPrivate
+        : WS_KEY_MAP.businessAwsPublic;
     }
     case 'businessDemo': {
       return isPrivate

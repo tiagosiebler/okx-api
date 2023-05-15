@@ -213,15 +213,27 @@ export class WebsocketClient extends EventEmitter {
     return [this.connectPublic(), this.connectPrivate()];
   }
 
-  public connectPublic(): Promise<WebSocket | undefined> {
+  public connectPublic(
+    businessEndpoint?: boolean
+  ): Promise<WebSocket | undefined> {
     const isPrivate = false;
-    const wsKey = getWsKeyForMarket(this.options.market, isPrivate);
+    const wsKey = getWsKeyForMarket(
+      this.options.market,
+      isPrivate,
+      !!businessEndpoint
+    );
     return this.connect(WS_KEY_MAP[wsKey]);
   }
 
-  public connectPrivate(): Promise<WebSocket | undefined> {
+  public connectPrivate(
+    businessEndpoint?: boolean
+  ): Promise<WebSocket | undefined> {
     const isPrivate = true;
-    const wsKey = getWsKeyForMarket(this.options.market, isPrivate);
+    const wsKey = getWsKeyForMarket(
+      this.options.market,
+      isPrivate,
+      !!businessEndpoint
+    );
     return this.connect(WS_KEY_MAP[wsKey]);
   }
 
