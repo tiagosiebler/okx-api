@@ -1,10 +1,6 @@
-import {
-  APIMarket,
-  WebsocketClientOptions,
-  WsChannel,
-  WsPrivateChannel,
-} from '../types';
+import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
 import { neverGuard } from './typeGuards';
+
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
   Record<'public' | 'private', string>
@@ -16,6 +12,14 @@ export const WS_BASE_URL_MAP: Record<
   aws: {
     public: 'wss://wsaws.okx.com:8443/ws/v5/public',
     private: 'wss://wsaws.okx.com:8443/ws/v5/private',
+  },
+  business: {
+    public: 'wss://ws.okx.com:8443/ws/v5/business',
+    private: 'wss://ws.okx.com:8443/ws/v5/business',
+  },
+  businessAws: {
+    public: 'wss://wsaws.okx.com:8443/ws/v5/business',
+    private: 'wss://wsaws.okx.com:8443/ws/v5/business',
   },
   demo: {
     public: 'wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999',
@@ -30,20 +34,28 @@ export const WS_KEY_MAP = {
   awsPrivate: 'awsPrivate',
   demoPublic: 'demoPublic',
   demoPrivate: 'demoPrivate',
+  businessPrivate: 'businessPrivate',
+  businessPublic: 'businessPublic',
+  businessAwsPrivate: 'businessAwsPrivate',
+  businessAwsPublic: 'businessAwsPublic',
 } as const;
 
 /** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
-export type WsKey = typeof WS_KEY_MAP[keyof typeof WS_KEY_MAP];
+export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
   WS_KEY_MAP.awsPrivate,
+  WS_KEY_MAP.businessPrivate,
+  WS_KEY_MAP.businessAwsPrivate,
   WS_KEY_MAP.demoPrivate,
 ];
 
 export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPublic,
   WS_KEY_MAP.awsPublic,
+  WS_KEY_MAP.businessPublic,
+  WS_KEY_MAP.businessAwsPublic,
   WS_KEY_MAP.demoPublic,
 ];
 
@@ -86,6 +98,12 @@ export function getWsKeyForMarket(
     case 'aws': {
       return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
     }
+    case 'business': {
+      return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
+    }
+    case 'businessAws': {
+      return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
+    }
     case 'demo': {
       return isPrivate ? WS_KEY_MAP.demoPrivate : WS_KEY_MAP.demoPublic;
     }
@@ -117,6 +135,14 @@ export function getWsUrlForWsKey(
       return WS_BASE_URL_MAP.demo.public;
     case 'demoPrivate':
       return WS_BASE_URL_MAP.demo.private;
+    case 'businessPublic':
+      return WS_BASE_URL_MAP.business.public;
+    case 'businessPrivate':
+      return WS_BASE_URL_MAP.business.private;
+    case 'businessAwsPublic':
+      return WS_BASE_URL_MAP.businessAws.public;
+    case 'businessAwsPrivate':
+      return WS_BASE_URL_MAP.businessAws.private;
     default: {
       const errorMessage = 'getWsUrl(): Unhandled wsKey: ';
       this.logger.error(errorMessage, {
@@ -134,7 +160,9 @@ export function getMaxTopicsPerSubscribeEvent(
   switch (market) {
     case 'prod':
     case 'aws':
-    case 'demo': {
+    case 'demo':
+    case 'business':
+    case 'businessAws': {
       return null;
     }
     default: {
