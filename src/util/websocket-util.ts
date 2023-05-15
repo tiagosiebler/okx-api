@@ -21,6 +21,10 @@ export const WS_BASE_URL_MAP: Record<
     public: 'wss://wsaws.okx.com:8443/ws/v5/business',
     private: 'wss://wsaws.okx.com:8443/ws/v5/business',
   },
+  businessDemo: {
+    public: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    private: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+  },
   demo: {
     public: 'wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999',
     private: 'wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999',
@@ -38,6 +42,8 @@ export const WS_KEY_MAP = {
   businessPublic: 'businessPublic',
   businessAwsPrivate: 'businessAwsPrivate',
   businessAwsPublic: 'businessAwsPublic',
+  businessDemoPublic: 'businessDemoPublic',
+  businessDemoPrivate: 'businessDemoPrivate',
 } as const;
 
 /** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
@@ -49,6 +55,7 @@ export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.businessPrivate,
   WS_KEY_MAP.businessAwsPrivate,
   WS_KEY_MAP.demoPrivate,
+  WS_KEY_MAP.businessDemoPrivate,
 ];
 
 export const PUBLIC_WS_KEYS: WsKey[] = [
@@ -57,6 +64,7 @@ export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.businessPublic,
   WS_KEY_MAP.businessAwsPublic,
   WS_KEY_MAP.demoPublic,
+  WS_KEY_MAP.businessDemoPublic,
 ];
 
 /** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
@@ -107,6 +115,11 @@ export function getWsKeyForMarket(
     case 'demo': {
       return isPrivate ? WS_KEY_MAP.demoPrivate : WS_KEY_MAP.demoPublic;
     }
+    case 'businessDemo': {
+      return isPrivate
+        ? WS_KEY_MAP.businessDemoPrivate
+        : WS_KEY_MAP.businessDemoPublic;
+    }
     default: {
       throw neverGuard(market, `getWsKeyForTopic(): Unhandled market`);
     }
@@ -143,6 +156,10 @@ export function getWsUrlForWsKey(
       return WS_BASE_URL_MAP.businessAws.public;
     case 'businessAwsPrivate':
       return WS_BASE_URL_MAP.businessAws.private;
+    case 'businessDemoPublic':
+      return WS_BASE_URL_MAP.businessDemo.public;
+    case 'businessDemoPrivate':
+      return WS_BASE_URL_MAP.businessDemo.private;
     default: {
       const errorMessage = 'getWsUrl(): Unhandled wsKey: ';
       this.logger.error(errorMessage, {
@@ -162,6 +179,7 @@ export function getMaxTopicsPerSubscribeEvent(
     case 'aws':
     case 'demo':
     case 'business':
+    case 'businessDemo':
     case 'businessAws': {
       return null;
     }
