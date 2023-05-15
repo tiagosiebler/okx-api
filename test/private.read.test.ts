@@ -263,7 +263,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       }
     });
 
-    it('getDepositAddress()', async () => {
+    // Fails on test acc due to account configuration
+    it.skip('getDepositAddress()', async () => {
       try {
         expect(await api.getDepositAddress('BTC')).toBeFalsy();
       } catch (e) {
