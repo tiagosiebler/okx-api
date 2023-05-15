@@ -147,6 +147,27 @@ export type WsPublicChannel =
   | 'status'
   | 'liquidation-orders';
 
+export type WsBusinessPrivateChannel =
+  | 'orders-algo'
+  | 'algo-advance'
+  | 'deposit-info'
+  | 'withdrawal-info'
+  | 'grid-orders-spot'
+  | 'grid-orders-contract'
+  | 'grid-orders-moon'
+  | 'grid-positions'
+  | 'grid-sub-orders'
+  | 'algo-recurring-buy';
+
+export type WsBusinessPublicChannel =
+  | WsPublicKlineChannel
+  | WsPublicMarkPriceKlineChannel
+  | WsPublicIndexKlineChannel;
+
+export type WsBusinessChannel =
+  | WsBusinessPrivateChannel
+  | WsBusinessPublicChannel;
+
 export type WsChannel = WsPublicChannel | WsPrivateChannel;
 
 export interface WsBaseRequest {
