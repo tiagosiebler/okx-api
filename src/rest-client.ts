@@ -86,6 +86,7 @@ import {
   GetGridAlgoOrdersRequest,
   FundsTransferRequest,
   WithdrawRequest,
+  WithdrawResponse,
   ConvertTradeRequest,
   ConvertQuoteEstimateRequest,
   SetLeverageRequest,
@@ -427,7 +428,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/deposit-history', params);
   }
 
-  submitWithdraw(params: WithdrawRequest): Promise<unknown[]> {
+  submitWithdraw(params: WithdrawRequest): Promise<WithdrawResponse[]> {
     return this.postPrivate('/api/v5/asset/withdrawal', params);
   }
 
