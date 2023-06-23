@@ -1,7 +1,6 @@
 import {
   APIMarket,
   WebsocketClientOptions,
-  WsBusinessChannel,
   WsChannel,
 } from '../types';
 import { neverGuard } from './typeGuards';
