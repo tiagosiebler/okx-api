@@ -168,7 +168,7 @@ export type WsBusinessChannel =
   | WsBusinessPrivateChannel
   | WsBusinessPublicChannel;
 
-export type WsChannel = WsPublicChannel | WsPrivateChannel;
+export type WsChannel = WsPublicChannel | WsPrivateChannel | WsBusinessChannel;
 
 export interface WsBaseRequest {
   op: WsRequestOp;
