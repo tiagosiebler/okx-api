@@ -152,6 +152,12 @@ wsClient.subscribe({
   ccy: 'BTC',
 });
 
+// Withdrawal events for specific symbol only
+wsClient.subscribe({
+  channel: 'withdrawal-info',
+  ccy: 'BTC',
+});
+
 // Position events on any instrument type
 wsClient.subscribe({
   channel: 'positions',

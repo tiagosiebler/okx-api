@@ -198,7 +198,7 @@ export interface WsPrivateChannelArgTickers extends WsBaseRequestArg {
 }
 
 export interface WsPrivateChannelArgWithCcy extends WsBaseRequestArg {
-  channel: 'account' | 'account-greeks';
+  channel: 'account' | 'account-greeks' | 'withdrawal-info';
   ccy?: string;
 }
 
