@@ -1,8 +1,4 @@
-import {
-  APIMarket,
-  WebsocketClientOptions,
-  WsChannel,
-} from '../types';
+import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
 import { neverGuard } from './typeGuards';
 
 export const WS_BASE_URL_MAP: Record<

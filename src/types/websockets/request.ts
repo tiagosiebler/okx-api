@@ -172,14 +172,14 @@ export type WsChannel = WsPublicChannel | WsPrivateChannel | WsBusinessChannel;
 
 export interface WsBaseRequest {
   op: WsRequestOp;
-  args: unknown[];
+  args: any[];
 }
 
 /** Used to trigger order actions over websockets (e.g. placing & cancelling orders) */
 export interface WsTradeBaseRequest {
   op: WsTradeOp;
   id: string;
-  args: unknown[];
+  args: any[];
 }
 
 export interface WsBaseRequestArg {
