@@ -29,11 +29,7 @@ export function minimumAssetRequirementError() {
 }
 
 export function algoIdParamError() {
-  return errorResponseObject(
-    '51000',
-    [],
-    expect.stringMatching(/Parameter algoId/gim)
-  );
+  return errorResponseObject('51000', [], expect.stringMatching(/algoId/gim));
 }
 
 export function notAuthenticatedError() {
