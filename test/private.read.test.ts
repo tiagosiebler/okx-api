@@ -167,11 +167,17 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
   });
 
   describe('Block Trading Endpoints', () => {
+    const errorCode = '70015';
+    // Block trading is only available for OKX users who have completed identity verification level 2 or above
+    const errorMatch = /level 2 or above/gim;
+
     it('getBlockCounterParties()', async () => {
       try {
         expect(await api.getBlockCounterParties()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(minimumAssetRequirementError());
+        expect(e).toMatchObject(
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
+        );
       }
     });
 
@@ -179,7 +185,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       try {
         expect(await api.getBlockRFQs()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(minimumAssetRequirementError());
+        expect(e).toMatchObject(
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
+        );
       }
     });
 
@@ -187,7 +195,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       try {
         expect(await api.getBlockQuotes()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(minimumAssetRequirementError());
+        expect(e).toMatchObject(
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
+        );
       }
     });
 
@@ -195,7 +205,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       try {
         expect(await api.getBlockTrades()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(minimumAssetRequirementError());
+        expect(e).toMatchObject(
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
+        );
       }
     });
 
