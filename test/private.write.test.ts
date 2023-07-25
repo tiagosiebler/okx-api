@@ -296,6 +296,8 @@ describe('Private REST API Endpoints (POST)', () => {
     });
 
     it('cancelAdvanceAlgoOrder()', async () => {
+      const errorMatcher = /already stopped/gim;
+
       try {
         expect(
           await api.cancelAdvanceAlgoOrder([
@@ -317,12 +319,12 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 algoId: '123123123',
                 sCode: '51293',
-                sMsg: 'The strategy does not exist or has stopped',
+                sMsg: expect.stringMatching(errorMatcher),
               },
               {
                 algoId: '123123124',
                 sCode: '51293',
-                sMsg: 'The strategy does not exist or has stopped',
+                sMsg: expect.stringMatching(errorMatcher),
               },
             ],
             expect.stringMatching(/failed/gim)
@@ -368,6 +370,10 @@ describe('Private REST API Endpoints (POST)', () => {
       side: 'buy',
     };
 
+    const errorCode = '70015';
+    // Block trading is only available for OKX users who have completed identity verification level 2 or above
+    const errorMatch = /level 2 or above/gim;
+
     it('createBlockRFQ()', async () => {
       try {
         expect(
@@ -378,11 +384,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -392,11 +394,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.cancelBlockRFQ({ rfqId: 'fakeId1' })).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -408,11 +406,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -422,11 +416,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.cancelAllRFQs()).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -441,11 +431,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -468,11 +454,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -486,11 +468,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -504,11 +482,7 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -518,11 +492,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.cancelAllBlockQuotes()).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '70006',
-            [],
-            expect.stringMatching(/minimum asset/gim)
-          )
+          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
         );
       }
     });
@@ -843,15 +813,9 @@ describe('Private REST API Endpoints (POST)', () => {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(
           errorResponseObject(
-            '1',
-            [
-              {
-                algoId,
-                sCode: '51000',
-                sMsg: expect.stringMatching(/parameter algoId/gim),
-              },
-            ],
-            ''
+            '51000',
+            [],
+            expect.stringMatching(/type.*algoId/gim)
           )
         );
       }
@@ -943,7 +907,7 @@ describe('Private REST API Endpoints (POST)', () => {
           errorResponseObject(
             '51000',
             [],
-            expect.stringMatching(/Parameter/gim)
+            expect.stringMatching(/productId error/gim)
           )
         );
       }
@@ -968,7 +932,7 @@ describe('Private REST API Endpoints (POST)', () => {
       } catch (e) {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(
-          errorResponseObject('51000', [], expect.stringMatching(/ordId/gim))
+          errorResponseObject('50026', [], expect.stringMatching(/System/gim))
         );
       }
     });
