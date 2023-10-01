@@ -96,6 +96,7 @@ import {
   APICredentials,
   RestClientOptions,
   APIMarket,
+  Instrument,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -1144,8 +1145,18 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(params: unknown): Promise<unknown[]> {
-    return this.get('/api/v5/public/instruments', params);
+  getInstruments(
+    instType: InstrumentType,
+    uly?: string,
+    instFamily?: string,
+    instId?: string
+  ): Promise<Instrument[]> {
+    return this.get('/api/v5/public/instruments', {
+      instType,
+      uly,
+      instFamily,
+      instId,
+    });
   }
 
   getDeliveryExerciseHistory(params: unknown): Promise<unknown[]> {
