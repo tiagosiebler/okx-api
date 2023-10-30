@@ -1,5 +1,6 @@
-import { createHmac } from 'crypto';
+import * as CryptoJS from 'crypto-js'
 
 export function signMessage(message: string, secret: string): string {
-  return createHmac('sha256', secret).update(message).digest('base64');
+  const sha256 = CryptoJS.HmacSHA256(message, secret)
+  return CryptoJS.enc.Base64.stringify(sha256);
 }
