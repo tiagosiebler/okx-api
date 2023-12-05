@@ -14,7 +14,7 @@ import {
 export interface AlgoRecentHistoryRequest {
   ordType: AlgoOrderType;
   algoId?: string;
-  instType?: string;
+  instType?: InstrumentType;
   instId?: string;
   after?: string;
   before?: string;
@@ -25,7 +25,7 @@ export interface AlgoLongHistoryRequest {
   ordType: AlgoOrderType;
   state?: AlgoState;
   algoId?: string;
-  instType?: string;
+  instType?: InstrumentType;
   instId?: string;
   after?: string;
   before?: string;
@@ -37,7 +37,7 @@ export interface AlgoOrderRequest {
   tdMode: TradeMode;
   ccy?: string;
   side: OrderSide;
-  posSide?: PositionSide;
+  posSide?: Omit<PositionSide, 'net'>;
   ordType: AlgoOrderType;
   sz: numberInString;
   tag?: string;

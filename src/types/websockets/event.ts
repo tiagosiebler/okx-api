@@ -9,14 +9,14 @@ export interface WsEvent {
   data?: any;
 }
 
-export interface WsDataEvent {
+export interface WsDataEvent<T = any> {
   arg: {
     channel: WsChannel;
     uid?: string;
     instId?: string;
     instFamily?: string;
   };
-  data: any;
+  data: T;
 }
 
 export interface WsLoginEvent extends WsEvent {
