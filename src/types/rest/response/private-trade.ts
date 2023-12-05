@@ -1,4 +1,4 @@
-import { numberInString } from '../shared';
+import { PositionSide, numberInString } from '../shared';
 
 export interface OrderResult {
   clOrdId: string;
@@ -24,7 +24,7 @@ export interface AmendedOrder {
 }
 export interface ClosedPositions {
   instId: string;
-  posSide: string;
+  posSide: PositionSide;
 }
 
 export interface OrderDetails {
@@ -39,7 +39,7 @@ export interface OrderDetails {
   pnl: string;
   ordType: string;
   side: string;
-  posSide: string;
+  posSide: PositionSide;
   tdMode: string;
   accFillSz: string;
   fillPx: string;
@@ -83,7 +83,7 @@ export interface OrderListItem {
   ordId: string;
   ordType: string;
   pnl: string;
-  posSide: string;
+  posSide: PositionSide;
   px: string;
   rebate: string;
   rebateCcy: string;
@@ -115,7 +115,7 @@ export interface HistoricOrder {
   sz: string;
   ordType: string;
   side: string;
-  posSide: string;
+  posSide: PositionSide;
   tdMode: string;
   accFillSz: string;
   fillPx: string;
@@ -154,7 +154,7 @@ export interface OrderFill {
   fillPx: string;
   fillSz: string;
   side: string;
-  posSide: string;
+  posSide: PositionSide;
   execType: string;
   feeCcy: string;
   fee: string;
@@ -176,7 +176,7 @@ export interface AlgoOrderListItem {
   sz: string;
   ordType: string;
   side: string;
-  posSide: string;
+  posSide: PositionSide;
   tdMode: string;
   tgtCcy: string;
   state: string;
@@ -215,7 +215,7 @@ export interface HistoricAlgoOrder {
   sz: string;
   ordType: string;
   side: string;
-  posSide: string;
+  posSide: PositionSide;
   tdMode: string;
   tgtCcy: string;
   state: string;
