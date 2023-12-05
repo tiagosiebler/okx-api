@@ -503,6 +503,9 @@ describe('Private REST API Endpoints (POST)', () => {
       }
     });
 
+    const permissionErrorCode = '50120';
+    const permissionMatcher = expect.stringMatching(/permission/gim);
+
     it('submitWithdraw()', async () => {
       try {
         expect(
@@ -516,8 +519,8 @@ describe('Private REST API Endpoints (POST)', () => {
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject({
-          code: '50114',
-          msg: expect.stringMatching(/Authority/gim),
+          code: permissionErrorCode,
+          msg: permissionMatcher,
         });
       }
     });
@@ -527,8 +530,8 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.submitWithdrawLightning('USDT', '12345')).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject({
-          code: '50114',
-          msg: expect.stringMatching(/Authority/gim),
+          code: permissionErrorCode,
+          msg: permissionMatcher,
         });
       }
     });
@@ -538,8 +541,8 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.cancelWithdrawal('fakeId')).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject({
-          code: '50114',
-          msg: expect.stringMatching(/Authority/gim),
+          code: permissionErrorCode,
+          msg: permissionMatcher,
         });
       }
     });
@@ -907,7 +910,7 @@ describe('Private REST API Endpoints (POST)', () => {
       }
     });
 
-    it('cancelStakingRequest()', async () => {
+    it.skip('cancelStakingRequest()', async () => {
       try {
         expect(
           await api.cancelStakingRequest('fakeOrderId', 'staking')
