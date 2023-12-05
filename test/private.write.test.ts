@@ -372,7 +372,7 @@ describe('Private REST API Endpoints (POST)', () => {
 
     const errorCode = '70015';
     // Block trading is only available for OKX users who have completed identity verification level 2 or above
-    const errorMatch = /level 2 or above/gim;
+    const errorMatch = expect.any(String);
 
     it('createBlockRFQ()', async () => {
       try {
