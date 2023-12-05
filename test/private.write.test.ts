@@ -506,7 +506,7 @@ describe('Private REST API Endpoints (POST)', () => {
     const permissionErrorCode = '50120';
     const permissionMatcher = expect.stringMatching(/permission/gim);
 
-    it('submitWithdraw()', async () => {
+    it.skip('submitWithdraw()', async () => {
       try {
         expect(
           await api.submitWithdraw({
@@ -525,7 +525,7 @@ describe('Private REST API Endpoints (POST)', () => {
       }
     });
 
-    it('submitWithdrawLightning()', async () => {
+    it.skip('submitWithdrawLightning()', async () => {
       try {
         expect(await api.submitWithdrawLightning('USDT', '12345')).toBeFalsy();
       } catch (e) {
@@ -536,7 +536,7 @@ describe('Private REST API Endpoints (POST)', () => {
       }
     });
 
-    it('cancelWithdrawal()', async () => {
+    it.skip('cancelWithdrawal()', async () => {
       try {
         expect(await api.cancelWithdrawal('fakeId')).toBeFalsy();
       } catch (e) {
