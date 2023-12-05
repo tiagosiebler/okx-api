@@ -373,6 +373,7 @@ describe('Private REST API Endpoints (POST)', () => {
     const errorCode = '70015';
     // Block trading is only available for OKX users who have completed identity verification level 2 or above
     const errorMatch = expect.any(String);
+    // const errorMatch = expect.stringMatching(/level 2 or above/gim);
 
     it('createBlockRFQ()', async () => {
       try {
@@ -383,9 +384,7 @@ describe('Private REST API Endpoints (POST)', () => {
           })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -393,9 +392,7 @@ describe('Private REST API Endpoints (POST)', () => {
       try {
         expect(await api.cancelBlockRFQ({ rfqId: 'fakeId1' })).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -405,9 +402,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.cancelMultipleBlockRFQs({ rfqIds: ['fakeId1'] })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -415,9 +410,7 @@ describe('Private REST API Endpoints (POST)', () => {
       try {
         expect(await api.cancelAllRFQs()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -430,9 +423,7 @@ describe('Private REST API Endpoints (POST)', () => {
           })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -453,9 +444,7 @@ describe('Private REST API Endpoints (POST)', () => {
           })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -467,9 +456,7 @@ describe('Private REST API Endpoints (POST)', () => {
           })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -481,9 +468,7 @@ describe('Private REST API Endpoints (POST)', () => {
           })
         ).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
 
@@ -491,9 +476,7 @@ describe('Private REST API Endpoints (POST)', () => {
       try {
         expect(await api.cancelAllBlockQuotes()).toBeFalsy();
       } catch (e) {
-        expect(e).toMatchObject(
-          errorResponseObject(errorCode, [], expect.stringMatching(errorMatch))
-        );
+        expect(e).toMatchObject(errorResponseObject(errorCode, [], errorMatch));
       }
     });
   });
