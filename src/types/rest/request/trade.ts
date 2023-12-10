@@ -40,6 +40,7 @@ export interface AlgoOrderRequest {
   side: OrderSide;
   posSide?: AlgoPositionSide;
   ordType: AlgoOrderType;
+  algoClOrdId?: string;
   sz: numberInString;
   tag?: string;
   reduceOnly?: boolean;

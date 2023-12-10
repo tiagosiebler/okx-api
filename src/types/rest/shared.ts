@@ -87,3 +87,5 @@ export interface Pagination {
   before?: string;
   limit?: string;
 }
+
+export type PosMode = 'long_short_mode' | 'net_mode'

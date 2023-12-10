@@ -186,6 +186,7 @@ export interface OrderFill {
 
 export interface AlgoOrderResult {
   algoId: string;
+  algoClOrdId: string;
   sCode: string;
   sMsg: string;
 }
