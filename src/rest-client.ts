@@ -98,6 +98,7 @@ import {
   RestClientOptions,
   APIMarket,
   Instrument,
+  PosMode,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -562,7 +563,7 @@ export class RestClient extends BaseRestClient {
   }
 
   setPositionMode(
-    posMode: 'long_short_mode' | 'net'
+    posMode: PosMode
   ): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }

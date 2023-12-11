@@ -48,6 +48,8 @@ type lowPrice = string;
 type closePrice = string;
 type vol = string;
 type volCcy = string;
+type volCcyQuote = string;
+type confirm = string;
 
 export type Candle = [
   timestamp,
@@ -56,7 +58,9 @@ export type Candle = [
   lowPrice,
   closePrice,
   vol,
-  volCcy
+  volCcy,
+  volCcyQuote,
+  confirm
 ];
 
 export type CandleNoVolume = [
