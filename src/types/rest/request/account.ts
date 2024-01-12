@@ -1,16 +1,16 @@
-import { InstrumentType } from '../shared';
+import { InstrumentType, MarginMode, PositionSide } from '../shared';
 
 export interface SetLeverageRequest {
   instId?: string;
   ccy?: string;
   lever: string;
-  mgnMode: 'isolated' | 'cross';
+  mgnMode: MarginMode;
   posSide?: 'long' | 'short';
 }
 
 export interface ChangePositionMarginRequest {
   instId: string;
-  posSide: 'long' | 'short' | 'net';
+  posSide: PositionSide;
   type: 'add' | 'reduce';
   amt: string;
   ccy?: string;

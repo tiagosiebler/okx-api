@@ -8,13 +8,14 @@ import {
   OrderType,
   MarginMode,
   InstrumentType,
-  AlgoState,
+  AlgoOrderState,
+  AlgoPositionSide,
 } from '../shared';
 
 export interface AlgoRecentHistoryRequest {
   ordType: AlgoOrderType;
   algoId?: string;
-  instType?: string;
+  instType?: InstrumentType;
   instId?: string;
   after?: string;
   before?: string;
@@ -23,9 +24,9 @@ export interface AlgoRecentHistoryRequest {
 
 export interface AlgoLongHistoryRequest {
   ordType: AlgoOrderType;
-  state?: AlgoState;
+  state?: AlgoOrderState;
   algoId?: string;
-  instType?: string;
+  instType?: InstrumentType;
   instId?: string;
   after?: string;
   before?: string;
@@ -37,8 +38,9 @@ export interface AlgoOrderRequest {
   tdMode: TradeMode;
   ccy?: string;
   side: OrderSide;
-  posSide?: PositionSide;
+  posSide?: AlgoPositionSide;
   ordType: AlgoOrderType;
+  algoClOrdId?: string;
   sz: numberInString;
   tag?: string;
   reduceOnly?: boolean;

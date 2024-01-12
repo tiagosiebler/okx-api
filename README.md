@@ -2,7 +2,7 @@
 
 [![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml) [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1] [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1] [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 
-[![connector logo](https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logo1.png?raw=true)][1]
+[![okx okex SDK for nodejs rest & websockets api](https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logo2.png?raw=true)][1]
 
 [1]: https://www.npmjs.com/package/okx-api
 
@@ -114,7 +114,37 @@ See [examples/ws-private.ts](./examples/ws-private.ts) for a full example:
 
 ![typescript-events](./docs/images/subscribe-events.gif)
 
-## Browser Usage
+## Browser/Frontend Usage
+
+### Import
+
+This is the "modern" way, allowing the package to be directly imported into frontend projects with full typescript support.
+
+1. Install these dependencies
+   ```sh
+   npm install crypto-browserify stream-browserify
+   ```
+2. Add this to your `tsconfig.json`
+   ```json
+   {
+     "compilerOptions": {
+       "paths": {
+         "crypto": [
+           "./node_modules/crypto-browserify"
+         ],
+         "stream": [
+           "./node_modules/stream-browserify"
+         ]
+   }
+   ```
+3. Declare this in the global context of your application (ex: in polyfills for angular)
+   ```js
+   (window as any).global = window;
+   ```
+
+### Webpack
+
+This is the "old" way of using this package on webpages. This will build a minified js bundle that can be pulled in using a script tag on a website.
 
 Build a bundle using webpack:
 

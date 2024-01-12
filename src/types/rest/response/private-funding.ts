@@ -71,3 +71,11 @@ export interface AssetBillDetails {
   type: `${ASSET_BILL_TYPE}`;
   ts: string;
 }
+
+export interface WithdrawResponse {
+  ccy: string,
+  chain: string,
+  amt: string,
+  wdId: string,
+  clientId: string,
+}

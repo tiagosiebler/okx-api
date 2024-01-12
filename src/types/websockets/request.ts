@@ -147,18 +147,39 @@ export type WsPublicChannel =
   | 'status'
   | 'liquidation-orders';
 
-export type WsChannel = WsPublicChannel | WsPrivateChannel;
+export type WsBusinessPrivateChannel =
+  | 'orders-algo'
+  | 'algo-advance'
+  | 'deposit-info'
+  | 'withdrawal-info'
+  | 'grid-orders-spot'
+  | 'grid-orders-contract'
+  | 'grid-orders-moon'
+  | 'grid-positions'
+  | 'grid-sub-orders'
+  | 'algo-recurring-buy';
+
+export type WsBusinessPublicChannel =
+  | WsPublicKlineChannel
+  | WsPublicMarkPriceKlineChannel
+  | WsPublicIndexKlineChannel;
+
+export type WsBusinessChannel =
+  | WsBusinessPrivateChannel
+  | WsBusinessPublicChannel;
+
+export type WsChannel = WsPublicChannel | WsPrivateChannel | WsBusinessChannel;
 
 export interface WsBaseRequest {
   op: WsRequestOp;
-  args: unknown[];
+  args: any[];
 }
 
 /** Used to trigger order actions over websockets (e.g. placing & cancelling orders) */
 export interface WsTradeBaseRequest {
   op: WsTradeOp;
   id: string;
-  args: unknown[];
+  args: any[];
 }
 
 export interface WsBaseRequestArg {
@@ -177,7 +198,7 @@ export interface WsPrivateChannelArgTickers extends WsBaseRequestArg {
 }
 
 export interface WsPrivateChannelArgWithCcy extends WsBaseRequestArg {
-  channel: 'account' | 'account-greeks';
+  channel: 'account' | 'account-greeks' | 'withdrawal-info';
   ccy?: string;
 }
 
