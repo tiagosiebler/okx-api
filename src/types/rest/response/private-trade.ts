@@ -199,6 +199,10 @@ export interface AlgoOrderResult {
   sMsg: string;
 }
 
+export interface AmendAlgoOrderResult extends AlgoOrderResult {
+  reqId: string;
+}
+
 export interface AlgoOrderDetailsResult {
   instType: string;
   instId: string;

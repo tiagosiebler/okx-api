@@ -101,6 +101,8 @@ import {
   PlaceAlgoOrderRequest,
   AlgoOrderDetailsRequest,
   AlgoOrderDetailsResult,
+  AmendAlgoOrderRequest,
+  AmendAlgoOrderResult,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -220,6 +222,12 @@ export class RestClient extends BaseRestClient {
     params: AlgoOrderDetailsRequest
   ): Promise<AlgoOrderDetailsResult[]> {
     return this.getPrivate('/api/v5/trade/order-algo', params);
+  }
+
+  amendAlgoOrder(
+    params: AmendAlgoOrderRequest
+  ): Promise<AmendAlgoOrderResult[]> {
+    return this.postPrivate('/api/v5/trade/amend-algos', params);
   }
 
   cancelAlgoOrder(
