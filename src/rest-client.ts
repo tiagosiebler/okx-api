@@ -100,6 +100,7 @@ import {
   PosMode,
   PlaceAlgoOrderRequest,
   AlgoOrderDetailsRequest,
+  AlgoOrderDetailsResult,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -217,7 +218,7 @@ export class RestClient extends BaseRestClient {
 
   getAlgoOrderDetails(
     params: AlgoOrderDetailsRequest
-  ): Promise<AlgoOrderResult[]> {
+  ): Promise<AlgoOrderDetailsResult[]> {
     return this.getPrivate('/api/v5/trade/order-algo', params);
   }
 
