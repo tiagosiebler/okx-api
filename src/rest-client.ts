@@ -214,7 +214,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
-  placeAlgoOrder(params: PlaceAlgoOrderRequest): Promise<AlgoOrderResult[]> {
+  placeAlgoOrder(params: AlgoOrderRequest): Promise<AlgoOrderResult[]> {
     return this.postPrivate('/api/v5/trade/order-algo', params);
   }
 
