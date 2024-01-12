@@ -80,6 +80,26 @@ export interface AmendOrderRequest {
   newPx?: string;
 }
 
+export interface AlgoOrderDetailsRequest {
+  algoId: string;
+  algoClOrdId: string;
+}
+
+export interface AmendAlgoOrderRequest {
+  instId: string;
+  algoId?: string;
+  algoClOrdId?: string;
+  cxlOnFail?: boolean;
+  reqId?: string;
+  newSz?: string;
+  newTpTriggerPx?: string;
+  newTpOrdPx?: string;
+  newSlTriggerPx?: string;
+  newSlOrdPx?: string;
+  newTpTriggerPxType?: 'last' | 'index' | 'mark';
+  newSlTriggerPxType?: 'last' | 'index' | 'mark';
+}
+
 export interface CancelAlgoOrderRequest {
   algoId: string;
   instId: string;
