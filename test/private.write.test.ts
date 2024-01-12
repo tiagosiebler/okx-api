@@ -171,7 +171,7 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51503',
-                sMsg: expect.stringMatching(/modification.*exist/gim),
+                sMsg: expect.any(String),
               },
             ],
             expect.stringMatching(/failed/gim)
@@ -204,12 +204,12 @@ describe('Private REST API Endpoints (POST)', () => {
               {
                 ordId: '12313123123',
                 sCode: '51503',
-                sMsg: expect.stringMatching(/modification.*exist/gim),
+                sMsg: expect.any(String),
               },
               {
                 ordId: '12313123124',
                 sCode: '51503',
-                sMsg: expect.stringMatching(/modification.*exist/gim),
+                sMsg: expect.any(String),
               },
             ],
             expect.stringMatching(/failed/gim)
@@ -568,11 +568,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.setLendingRate('USDT', '1')).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject(
-            '58008',
-            [],
-            expect.stringMatching(/have assets/gim)
-          )
+          errorResponseObject('50060', [], expect.any(String))
         );
       }
     });

@@ -98,11 +98,11 @@ import {
   APIMarket,
   Instrument,
   PosMode,
-  PlaceAlgoOrderRequest,
   AlgoOrderDetailsRequest,
   AlgoOrderDetailsResult,
   AmendAlgoOrderRequest,
   AmendAlgoOrderResult,
+  AlgoOrderRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
