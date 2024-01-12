@@ -568,7 +568,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(await api.setLendingRate('USDT', '1')).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('58008', [], expect.any(String))
+          errorResponseObject('50060', [], expect.any(String))
         );
       }
     });
