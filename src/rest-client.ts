@@ -9,7 +9,6 @@ import {
   MarginMode,
   numberInString,
   Ticker,
-  AlgoOrderRequest,
   AmendOrderRequest,
   CancelAlgoOrderRequest,
   OrderIdRequest,
@@ -99,6 +98,8 @@ import {
   APIMarket,
   Instrument,
   PosMode,
+  PlaceAlgoOrderRequest,
+  AlgoOrderDetailsRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -210,8 +211,14 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
-  placeAlgoOrder(params: AlgoOrderRequest): Promise<AlgoOrderResult[]> {
+  placeAlgoOrder(params: PlaceAlgoOrderRequest): Promise<AlgoOrderResult[]> {
     return this.postPrivate('/api/v5/trade/order-algo', params);
+  }
+
+  getAlgoOrderDetails(
+    params: AlgoOrderDetailsRequest
+  ): Promise<AlgoOrderResult[]> {
+    return this.getPrivate('/api/v5/trade/order-algo', params);
   }
 
   cancelAlgoOrder(
@@ -562,9 +569,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/config');
   }
 
-  setPositionMode(
-    posMode: PosMode
-  ): Promise<AccountPositionModeResult[]> {
+  setPositionMode(posMode: PosMode): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 

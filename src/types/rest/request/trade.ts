@@ -33,7 +33,7 @@ export interface AlgoLongHistoryRequest {
   limit?: string;
 }
 
-export interface AlgoOrderRequest {
+export interface PlaceAlgoOrderRequest {
   instId: string;
   tdMode: TradeMode;
   ccy?: string;
@@ -78,6 +78,11 @@ export interface AmendOrderRequest {
   reqId?: string;
   newSz?: string;
   newPx?: string;
+}
+
+export interface AlgoOrderDetailsRequest {
+  algoId: string;
+  algoClOrdId: string;
 }
 
 export interface CancelAlgoOrderRequest {

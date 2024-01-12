@@ -1,4 +1,12 @@
-import { AlgoOrderState, AlgoOrderType, AlgoPositionSide, OrderState, OrderType, PositionSide, numberInString } from '../shared';
+import {
+  AlgoOrderState,
+  AlgoOrderType,
+  AlgoPositionSide,
+  OrderState,
+  OrderType,
+  PositionSide,
+  numberInString,
+} from '../shared';
 
 export interface OrderResult {
   clOrdId: string;
@@ -113,7 +121,7 @@ export interface OrderListItem {
   algoClOrdId: string;
   algoId: string;
   uTime: string;
- } 
+}
 
 export interface HistoricOrder {
   instType: string;
@@ -191,6 +199,54 @@ export interface AlgoOrderResult {
   sMsg: string;
 }
 
+export interface AlgoOrderDetailsResult {
+  instType: string;
+  instId: string;
+  ordId: string;
+  ordIdList: string[];
+  ccy: string;
+  clOrdId: string;
+  algoId: string;
+  attachAlgoOrds: any[];
+  sz: string;
+  closeFraction: string;
+  ordType: string;
+  side: string;
+  posSide: string;
+  tdMode: string;
+  tgtCcy: string;
+  state: string;
+  lever: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  tpOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  triggerPx: string;
+  triggerPxType: string;
+  ordPx: string;
+  actualSz: string;
+  actualPx: string;
+  actualSide: string;
+  pxVar: string;
+  pxSpread: string;
+  pxLimit: string;
+  szLimit: string;
+  tag: string;
+  timeInterval: string;
+  callbackRatio: string;
+  callbackSpread: string;
+  activePx: string;
+  moveTriggerPx: string;
+  reduceOnly: string;
+  triggerTime: string;
+  last: string;
+  failCode: string;
+  algoClOrdId: string;
+  amendPxOnTriggerType: string;
+  cTime: string;
+}
+
 export interface AlgoOrderListItem {
   activePx: string;
   actualPx: string;
@@ -229,7 +285,7 @@ export interface AlgoOrderListItem {
   timeInterval: string;
   tpOrdPx: string;
   tpTriggerPx: string;
-  tpTriggerPxType:  string;
+  tpTriggerPxType: string;
   triggerPx: string;
   reduceOnly: string;
   triggerPxType: string;
@@ -241,54 +297,52 @@ export interface AlgoOrderListItem {
   amendPxOnTriggerType: string;
 }
 
-
 export interface HistoricAlgoOrder {
   activePx: string;
   actualPx: string;
   actualSide: string;
   actualSz: string;
   algoClOrdId: string;
-  algoId:string;
+  algoId: string;
   attachAlgoOrds: any[];
   cTime: string;
   callbackRatio: string;
   callbackSpread: string;
-  ccy:string;
+  ccy: string;
   clOrdId: string;
   closeFraction: string;
   failCode: string;
-  instId:string;
+  instId: string;
   instType: string;
   last: string;
   lever: string;
   moveTriggerPx: string;
   ordId: string;
-  ordIdList:string[];
+  ordIdList: string[];
   ordPx: string;
   ordType: AlgoOrderType;
   posSide: AlgoPositionSide;
   pxLimit: string;
   pxSpread: string;
   pxVar: string;
-  quickMgnType:string;
+  quickMgnType: string;
   reduceOnly: string;
   side: string;
   slOrdPx: string;
   slTriggerPx: string;
-  slTriggerPxType:string;
+  slTriggerPxType: string;
   state: AlgoOrderState;
   sz: string;
   szLimit: string;
-  tag:string;
-  tdMode:string;
-  tgtCcy:string;
-  timeInterval:string;
+  tag: string;
+  tdMode: string;
+  tgtCcy: string;
+  timeInterval: string;
   tpOrdPx: string;
   tpTriggerPx: string;
-  tpTriggerPxType:string;
-  triggerPx:string;
+  tpTriggerPxType: string;
+  triggerPx: string;
   triggerPxType: string;
   triggerTime: string;
   amendPxOnTriggerType: string;
 }
-
