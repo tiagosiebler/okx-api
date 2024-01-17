@@ -47,6 +47,17 @@ Most methods accept JS objects. These can be populated using parameters specifie
 
 - [RestClient](src/rest-client.ts).
 - [OKX API Documentation](https://www.okx.com/docs-v5/en/#rest-api).
+- [TSDoc Documentation (generated using typedoc via npm module)](https://tsdocs.dev/docs/okx-api)
+
+## Contributions & Thanks
+
+Support my efforts to make algo trading accessible to all - register with my referral links:
+
+- [Bybit](https://www.bybit.com/en-US/register?affiliate_id=9410&language=en-US&group_id=0&group_type=1)
+- [Binance](https://www.binance.com/en/register?ref=20983262)
+- [OKX](https://www.okx.com/join/18504944)
+
+For more ways to give thanks & support my efforts, visit [Contributions & Thanks](https://github.com/tiagosiebler/awesome-crypto-examples/wiki/Contributions-&-Thanks)!
 
 ## Structure
 
@@ -155,27 +166,6 @@ Build a bundle using webpack:
 The bundle can be found in `dist/`. Altough usage should be largely consistent, smaller differences will exist. Documentation is still TODO.
 
 ---
-
-## Contributions & Thanks
-
-### Donations
-
-#### tiagosiebler
-
-Support my efforts to make algo trading accessible to all - register with my referral links:
-
-- [Bybit](https://www.bybit.com/en-US/register?affiliate_id=9410&language=en-US&group_id=0&group_type=1)
-- [Binance](https://www.binance.com/en/register?ref=20983262)
-- [OKX](https://www.okx.com/join/18504944)
-
-Or buy me a coffee using any of these:
-
-- BTC: `1C6GWZL1XW3jrjpPTS863XtZiXL1aTK7Jk`
-- ETH (ERC20): `0xd773d8e6a50758e1ada699bb6c4f98bb4abf82da`
-
-### Contributions & Pull Requests
-
-Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
 
 ## Star History
 
