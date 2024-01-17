@@ -474,7 +474,7 @@ export class RestClient extends BaseRestClient {
   }
 
   getSavingBalance(ccy?: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/saving-balance', { ccy });
+    return this.getPrivate('/api/v5/finance/savings/balance', { ccy });
   }
 
   savingsPurchaseRedemption(
@@ -483,7 +483,7 @@ export class RestClient extends BaseRestClient {
     side: 'purchase' | 'redempt',
     rate: numberInString
   ): Promise<any[]> {
-    return this.postPrivate('/api/v5/asset/purchase_redempt', {
+    return this.postPrivate('/api/v5/finance/savings/purchase-redempt', {
       ccy,
       amt,
       side,
@@ -492,19 +492,22 @@ export class RestClient extends BaseRestClient {
   }
 
   setLendingRate(ccy: string, rate: numberInString): Promise<any[]> {
-    return this.postPrivate('/api/v5/asset/set-lending-rate', { ccy, rate });
+    return this.postPrivate('/api/v5/finance/savings/set-lending-rate', {
+      ccy,
+      rate,
+    });
   }
 
   getLendingHistory(params?: PaginatedSymbolRequest): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/lending-history', params);
+    return this.getPrivate('/api/v5/finance/savings/lending-history', params);
   }
 
   getPublicBorrowInfo(ccy?: string): Promise<any[]> {
-    return this.get('/api/v5/asset/lending-rate-summary', { ccy });
+    return this.get('/api/v5/finance/savings/lending-rate-summary', { ccy });
   }
 
   getPublicBorrowHistory(params?: PaginatedSymbolRequest): Promise<any[]> {
-    return this.get('/api/v5/asset/lending-rate-history', params);
+    return this.get('/api/v5/finance/savings/lending-rate-history', params);
   }
 
   /**
