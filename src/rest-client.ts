@@ -1354,4 +1354,27 @@ export class RestClient extends BaseRestClient {
   getBrokerAccountInformation(): Promise<any[]> {
     return this.getPrivate('/api/v5/broker/nd/info');
   }
+
+  createSubAccount(params: {
+    subAcct:string,
+    label?:string,
+    clientIP?:string,
+    mainAcct: string,
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/broker/nd/create-subaccount', params);
+  }
+
+  //deleteSubAccount
+
+  createAnAPIKeyForASubAccount (params: {
+    subAcct:string,
+    label: string,
+    passphrase: string,
+    ip?:string,
+    perm?:string,
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/broker/nd/subaccount/apikey', params);
+  }
+
+
 }
