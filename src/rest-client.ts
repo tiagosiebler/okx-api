@@ -1364,7 +1364,11 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/broker/nd/create-subaccount', params);
   }
 
-  //deleteSubAccount
+  deleteSubAccount(params: {
+    subAcct:string,
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/broker/nd/delete-subaccount', params);
+  }
 
   createAnAPIKeyForASubAccount (params: {
     subAcct:string,
@@ -1375,6 +1379,5 @@ export class RestClient extends BaseRestClient {
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/broker/nd/subaccount/apikey', params);
   }
-
 
 }
