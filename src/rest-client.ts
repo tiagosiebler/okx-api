@@ -1370,7 +1370,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/broker/nd/delete-subaccount', params);
   } 
 
-  createAnAPIKeyForASubAccount (params: {
+  createSubAccountAPIKey(params: {
     subAcct:string,
     label: string,
     passphrase: string,
