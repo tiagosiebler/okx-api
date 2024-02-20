@@ -79,15 +79,19 @@ export default abstract class BaseRestClient {
     this.globalRequestOptions = {
       // in ms == 5 minutes by default
       timeout: 1000 * 60 * 5,
-      headers: {},
       // custom request options based on axios specs - see: https://github.com/axios/axios#request-config
       ...requestOptions,
     };
+
+    if (!this.globalRequestOptions.headers) {
+      this.globalRequestOptions.headers = {};
+    }
 
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
     if (market === 'demo') {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
+
     this.globalRequestOptions.headers['Content-Type'] = 'application/json';
     this.globalRequestOptions.headers['Accept'] = 'application/json';
 
@@ -95,10 +99,6 @@ export default abstract class BaseRestClient {
     this.apiSecret = credentials?.apiSecret;
     this.apiPassphrase = credentials?.apiPass;
   }
-
-  // private isDemoTrading(): boolean {
-  //   return this.environment === 'demo';
-  // }
 
   public get(endpoint: string, params?: any) {
     return this._call('GET', endpoint, params, true);
@@ -158,6 +158,10 @@ export default abstract class BaseRestClient {
       endpoint,
       params
     );
+
+    if (!options.headers) {
+      options.headers = {};
+    }
 
     if (!isPublicApi) {
       options.headers['OK-ACCESS-KEY'] = this.apiKey;
