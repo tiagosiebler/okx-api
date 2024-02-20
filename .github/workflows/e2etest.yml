@@ -1,4 +1,4 @@
-name: "Build & Test"
+name: 'Build & Test'
 
 on: [push]
 
@@ -10,17 +10,18 @@ on: [push]
 #     branches:
 
 jobs:
-  buildtest:
-    name: "Build & Test"
+  build:
+    name: 'Build & Test'
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org/'
           cache: 'npm'
 
       - name: Install

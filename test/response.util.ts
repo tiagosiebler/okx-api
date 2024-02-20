@@ -20,6 +20,16 @@ export function errorResponseObject(
   };
 }
 
+const WRONG_PERMISSION_ERROR_MATCHER = /permission/gim;
+const WRONG_PERMISSION_ERROR_ID = '50120';
+
+export function permissionErrorResponse() {
+  return expect.objectContaining({
+    code: WRONG_PERMISSION_ERROR_ID,
+    msg: expect.stringMatching(WRONG_PERMISSION_ERROR_MATCHER),
+  });
+}
+
 export function minimumAssetRequirementError() {
   return errorResponseObject(
     '70006',
