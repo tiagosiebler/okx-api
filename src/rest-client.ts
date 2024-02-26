@@ -103,6 +103,10 @@ import {
   AmendAlgoOrderRequest,
   AmendAlgoOrderResult,
   AlgoOrderRequest,
+  EconomicCalendarData,
+  UnitConvertData,
+  EconomicCalendarRequest,
+  UnitConvertRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -1238,8 +1242,14 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/insurance-fund', params);
   }
 
-  getUnitConvert(params: any): Promise<any[]> {
+  getUnitConvert(params: UnitConvertRequest): Promise<UnitConvertData[]> {
     return this.get('/api/v5/public/convert-contract-coin', params);
+  }
+
+  getEconomicCalendar(
+    params: EconomicCalendarRequest
+  ): Promise<EconomicCalendarData[]> {
+    return this.getPrivate('/api/v5/public/economic-calendar', params);
   }
 
   /**
@@ -1356,28 +1366,25 @@ export class RestClient extends BaseRestClient {
   }
 
   createSubAccount(params: {
-    subAcct:string,
-    label?:string,
-    clientIP?:string,
-    mainAcct: string,
+    subAcct: string;
+    label?: string;
+    clientIP?: string;
+    mainAcct: string;
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/broker/nd/create-subaccount', params);
   }
 
-  deleteSubAccount(params: {
-    subAcct:string,
-  }): Promise<any[]> {
+  deleteSubAccount(params: { subAcct: string }): Promise<any[]> {
     return this.postPrivate('/api/v5/broker/nd/delete-subaccount', params);
-  } 
+  }
 
   createSubAccountAPIKey(params: {
-    subAcct:string,
-    label: string,
-    passphrase: string,
-    ip?:string,
-    perm?:string,
+    subAcct: string;
+    label: string;
+    passphrase: string;
+    ip?: string;
+    perm?: string;
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/broker/nd/subaccount/apikey', params);
-  } 
-
+  }
 }

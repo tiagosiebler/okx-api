@@ -110,3 +110,29 @@ export interface Instrument {
   maxTriggerSz: string;
   maxStopSz: string;
 }
+
+export interface EconomicCalendarData {
+  calendarId: string;
+  date: string;
+  region: string;
+  category: string;
+  event: string;
+  refDate: string;
+  actual: string;
+  previous: string;
+  forecast: string;
+  dateSpan: string;
+  importance: string;
+  uTime: string;
+  prevInitial: string;
+  ccy: string;
+  unit: string;
+}
+
+export interface UnitConvertData {
+  type: '1' | '2';
+  instId: string;
+  px: string;
+  sz: string;
+  unit: 'coin' | 'usds';
+}
