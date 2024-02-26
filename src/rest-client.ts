@@ -105,12 +105,10 @@ import {
   AlgoOrderRequest,
   EconomicCalendarData,
   UnitConvertData,
-} from './types';
-import { ASSET_BILL_TYPE } from './constants';
-import {
   EconomicCalendarRequest,
   UnitConvertRequest,
-} from './types/rest/request/public';
+} from './types';
+import { ASSET_BILL_TYPE } from './constants';
 
 export class RestClient extends BaseRestClient {
   /**
