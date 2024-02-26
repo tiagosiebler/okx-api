@@ -1251,7 +1251,7 @@ export class RestClient extends BaseRestClient {
   getEconomicCalendar(
     params: EconomicCalendarRequest
   ): Promise<EconomicCalendarData[]> {
-    return this.get('/api/v5/public/economic-calendar', params);
+    return this.getPrivate('/api/v5/public/economic-calendar', params);
   }
 
   /**
