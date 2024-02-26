@@ -6,3 +6,4 @@ export * from './subaccount';
 export * from './trade';
 export * from './block-trading';
 export * from './grid-trading';
+export * from './public';
