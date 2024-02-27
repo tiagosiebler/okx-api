@@ -136,3 +136,16 @@ export interface UnitConvertData {
   sz: string;
   unit: 'coin' | 'usds';
 }
+
+export interface FundingRateHistory {
+  instType: string;
+  instId: string;
+  fundingRate: string;
+  realizedRate: string;
+  fundingTime: string;
+  method: string;
+}
+
+export interface SystemTime {
+  ts: string;
+}

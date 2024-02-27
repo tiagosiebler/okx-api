@@ -1,4 +1,9 @@
-import { InstrumentType, MarginMode, PositionSide } from '../shared';
+import {
+  InstrumentType,
+  MarginMode,
+  PositionSide,
+  WithdrawState,
+} from '../shared';
 
 export interface SetLeverageRequest {
   instId?: string;
@@ -30,6 +35,18 @@ export interface GetHistoricPositionParams {
   mgnMode?: string;
   type?: string;
   posId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+
+export interface GetWithdrawalHistoryRequest {
+  ccy?: string;
+  wdId?: string;
+  clientId?: string;
+  txId?: string;
+  type?: '3' | '4';
+  state?: WithdrawState;
   after?: string;
   before?: string;
   limit?: string;
