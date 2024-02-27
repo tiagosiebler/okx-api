@@ -20,3 +20,10 @@ export interface WithdrawRequest {
   areaCode?: string;
   clientId?: string;
 }
+
+export interface FundingRateRequest {
+  instId: string;
+  before?: string;
+  after?: string;
+  limit?: string;
+}

@@ -107,6 +107,16 @@ import {
   UnitConvertData,
   EconomicCalendarRequest,
   UnitConvertRequest,
+  PositionSide,
+  AdjustLeverageInfo,
+  InterestAccrued,
+  InterestRate,
+  Greeks,
+  AccountRiskState,
+  SystemTime,
+  MaxWithdrawal,
+  WithdrawalHistoryRequest,
+  FundingRateRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -469,7 +479,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/cancel-withdrawal', { wdId });
   }
 
-  getWithdrawalHistory(params?: any): Promise<any[]> {
+  getWithdrawalHistory(params?: WithdrawalHistoryRequest): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/withdrawal-history', params);
   }
 
@@ -628,6 +638,17 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  getLeverageEstimatedInfo(params: {
+    instType: string;
+    mgnMode: MarginMode;
+    lever: string;
+    instId?: string;
+    ccy?: string;
+    posSide: PositionSide;
+  }): Promise<AdjustLeverageInfo[]> {
+    return this.getPrivate('/api/v5/account/adjust-leverage-info', params);
+  }
+
   getMaxLoan(
     instId: string,
     mgnMode: MarginMode,
@@ -652,15 +673,23 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getInterestAccrued(params?: any): Promise<any[]> {
+  getInterestAccrued(params?: {
+    type?: '1' | '2';
+    ccy?: string;
+    instId?: string;
+    mgnMode?: MarginMode;
+    after?: string;
+    before?: string;
+    limit?: string;
+  }): Promise<InterestAccrued[]> {
     return this.getPrivate('/api/v5/account/interest-accrued', params);
   }
 
-  getInterestRate(ccy?: string): Promise<any[]> {
+  getInterestRate(ccy?: string): Promise<InterestRate[]> {
     return this.getPrivate('/api/v5/account/interest-rate', { ccy });
   }
 
-  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<any[]> {
+  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<Greeks[]> {
     return this.postPrivate('/api/v5/account/set-greeks', { greeksType });
   }
 
@@ -674,11 +703,11 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getMaxWithdrawals(ccy?: string): Promise<any[]> {
+  getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawal[]> {
     return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
   }
 
-  getAccountRiskState(): Promise<any[]> {
+  getAccountRiskState(): Promise<AccountRiskState[]> {
     return this.getPrivate('/api/v5/account/risk-state');
   }
 
@@ -1190,7 +1219,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/funding-rate', params);
   }
 
-  getFundingRateHistory(params: any): Promise<any[]> {
+  getFundingRateHistory(params: FundingRateRequest): Promise<any[]> {
     return this.get('/api/v5/public/funding-rate-history', params);
   }
 
@@ -1210,7 +1239,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/discount-rate-interest-free-quota', params);
   }
 
-  getSystemTime(params: any): Promise<any[]> {
+  getSystemTime(params: any): Promise<SystemTime[]> {
     return this.get('/api/v5/public/time', params);
   }
 

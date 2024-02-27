@@ -1,4 +1,4 @@
-import { MarginMode, PositionSide } from "../shared";
+import { MarginMode, PositionSide, WithdrawState } from '../shared';
 
 export interface AccountBalance {
   adjEq: string;
@@ -154,28 +154,27 @@ export interface AccountBill {
 }
 
 export interface AccountConfiguration {
-  acctLv:          string;
-  autoLoan:        boolean;
-  ctIsoMode:       string;
-  greeksType:      string;
-  level:           string;
-  levelTmp:        string;
-  mgnIsoMode:      string;
-  posMode:         string;
-  spotOffsetType:  string;
-  uid:             string;
-  label:           string;
-  roleType:        string;
-  traderInsts:     any[];
-  spotRoleType:    string;
+  acctLv: string;
+  autoLoan: boolean;
+  ctIsoMode: string;
+  greeksType: string;
+  level: string;
+  levelTmp: string;
+  mgnIsoMode: string;
+  posMode: string;
+  spotOffsetType: string;
+  uid: string;
+  label: string;
+  roleType: string;
+  traderInsts: any[];
+  spotRoleType: string;
   spotTraderInsts: any[];
-  opAuth:          string;
-  kycLv:           string;
-  ip:              string;
-  perm:            string;
-  mainUid:         string;
+  opAuth: string;
+  kycLv: string;
+  ip: string;
+  perm: string;
+  mainUid: string;
 }
-
 
 export interface AccountPositionModeResult {
   posMode: string;
@@ -241,4 +240,74 @@ export interface AccountFeeRate {
 
 export interface AccountIsolatedMode {
   isoMode: 'autonomy' | 'automatic';
+}
+
+export interface AdjustLeverageInfo {
+  estAvailQuoteTrans: string;
+  estAvailTrans: string;
+  estLiqPx: string;
+  estMgn: string;
+  estQuoteMgn: string;
+  estMaxAmt: string;
+  estQuoteMaxAmt: string;
+  existOrd: boolean;
+  maxLever: string;
+  minLever: string;
+}
+
+export interface InterestAccrued {
+  type: '1' | '2';
+  ccy: string;
+  instId: string;
+  mgnMode: MarginMode;
+  interest: string;
+  interestRate: string;
+  liab: string;
+  ts: string;
+}
+
+export interface InterestRate {
+  interestRate: string;
+  ccy: string;
+}
+
+export interface Greeks {
+  greeksType: string;
+}
+
+export interface MaxWithdrawal {
+  ccy: string;
+  maxWd: string;
+  maxWdEx: string;
+  spotOffsetMaxWd: string;
+  spotOffsetMaxWdEx: string;
+}
+
+export interface AccountRiskState {
+  atRisk: string;
+  atRiskIdx: string;
+  atRiskMgn: string;
+  ts: string;
+}
+
+export interface WithdrawalHistory {
+  ccy: string;
+  chain: string;
+  nonTradableAsset: boolean;
+  amt: string;
+  ts: string;
+  from: string;
+  areaCodeFrom: string;
+  to: string;
+  areaCodeTo: string;
+  tag: string;
+  pmtId: string;
+  memo: string;
+  addrExt: any;
+  txId: string;
+  fee: string;
+  feeCcy: string;
+  state: WithdrawState;
+  wdId: string;
+  clientId: string;
 }
