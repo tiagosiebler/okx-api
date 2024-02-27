@@ -114,7 +114,7 @@ import {
   Greeks,
   AccountRiskState,
   SystemTime,
-  MaxWithdrawals,
+  MaxWithdrawal,
   WithdrawalHistoryRequest,
   FundingRateRequest,
 } from './types';
@@ -703,7 +703,7 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawals[]> {
+  getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawal[]> {
     return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
   }
 
