@@ -275,7 +275,7 @@ export interface Greeks {
   greeksType: string;
 }
 
-export interface getMaxWithdrawals {
+export interface MaxWithdrawals {
   ccy: string;
   maxWd: string;
   maxWdEx: string;

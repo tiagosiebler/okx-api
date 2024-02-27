@@ -112,11 +112,11 @@ import {
   InterestAccrued,
   InterestRate,
   Greeks,
-  getMaxWithdrawals,
   AccountRiskState,
-  GetFundingRateRequest,
   SystemTime,
-  GetWithdrawalHistoryRequest,
+  MaxWithdrawals,
+  WithdrawalHistoryRequest,
+  FundingRateRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -479,7 +479,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/cancel-withdrawal', { wdId });
   }
 
-  getWithdrawalHistory(params?: GetWithdrawalHistoryRequest): Promise<any[]> {
+  getWithdrawalHistory(params?: WithdrawalHistoryRequest): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/withdrawal-history', params);
   }
 
@@ -703,7 +703,7 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getMaxWithdrawals(ccy?: string): Promise<getMaxWithdrawals[]> {
+  getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawals[]> {
     return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
   }
 
@@ -1219,7 +1219,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/funding-rate', params);
   }
 
-  getFundingRateHistory(params: GetFundingRateRequest): Promise<any[]> {
+  getFundingRateHistory(params: FundingRateRequest): Promise<any[]> {
     return this.get('/api/v5/public/funding-rate-history', params);
   }
 

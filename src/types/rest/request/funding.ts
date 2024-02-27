@@ -21,7 +21,7 @@ export interface WithdrawRequest {
   clientId?: string;
 }
 
-export interface GetFundingRateRequest {
+export interface FundingRateRequest {
   instId: string;
   before?: string;
   after?: string;

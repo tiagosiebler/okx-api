@@ -40,7 +40,7 @@ export interface GetHistoricPositionParams {
   limit?: string;
 }
 
-export interface GetWithdrawalHistoryRequest {
+export interface WithdrawalHistoryRequest {
   ccy?: string;
   wdId?: string;
   clientId?: string;
