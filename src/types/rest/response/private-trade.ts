@@ -226,6 +226,7 @@ export interface AlgoOrderDetailsResult {
   tpOrdPx: string;
   slTriggerPx: string;
   slTriggerPxType: string;
+  slOrdPx: string;
   triggerPx: string;
   triggerPxType: string;
   ordPx: string;
@@ -244,6 +245,7 @@ export interface AlgoOrderDetailsResult {
   moveTriggerPx: string;
   reduceOnly: string;
   triggerTime: string;
+  quickMgnType: string;
   last: string;
   failCode: string;
   algoClOrdId: string;
