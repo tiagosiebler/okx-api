@@ -214,12 +214,12 @@ export interface AlgoOrderDetailsResult {
   attachAlgoOrds: any[];
   sz: string;
   closeFraction: string;
-  ordType: string;
+  ordType: AlgoOrderType;
   side: string;
-  posSide: string;
+  posSide: AlgoPositionSide;
   tdMode: string;
   tgtCcy: string;
-  state: string;
+  state: AlgoOrderState;
   lever: string;
   tpTriggerPx: string;
   tpTriggerPxType: string;
