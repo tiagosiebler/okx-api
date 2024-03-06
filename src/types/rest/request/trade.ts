@@ -9,7 +9,7 @@ import {
   MarginMode,
   InstrumentType,
   AlgoOrderState,
-  AlgoPositionSide,
+  AlgoPositionSide
 } from '../shared';
 
 export interface AlgoRecentHistoryRequest {
@@ -80,8 +80,9 @@ export interface AmendOrderRequest {
   newPx?: string;
 }
 
-export interface AlgoOrderDetailsRequest {
+export type AlgoOrderDetailsRequest = {
   algoId: string;
+} | {
   algoClOrdId: string;
 }
 
