@@ -8,6 +8,7 @@ import {
   WebsocketClientOptions,
   WsAuthRequest,
   WsAuthRequestArg,
+  WsChannelConnInfoEvent,
   WsChannelSubUnSubRequestArg,
   WSClientConfigurableOptions,
   WsDataEvent,
@@ -31,6 +32,7 @@ import {
   isWsDataEvent,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
+  isConnCountEvent,
 } from './util';
 import {
   getWsKeyForMarket,
@@ -726,7 +728,7 @@ export class WebsocketClient extends EventEmitter {
         // Successfully authenticated
         if (msg.code === WS_EVENT_CODE_ENUM.OK) {
           this.logger.info(
-            `Authenticated succesfully on wsKey(${wsKey})`,
+            `Authenticated successfully on wsKey(${wsKey})`,
             logContext
           );
           this.emit('response', { ...msg, wsKey });
@@ -751,6 +753,10 @@ export class WebsocketClient extends EventEmitter {
 
       if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
         // this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
+        return this.emit('response', { ...msg, wsKey });
+      }
+
+      if (isConnCountEvent(msg)) {
         return this.emit('response', { ...msg, wsKey });
       }
 
