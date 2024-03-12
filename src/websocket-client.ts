@@ -726,7 +726,7 @@ export class WebsocketClient extends EventEmitter {
         // Successfully authenticated
         if (msg.code === WS_EVENT_CODE_ENUM.OK) {
           this.logger.info(
-            `Authenticated succesfully on wsKey(${wsKey})`,
+            `Authenticated successfully on wsKey(${wsKey})`,
             logContext
           );
           this.emit('response', { ...msg, wsKey });
