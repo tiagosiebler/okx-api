@@ -58,7 +58,13 @@ export function isWsUnsubscribeEvent(evtData: unknown): boolean {
   return isWsEvent(evtData) && evtData.event === 'unsubscribe';
 }
 
+/** Information event */
+export function isConnCountEvent(evtData: unknown): boolean {
+  return isWsEvent(evtData) && evtData.event === 'channel-conn-count';
+}
+
 /** Simple typescript guard never expecting code to reach it (will throw typescript error if called) */
 export function neverGuard(x: never, msg: string): Error {
   return new Error(`Unhandled value exception "${x}", ${msg}`);
 }
+

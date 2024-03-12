@@ -8,6 +8,7 @@ import {
   WebsocketClientOptions,
   WsAuthRequest,
   WsAuthRequestArg,
+  WsChannelConnInfoEvent,
   WsChannelSubUnSubRequestArg,
   WSClientConfigurableOptions,
   WsDataEvent,
@@ -31,6 +32,7 @@ import {
   isWsDataEvent,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
+  isConnCountEvent,
 } from './util';
 import {
   getWsKeyForMarket,
@@ -67,6 +69,8 @@ interface WebsocketClientEvents {
   update: (response: WsDataEvent & WsKeyObject) => void;
   /** Exception from ws client OR custom listeners */
   error: (response: any) => void;
+  /** Information update */
+  channelConnInfo: (response: WsChannelConnInfoEvent) => void;
 }
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
@@ -752,6 +756,10 @@ export class WebsocketClient extends EventEmitter {
       if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
         // this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
         return this.emit('response', { ...msg, wsKey });
+      }
+
+      if (isConnCountEvent(msg)) {
+        return this.emit('channelConnInfo', { ...msg, wsKey });
       }
 
       this.logger.error('Unhandled/unrecognised ws event message', {
