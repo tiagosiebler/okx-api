@@ -47,7 +47,7 @@ export function getRestBaseUrl(
       return 'https://www.okx.com';
     }
     case 'aws': {
-      return 'https://aws.okex.com';
+      return 'https://aws.oke.com';
     }
   }
 }
