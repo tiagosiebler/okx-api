@@ -85,6 +85,8 @@ export interface Pagination {
 
 export type PosMode = 'long_short_mode' | 'net_mode';
 
+export type AccountLevel = '1' | '2' | '3' | '4';
+
 export type WithdrawState =
   | '-3'
   | '-2'

@@ -67,10 +67,13 @@ import {
   AccountMaxOrderAmount,
   AccountMaxTradableAmount,
   AccountChangeMarginResult,
+  AccountLevel,
   AccountLeverage,
   AccountMaxLoan,
+  AccountModeResult,
   AccountFeeRate,
   AccountIsolatedMode,
+  AutoLoanResult,
   SubAccount,
   SubAccountAPIReset,
   SubAccountBalances,
@@ -597,6 +600,14 @@ export class RestClient extends BaseRestClient {
 
   setPositionMode(posMode: PosMode): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
+  }
+
+  setAccountMode(acctLv: AccountLevel): Promise<AccountModeResult[]> {
+    return this.postPrivate('/api/v5/account/set-account-level', { acctLv });
+  }
+
+  setAutoLoan(autoLoan: boolean): Promise<AutoLoanResult[]> {
+    return this.postPrivate('/api/v5/account/set-auto-loan', { autoLoan });
   }
 
   setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
