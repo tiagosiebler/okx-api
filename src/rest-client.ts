@@ -602,7 +602,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 
-  setAccountMode(params: { acctLv: AccountLevel }): Promise<AccountModeResult[]> {
+  setAccountMode(params: { acctLv: AccountLevel; }): Promise<AccountModeResult[]> {
     return this.postPrivate('/api/v5/account/set-account-level', params);
   }
 
