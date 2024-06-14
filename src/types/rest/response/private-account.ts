@@ -1,4 +1,4 @@
-import { MarginMode, PositionSide, WithdrawState } from '../shared';
+import { AccountLevel, MarginMode, PositionSide, WithdrawState } from '../shared';
 
 export interface AccountBalance {
   adjEq: string;
@@ -178,6 +178,14 @@ export interface AccountConfiguration {
 
 export interface AccountPositionModeResult {
   posMode: string;
+}
+
+export interface AccountModeResult {
+  acctLv: AccountLevel;
+}
+
+export interface AutoLoanResult {
+  autoLoan: boolean;
 }
 
 export interface AccountLeverageResult {
