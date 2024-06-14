@@ -602,8 +602,8 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 
-  setAccountMode(acctLv: AccountLevel): Promise<AccountModeResult[]> {
-    return this.postPrivate('/api/v5/account/set-account-level', { acctLv });
+  setAccountMode(params: { acctLv: AccountLevel }): Promise<AccountModeResult[]> {
+    return this.postPrivate('/api/v5/account/set-account-level', params);
   }
 
   setAutoLoan(params: { autoLoan: boolean; }): Promise<AutoLoanResult[]> {
