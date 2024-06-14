@@ -606,10 +606,10 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-account-level', { acctLv });
   }
 
-  setAutoLoan(autoLoan: boolean): Promise<AutoLoanResult[]> {
-    return this.postPrivate('/api/v5/account/set-auto-loan', { autoLoan });
+  setAutoLoan(params: { autoLoan: boolean; }): Promise<AutoLoanResult[]> {
+    return this.postPrivate('/api/v5/account/set-auto-loan', params);
   }
-
+  
   setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
     return this.postPrivate('/api/v5/account/set-leverage', params);
   }
