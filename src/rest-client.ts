@@ -602,14 +602,16 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
   }
 
-  setAccountMode(params: { acctLv: AccountLevel; }): Promise<AccountModeResult[]> {
+  setAccountMode(params: {
+    acctLv: AccountLevel;
+  }): Promise<AccountModeResult[]> {
     return this.postPrivate('/api/v5/account/set-account-level', params);
   }
 
-  setAutoLoan(params: { autoLoan: boolean; }): Promise<AutoLoanResult[]> {
+  setAutoLoan(params: { autoLoan: boolean }): Promise<AutoLoanResult[]> {
     return this.postPrivate('/api/v5/account/set-auto-loan', params);
   }
-  
+
   setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
     return this.postPrivate('/api/v5/account/set-leverage', params);
   }
@@ -745,10 +747,6 @@ export class RestClient extends BaseRestClient {
     ccy?: string;
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/account/interest-limits', params);
-  }
-
-  positionBuilder(params?: any): Promise<any[]> {
-    return this.postPrivate('/api/v5/account/simulated_margin', params);
   }
 
   getGreeks(ccy?: string): Promise<any[]> {
