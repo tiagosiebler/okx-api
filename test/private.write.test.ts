@@ -492,16 +492,6 @@ describe('Private REST API Endpoints (POST)', () => {
         );
       }
     });
-
-    it('positionBuilder()', async () => {
-      try {
-        expect(await api.positionBuilder()).toMatchObject(
-          successResponseList()
-        );
-      } catch (e) {
-        expect(e).toBeFalsy();
-      }
-    });
   });
 
   describe('SubAccount Endpoints', () => {

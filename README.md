@@ -2,11 +2,18 @@
 
 [![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml) [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1] [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1] [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 
-[![okx okex SDK for nodejs rest & websockets api](https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logo2.png?raw=true)][1]
+<p align="center">
+  <a href="https://www.npmjs.com/package/okx-api">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoDarkMode2.svg?raw=true#gh-dark-mode-only">
+      <img alt="SDK Logo" src="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoBrightMode2.svg?raw=true#gh-light-mode-only">
+    </picture>
+  </a>
+</p>
 
 [1]: https://www.npmjs.com/package/okx-api
 
-Complete, updated & performant node.js SDK for the OKX(OKEX) APIs and WebSockets:
+Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets:
 
 - Complete integration with all OKX APIs, including the v5 APIs.
 - TypeScript support (with type declarations for most API requests & responses).
@@ -30,16 +37,20 @@ npm install okx-api
 
 ## Related projects
 
-- Try my connectors:
-  - [binance](https://www.npmjs.com/package/binance)
-  - [bybit-api](https://www.npmjs.com/package/bybit-api)
-  - [bitget-api](https://www.npmjs.com/package/bitget-api)
-  - [okx-api](https://www.npmjs.com/package/okx-api)
-  - [ftx-api](https://www.npmjs.com/package/ftx-api)
+Check out my related JavaScript/TypeScript/Node.js projects:
+
+- Try my REST API & WebSocket SDKs:
+  - [Bybit-api Node.js SDK](https://www.npmjs.com/package/bybit-api)
+  - [Binance Node.js SDK](https://www.npmjs.com/package/binance)
+  - [Okx-api Node.js SDK](https://www.npmjs.com/package/okx-api)
+  - [Gateio-api Node.js SDK](https://www.npmjs.com/package/gateio-api)
+  - [Bitget-api Node.js SDK](https://www.npmjs.com/package/bitget-api)
+  - [Bitmart-api Node.js SDK](https://www.npmjs.com/package/bitmart-api)
 - Try my misc utilities:
-  - [orderbooks](https://www.npmjs.com/package/orderbooks)
+  - [OrderBooks Node.js](https://www.npmjs.com/package/orderbooks)
+  - [Crypto Exchange Account State Cache](https://www.npmjs.com/package/accountstate)
 - Check out my examples:
-  - [awesome-crypto-examples](https://github.com/tiagosiebler/awesome-crypto-examples)
+  - [awesome-crypto-examples Node.js](https://github.com/tiagosiebler/awesome-crypto-examples)
 
 ## Documentation
 
@@ -169,4 +180,4 @@ The bundle can be found in `dist/`. Altough usage should be largely consistent, 
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bitget-api,tiagosiebler/bybit-api,tiagosiebler/binance,tiagosiebler/orderbooks,tiagosiebler/okx-api,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&tiagosiebler/binance&tiagosiebler/orderbooks&tiagosiebler/okx-api&tiagosiebler/bitget-api&tiagosiebler/awesome-crypto-examples&tiagosiebler/ftx-api&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bybit-api,tiagosiebler/binance,tiagosiebler/orderbooks,tiagosiebler/okx-api,tiagosiebler/bitget-api,tiagosiebler/awesome-crypto-examples,tiagosiebler/bitmart-api,tiagosiebler/gateio-api&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&tiagosiebler/binance&tiagosiebler/orderbooks&tiagosiebler/okx-api&tiagosiebler/bitget-api&tiagosiebler/awesome-crypto-examples&tiagosiebler/bitmart-api&tiagosiebler/gateio-api&Date)
