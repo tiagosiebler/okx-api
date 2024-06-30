@@ -9,7 +9,7 @@ import {
   MarginMode,
   InstrumentType,
   AlgoOrderState,
-  AlgoPositionSide
+  AlgoPositionSide,
 } from '../shared';
 
 export interface AlgoRecentHistoryRequest {
@@ -80,11 +80,13 @@ export interface AmendOrderRequest {
   newPx?: string;
 }
 
-export type AlgoOrderDetailsRequest = {
-  algoId: string;
-} | {
-  algoClOrdId: string;
-}
+export type AlgoOrderDetailsRequest =
+  | {
+      algoId: string;
+    }
+  | {
+      algoClOrdId: string;
+    };
 
 export interface AmendAlgoOrderRequest {
   instId: string;
@@ -172,3 +174,10 @@ export interface OrderRequest {
   /** Quick margin type */
   quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
 }
+
+export interface GetTransactionDetailsArchiveRequest {
+  year: string;
+  quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+}
+
+

@@ -1,4 +1,9 @@
-import { AccountLevel, MarginMode, PositionSide, WithdrawState } from '../shared';
+import {
+  AccountLevel,
+  MarginMode,
+  PositionSide,
+  WithdrawState,
+} from '../shared';
 
 export interface AccountBalance {
   adjEq: string;
@@ -318,4 +323,128 @@ export interface WithdrawalHistory {
   state: WithdrawState;
   wdId: string;
   clientId: string;
+}
+
+export interface Instrument {
+  baseCcy: string;
+  ctMult: string;
+  ctType: string;
+  ctVal: string;
+  ctValCcy: string;
+  expTime: string;
+  instFamily: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  listTime: string;
+  lotSz: string;
+  maxIcebergSz: string;
+  maxLmtAmt: string;
+  maxLmtSz: string;
+  maxMktAmt: string;
+  maxMktSz: string;
+  maxStopSz: string;
+  maxTriggerSz: string;
+  maxTwapSz: string;
+  minSz: string;
+  optType: string;
+  quoteCcy: string;
+  settleCcy: string;
+  state: string;
+  stk: string;
+  tickSz: string;
+}
+
+export interface QuickMarginBorrowRepayResponse {
+  instId: string;
+  ccy: string;
+  side: 'borrow' | 'repay';
+  amt: string;
+  posSide: string;
+  ts: string;
+}
+
+export interface QuickMarginBorrowRepayHistory {
+  instId: string;
+  ccy: string;
+  side: 'borrow' | 'repay';
+  accBorrowed: string;
+  amt: string;
+  refId: string;
+  ts: string;
+}
+
+export interface VIPInterest {
+  ordId: string;
+  ccy: string;
+  interest: string;
+  interestRate: string;
+  liab: string;
+  ts: string;
+}
+
+export interface VIPLoanOrder {
+  ts: string;
+  nextRefreshTime: string;
+  ccy: string;
+  ordId: string;
+  state: '1' | '2' | '3' | '4' | '5';
+  origRate: string;
+  curRate: string;
+  dueAmt: string;
+  borrowAmt: string;
+  repayAmt: string;
+}
+
+export interface VIPLoanOrderDetail {
+  amt: string;
+  ccy: string;
+  failReason: string;
+  rate: string;
+  ts: string;
+  type: '1' | '2' | '3' | '4';
+}
+
+export interface FixedLoanBorrowingLimitDetail {
+  ccy: string;
+  used: string;
+  borrowed: string;
+  availBorrow: string;
+  minBorrow: string;
+}
+
+export interface FixedLoanBorrowingLimit {
+  totalBorrowLmt: string;
+  totalAvailBorrow: string;
+  borrowed: string;
+  used: string;
+  availRepay: string;
+  details: FixedLoanBorrowingLimitDetail[];
+  ts: string;
+}
+
+export interface FixedLoanBorrowQuote {
+  ccy: string;
+  term: string;
+  estAvailBorrow: string;
+  estRate: string;
+  estInterest: string;
+  penaltyInterest: string;
+  ts: string;
+}
+
+export interface SetMMPConfigResponse {
+  instFamily: string;
+  timeInterval: string;
+  frozenInterval: string;
+  qtyLimit: string;
+}
+
+export interface MMPConfig {
+  frozenInterval: string;
+  instFamily: string;
+  mmpFrozen: boolean;
+  mmpFrozenUntil: string;
+  qtyLimit: string;
+  timeInterval: string;
 }

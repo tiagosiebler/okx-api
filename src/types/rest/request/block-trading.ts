@@ -68,3 +68,4 @@ export interface GetBlockQuoteParams {
   endId?: string;
   limit?: string;
 }
+

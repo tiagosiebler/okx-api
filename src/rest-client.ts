@@ -120,8 +120,50 @@ import {
   MaxWithdrawal,
   WithdrawalHistoryRequest,
   FundingRateRequest,
+  GetInstrumentsRequest,
+  QuickMarginBorrowRepayRequest,
+  QuickMarginBorrowRepayResponse,
+  GetQuickMarginBorrowRepayHistoryRequest,
+  QuickMarginBorrowRepayHistory,
+  GetVIPInterestRequest,
+  VIPInterest,
+  GetVIPLoanOrderListRequest,
+  VIPLoanOrder,
+  GetVIPLoanOrderDetailRequest,
+  VIPLoanOrderDetail,
+  FixedLoanBorrowingLimit,
+  GetFixedLoanBorrowQuoteRequest,
+  FixedLoanBorrowQuote,
+  SubmitFixedLoanBorrowingOrderRequest,
+  UpdateFixedLoanBorrowingOrderRequest,
+  GetFixedLoanBorrowingOrdersListRequest,
+  PositionBuilderRequest,
+  SetMMPConfigRequest,
+  SetMMPConfigResponse,
+  MMPConfig,
+  GetTransactionDetailsArchiveRequest,
+  GetTransactionDetailsArchiveResponse,
+  CancelAllAfterResponse,
+  CloseContractGridPositionRequest,
+  GetRSIBackTestingRequest,
+  SubAccountMaxWithdrawal,
+  GetSubAccountMaxWithdrawalsRequest,
+  GetManagedSubAccountTransferHistoryRequest,
+  ManagedSubAccountTransfer,
+  SetSubAccountLoanAllocationRequest,
+  NonTradableAsset,
+  GetDepositWithdrawStatusRequest,
+  GetPremiumHistoryRequest,
+  GetContractOpenInterestHistoryRequest,
+  GetContractTakerVolumeRequest,
+  GetTopTradersContractLongShortRatioRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
+import {
+  GetLendingOrderListRequest,
+  GetLendingSubOrderListRequest,
+  LendingOrder,
+} from './types/rest/request/simple-earn';
 
 export class RestClient extends BaseRestClient {
   /**
@@ -229,6 +271,38 @@ export class RestClient extends BaseRestClient {
    */
   getFillsHistory(params: FillsHistoryRequest): Promise<OrderFill[]> {
     return this.getPrivate('/api/v5/trade/fills-history', params);
+  }
+
+  applyTransactionDetailsArchive(
+    params: GetTransactionDetailsArchiveRequest
+  ): Promise<GetTransactionDetailsArchiveResponse[]> {
+    return this.postPrivate('/api/v5/trade/fills-archive', params);
+  }
+
+  getTransactionDetailsArchiveLink(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/trade/fills-archive', params);
+  }
+
+  cancelMassOrder(params: { instType: string; instFamily: string }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/trade/mass-cancel', params);
+  }
+
+  cancelAllAfter(params: {
+    timeOut: string;
+    tag?: string;
+  }): Promise<CancelAllAfterResponse[]> {
+    return this.postPrivate('/api/v5/trade/cancel-all-after', params);
+  }
+
+  getAccountRateLimit(): Promise<any[]> {
+    return this.getPrivate('/api/v5/trade/account-rate-limit');
   }
 
   placeAlgoOrder(params: AlgoOrderRequest): Promise<AlgoOrderResult[]> {
@@ -418,6 +492,10 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/balances', { ccy });
   }
 
+  getNonTradableAssets(params?: { ccy?: string }): Promise<NonTradableAsset[]> {
+    return this.getPrivate('/api/v5/asset/non-tradable-assets', params);
+  }
+
   getAccountAssetValuation(ccy?: string): Promise<AccountAssetValuation[]> {
     return this.getPrivate('/api/v5/asset/asset-valuation', { ccy });
   }
@@ -486,8 +564,26 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/withdrawal-history', params);
   }
 
+  getDepositWithdrawStatus(
+    params: GetDepositWithdrawStatusRequest
+  ): Promise<any[]> {
+    return this.getPrivate('/api/v5/asset/deposit-withdraw-status', params);
+  }
+
   smallAssetsConvert(ccy: string[]): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/convert-dust-assets', { ccy });
+    return this.postPrivate('/api/v5/asset/convert-dust-assets', { ccy });
+  }
+
+  getExchangeList(): Promise<any[]> {
+    return this.get('/api/v5/asset/exchange-list');
+  }
+
+  applyMonthlyStatement(params?: { month?: string }): Promise<any[]> {
+    return this.postPrivate('/api/v5/asset/monthly-statement', params);
+  }
+
+  getMonthlyStatement(params: { month: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/asset/monthly-statement', params);
   }
 
   getSavingBalance(ccy?: string): Promise<any[]> {
@@ -561,6 +657,10 @@ export class RestClient extends BaseRestClient {
    * Account endpoints (private)
    *
    */
+
+  getInstruments(params: GetInstrumentsRequest): Promise<Instrument[]> {
+    return this.getPrivate('/api/v5/account/instruments', params);
+  }
 
   getBalance(ccy?: string): Promise<AccountBalance[]> {
     return this.getPrivate('/api/v5/account/balance', { ccy });
@@ -724,6 +824,24 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/risk-state');
   }
 
+  submitQuickMarginBorrowRepay(
+    params: QuickMarginBorrowRepayRequest
+  ): Promise<QuickMarginBorrowRepayResponse[]> {
+    return this.postPrivate(
+      '/api/v5/account/quick-margin-borrow-repay',
+      params
+    );
+  }
+
+  getQuickMarginBorrowRepayHistory(
+    params: GetQuickMarginBorrowRepayHistoryRequest
+  ): Promise<QuickMarginBorrowRepayHistory[]> {
+    return this.getPrivate(
+      '/api/v5/account/quick-margin-borrow-repay-history',
+      params
+    );
+  }
+
   borrowRepayVIPLoan(
     ccy: string,
     side: 'borrow' | 'repay',
@@ -742,11 +860,122 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/borrow-repay-history', params);
   }
 
+  getVIPInterestAccrued(params: GetVIPInterestRequest): Promise<VIPInterest[]> {
+    return this.getPrivate('/api/v5/account/vip-interest-accrued', params);
+  }
+
+  getVIPInterestDeducted(
+    params: GetVIPInterestRequest
+  ): Promise<VIPInterest[]> {
+    return this.getPrivate('/api/v5/account/vip-interest-deducted', params);
+  }
+
+  getVIPLoanOrders(
+    params: GetVIPLoanOrderListRequest
+  ): Promise<VIPLoanOrder[]> {
+    return this.getPrivate('/api/v5/account/vip-loan-order-list', params);
+  }
+
+  getVIPLoanOrder(
+    params: GetVIPLoanOrderDetailRequest
+  ): Promise<VIPLoanOrderDetail[]> {
+    return this.getPrivate('/api/v5/account/vip-loan-order-detail', params);
+  }
+
   getBorrowInterestLimits(params?: {
     type?: '1' | '2';
     ccy?: string;
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/account/interest-limits', params);
+  }
+
+  getFixedLoanBorrowingLimit(): Promise<FixedLoanBorrowingLimit[]> {
+    return this.getPrivate('/api/v5/account/fixed-loan/borrowing-limit');
+  }
+
+  getFixedLoanBorrowQuote(
+    params: GetFixedLoanBorrowQuoteRequest
+  ): Promise<FixedLoanBorrowQuote[]> {
+    return this.getPrivate(
+      '/api/v5/account/fixed-loan/borrowing-quote',
+      params
+    );
+  }
+
+  submitFixedLoanBorrowingOrder(
+    params: SubmitFixedLoanBorrowingOrderRequest
+  ): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/borrowing-order',
+      params
+    );
+  }
+
+  updateFixedLoanBorrowingOrder(
+    params: UpdateFixedLoanBorrowingOrderRequest
+  ): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/amend-borrowing-order',
+      params
+    );
+  }
+
+  manualRenewFixedLoanBorrowingOrder(params: {
+    ordId: string;
+    maxRate: string;
+  }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/manual-reborrow',
+      params
+    );
+  }
+
+  repayFixedLoanBorrowingOrder(params: { ordId: string }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/repay-borrowing-order',
+      params
+    );
+  }
+
+  getFixedLoanBorrowingOrdersList(
+    params: GetFixedLoanBorrowingOrdersListRequest
+  ): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/account/fixed-loan/borrowing-orders-list',
+      params
+    );
+  }
+
+  positionBuilder(params: PositionBuilderRequest): Promise<any[]> {
+    return this.postPrivate('/api/v5/account/position-builder', params);
+  }
+
+  updateRiskOffsetAmount(params: {
+    ccy: string;
+    clSpotInUseAmt: string;
+  }): Promise<
+    {
+      ccy: string;
+      clSpotInUseAmt: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-riskOffset-amt', params);
   }
 
   getGreeks(ccy?: string): Promise<any[]> {
@@ -761,6 +990,37 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/position-tiers', params);
   }
 
+  updateRiskOffsetType(params: { type: '1' | '2' | '3' | '4' }): Promise<
+    {
+      type: '1' | '2' | '3' | '4';
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-riskOffset-type', params);
+  }
+
+  activateOption(): Promise<
+    {
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/activate-option');
+  }
+
+  resetMMPStatus(params: { instType?: 'OPTION'; instFamily: string }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/mmp-reset', params);
+  }
+
+  setMMPConfig(params: SetMMPConfigRequest): Promise<SetMMPConfigResponse[]> {
+    return this.postPrivate('/api/v5/account/mmp-config', params);
+  }
+
+  getMMPConfig(params?: { instFamily?: string }): Promise<MMPConfig[]> {
+    return this.getPrivate('/api/v5/account/mmp-config', params);
+  }
   /**
    *
    * SubAccount endpoints (private)
@@ -805,6 +1065,12 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  getSubAccountMaxWithdrawals(
+    params: GetSubAccountMaxWithdrawalsRequest
+  ): Promise<SubAccountMaxWithdrawal> {
+    return this.getPrivate('/api/v5/account/subaccount/max-withdrawal', params);
+  }
+
   /** History of sub-account transfer */
   getSubAccountTransferHistory(params?: {
     ccy?: string;
@@ -815,6 +1081,15 @@ export class RestClient extends BaseRestClient {
     limit?: string;
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/subaccount/bills', params);
+  }
+
+  getManagedSubAccountTransferHistory(
+    params: GetManagedSubAccountTransferHistoryRequest
+  ): Promise<ManagedSubAccountTransfer[]> {
+    return this.getPrivate(
+      '/api/v5/asset/subaccount/managed-subaccount-bills',
+      params
+    );
   }
 
   /** Master accounts manage the transfers between sub-accounts */
@@ -842,6 +1117,29 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  setSubAccountLoanAllocation(
+    params: SetSubAccountLoanAllocationRequest
+  ): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/subaccount/set-loan-allocation',
+      params
+    );
+  }
+
+  getSubAccountBorrowInterestAndLimit(params: {
+    subAcct: string;
+    ccy?: string;
+  }): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/account/subaccount/interest-limits',
+      params
+    );
+  }
+
   /**
    *
    * Grid trading endpoints (private)
@@ -866,6 +1164,34 @@ export class RestClient extends BaseRestClient {
 
   stopGridAlgoOrder(orders: StopGridAlgoOrderRequest[]): Promise<any[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/stop-order-algo', orders);
+  }
+
+  closeGridContractPosition(
+    params: CloseContractGridPositionRequest
+  ): Promise<any[]> {
+    return this.postPrivate('/api/v5/tradingBot/grid/close-position', params);
+  }
+
+  cancelCloseContractGridOrder(params: {
+    algoId: string;
+    ordId: string;
+  }): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/cancel-close-order',
+      params
+    );
+  }
+
+  instantTriggerGridAlgoOrder(params: { algoId: string }): Promise<
+    {
+      algoId: string;
+      algoClOrdId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/order-instant-trigger',
+      params
+    );
   }
 
   getGridAlgoOrderList(params: GetGridAlgoOrdersRequest): Promise<any[]> {
@@ -953,6 +1279,17 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  addInvestment(params: { algoId: string; amt: string }): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/adjust-investment',
+      params
+    );
+  }
+
   getGridAIParameter(
     algoOrdType: GridAlgoOrderType,
     instId: string,
@@ -967,87 +1304,16 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  /**
-   *
-   * Earn/staking endpoints (private)
-   *
-   */
-
-  /** Get earn offers */
-  getStakingOffers(params?: {
-    productId?: string;
-    protocolType?: 'staking' | 'defi';
-    ccy?: string;
-  }): Promise<APIResponse<any>> {
-    return this.getPrivate('/api/v5/finance/staking-defi/offers', params);
+  computeMinInvestment(params: { amt: string; ccy: string }): Promise<any[]> {
+    return this.post('/api/v5/tradingBot/grid/min-investment', params);
   }
 
-  /** Earn/staking purchase */
-  submitStake(
-    productId: string,
-    investData: {
-      ccy: string;
-      amt: string;
-    }[],
-    term?: string
-  ): Promise<APIResponse<any>> {
-    return this.postPrivate('/api/v5/finance/staking-defi/purchase', {
-      productId,
-      investData,
-      term,
-    });
-  }
-
-  /** Earn/staking redeem */
-  redeemStake(
-    ordId: string,
-    protocolType: 'staking' | 'defi',
-    allowEarlyRedeem?: boolean
-  ): Promise<APIResponse<any>> {
-    return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
-      ordId,
-      protocolType,
-      allowEarlyRedeem,
-    });
-  }
-
-  /** Earn/staking cancel purchases/redemptions */
-  cancelStakingRequest(
-    ordId: string,
-    protocolType: 'staking' | 'defi'
-  ): Promise<APIResponse<any>> {
-    return this.postPrivate('/api/v5/finance/staking-defi/cancel', {
-      ordId,
-      protocolType,
-    });
-  }
-
-  /** Earn/staking get active orders */
-  getActiveStakingOrders(params?: {
-    productId?: string;
-    protocolType?: 'staking' | 'defi';
-    ccy?: string;
-    state?: '8' | '13' | '9' | '1' | '2';
-  }): Promise<APIResponse<any>> {
-    return this.getPrivate(
-      '/api/v5/finance/staking-defi/orders-active',
-      params
-    );
-  }
-
-  /** Earn/staking get order history */
-  getStakingOrderHistory(params?: {
-    productId?: string;
-    protocolType?: string;
-    ccy?: string;
-    after?: string;
-    before?: string;
-    limit?: string;
-  }): Promise<APIResponse<any>> {
-    return this.getPrivate(
-      '/api/v5/finance/staking-defi/orders-history',
-      params
-    );
+  getRSIBackTesting(params: GetRSIBackTestingRequest): Promise<
+    {
+      triggerNum: string;
+    }[]
+  > {
+    return this.get('/api/v5/tradingBot/public/rsi-back-testing', params);
   }
 
   /**
@@ -1140,16 +1406,14 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getHistoricMarkPriceCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/historic-mark-price-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
+  getHistoricMarkPriceCandles(params: {
+    instId: string;
+    after?: string;
+    before?: string;
+    bar?: string;
+    limit?: string;
+  }): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/history-mark-price-candles', params);
   }
 
   getTrades(instId: string, limit?: number): Promise<Trade[]> {
@@ -1202,7 +1466,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(
+  getInstrumentsPublic(
     instType: InstrumentType,
     uly?: string,
     instFamily?: string,
@@ -1284,6 +1548,17 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/convert-contract-coin', params);
   }
 
+  getOptionTickBands(params: {
+    instType: string;
+    instFamily?: string;
+  }): Promise<any[]> {
+    return this.get('/api/v5/public/instrument-tick-bands', params);
+  }
+
+  getPremiumHistory(params: GetPremiumHistoryRequest): Promise<any[]> {
+    return this.get('/api/v5/public/premium-history', params);
+  }
+
   getEconomicCalendar(
     params: EconomicCalendarRequest
   ): Promise<EconomicCalendarData[]> {
@@ -1300,8 +1575,23 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/rubik/stat/trading-data/support-coin');
   }
 
+  getOpenInterestHistory(
+    params: GetContractOpenInterestHistoryRequest
+  ): Promise<any[]> {
+    return this.get(
+      '/api/v5/rubik/stat/contracts/open-interest-history',
+      params
+    );
+  }
+
   getTakerVolume(): Promise<any[]> {
     return this.get('/api/v5/rubik/stat/taker-volume');
+  }
+
+  getContractTakerVolume(
+    params: GetContractTakerVolumeRequest
+  ): Promise<any[]> {
+    return this.get('/api/v5/rubik/stat/taker-volume-contract', params);
   }
 
   getMarginLendingRatio(params: {
@@ -1311,6 +1601,33 @@ export class RestClient extends BaseRestClient {
     period: '5m' | '1H' | '1D';
   }): Promise<any[]> {
     return this.get('/api/v5/rubik/stat/margin/loan-ratio', params);
+  }
+
+  getTopTradersAccountRatio(
+    params: GetTopTradersContractLongShortRatioRequest
+  ): Promise<any[]> {
+    return this.get(
+      '/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader',
+      params
+    );
+  }
+
+  getTopTradersContractPositionRatio(
+    params: GetTopTradersContractLongShortRatioRequest
+  ): Promise<any[]> {
+    return this.get(
+      '/api/v5/rubik/stat/contracts/long-short-position-ratio-contract-top-trader',
+      params
+    );
+  }
+
+  getLongShortContractRatio(
+    params: GetTopTradersContractLongShortRatioRequest
+  ): Promise<any[]> {
+    return this.get(
+      '/api/v5/rubik/stat/contracts/long-short-account-ratio-contract',
+      params
+    );
   }
 
   getLongShortRatio(params: {
@@ -1377,6 +1694,184 @@ export class RestClient extends BaseRestClient {
 
   getTakerFlow(params: { ccy: string; period: '8H' | '1D' }): Promise<any[]> {
     return this.get('/api/v5/rubik/stat/option/taker-block-volume', params);
+  }
+
+  /**
+   *
+   * FINANCIAL PRODUCT - On-chain earn endpoints
+   *
+   */
+
+  /** Get earn offers */
+  getStakingOffers(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate('/api/v5/finance/staking-defi/offers', params);
+  }
+
+  /** Earn/staking purchase */
+  submitStake(
+    productId: string,
+    investData: {
+      ccy: string;
+      amt: string;
+    }[],
+    term?: string
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/purchase', {
+      productId,
+      investData,
+      term,
+    });
+  }
+
+  /** Earn/staking redeem */
+  redeemStake(
+    ordId: string,
+    protocolType: 'staking' | 'defi',
+    allowEarlyRedeem?: boolean
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
+      ordId,
+      protocolType,
+      allowEarlyRedeem,
+    });
+  }
+
+  /** Earn/staking cancel purchases/redemptions */
+  cancelStakingRequest(
+    ordId: string,
+    protocolType: 'staking' | 'defi'
+  ): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/finance/staking-defi/cancel', {
+      ordId,
+      protocolType,
+    });
+  }
+
+  /** Earn/staking get active orders */
+  getActiveStakingOrders(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+    state?: '8' | '13' | '9' | '1' | '2';
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate(
+      '/api/v5/finance/staking-defi/orders-active',
+      params
+    );
+  }
+
+  /** Earn/staking get order history */
+  getStakingOrderHistory(params?: {
+    productId?: string;
+    protocolType?: string;
+    ccy?: string;
+    after?: string;
+    before?: string;
+    limit?: string;
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate(
+      '/api/v5/finance/staking-defi/orders-history',
+      params
+    );
+  }
+
+  /**
+   *
+   * FINANCIAL PRODUCT - ETH staking endpoints
+   *
+   */
+
+  purchaseETHStaking(params: { amt: string }): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/finance/staking-defi/eth/purchase',
+      params
+    );
+  }
+
+  redeemETHStaking(params: { amt: string }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/staking-defi/eth/redeem', params);
+  }
+
+  getETHStakingBalance(): Promise<any[]> {
+    return this.getPrivate('/api/v5/finance/staking-defi/eth/balance');
+  }
+
+  getETHStakingHistory(params: {
+    type: 'purchase' | 'redeem';
+    status?: 'pending' | 'success' | 'failed';
+    after?: string;
+    before?: string;
+    limit?: string;
+  }): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/finance/staking-defi/eth/purchase-redeem-history',
+      params
+    );
+  }
+
+  getAPYHistory(params: { days: string }): Promise<any[]> {
+    return this.get('/api/v5/finance/staking-defi/eth/apy-history', params);
+  }
+
+  /**
+   *
+   * Simple earn fixed endpoints
+   *
+   */
+
+  getLendingOffers(params?: { ccy?: string; term?: string }): Promise<any[]> {
+    return this.get('/api/v5/finance/fixed-loan/lending-offers', params);
+  }
+
+  getLendingAPYHistory(params: { ccy: string; term: string }): Promise<any[]> {
+    return this.get('/api/v5/finance/fixed-loan/lending-apy-history', params);
+  }
+
+  getLendingVolume(params: { ccy: string; term: string }): Promise<any[]> {
+    return this.get(
+      '/api/v5/finance/fixed-loan/pending-lending-volume',
+      params
+    );
+  }
+
+  placeLendingOrder(params: LendingOrder): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/fixed-loan/lending-order', params);
+  }
+
+  amendLendingOrder(params: LendingOrder): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/fixed-loan/lending-order', params);
+  }
+
+  getLendingOrders(params: GetLendingOrderListRequest): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/finance/fixed-loan/lending-orders-list',
+      params
+    );
+  }
+
+  getLendingSubOrders(params: GetLendingSubOrderListRequest): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/finance/fixed-loan/lending-sub-orders',
+      params
+    );
+  }
+
+  /**
+   *
+   * Affiliate endpoints
+   *
+   */
+
+  getInviteeDetail(params: { uid: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/affiliate/invitee/detail', params);
+  }
+
+  getAffiliateRebateInfo(params: { apiKey: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/users/partner/if-rebate', params);
   }
 
   /**

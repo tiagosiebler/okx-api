@@ -7,3 +7,4 @@ export * from './trade';
 export * from './block-trading';
 export * from './grid-trading';
 export * from './public';
+export * from './simple-earn';
