@@ -5,7 +5,7 @@ export interface RecurringBuyOrderResponse {
   sMsg: string;
 }
 
-export interface RecurringBuyInfo {
+export interface RecurringBuyInfoResp {
   ccy: string;
   ratio: string;
 }
@@ -19,7 +19,7 @@ export interface GetRecurringBuyOrderListResponse {
   algoOrdType: 'recurring';
   state: 'running' | 'stopping';
   stgyName: string;
-  recurringList: RecurringBuyInfo[];
+  recurringList: RecurringBuyInfoResp[];
   period: 'monthly' | 'weekly' | 'daily' | 'hourly';
   recurringDay?: string;
   recurringHour?: string;
@@ -34,11 +34,6 @@ export interface GetRecurringBuyOrderListResponse {
   mktCap: string;
   cycles: string;
   tag: string;
-}
-
-export interface RecurringBuyInfo {
-  ccy: string;
-  ratio: string;
 }
 
 export interface GetRecurringBuyOrderHistoryResponse {
@@ -50,7 +45,7 @@ export interface GetRecurringBuyOrderHistoryResponse {
   algoOrdType: 'recurring';
   state: 'stopped';
   stgyName: string;
-  recurringList: RecurringBuyInfo[];
+  recurringList: RecurringBuyInfoResp[];
   period: 'monthly' | 'weekly' | 'daily' | 'hourly';
   recurringDay?: string;
   recurringHour?: string;
@@ -67,7 +62,7 @@ export interface GetRecurringBuyOrderHistoryResponse {
   tag: string;
 }
 
-export interface RecurringBuyInfo {
+export interface RecurringBuyInfoOrder {
   ccy: string;
   ratio: string;
   totalAmt: string;
@@ -85,7 +80,7 @@ export interface GetRecurringBuyOrderDetailsResponse {
   algoOrdType: 'recurring';
   state: 'running' | 'stopping' | 'stopped';
   stgyName: string;
-  recurringList: RecurringBuyInfo[];
+  recurringList: RecurringBuyInfoOrder[];
   period: 'monthly' | 'weekly' | 'daily' | 'hourly';
   recurringDay?: string;
   recurringHour?: string;
