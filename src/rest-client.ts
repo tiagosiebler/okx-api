@@ -247,6 +247,7 @@ import {
   PublicSpreadTrade,
   GetSpreadCandlesRequest,
   SpreadCandle,
+  CandleRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -702,7 +703,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/asset/exchange-list');
   }
 
-  applyMonthlyStatement(params?: { month?: string }): Promise<any[]> {
+  applyForMonthlyStatement(params?: { month?: string }): Promise<any[]> {
     return this.postPrivate('/api/v5/asset/monthly-statement', params);
   }
 
@@ -782,7 +783,9 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(params: GetInstrumentsRequest): Promise<GetInstrument[]> {
+  getAccountInstruments(
+    params: GetInstrumentsRequest
+  ): Promise<GetInstrument[]> {
     return this.getPrivate('/api/v5/account/instruments', params);
   }
 
@@ -1013,7 +1016,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/interest-limits', params);
   }
 
-  getFixedLoanBorrowingLimit(): Promise<FixedLoanBorrowingLimit[]> {
+  getFixedLoanBorrowLimit(): Promise<FixedLoanBorrowingLimit[]> {
     return this.getPrivate('/api/v5/account/fixed-loan/borrowing-limit');
   }
 
@@ -1026,7 +1029,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  submitFixedLoanBorrowingOrder(
+  submitFixedLoanBorrowOrder(
     params: SubmitFixedLoanBorrowingOrderRequest
   ): Promise<
     {
@@ -1039,7 +1042,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  updateFixedLoanBorrowingOrder(
+  updateFixedLoanBorrowOrder(
     params: UpdateFixedLoanBorrowingOrderRequest
   ): Promise<
     {
@@ -1052,7 +1055,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  manualRenewFixedLoanBorrowingOrder(params: {
+  manualRenewFixedLoanBorrowOrder(params: {
     ordId: string;
     maxRate: string;
   }): Promise<
@@ -1066,7 +1069,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  repayFixedLoanBorrowingOrder(params: { ordId: string }): Promise<
+  repayFixedLoanBorrowOrder(params: { ordId: string }): Promise<
     {
       ordId: string;
     }[]
@@ -1077,7 +1080,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getFixedLoanBorrowingOrdersList(
+  getFixedLoanBorrowOrders(
     params: GetFixedLoanBorrowingOrdersListRequest
   ): Promise<any[]> {
     return this.getPrivate(
@@ -1189,7 +1192,7 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  getSubAccountMaxWithdrawals(
+  getSubAccountMaxWithdrawal(
     params: GetSubAccountMaxWithdrawalsRequest
   ): Promise<SubAccountMaxWithdrawal> {
     return this.getPrivate('/api/v5/account/subaccount/max-withdrawal', params);
@@ -1296,7 +1299,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/tradingBot/grid/close-position', params);
   }
 
-  cancelCloseContractGridOrder(params: {
+  cancelGridContractCloseOrder(params: {
     algoId: string;
     ordId: string;
   }): Promise<any[]> {
@@ -1403,7 +1406,7 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  addInvestment(params: { algoId: string; amt: string }): Promise<
+  adjustGridInvestment(params: { algoId: string; amt: string }): Promise<
     {
       algoId: string;
     }[]
@@ -1428,7 +1431,10 @@ export class RestClient extends BaseRestClient {
     });
   }
 
-  computeMinInvestment(params: { amt: string; ccy: string }): Promise<any[]> {
+  computeGridMinInvestment(params: {
+    amt: string;
+    ccy: string;
+  }): Promise<any[]> {
     return this.post('/api/v5/tradingBot/grid/min-investment', params);
   }
 
@@ -1477,73 +1483,29 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/books-full', params);
   }
 
-  getCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
-  ): Promise<Candle[]> {
-    return this.get('/api/v5/market/candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
+  getCandles(params: CandleRequest): Promise<Candle[]> {
+    return this.get('/api/v5/market/candles', params);
   }
 
-  getHistoricCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
-  ): Promise<Candle[]> {
-    return this.get('/api/v5/market/history-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
+  getHistoricCandles(params: CandleRequest): Promise<Candle[]> {
+    return this.get('/api/v5/market/history-candles', params);
   }
 
-  getIndexCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
+  getIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/index-candles', params);
+  }
+
+  getHistoricIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/history-index-candles', params);
+  }
+
+  getMarkPriceCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/mark-price-candles', params);
+  }
+
+  getHistoricMarkPriceCandles(
+    params: CandleRequest
   ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/index-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getHistoricIndexCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/history-index-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getMarkPriceCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/mark-price-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getHistoricMarkPriceCandles(params: {
-    instId: string;
-    after?: string;
-    before?: string;
-    bar?: string;
-    limit?: string;
-  }): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/history-mark-price-candles', params);
   }
 
@@ -1610,7 +1572,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstrumentsPublic(
+  getInstruments(
     instType: InstrumentType,
     uly?: string,
     instFamily?: string,
@@ -1728,8 +1690,14 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getTakerVolume(): Promise<any[]> {
-    return this.get('/api/v5/rubik/stat/taker-volume');
+  getTakerVolume(params: {
+    instType: string;
+    ccy: string;
+    period?: string;
+    end?: string;
+    begin?: string;
+  }): Promise<any[]> {
+    return this.get('/api/v5/rubik/stat/taker-volume', params);
   }
 
   getContractTakerVolume(
@@ -2626,8 +2594,10 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  // TODO: add missing broker endpoints
-
+  /**
+   *
+   * @deprecated
+   */
   getBrokerAccountInformation(): Promise<any[]> {
     return this.getPrivate('/api/v5/broker/nd/info');
   }

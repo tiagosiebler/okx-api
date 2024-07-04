@@ -15,6 +15,14 @@ export interface UnitConvertRequest {
   opType: 'open' | 'close';
 }
 
+export interface CandleRequest {
+  instId: string;
+  after?: string;
+  before?: string;
+  bar?: string;
+  limit?: string;
+}
+
 export interface GetPremiumHistoryRequest {
   instId: string;
   after?: string;
