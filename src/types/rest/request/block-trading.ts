@@ -69,3 +69,23 @@ export interface GetBlockQuoteParams {
   limit?: string;
 }
 
+export interface MakerInstrumentData {
+  uly?: string;
+  instId?: string;
+  maxBlockSz?: string;
+  makerPxBand?: string;
+}
+
+export interface SetQuoteProductsRequest {
+  instType: string;
+  includeAll?: boolean;
+  data: MakerInstrumentData[];
+}
+
+export interface SetMmpConfigRequest {
+  timeInterval: string;
+  frozenInterval: string;
+  countLimit: string;
+}
+
+

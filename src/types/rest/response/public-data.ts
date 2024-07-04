@@ -149,3 +149,33 @@ export interface FundingRateHistory {
 export interface SystemTime {
   ts: string;
 }
+
+export interface OptionsTradeInfo {
+  instId: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  ts: string;
+}
+
+export interface OptionTrade {
+  vol24h: string;
+  optType: 'C' | 'P';
+  tradeInfo: OptionsTradeInfo[];
+}
+
+export interface GetOptionTrades {
+  instId: string;
+  instFamily: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  optType: 'C' | 'P';
+  fillVol: string;
+  fwdPx: string;
+  idxPx: string;
+  markPx: string;
+  ts: string;
+}

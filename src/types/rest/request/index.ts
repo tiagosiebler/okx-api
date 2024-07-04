@@ -8,3 +8,7 @@ export * from './block-trading';
 export * from './grid-trading';
 export * from './public';
 export * from './simple-earn';
+export * from './signal-bot';
+export * from './copy-trading';
+export * from './recurring-buy';
+export * from './spread-trading';

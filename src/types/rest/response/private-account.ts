@@ -325,7 +325,7 @@ export interface WithdrawalHistory {
   clientId: string;
 }
 
-export interface Instrument {
+export interface GetInstrument {
   baseCcy: string;
   ctMult: string;
   ctType: string;

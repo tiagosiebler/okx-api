@@ -157,13 +157,98 @@ import {
   GetContractOpenInterestHistoryRequest,
   GetContractTakerVolumeRequest,
   GetTopTradersContractLongShortRatioRequest,
-} from './types';
-import { ASSET_BILL_TYPE } from './constants';
-import {
   GetLendingOrderListRequest,
   GetLendingSubOrderListRequest,
   LendingOrder,
-} from './types/rest/request/simple-earn';
+  CreateSignalRequest,
+  CreateSignalResponse,
+  GetSignalsRequest,
+  GetSignalsResponse,
+  CreateSignalBotRequest,
+  CreateSignalBotResponse,
+  CancelSignalBotsResponse,
+  AdjustMarginBalanceRequest,
+  AmendTPSLRequest,
+  SetSignalInstrumentsRequest,
+  GetSignalBotRequest,
+  GetSignalBotPositionHistoryRequest,
+  PlaceSubOrderRequest,
+  CancelSubOrderRequest,
+  GetSignalBotSubOrdersRequest,
+  GetSignalBotEventHistoryRequest,
+  GetInstrument,
+  GetCurrentSubpositionsRequest,
+  GetCurrentSubpositionsResponse,
+  GetSubpositionsHistoryRequest,
+  GetSubpositionsHistoryResponse,
+  PlaceCTAlgoOrderResponse,
+  PlaceCTAlgoOrderRequest,
+  CloseSubpositionRequest,
+  GetCTProfitDetailsRequest,
+  GetCTProfitDetailsResponse,
+  GetCTTotalProfitResponse,
+  GetCTUnrealizedProfitResponse,
+  GetAccountConfigurationResponse,
+  CopySettingsRequest,
+  GetCopySettingsResponse,
+  AmendRecurringBuyOrderRequest,
+  GetRecurringBuyOrderListRequest,
+  PlaceRecurringBuyOrderRequest,
+  GetRecurringBuyOrderDetailsResponse,
+  GetRecurringBuyOrderHistoryResponse,
+  GetRecurringBuyOrderListResponse,
+  GetRecurringBuySubOrdersResponse,
+  RecurringBuyOrderResponse,
+  SetCTBatchLeverageRequest,
+  SetCTBatchLeverageResponse,
+  GetCTBatchLeverageInfoRequest,
+  GetCTBatchLeverageInfoResponse,
+  GetCTMyLeadTradersResponse,
+  GetCTHistoryLeadTradersRequest,
+  GetCTHistoryLeadTradersResponse,
+  GetCopyTradingConfigResponse,
+  GetLeadTraderRanksRequest,
+  GetLeadTraderRanksResponse,
+  LeadTraderPnl,
+  LeadTraderStats,
+  GetLeadTraderStatsRequest,
+  LeadTraderPreference,
+  LeadTraderCurrentPosition,
+  GetLeadTraderPositionsRequest,
+  LeadTraderPositionHistory,
+  GetCopyTradersRequest,
+  GetCopyTradersResponse,
+  GetPrivateLeadTraderRanksRequest,
+  GetPrivateLeadTraderRanksResponse,
+  OptionTrade,
+  GetOptionTradesRequest,
+  GetOptionTrades,
+  BlockMakerInstrumentSettings,
+  SetQuoteProductsRequest,
+  SetMmpConfigRequest,
+  SetMmpConfigResponse,
+  GetMmpConfigResponse,
+  PublicBlockTradeResp,
+  PlaceSpreadOrderRequest,
+  PlaceSpreadOrderResponse,
+  CancelSpreadOrderResponse,
+  UpdateSpreadOrderRequest,
+  UpdateSpreadOrderResponse,
+  SpreadOrderDetails,
+  GetActiveSpreadOrdersRequest,
+  GetSpreadOrderHistoryRequest,
+  GetSpreadOrderHistoryArchiveRequest,
+  GetSpreadTradesRequest,
+  SpreadTradeDetails,
+  SpreadDetails,
+  GetSpreadsRequest,
+  SpreadOrderBook,
+  SpreadTicker,
+  PublicSpreadTrade,
+  GetSpreadCandlesRequest,
+  SpreadCandle,
+} from './types';
+import { ASSET_BILL_TYPE } from './constants';
 
 export class RestClient extends BaseRestClient {
   /**
@@ -198,12 +283,6 @@ export class RestClient extends BaseRestClient {
     }
     return timestamp;
   }
-
-  /**
-   *
-   * Trade endpoints (private)
-   *
-   */
 
   submitOrder(params: OrderRequest): Promise<OrderResult[]> {
     return this.postPrivate('/api/v5/trade/order', params);
@@ -440,6 +519,36 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/rfq/execute-quote', params);
   }
 
+  getQuoteProducts(): Promise<BlockMakerInstrumentSettings[]> {
+    return this.getPrivate('/api/v5/rfq/maker-instrument-settings');
+  }
+
+  updateBlockQuoteProducts(params: SetQuoteProductsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/maker-instrument-settings', params);
+  }
+
+  resetBlockMmp(): Promise<
+    {
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/mmp-reset');
+  }
+
+  updateBlockMmpConfig(
+    params: SetMmpConfigRequest
+  ): Promise<SetMmpConfigResponse[]> {
+    return this.postPrivate('/api/v5/rfq/mmp-config', params);
+  }
+
+  getBlockMmpConfig(): Promise<GetMmpConfigResponse[]> {
+    return this.getPrivate('/api/v5/rfq/mmp-config');
+  }
+
   createBlockQuote(
     params: CreateBlockQuoteRequest
   ): Promise<CreateBlockQuoteResult[]> {
@@ -462,6 +571,15 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/rfq/cancel-all-quotes');
   }
 
+  cancelAllBlockAfter(params: { timeOut: string }): Promise<
+    {
+      triggerTime: string;
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/cancel-all-after', params);
+  }
+
   getBlockRFQs(params?: GetBlockRFQSParams): Promise<BlockRFQResult[]> {
     return this.getPrivate('/api/v5/rfq/rfqs', params);
   }
@@ -476,6 +594,12 @@ export class RestClient extends BaseRestClient {
 
   getPublicRFQBlockTrades(params?: any): Promise<any[]> {
     return this.get('/api/v5/rfq/public-trades', params);
+  }
+
+  getBlockPublicTrades(params: {
+    instId: string;
+  }): Promise<PublicBlockTradeResp[]> {
+    return this.get('/api/v5/public/block-trades', params);
   }
 
   /**
@@ -658,7 +782,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(params: GetInstrumentsRequest): Promise<Instrument[]> {
+  getInstruments(params: GetInstrumentsRequest): Promise<GetInstrument[]> {
     return this.getPrivate('/api/v5/account/instruments', params);
   }
 
@@ -1346,6 +1470,13 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/books', { instId, sz });
   }
 
+  getFullOrderBook(params: {
+    instId: string;
+    sz?: string;
+  }): Promise<OrderBook[]> {
+    return this.get('/api/v5/market/books-full', params);
+  }
+
   getCandles(
     instId: string,
     bar: string = '1m',
@@ -1432,6 +1563,16 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/history-trades', { instId, ...pagination });
   }
 
+  getOptionTradesByInstrument(params: {
+    instFamily: string;
+  }): Promise<OptionTrade[]> {
+    return this.get('/api/v5/market/option/instrument-family-trades', params);
+  }
+
+  getOptionTrades(params: GetOptionTradesRequest): Promise<GetOptionTrades[]> {
+    return this.get('/api/v5/public/option-trades', params);
+  }
+
   get24hrTotalVolume(): Promise<any[]> {
     return this.get('/api/v5/market/platform-24-volume');
   }
@@ -1456,6 +1597,9 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/block-ticker', { instId });
   }
 
+  /**
+   * @deprecated
+   */
   getPublicBlockTrades(instId: string): Promise<any[]> {
     return this.get('/api/v5/market/block-trades', { instId });
   }
@@ -1858,6 +2002,596 @@ export class RestClient extends BaseRestClient {
       '/api/v5/finance/fixed-loan/lending-sub-orders',
       params
     );
+  }
+
+  /**
+   *
+   * Signal bot trading endpoints
+   *
+   */
+
+  createSignal(params: CreateSignalRequest): Promise<CreateSignalResponse[]> {
+    return this.postPrivate('/api/v5/tradingBot/signal/create-signal', params);
+  }
+
+  getSignals(params: GetSignalsRequest): Promise<GetSignalsResponse[]> {
+    return this.getPrivate('/api/v5/tradingBot/signal/signals', params);
+  }
+
+  createSignalBot(
+    params: CreateSignalBotRequest
+  ): Promise<CreateSignalBotResponse[]> {
+    return this.postPrivate('/api/v5/tradingBot/signal/order-algo', params);
+  }
+
+  cancelSignalBots(params: {
+    algoId: string;
+  }): Promise<CancelSignalBotsResponse[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/signal/stop-order-algo',
+      params
+    );
+  }
+
+  updateSignalMargin(params: AdjustMarginBalanceRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/margin-balance', params);
+  }
+
+  updateSignalTPSL(params: AmendTPSLRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/amendTPSL', params);
+  }
+
+  setSignalInstruments(params: SetSignalInstrumentsRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/signal/set-instruments',
+      params
+    );
+  }
+
+  getSignalBotOrder(params: {
+    algoOrdType: string;
+    algoId: string;
+  }): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/signal/orders-algo-details',
+      params
+    );
+  }
+
+  getActiveSignalBot(params: GetSignalBotRequest): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/signal/orders-algo-details',
+      params
+    );
+  }
+
+  getSignalBotHistory(params: GetSignalBotRequest): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/signal/orders-algo-history',
+      params
+    );
+  }
+
+  getSignalBotPositions(params: {
+    algoOrdType: string;
+    algoId: string;
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/tradingBot/signal/positions', params);
+  }
+
+  getSignalBotPositionHistory(
+    params: GetSignalBotPositionHistoryRequest
+  ): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/signal/positions-history',
+      params
+    );
+  }
+
+  closeSignalBotPosition(params: { algoId: string; instId: string }): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/close-position', params);
+  }
+
+  placeSignalBotSubOrder(params: PlaceSubOrderRequest): Promise<any[]> {
+    return this.postPrivate('/api/v5/tradingBot/signal/sub-order', params);
+  }
+
+  cancelSubOrder(params: CancelSubOrderRequest): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/signal/cancel-sub-order',
+      params
+    );
+  }
+
+  getSignalBotSubOrders(params: GetSignalBotSubOrdersRequest): Promise<any[]> {
+    return this.getPrivate('/api/v5/tradingBot/signal/sub-orders', params);
+  }
+
+  getSignalBotEventHistory(
+    params: GetSignalBotEventHistoryRequest
+  ): Promise<any[]> {
+    return this.getPrivate('/api/v5/tradingBot/signal/event-history', params);
+  }
+
+  /**
+   *
+   *  Recurring buy endpoints
+   *
+   */
+
+  submitRecurringBuyOrder(
+    params: PlaceRecurringBuyOrderRequest
+  ): Promise<RecurringBuyOrderResponse[]> {
+    return this.postPrivate('/api/v5/tradingBot/recurring/order-algo', params);
+  }
+
+  amendRecurringBuyOrder(
+    params: AmendRecurringBuyOrderRequest
+  ): Promise<RecurringBuyOrderResponse[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/recurring/amend-order-algo',
+      params
+    );
+  }
+
+  stopRecurringBuyOrder(params: {
+    algoId: string;
+  }): Promise<RecurringBuyOrderResponse[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/recurring/stop-order-algo',
+      params
+    );
+  }
+
+  getRecurringBuyOrderList(
+    params: GetRecurringBuyOrderListRequest
+  ): Promise<GetRecurringBuyOrderListResponse[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/recurring/orders-algo-pending',
+      params
+    );
+  }
+
+  getRecurringBuyOrderHistory(
+    params: GetRecurringBuyOrderListRequest
+  ): Promise<GetRecurringBuyOrderHistoryResponse[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/recurring/orders-algo-history',
+      params
+    );
+  }
+
+  getRecurringBuyOrderDetails(params: {
+    algoId: string;
+  }): Promise<GetRecurringBuyOrderDetailsResponse[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/recurring/orders-algo-details',
+      params
+    );
+  }
+
+  getRecurringBuySubOrders(
+    params: GetRecurringBuyOrderListRequest
+  ): Promise<GetRecurringBuySubOrdersResponse[]> {
+    return this.getPrivate('/api/v5/tradingBot/recurring/sub-orders', params);
+  }
+
+  /**
+   *
+   * Copy Trading endpoints
+   *
+   */
+
+  getCopytradingSubpositions(
+    params?: GetCurrentSubpositionsRequest
+  ): Promise<GetCurrentSubpositionsResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/current-subpositions', params);
+  }
+
+  getCopytradingSubpositionsHistory(
+    params?: GetSubpositionsHistoryRequest
+  ): Promise<GetSubpositionsHistoryResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/subpositions-history', params);
+  }
+
+  submitCopytradingAlgoOrder(
+    params: PlaceCTAlgoOrderRequest
+  ): Promise<PlaceCTAlgoOrderResponse[]> {
+    return this.postPrivate('/api/v5/copytrading/algo-order', params);
+  }
+
+  closeCopytradingSubposition(params: CloseSubpositionRequest): Promise<
+    {
+      subPosId: string;
+      tag: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/close-subposition', params);
+  }
+
+  getCopytradingInstruments(params?: { instType?: 'SPOT' | 'SWAP' }): Promise<
+    {
+      instId: string;
+      enabled: boolean;
+    }[]
+  > {
+    return this.getPrivate('/api/v5/copytrading/instruments', params);
+  }
+
+  setCopytradingInstruments(params: {
+    instType?: 'SPOT' | 'SWAP';
+    instId: string;
+  }): Promise<
+    {
+      instId: string;
+      enabled: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/set-instruments', params);
+  }
+
+  getCopytradingProfitDetails(
+    params?: GetCTProfitDetailsRequest
+  ): Promise<GetCTProfitDetailsResponse[]> {
+    return this.getPrivate(
+      '/api/v5/copytrading/profit-sharing-details',
+      params
+    );
+  }
+
+  getCopytradingTotalProfit(params?: {
+    instType?: 'SPOT' | 'SWAP';
+  }): Promise<GetCTTotalProfitResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/total-profit-sharing', params);
+  }
+
+  getCopytradingUnrealizedProfit(params?: {
+    instType?: 'SPOT' | 'SWAP';
+  }): Promise<GetCTUnrealizedProfitResponse[]> {
+    return this.getPrivate(
+      '/api/v5/copytrading/unrealized-profit-sharing-details',
+      params
+    );
+  }
+
+  getCopytradingTotalUnrealizedProfit(params?: { instType?: 'SWAP' }): Promise<
+    {
+      instType?: 'SWAP';
+      instId: string;
+    }[]
+  > {
+    return this.getPrivate(
+      '/api/v5/copytrading/total-unrealized-profit-sharing',
+      params
+    );
+  }
+
+  applyCopytradingLeadTrading(params: {
+    profitSharingTs: string;
+    totalUnrealizedProfitSharingAmt: string;
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/apply-lead-trading', params);
+  }
+
+  stopCopytradingLeadTrading(params: { instType?: 'SWAP' }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/stop-lead-trading', params);
+  }
+
+  updateCopytradingProfitSharing(params: {
+    instType?: 'SWAP';
+    profitSharingRatio: string;
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/copytrading/amend-profit-sharing-ratio',
+      params
+    );
+  }
+
+  getCopytradingAccount(): Promise<GetAccountConfigurationResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/config');
+  }
+
+  setCopytradingFirstCopy(params: CopySettingsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/first-copy-settings', params);
+  }
+
+  updateCopytradingCopySettings(params: CopySettingsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/amend-copy-settings', params);
+  }
+
+  stopCopytradingCopy(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+    subPosCloseType: 'market_close' | 'copy_close' | 'manual_close';
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/stop-copy-trading', params);
+  }
+
+  getCopytradingCopySettings(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+  }): Promise<GetCopySettingsResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/copy-settings', params);
+  }
+
+  getCopytradingBatchLeverageInfo(
+    params: GetCTBatchLeverageInfoRequest
+  ): Promise<GetCTBatchLeverageInfoResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/batch-leverage-info', params);
+  }
+
+  setCopytradingBatchLeverage(
+    params: SetCTBatchLeverageRequest
+  ): Promise<SetCTBatchLeverageResponse[]> {
+    return this.postPrivate('/api/v5/copytrading/batch-set-leverage', params);
+  }
+
+  getCopytradingMyLeadTraders(params?: {
+    instType?: 'SWAP';
+  }): Promise<GetCTMyLeadTradersResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/current-lead-traders', params);
+  }
+
+  getCopytradingLeadTradersHistory(
+    params?: GetCTHistoryLeadTradersRequest
+  ): Promise<GetCTHistoryLeadTradersResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/lead-traders-history', params);
+  }
+
+  getCopytradingConfig(params?: {
+    instType?: 'SWAP';
+  }): Promise<GetCopyTradingConfigResponse[]> {
+    return this.get('/api/v5/copytrading/public-config', params);
+  }
+
+  getCopytradingLeadRanks(
+    params?: GetLeadTraderRanksRequest
+  ): Promise<GetLeadTraderRanksResponse[]> {
+    return this.get('/api/v5/copytrading/public-lead-traders', params);
+  }
+
+  getCopytradingLeadWeeklyPnl(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+  }): Promise<LeadTraderPnl[]> {
+    return this.get('/api/v5/copytrading/public-weekly-pnl', params);
+  }
+
+  getCopytradingLeadDailyPnl(
+    params: GetLeadTraderStatsRequest
+  ): Promise<LeadTraderPnl[]> {
+    return this.get('/api/v5/copytrading/public-pnl', params);
+  }
+
+  getCopytradingLeadStats(
+    params: GetLeadTraderStatsRequest
+  ): Promise<LeadTraderStats[]> {
+    return this.get('/api/v5/copytrading/public-stats', params);
+  }
+
+  getCopytradingLeadPreferences(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+  }): Promise<LeadTraderPreference[]> {
+    return this.get('/api/v5/copytrading/public-preference-currency', params);
+  }
+
+  getCopytradingLeadOpenPositions(
+    params: GetLeadTraderPositionsRequest
+  ): Promise<LeadTraderCurrentPosition[]> {
+    return this.get('/api/v5/copytrading/public-current-subpositions', params);
+  }
+
+  getCopytradingLeadPositionHistory(
+    params: GetLeadTraderPositionsRequest
+  ): Promise<LeadTraderPositionHistory[]> {
+    return this.get('/api/v5/copytrading/public-subpositions-history', params);
+  }
+
+  getCopyTraders(
+    params: GetCopyTradersRequest
+  ): Promise<GetCopyTradersResponse> {
+    return this.get('/api/v5/copytrading/public-copy-traders', params);
+  }
+
+  getCopytradingLeadPrivateRanks(
+    params?: GetPrivateLeadTraderRanksRequest
+  ): Promise<GetPrivateLeadTraderRanksResponse[]> {
+    return this.getPrivate('/api/v5/copytrading/lead-traders', params);
+  }
+
+  getCopytradingLeadPrivateWeeklyPnl(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+  }): Promise<LeadTraderPnl[]> {
+    return this.getPrivate('/api/v5/copytrading/weekly-pnl', params);
+  }
+
+  getCopytradingPLeadPrivateDailyPnl(
+    params: GetLeadTraderStatsRequest
+  ): Promise<LeadTraderPnl[]> {
+    return this.getPrivate('/api/v5/copytrading/pnl', params);
+  }
+
+  geCopytradingLeadPrivateStats(
+    params: GetLeadTraderStatsRequest
+  ): Promise<LeadTraderStats[]> {
+    return this.getPrivate('/api/v5/copytrading/stats', params);
+  }
+
+  getCopytradingLeadPrivatePreferences(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+  }): Promise<LeadTraderPreference[]> {
+    return this.getPrivate('/api/v5/copytrading/preference-currency', params);
+  }
+
+  getCopytradingLeadPrivateOpenPositions(
+    params: GetLeadTraderPositionsRequest
+  ): Promise<LeadTraderCurrentPosition[]> {
+    return this.getPrivate(
+      '/api/v5/copytrading/performance-current-subpositions',
+      params
+    );
+  }
+
+  getCopytradingLeadPrivatePositionHistory(
+    params: GetLeadTraderPositionsRequest
+  ): Promise<LeadTraderPositionHistory[]> {
+    return this.getPrivate(
+      '/api/v5/copytrading/performance-subpositions-history',
+      params
+    );
+  }
+
+  getCopyTradersPrivate(
+    params: GetCopyTradersRequest
+  ): Promise<GetCopyTradersResponse> {
+    return this.getPrivate('/api/v5/copytrading/copy-traders', params);
+  }
+
+  /**
+   *
+   * Spread trading endpoints
+   *
+   */
+
+  submitSpreadOrder(
+    params: PlaceSpreadOrderRequest
+  ): Promise<PlaceSpreadOrderResponse[]> {
+    return this.postPrivate('/api/v5/sprd/order', params);
+  }
+
+  cancelSpreadOrder(params?: {
+    ordId?: string;
+    clOrdId?: string;
+  }): Promise<CancelSpreadOrderResponse[]> {
+    return this.postPrivate('/api/v5/sprd/cancel-order', params);
+  }
+
+  cancelAllSpreadOrders(params: { sprdId?: string }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/sprd/mass-cancel', params);
+  }
+
+  updateSpreadOrder(
+    params: UpdateSpreadOrderRequest
+  ): Promise<UpdateSpreadOrderResponse[]> {
+    return this.postPrivate('/api/v5/sprd/amend-order', params);
+  }
+
+  getSpreadOrder(params: {
+    ordId?: string;
+    clOrdId?: string;
+  }): Promise<SpreadOrderDetails[]> {
+    return this.getPrivate('/api/v5/sprd/order', params);
+  }
+
+  getSpreadActiveOrders(
+    params?: GetActiveSpreadOrdersRequest
+  ): Promise<SpreadOrderDetails[]> {
+    return this.getPrivate('/api/v5/sprd/orders-pending', params);
+  }
+
+  getSpreadOrders21Days(
+    params?: GetSpreadOrderHistoryRequest
+  ): Promise<SpreadOrderDetails[]> {
+    return this.getPrivate('/api/v5/sprd/orders-history', params);
+  }
+
+  getSpreadOrders3months(
+    params?: GetSpreadOrderHistoryArchiveRequest
+  ): Promise<SpreadOrderDetails[]> {
+    return this.getPrivate('/api/v5/sprd/orders-history-archive', params);
+  }
+
+  getSpreadTrades(
+    params?: GetSpreadTradesRequest
+  ): Promise<SpreadTradeDetails[]> {
+    return this.getPrivate('/api/v5/sprd/trades', params);
+  }
+
+  getSpreads(params?: GetSpreadsRequest): Promise<SpreadDetails[]> {
+    return this.get('/api/v5/sprd/spreads', params);
+  }
+
+  getSpreadOrderBook(params: {
+    sprdId: string;
+    sz?: string;
+  }): Promise<SpreadOrderBook[]> {
+    return this.get('/api/v5/sprd/books', params);
+  }
+
+  getSpreadTicker(params: { sprdId: string }): Promise<SpreadTicker[]> {
+    return this.get('/api/v5/market/sprd-ticker', params);
+  }
+
+  getSpreadPublicTrades(params?: {
+    sprdId?: string;
+  }): Promise<PublicSpreadTrade[]> {
+    return this.get('/api/v5/sprd/public-trades', params);
+  }
+
+  getSpreadCandles(params: GetSpreadCandlesRequest): Promise<SpreadCandle[]> {
+    return this.get('/api/v5/market/sprd-candles', params);
+  }
+
+  getSpreadHistoryCandles(
+    params: GetSpreadCandlesRequest
+  ): Promise<SpreadCandle[]> {
+    return this.get('/api/v5/market/sprd-history-candles', params);
+  }
+
+  cancelSpreadAllAfter(params: { timeOut: string }): Promise<
+    {
+      triggerTime: string;
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/sprd/cancel-all-after', params);
   }
 
   /**

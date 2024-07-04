@@ -46,3 +46,9 @@ export interface GetTopTradersContractLongShortRatioRequest {
   begin?: string;
   limit?: string;
 }
+
+export interface GetOptionTradesRequest {
+  instId?: string;
+  instFamily?: string;
+  optType?: 'C' | 'P';
+}
