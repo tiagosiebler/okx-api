@@ -353,10 +353,6 @@ export interface HistoricAlgoOrder {
   amendPxOnTriggerType: string;
 }
 
-export interface GetTransactionDetailsArchiveResponse {
-  result: string;
-  ts: string;
-}
 
 export interface CancelAllAfterResponse {
   triggerTime: string;

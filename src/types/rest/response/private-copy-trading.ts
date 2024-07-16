@@ -1,4 +1,4 @@
-export interface GetCurrentSubpositionsResponse {
+export interface CurrentSubposition{
   algoId: string;
   ccy: string;
   instId: string;
@@ -23,7 +23,7 @@ export interface GetCurrentSubpositionsResponse {
   availSubPos: string;
 }
 
-export interface GetSubpositionsHistoryResponse {
+export interface SubpositionsHistory{
   ccy: string;
   closeAvgPx: string;
   closeTime: string;
@@ -47,12 +47,12 @@ export interface GetSubpositionsHistoryResponse {
   uniqueCode: string;
 }
 
-export interface PlaceCTAlgoOrderResponse {
+export interface PlaceCTAlgoOrderResult {
   subPosId: string;
   tag: string;
 }
 
-export interface GetCTProfitDetailsResponse {
+export interface GetCTProfitDetailsResult {
   ccy: string;
   nickName: string;
   profitSharingAmt: string;
@@ -62,13 +62,13 @@ export interface GetCTProfitDetailsResponse {
   instType: string;
 }
 
-export interface GetCTTotalProfitResponse {
+export interface GetCTTotalProfitResult {
   ccy: string;
   totalProfitSharingAmt: string;
   instType: string;
 }
 
-export interface GetCTUnrealizedProfitResponse {
+export interface GetCTUnrealizedProfitResult {
   ccy: string;
   nickName: string;
   portLink: string;
@@ -85,7 +85,7 @@ export interface AccountConfigurationDetails {
   roleType: '0' | '1' | '2';
 }
 
-export interface GetAccountConfigurationResponse {
+export interface GetAccountConfigurationResult {
   uniqueCode: string;
   nickName: string;
   portLink: string;
@@ -97,7 +97,7 @@ export interface CopySettingsInstId {
   enabled: string;
 }
 
-export interface GetCopySettingsResponse {
+export interface GetCopySettingsResult {
   ccy: string;
   copyAmt: string;
   copyInstIdType: 'custom' | 'copy';
@@ -118,20 +118,20 @@ export interface LeverageInfo {
   posSide: 'long' | 'short';
 }
 
-export interface GetCTBatchLeverageInfoResponse {
+export interface GetCTBatchLeverageInfoResult {
   instId: string;
   mgnMode: 'cross' | 'isolated';
   leadTraderLevers: LeverageInfo[];
   myLevers: LeverageInfo[];
 }
 
-export interface SetCTBatchLeverageResponse {
+export interface SetCTBatchLeverageResult {
   succInstId: string;
   failInstId: string;
   result: '0' | '1' | '2';
 }
 
-export interface GetCTMyLeadTradersResponse {
+export interface GetCTMyLeadTradersResult {
   portLink: string;
   nickName: string;
   margin: string;
@@ -146,7 +146,7 @@ export interface GetCTMyLeadTradersResponse {
   leadMode: 'public' | 'private';
 }
 
-export interface GetCTHistoryLeadTradersResponse {
+export interface GetCTHistoryLeadTradersResult {
   portLink: string;
   nickName: string;
   uniqueCode: string;
@@ -165,7 +165,7 @@ export interface GetCTHistoryLeadTradersResponse {
   leadMode: 'public' | 'private';
 }
 
-export interface GetCopyTradingConfigResponse {
+export interface GetCopyTradingConfigResult {
   maxCopyAmt: string;
   minCopyAmt: string;
   maxCopyTotalAmt: string;
@@ -198,7 +198,7 @@ export interface LeadTraderRank {
   winRatio: string;
 }
 
-export interface GetLeadTraderRanksResponse {
+export interface GetLeadTraderRanksResult {
   dataVer: string;
   ranks: LeadTraderRank[];
   totalPage: string;
@@ -269,7 +269,7 @@ export interface CopyTraderInfo {
   pnl: string;
 }
 
-export interface GetCopyTradersResponse {
+export interface GetCopyTradersResult {
   copyTotalPnl: string;
   ccy: string;
   copyTraderNumChg: string;
@@ -297,7 +297,7 @@ export interface GetPrivateLeadTraderRanksRequest {
   limit?: string;
 }
 
-export interface GetPrivateLeadTraderRanksResponse {
+export interface GetPrivateLeadTraderRanksResult {
   dataVer: string;
   chanType: 'OKX' | 'ND';
   ranks: LeadTraderRank[];

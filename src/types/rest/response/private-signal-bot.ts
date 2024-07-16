@@ -1,9 +1,9 @@
-export interface CreateSignalResponse {
+export interface CreateSignalResult {
   signalChanId: string;
   signalToken: string;
 }
 
-export interface GetSignalsResponse {
+export interface GetSignalsResult {
   signalChanId: string;
   signalChanName: string;
   signalChanDesc: string;
@@ -11,14 +11,14 @@ export interface GetSignalsResponse {
   signalSourceType: string;
 }
 
-export interface CreateSignalBotResponse {
+export interface CreateSignalBotResult {
   algoId: string;
   algoClOrdId: string;
   sCode: string;
   sMsg: string;
 }
 
-export interface CancelSignalBotsResponse {
+export interface CancelSignalBotsResult {
   algoId: string;
   sCode: string;
   sMsg: string;

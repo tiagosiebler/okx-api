@@ -325,7 +325,7 @@ export interface WithdrawalHistory {
   clientId: string;
 }
 
-export interface GetInstrument {
+export interface AccountInstrument {
   baseCcy: string;
   ctMult: string;
   ctType: string;
@@ -355,7 +355,7 @@ export interface GetInstrument {
   tickSz: string;
 }
 
-export interface QuickMarginBorrowRepayResponse {
+export interface QuickMarginBorrowRepayResult {
   instId: string;
   ccy: string;
   side: 'borrow' | 'repay';
@@ -364,7 +364,7 @@ export interface QuickMarginBorrowRepayResponse {
   ts: string;
 }
 
-export interface QuickMarginBorrowRepayHistory {
+export interface QuickMarginBorrowRepayRecord {
   instId: string;
   ccy: string;
   side: 'borrow' | 'repay';
@@ -433,7 +433,7 @@ export interface FixedLoanBorrowQuote {
   ts: string;
 }
 
-export interface SetMMPConfigResponse {
+export interface SetMMPConfigResult {
   instFamily: string;
   timeInterval: string;
   frozenInterval: string;

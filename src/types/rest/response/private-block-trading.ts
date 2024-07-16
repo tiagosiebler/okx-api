@@ -111,13 +111,13 @@ export interface BlockMakerInstrumentSettings {
   data: BlockMakerInstrumentData[];
 }
 
-export interface SetMmpConfigResponse {
+export interface SetMmpConfigResult {
   timeInterval: string;
   frozenInterval: string;
   countLimit: string;
 }
 
-export interface GetMmpConfigResponse {
+export interface BlockMMPConfig {
   frozenInterval: string;
   mmpFrozen: boolean;
   mmpFrozenUntil: string;
@@ -125,7 +125,7 @@ export interface GetMmpConfigResponse {
   timeInterval: string;
 }
 
-export interface PublicBlockTradeResp {
+export interface PublicBlockTrade {
   instId: string;
   tradeId: string;
   px: string;

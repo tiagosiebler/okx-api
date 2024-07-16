@@ -1,16 +1,16 @@
-export interface RecurringBuyOrderResponse {
+export interface RecurringBuyOrderResult {
   algoId: string;
   algoClOrdId: string;
   sCode: string;
   sMsg: string;
 }
 
-export interface RecurringBuyInfoResp {
+export interface RecurringBuyInfoResult  {
   ccy: string;
   ratio: string;
 }
 
-export interface GetRecurringBuyOrderListResponse {
+export interface RecurringBuyOrder {
   algoId: string;
   algoClOrdId: string;
   instType: string;
@@ -19,7 +19,7 @@ export interface GetRecurringBuyOrderListResponse {
   algoOrdType: 'recurring';
   state: 'running' | 'stopping';
   stgyName: string;
-  recurringList: RecurringBuyInfoResp[];
+  recurringList: RecurringBuyInfoResult[];
   period: 'monthly' | 'weekly' | 'daily' | 'hourly';
   recurringDay?: string;
   recurringHour?: string;
@@ -36,31 +36,6 @@ export interface GetRecurringBuyOrderListResponse {
   tag: string;
 }
 
-export interface GetRecurringBuyOrderHistoryResponse {
-  algoId: string;
-  algoClOrdId: string;
-  instType: string;
-  cTime: string;
-  uTime: string;
-  algoOrdType: 'recurring';
-  state: 'stopped';
-  stgyName: string;
-  recurringList: RecurringBuyInfoResp[];
-  period: 'monthly' | 'weekly' | 'daily' | 'hourly';
-  recurringDay?: string;
-  recurringHour?: string;
-  recurringTime: string;
-  timeZone: string;
-  amt: string;
-  investmentAmt: string;
-  investmentCcy: 'USDT' | 'USDC';
-  totalPnl: string;
-  totalAnnRate: string;
-  pnlRatio: string;
-  mktCap: string;
-  cycles: string;
-  tag: string;
-}
 
 export interface RecurringBuyInfoOrder {
   ccy: string;
@@ -71,34 +46,9 @@ export interface RecurringBuyInfoOrder {
   px: string;
 }
 
-export interface GetRecurringBuyOrderDetailsResponse {
-  algoId: string;
-  algoClOrdId: string;
-  instType: string;
-  cTime: string;
-  uTime: string;
-  algoOrdType: 'recurring';
-  state: 'running' | 'stopping' | 'stopped';
-  stgyName: string;
-  recurringList: RecurringBuyInfoOrder[];
-  period: 'monthly' | 'weekly' | 'daily' | 'hourly';
-  recurringDay?: string;
-  recurringHour?: string;
-  recurringTime: string;
-  timeZone: string;
-  amt: string;
-  investmentAmt: string;
-  investmentCcy: 'USDT' | 'USDC';
-  nextInvestTime: string;
-  totalPnl: string;
-  totalAnnRate: string;
-  pnlRatio: string;
-  mktCap: string;
-  cycles: string;
-  tag: string;
-}
 
-export interface GetRecurringBuySubOrdersResponse {
+
+export interface RecurringBuySubOrder {
   algoId: string;
   instType: string;
   instId: string;

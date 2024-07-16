@@ -122,9 +122,7 @@ import {
   FundingRateRequest,
   GetInstrumentsRequest,
   QuickMarginBorrowRepayRequest,
-  QuickMarginBorrowRepayResponse,
   GetQuickMarginBorrowRepayHistoryRequest,
-  QuickMarginBorrowRepayHistory,
   GetVIPInterestRequest,
   VIPInterest,
   GetVIPLoanOrderListRequest,
@@ -139,10 +137,7 @@ import {
   GetFixedLoanBorrowingOrdersListRequest,
   PositionBuilderRequest,
   SetMMPConfigRequest,
-  SetMMPConfigResponse,
   MMPConfig,
-  GetTransactionDetailsArchiveRequest,
-  GetTransactionDetailsArchiveResponse,
   CancelAllAfterResponse,
   CloseContractGridPositionRequest,
   GetRSIBackTestingRequest,
@@ -161,12 +156,8 @@ import {
   GetLendingSubOrderListRequest,
   LendingOrder,
   CreateSignalRequest,
-  CreateSignalResponse,
   GetSignalsRequest,
-  GetSignalsResponse,
   CreateSignalBotRequest,
-  CreateSignalBotResponse,
-  CancelSignalBotsResponse,
   AdjustMarginBalanceRequest,
   AmendTPSLRequest,
   SetSignalInstrumentsRequest,
@@ -176,39 +167,19 @@ import {
   CancelSubOrderRequest,
   GetSignalBotSubOrdersRequest,
   GetSignalBotEventHistoryRequest,
-  GetInstrument,
   GetCurrentSubpositionsRequest,
-  GetCurrentSubpositionsResponse,
   GetSubpositionsHistoryRequest,
-  GetSubpositionsHistoryResponse,
-  PlaceCTAlgoOrderResponse,
   PlaceCTAlgoOrderRequest,
   CloseSubpositionRequest,
   GetCTProfitDetailsRequest,
-  GetCTProfitDetailsResponse,
-  GetCTTotalProfitResponse,
-  GetCTUnrealizedProfitResponse,
-  GetAccountConfigurationResponse,
   CopySettingsRequest,
-  GetCopySettingsResponse,
   AmendRecurringBuyOrderRequest,
   GetRecurringBuyOrderListRequest,
   PlaceRecurringBuyOrderRequest,
-  GetRecurringBuyOrderDetailsResponse,
-  GetRecurringBuyOrderHistoryResponse,
-  GetRecurringBuyOrderListResponse,
-  GetRecurringBuySubOrdersResponse,
-  RecurringBuyOrderResponse,
   SetCTBatchLeverageRequest,
-  SetCTBatchLeverageResponse,
   GetCTBatchLeverageInfoRequest,
-  GetCTBatchLeverageInfoResponse,
-  GetCTMyLeadTradersResponse,
   GetCTHistoryLeadTradersRequest,
-  GetCTHistoryLeadTradersResponse,
-  GetCopyTradingConfigResponse,
   GetLeadTraderRanksRequest,
-  GetLeadTraderRanksResponse,
   LeadTraderPnl,
   LeadTraderStats,
   GetLeadTraderStatsRequest,
@@ -217,18 +188,13 @@ import {
   GetLeadTraderPositionsRequest,
   LeadTraderPositionHistory,
   GetCopyTradersRequest,
-  GetCopyTradersResponse,
   GetPrivateLeadTraderRanksRequest,
-  GetPrivateLeadTraderRanksResponse,
   OptionTrade,
   GetOptionTradesRequest,
   GetOptionTrades,
   BlockMakerInstrumentSettings,
   SetQuoteProductsRequest,
   SetMmpConfigRequest,
-  SetMmpConfigResponse,
-  GetMmpConfigResponse,
-  PublicBlockTradeResp,
   PlaceSpreadOrderRequest,
   PlaceSpreadOrderResponse,
   CancelSpreadOrderResponse,
@@ -248,6 +214,36 @@ import {
   GetSpreadCandlesRequest,
   SpreadCandle,
   CandleRequest,
+  AccountInstrument,
+  SetMMPConfigResult,
+  CreateSignalResult,
+  GetSignalsResult,
+  CreateSignalBotResult,
+  CancelSignalBotsResult,
+  RecurringBuyOrderResult,
+  RecurringBuyOrder,
+  RecurringBuySubOrder,
+  SubpositionsHistory,
+  CurrentSubposition,
+  GetAccountConfigurationResult,
+  GetCTBatchLeverageInfoResult,
+  GetCTHistoryLeadTradersResult,
+  GetCTMyLeadTradersResult,
+  GetCTProfitDetailsResult,
+  GetCTTotalProfitResult,
+  GetCTUnrealizedProfitResult,
+  GetCopySettingsResult,
+  GetCopyTradersResult,
+  GetCopyTradingConfigResult,
+  GetLeadTraderRanksResult,
+  GetPrivateLeadTraderRanksResult,
+  PlaceCTAlgoOrderResult,
+  SetCTBatchLeverageResult,
+  QuickMarginBorrowRepayRecord,
+  BlockMMPConfig,
+  PublicBlockTrade,
+  QuickMarginBorrowRepayResult,
+  SetMmpConfigResult,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -353,9 +349,15 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
-  applyTransactionDetailsArchive(
-    params: GetTransactionDetailsArchiveRequest
-  ): Promise<GetTransactionDetailsArchiveResponse[]> {
+  applyTransactionDetailsArchive(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<
+    {
+      result: string;
+      ts: string;
+    }[]
+  > {
     return this.postPrivate('/api/v5/trade/fills-archive', params);
   }
 
@@ -542,14 +544,13 @@ export class RestClient extends BaseRestClient {
 
   updateBlockMmpConfig(
     params: SetMmpConfigRequest
-  ): Promise<SetMmpConfigResponse[]> {
+  ): Promise<SetMmpConfigResult[]> {
     return this.postPrivate('/api/v5/rfq/mmp-config', params);
   }
 
-  getBlockMmpConfig(): Promise<GetMmpConfigResponse[]> {
+  getBlockMmpConfig(): Promise<BlockMMPConfig[]> {
     return this.getPrivate('/api/v5/rfq/mmp-config');
   }
-
   createBlockQuote(
     params: CreateBlockQuoteRequest
   ): Promise<CreateBlockQuoteResult[]> {
@@ -599,7 +600,7 @@ export class RestClient extends BaseRestClient {
 
   getBlockPublicTrades(params: {
     instId: string;
-  }): Promise<PublicBlockTradeResp[]> {
+  }): Promise<PublicBlockTrade[]> {
     return this.get('/api/v5/public/block-trades', params);
   }
 
@@ -699,7 +700,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/convert-dust-assets', { ccy });
   }
 
-  getExchangeList(): Promise<any[]> {
+  getExchanges(): Promise<any[]> {
     return this.get('/api/v5/asset/exchange-list');
   }
 
@@ -785,7 +786,7 @@ export class RestClient extends BaseRestClient {
 
   getAccountInstruments(
     params: GetInstrumentsRequest
-  ): Promise<GetInstrument[]> {
+  ): Promise<AccountInstrument[]> {
     return this.getPrivate('/api/v5/account/instruments', params);
   }
 
@@ -953,7 +954,7 @@ export class RestClient extends BaseRestClient {
 
   submitQuickMarginBorrowRepay(
     params: QuickMarginBorrowRepayRequest
-  ): Promise<QuickMarginBorrowRepayResponse[]> {
+  ): Promise<QuickMarginBorrowRepayResult[]> {
     return this.postPrivate(
       '/api/v5/account/quick-margin-borrow-repay',
       params
@@ -962,7 +963,7 @@ export class RestClient extends BaseRestClient {
 
   getQuickMarginBorrowRepayHistory(
     params: GetQuickMarginBorrowRepayHistoryRequest
-  ): Promise<QuickMarginBorrowRepayHistory[]> {
+  ): Promise<QuickMarginBorrowRepayRecord[]> {
     return this.getPrivate(
       '/api/v5/account/quick-margin-borrow-repay-history',
       params
@@ -1141,7 +1142,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/mmp-reset', params);
   }
 
-  setMMPConfig(params: SetMMPConfigRequest): Promise<SetMMPConfigResponse[]> {
+  setMMPConfig(params: SetMMPConfigRequest): Promise<SetMMPConfigResult[]> {
     return this.postPrivate('/api/v5/account/mmp-config', params);
   }
 
@@ -1194,7 +1195,7 @@ export class RestClient extends BaseRestClient {
 
   getSubAccountMaxWithdrawal(
     params: GetSubAccountMaxWithdrawalsRequest
-  ): Promise<SubAccountMaxWithdrawal> {
+  ): Promise<SubAccountMaxWithdrawal[]> {
     return this.getPrivate('/api/v5/account/subaccount/max-withdrawal', params);
   }
 
@@ -1483,27 +1484,147 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/books-full', params);
   }
 
-  getCandles(params: CandleRequest): Promise<Candle[]> {
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
+  getCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<Candle[]> {
+    return this.get('/api/v5/market/candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getCandlesV2(params: CandleRequest): Promise<Candle[]> {
     return this.get('/api/v5/market/candles', params);
   }
 
-  getHistoricCandles(params: CandleRequest): Promise<Candle[]> {
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
+  getHistoricCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<Candle[]> {
+    return this.get('/api/v5/market/history-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getHistoricCandlesV2(params: CandleRequest): Promise<Candle[]> {
     return this.get('/api/v5/market/history-candles', params);
   }
 
-  getIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getIndexCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
+  getIndexCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/index-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getIndexCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/index-candles', params);
   }
 
-  getHistoricIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricIndexCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
+  getHistoricIndexCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/history-index-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getHistoricIndexCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/history-index-candles', params);
   }
 
-  getMarkPriceCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getMarkPriceCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
+  getMarkPriceCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/mark-price-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getMarkPriceCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/mark-price-candles', params);
   }
 
+  /**
+   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricMarkPriceCandlesV2 instead.
+   *
+   * @param instId
+   * @param bar
+   * @param pagination
+   * @returns
+   */
   getHistoricMarkPriceCandles(
+    instId: string,
+    bar: string = '1m',
+    pagination?: Pagination
+  ): Promise<CandleNoVolume[]> {
+    return this.get('/api/v5/market/historic-mark-price-candles', {
+      instId,
+      bar,
+      ...pagination,
+    });
+  }
+
+  getHistoricMarkPriceCandlesV2(
     params: CandleRequest
   ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/history-mark-price-candles', params);
@@ -1819,7 +1940,7 @@ export class RestClient extends BaseRestClient {
     productId?: string;
     protocolType?: 'staking' | 'defi';
     ccy?: string;
-  }): Promise<APIResponse<any>> {
+  }): Promise<any[]> {
     return this.getPrivate('/api/v5/finance/staking-defi/offers', params);
   }
 
@@ -1831,7 +1952,7 @@ export class RestClient extends BaseRestClient {
       amt: string;
     }[],
     term?: string
-  ): Promise<APIResponse<any>> {
+  ): Promise<any[]> {
     return this.postPrivate('/api/v5/finance/staking-defi/purchase', {
       productId,
       investData,
@@ -1844,7 +1965,7 @@ export class RestClient extends BaseRestClient {
     ordId: string,
     protocolType: 'staking' | 'defi',
     allowEarlyRedeem?: boolean
-  ): Promise<APIResponse<any>> {
+  ): Promise<any[]> {
     return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
       ordId,
       protocolType,
@@ -1856,7 +1977,7 @@ export class RestClient extends BaseRestClient {
   cancelStakingRequest(
     ordId: string,
     protocolType: 'staking' | 'defi'
-  ): Promise<APIResponse<any>> {
+  ): Promise<any[]> {
     return this.postPrivate('/api/v5/finance/staking-defi/cancel', {
       ordId,
       protocolType,
@@ -1869,7 +1990,7 @@ export class RestClient extends BaseRestClient {
     protocolType?: 'staking' | 'defi';
     ccy?: string;
     state?: '8' | '13' | '9' | '1' | '2';
-  }): Promise<APIResponse<any>> {
+  }): Promise<any[]> {
     return this.getPrivate(
       '/api/v5/finance/staking-defi/orders-active',
       params
@@ -1884,7 +2005,7 @@ export class RestClient extends BaseRestClient {
     after?: string;
     before?: string;
     limit?: string;
-  }): Promise<APIResponse<any>> {
+  }): Promise<any[]> {
     return this.getPrivate(
       '/api/v5/finance/staking-defi/orders-history',
       params
@@ -1978,23 +2099,23 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  createSignal(params: CreateSignalRequest): Promise<CreateSignalResponse[]> {
+  createSignal(params: CreateSignalRequest): Promise<CreateSignalResult[]> {
     return this.postPrivate('/api/v5/tradingBot/signal/create-signal', params);
   }
 
-  getSignals(params: GetSignalsRequest): Promise<GetSignalsResponse[]> {
+  getSignals(params: GetSignalsRequest): Promise<GetSignalsResult[]> {
     return this.getPrivate('/api/v5/tradingBot/signal/signals', params);
   }
 
   createSignalBot(
     params: CreateSignalBotRequest
-  ): Promise<CreateSignalBotResponse[]> {
+  ): Promise<CreateSignalBotResult[]> {
     return this.postPrivate('/api/v5/tradingBot/signal/order-algo', params);
   }
 
   cancelSignalBots(params: {
     algoId: string;
-  }): Promise<CancelSignalBotsResponse[]> {
+  }): Promise<CancelSignalBotsResult[]> {
     return this.postPrivate(
       '/api/v5/tradingBot/signal/stop-order-algo',
       params
@@ -2105,13 +2226,13 @@ export class RestClient extends BaseRestClient {
 
   submitRecurringBuyOrder(
     params: PlaceRecurringBuyOrderRequest
-  ): Promise<RecurringBuyOrderResponse[]> {
+  ): Promise<RecurringBuyOrderResult[]> {
     return this.postPrivate('/api/v5/tradingBot/recurring/order-algo', params);
   }
 
   amendRecurringBuyOrder(
     params: AmendRecurringBuyOrderRequest
-  ): Promise<RecurringBuyOrderResponse[]> {
+  ): Promise<RecurringBuyOrderResult[]> {
     return this.postPrivate(
       '/api/v5/tradingBot/recurring/amend-order-algo',
       params
@@ -2120,16 +2241,16 @@ export class RestClient extends BaseRestClient {
 
   stopRecurringBuyOrder(params: {
     algoId: string;
-  }): Promise<RecurringBuyOrderResponse[]> {
+  }): Promise<RecurringBuyOrderResult[]> {
     return this.postPrivate(
       '/api/v5/tradingBot/recurring/stop-order-algo',
       params
     );
   }
 
-  getRecurringBuyOrderList(
+  getRecurringBuyOrders(
     params: GetRecurringBuyOrderListRequest
-  ): Promise<GetRecurringBuyOrderListResponse[]> {
+  ): Promise<RecurringBuyOrder[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/recurring/orders-algo-pending',
       params
@@ -2138,7 +2259,7 @@ export class RestClient extends BaseRestClient {
 
   getRecurringBuyOrderHistory(
     params: GetRecurringBuyOrderListRequest
-  ): Promise<GetRecurringBuyOrderHistoryResponse[]> {
+  ): Promise<RecurringBuyOrder[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/recurring/orders-algo-history',
       params
@@ -2147,7 +2268,7 @@ export class RestClient extends BaseRestClient {
 
   getRecurringBuyOrderDetails(params: {
     algoId: string;
-  }): Promise<GetRecurringBuyOrderDetailsResponse[]> {
+  }): Promise<RecurringBuyOrder[]> {
     return this.getPrivate(
       '/api/v5/tradingBot/recurring/orders-algo-details',
       params
@@ -2156,7 +2277,7 @@ export class RestClient extends BaseRestClient {
 
   getRecurringBuySubOrders(
     params: GetRecurringBuyOrderListRequest
-  ): Promise<GetRecurringBuySubOrdersResponse[]> {
+  ): Promise<RecurringBuySubOrder[]> {
     return this.getPrivate('/api/v5/tradingBot/recurring/sub-orders', params);
   }
 
@@ -2168,19 +2289,19 @@ export class RestClient extends BaseRestClient {
 
   getCopytradingSubpositions(
     params?: GetCurrentSubpositionsRequest
-  ): Promise<GetCurrentSubpositionsResponse[]> {
+  ): Promise<CurrentSubposition[]> {
     return this.getPrivate('/api/v5/copytrading/current-subpositions', params);
   }
 
   getCopytradingSubpositionsHistory(
     params?: GetSubpositionsHistoryRequest
-  ): Promise<GetSubpositionsHistoryResponse[]> {
+  ): Promise<SubpositionsHistory[]> {
     return this.getPrivate('/api/v5/copytrading/subpositions-history', params);
   }
 
   submitCopytradingAlgoOrder(
     params: PlaceCTAlgoOrderRequest
-  ): Promise<PlaceCTAlgoOrderResponse[]> {
+  ): Promise<PlaceCTAlgoOrderResult[]> {
     return this.postPrivate('/api/v5/copytrading/algo-order', params);
   }
 
@@ -2216,7 +2337,7 @@ export class RestClient extends BaseRestClient {
 
   getCopytradingProfitDetails(
     params?: GetCTProfitDetailsRequest
-  ): Promise<GetCTProfitDetailsResponse[]> {
+  ): Promise<GetCTProfitDetailsResult[]> {
     return this.getPrivate(
       '/api/v5/copytrading/profit-sharing-details',
       params
@@ -2225,13 +2346,13 @@ export class RestClient extends BaseRestClient {
 
   getCopytradingTotalProfit(params?: {
     instType?: 'SPOT' | 'SWAP';
-  }): Promise<GetCTTotalProfitResponse[]> {
+  }): Promise<GetCTTotalProfitResult[]> {
     return this.getPrivate('/api/v5/copytrading/total-profit-sharing', params);
   }
 
   getCopytradingUnrealizedProfit(params?: {
     instType?: 'SPOT' | 'SWAP';
-  }): Promise<GetCTUnrealizedProfitResponse[]> {
+  }): Promise<GetCTUnrealizedProfitResult[]> {
     return this.getPrivate(
       '/api/v5/copytrading/unrealized-profit-sharing-details',
       params
@@ -2283,7 +2404,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getCopytradingAccount(): Promise<GetAccountConfigurationResponse[]> {
+  getCopytradingAccount(): Promise<GetAccountConfigurationResult[]> {
     return this.getPrivate('/api/v5/copytrading/config');
   }
 
@@ -2318,43 +2439,43 @@ export class RestClient extends BaseRestClient {
   getCopytradingCopySettings(params: {
     instType?: 'SWAP';
     uniqueCode: string;
-  }): Promise<GetCopySettingsResponse[]> {
+  }): Promise<GetCopySettingsResult[]> {
     return this.getPrivate('/api/v5/copytrading/copy-settings', params);
   }
 
   getCopytradingBatchLeverageInfo(
     params: GetCTBatchLeverageInfoRequest
-  ): Promise<GetCTBatchLeverageInfoResponse[]> {
+  ): Promise<GetCTBatchLeverageInfoResult[]> {
     return this.getPrivate('/api/v5/copytrading/batch-leverage-info', params);
   }
 
   setCopytradingBatchLeverage(
     params: SetCTBatchLeverageRequest
-  ): Promise<SetCTBatchLeverageResponse[]> {
+  ): Promise<SetCTBatchLeverageResult[]> {
     return this.postPrivate('/api/v5/copytrading/batch-set-leverage', params);
   }
 
   getCopytradingMyLeadTraders(params?: {
     instType?: 'SWAP';
-  }): Promise<GetCTMyLeadTradersResponse[]> {
+  }): Promise<GetCTMyLeadTradersResult[]> {
     return this.getPrivate('/api/v5/copytrading/current-lead-traders', params);
   }
 
   getCopytradingLeadTradersHistory(
     params?: GetCTHistoryLeadTradersRequest
-  ): Promise<GetCTHistoryLeadTradersResponse[]> {
+  ): Promise<GetCTHistoryLeadTradersResult[]> {
     return this.getPrivate('/api/v5/copytrading/lead-traders-history', params);
   }
 
   getCopytradingConfig(params?: {
     instType?: 'SWAP';
-  }): Promise<GetCopyTradingConfigResponse[]> {
+  }): Promise<GetCopyTradingConfigResult[]> {
     return this.get('/api/v5/copytrading/public-config', params);
   }
 
   getCopytradingLeadRanks(
     params?: GetLeadTraderRanksRequest
-  ): Promise<GetLeadTraderRanksResponse[]> {
+  ): Promise<GetLeadTraderRanksResult[]> {
     return this.get('/api/v5/copytrading/public-lead-traders', params);
   }
 
@@ -2398,13 +2519,13 @@ export class RestClient extends BaseRestClient {
 
   getCopyTraders(
     params: GetCopyTradersRequest
-  ): Promise<GetCopyTradersResponse> {
+  ): Promise<GetCopyTradersResult[]> {
     return this.get('/api/v5/copytrading/public-copy-traders', params);
   }
 
   getCopytradingLeadPrivateRanks(
     params?: GetPrivateLeadTraderRanksRequest
-  ): Promise<GetPrivateLeadTraderRanksResponse[]> {
+  ): Promise<GetPrivateLeadTraderRanksResult[]> {
     return this.getPrivate('/api/v5/copytrading/lead-traders', params);
   }
 
@@ -2454,7 +2575,7 @@ export class RestClient extends BaseRestClient {
 
   getCopyTradersPrivate(
     params: GetCopyTradersRequest
-  ): Promise<GetCopyTradersResponse> {
+  ): Promise<GetCopyTradersResult[]> {
     return this.getPrivate('/api/v5/copytrading/copy-traders', params);
   }
 
