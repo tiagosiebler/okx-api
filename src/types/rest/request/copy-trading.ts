@@ -120,3 +120,23 @@ export interface GetCopyTradersRequest {
   uniqueCode: string;
   limit?: string;
 }
+
+export interface GetPrivateLeadTraderRanksRequest {
+  instType?: 'SWAP';
+  sortType?:
+    | 'overview'
+    | 'pnl'
+    | 'aum'
+    | 'win_ratio'
+    | 'pnl_ratio'
+    | 'current_copy_trader_pnl';
+  state?: '0' | '1';
+  minLeadDays?: '1' | '2' | '3' | '4';
+  minAssets?: string;
+  maxAssets?: string;
+  minAum?: string;
+  maxAum?: string;
+  dataVer?: string;
+  page?: string;
+  limit?: string;
+}

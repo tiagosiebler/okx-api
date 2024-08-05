@@ -165,7 +165,7 @@ export interface OptionTrade {
   tradeInfo: OptionsTradeInfo[];
 }
 
-export interface GetOptionTrades {
+export interface OptionTrades {
   instId: string;
   instFamily: string;
   tradeId: string;

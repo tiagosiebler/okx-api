@@ -21,7 +21,7 @@ export interface UpdateSpreadOrderResponse {
   sMsg: string;
 }
 
-export interface SpreadOrderDetails {
+export interface SpreadOrder  {
   instId: string;
   ordId: string;
   clOrdId: string;
@@ -54,7 +54,7 @@ export interface SpreadTradeLeg {
   tradeId: string;
 }
 
-export interface SpreadTradeDetails {
+export interface SpreadTrade {
   sprdId: string;
   tradeId: string;
   ordId: string;

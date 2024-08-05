@@ -36,25 +36,25 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getCandles()', async () => {
-    expect(await api.getCandles({ instId: instId })).toMatchObject(
+    expect(await api.getCandlesV2({ instId: instId })).toMatchObject(
       successResponseList()
     );
   });
 
   it('getHistoricCandles()', async () => {
-    expect(await api.getHistoricCandles({ instId: instId })).toMatchObject(
+    expect(await api.getHistoricCandlesV2({ instId: instId })).toMatchObject(
       successResponseList()
     );
   });
 
   it('getIndexCandles()', async () => {
-    expect(await api.getIndexCandles({ instId: instId })).toMatchObject(
+    expect(await api.getIndexCandlesV2({ instId: instId })).toMatchObject(
       successResponseList()
     );
   });
 
   it('getMarkPriceCandles()', async () => {
-    expect(await api.getMarkPriceCandles({ instId: instId })).toMatchObject(
+    expect(await api.getMarkPriceCandlesV2({ instId: instId })).toMatchObject(
       successResponseList()
     );
   });

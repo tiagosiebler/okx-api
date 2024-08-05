@@ -191,7 +191,7 @@ import {
   GetPrivateLeadTraderRanksRequest,
   OptionTrade,
   GetOptionTradesRequest,
-  GetOptionTrades,
+  OptionTrades,
   BlockMakerInstrumentSettings,
   SetQuoteProductsRequest,
   SetMmpConfigRequest,
@@ -200,12 +200,12 @@ import {
   CancelSpreadOrderResponse,
   UpdateSpreadOrderRequest,
   UpdateSpreadOrderResponse,
-  SpreadOrderDetails,
+  SpreadOrder,
   GetActiveSpreadOrdersRequest,
   GetSpreadOrderHistoryRequest,
   GetSpreadOrderHistoryArchiveRequest,
   GetSpreadTradesRequest,
-  SpreadTradeDetails,
+  SpreadTrade,
   SpreadDetails,
   GetSpreadsRequest,
   SpreadOrderBook,
@@ -1652,7 +1652,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/option/instrument-family-trades', params);
   }
 
-  getOptionTrades(params: GetOptionTradesRequest): Promise<GetOptionTrades[]> {
+  getOptionTrades(params: GetOptionTradesRequest): Promise<OptionTrades[]> {
     return this.get('/api/v5/public/option-trades', params);
   }
 
@@ -2615,31 +2615,29 @@ export class RestClient extends BaseRestClient {
   getSpreadOrder(params: {
     ordId?: string;
     clOrdId?: string;
-  }): Promise<SpreadOrderDetails[]> {
+  }): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/order', params);
   }
 
   getSpreadActiveOrders(
     params?: GetActiveSpreadOrdersRequest
-  ): Promise<SpreadOrderDetails[]> {
+  ): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/orders-pending', params);
   }
 
   getSpreadOrders21Days(
     params?: GetSpreadOrderHistoryRequest
-  ): Promise<SpreadOrderDetails[]> {
+  ): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/orders-history', params);
   }
 
   getSpreadOrders3months(
     params?: GetSpreadOrderHistoryArchiveRequest
-  ): Promise<SpreadOrderDetails[]> {
+  ): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/orders-history-archive', params);
   }
 
-  getSpreadTrades(
-    params?: GetSpreadTradesRequest
-  ): Promise<SpreadTradeDetails[]> {
+  getSpreadTrades(params?: GetSpreadTradesRequest): Promise<SpreadTrade[]> {
     return this.getPrivate('/api/v5/sprd/trades', params);
   }
 
