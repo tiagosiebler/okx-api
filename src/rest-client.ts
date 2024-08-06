@@ -2625,13 +2625,13 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/sprd/orders-pending', params);
   }
 
-  getSpreadOrders21Days(
+  getSpreadOrdersRecent(
     params?: GetSpreadOrderHistoryRequest
   ): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/orders-history', params);
   }
 
-  getSpreadOrders3months(
+  getSpreadOrdersArchive(
     params?: GetSpreadOrderHistoryArchiveRequest
   ): Promise<SpreadOrder[]> {
     return this.getPrivate('/api/v5/sprd/orders-history-archive', params);
