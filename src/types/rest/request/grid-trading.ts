@@ -33,3 +33,19 @@ export interface StopGridAlgoOrderRequest {
   algoOrdType: GridAlgoOrderType;
   stopType: '1' | '2';
 }
+
+export interface CloseContractGridPositionRequest {
+  algoId: string;
+  mktClose: boolean;
+  sz?: string;
+  px?: string;
+}
+
+export interface GetRSIBackTestingRequest {
+  instId: string;
+  timeframe: '3m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D';
+  thold: string;
+  timePeriod: string;
+  triggerCond?: 'cross_up' | 'cross_down' | 'above' | 'below' | 'cross';
+  duration?: string;
+}

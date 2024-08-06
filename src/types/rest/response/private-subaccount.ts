@@ -58,3 +58,21 @@ export interface SubAccountBalances {
 export interface SubAccountTransferResult {
   transId: string;
 }
+
+export interface SubAccountMaxWithdrawal {
+  ccy: string;
+  maxWd: string;
+  maxWdEx: string;
+  spotOffsetMaxWd: string;
+  spotOffsetMaxWdEx: string;
+}
+
+export interface ManagedSubAccountTransfer {
+  billId: string;
+  ccy: string;
+  amt: string;
+  type: string;
+  subAcct: string;
+  subUid: string;
+  ts: string;
+}

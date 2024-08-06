@@ -352,3 +352,11 @@ export interface HistoricAlgoOrder {
   triggerTime: string;
   amendPxOnTriggerType: string;
 }
+
+
+export interface CancelAllAfterResponse {
+  triggerTime: string;
+  tag: string;
+  ts: string;
+}
+

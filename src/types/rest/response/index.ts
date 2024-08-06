@@ -4,3 +4,7 @@ export * from './private-funding';
 export * from './private-subaccount';
 export * from './private-trade';
 export * from './public-data';
+export * from './private-signal-bot';
+export * from './private-recurring-buy';
+export * from './private-copy-trading';
+export * from './private-spread-trading';

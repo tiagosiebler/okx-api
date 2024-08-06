@@ -97,3 +97,43 @@ export interface GetBlockQuoteResult {
   clRfqId: string;
   traderCode: string;
 }
+
+export interface BlockMakerInstrumentData {
+  uly?: string;
+  instId?: string;
+  maxBlockSz?: string;
+  makerPxBand?: string;
+}
+
+export interface BlockMakerInstrumentSettings {
+  instType: string;
+  includeALL: boolean;
+  data: BlockMakerInstrumentData[];
+}
+
+export interface SetMmpConfigResult {
+  timeInterval: string;
+  frozenInterval: string;
+  countLimit: string;
+}
+
+export interface BlockMMPConfig {
+  frozenInterval: string;
+  mmpFrozen: boolean;
+  mmpFrozenUntil: string;
+  countLimit: string;
+  timeInterval: string;
+}
+
+export interface PublicBlockTrade {
+  instId: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  fillVol?: string;
+  fwdPx?: string;
+  idxPx?: string;
+  markPx?: string;
+  ts: string;
+}

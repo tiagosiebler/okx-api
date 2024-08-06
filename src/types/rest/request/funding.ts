@@ -27,3 +27,11 @@ export interface FundingRateRequest {
   after?: string;
   limit?: string;
 }
+
+export interface GetDepositWithdrawStatusRequest {
+  wdId?: string;
+  txId?: string;
+  ccy?: string;
+  to?: string;
+  chain?: string;
+}

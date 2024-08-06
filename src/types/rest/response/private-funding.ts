@@ -73,9 +73,24 @@ export interface AssetBillDetails {
 }
 
 export interface WithdrawResponse {
-  ccy: string,
-  chain: string,
-  amt: string,
-  wdId: string,
-  clientId: string,
+  ccy: string;
+  chain: string;
+  amt: string;
+  wdId: string;
+  clientId: string;
+}
+
+export interface NonTradableAsset {
+  ccy: string;
+  name: string;
+  logoLink: string;
+  bal: string;
+  canWd: boolean;
+  chain: string;
+  minWd: string;
+  wdAll: boolean;
+  fee: string;
+  ctAddr: string;
+  wdTickSz: string;
+  needTag: boolean;
 }
