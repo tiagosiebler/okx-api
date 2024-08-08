@@ -2759,8 +2759,4 @@ export class RestClient extends BaseRestClient {
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/broker/nd/subaccount/apikey', params);
   }
-
-  /**
-   * End of rest client
-   */
 }
