@@ -145,6 +145,8 @@ export interface OrderHistoryRequest {
   category?: string;
   after?: string;
   before?: string;
+  begin?: string;
+  end?: string;
   limit?: string;
 }
 
