@@ -333,10 +333,10 @@ export class RestClient extends BaseRestClient {
    * During peak demand, data generation may take longer. If the file link is still unavailable after 48 hours, reach out to customer support for assistance.
    * It is only applicable to the data from the unified account.
    *
-   * This endpoint submits a request for bill data. You can then use getBillsHistoryArchive to get the link to the bill data.
+   * This endpoint submits a request for bill data. You can then use getRequestedBillsHistoryLink to get the link to the bill data.
    * It may take some time to generate the data.
    */
-  applyForBillsHistoryArchive(params: {
+  requestBillsHistoryDownloadLink(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
   }): Promise<AccountHistoryBill[]> {
@@ -344,9 +344,9 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * This endpoint returns the link to the bill data which you can request using applyForBillsHistoryArchive.
+   * This endpoint returns the link to the bill data which you can request using requestBillsHistoryDownloadLink.
    */
-  getBillsHistoryArchive(params: {
+  getRequestedBillsHistoryLink(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
   }): Promise<AccountHistoryBill[]> {
@@ -756,7 +756,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * @deprecated - use applyForBillsHistoryArchive and getBillsHistoryArchive
+   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
    */
   applyTransactionDetailsArchive(params: {
     year: string;
@@ -771,7 +771,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * @deprecated - use applyForBillsHistoryArchive and getBillsHistoryArchive
+   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
    */
   getTransactionDetailsArchiveLink(params: {
     year: string;
