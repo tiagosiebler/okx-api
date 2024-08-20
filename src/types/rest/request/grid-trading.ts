@@ -12,6 +12,19 @@ export interface GetGridAlgoOrdersRequest {
   limit?: string;
 }
 
+export interface GridAlgoTrigger {
+  triggerAction: 'start' | 'stop';
+  triggerStrategy: 'instant' | 'price' | 'rsi';
+  delaySeconds?: string;
+  timeframe?: '3m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D';
+  thold?: string;
+  triggerCond?: 'cross_up' | 'cross_down' | 'above' | 'below' | 'cross';
+  timePeriod?: string;
+  triggerPx?: string;
+  stopType?: '1' | '2';
+}
+
+
 export interface GridAlgoOrderRequest {
   instId: string;
   algoOrdType: GridAlgoOrderType;
@@ -25,6 +38,9 @@ export interface GridAlgoOrderRequest {
   direction?: 'long' | 'short' | 'neutral';
   lever?: string;
   basePos?: boolean;
+  tpRatio?: string;
+  slRatio?: string;
+  triggerParams?: GridAlgoTrigger[];
 }
 
 export interface StopGridAlgoOrderRequest {

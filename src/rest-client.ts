@@ -244,6 +244,8 @@ import {
   PublicBlockTrade,
   QuickMarginBorrowRepayResult,
   SetMmpConfigResult,
+  OrderPrecheckRequest,
+  AccountHistoryBill,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -323,6 +325,32 @@ export class RestClient extends BaseRestClient {
   /** Last 3 months */
   getBillsArchive(params?: any): Promise<AccountBill[]> {
     return this.getPrivate('/api/v5/account/bills-archive', params);
+  }
+
+  /**
+   * Apply for bill data since 1 February, 2021 except for the current quarter.
+   * Check the file link from the "Get bills details (since 2021)" endpoint in 30 hours to allow for data generation.
+   * During peak demand, data generation may take longer. If the file link is still unavailable after 48 hours, reach out to customer support for assistance.
+   * It is only applicable to the data from the unified account.
+   *
+   * This endpoint submits a request for bill data. You can then use getRequestedBillsHistoryLink to get the link to the bill data.
+   * It may take some time to generate the data.
+   */
+  requestBillsHistoryDownloadLink(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<AccountHistoryBill[]> {
+    return this.postPrivate('/api/v5/account/bills-history-archive', params);
+  }
+
+  /**
+   * This endpoint returns the link to the bill data which you can request using requestBillsHistoryDownloadLink.
+   */
+  getRequestedBillsHistoryLink(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<AccountHistoryBill[]> {
+    return this.getPrivate('/api/v5/account/bills-history-archive', params);
   }
 
   getAccountConfiguration(): Promise<AccountConfiguration[]> {
@@ -727,6 +755,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
+  /**
+   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
+   */
   applyTransactionDetailsArchive(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
@@ -739,6 +770,9 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/trade/fills-archive', params);
   }
 
+  /**
+   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
+   */
   getTransactionDetailsArchiveLink(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
@@ -822,6 +856,10 @@ export class RestClient extends BaseRestClient {
 
   getAccountRateLimit(): Promise<any[]> {
     return this.getPrivate('/api/v5/trade/account-rate-limit');
+  }
+
+  submitOrderPrecheck(params: OrderPrecheckRequest): Promise<any[]> {
+    return this.postPrivate('/api/v5/trade/order-precheck', params);
   }
 
   /**
