@@ -344,7 +344,7 @@ export class RestClient extends BaseRestClient {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
   }): Promise<AccountHistoryBill[]> {
-    return this.postPrivate('/api/v5/account/bills-history-archive', params);
+    return this.getPrivate('/api/v5/account/bills-history-archive', params);
   }
 
   getAccountConfiguration(): Promise<AccountConfiguration[]> {
@@ -750,7 +750,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * @deprecated - use POST /api/v5/account/bills-history-archive
+   * @deprecated - use applyForBillsHistoryArchive and getBillsHistoryArchive
    */
   applyTransactionDetailsArchive(params: {
     year: string;
@@ -765,7 +765,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * @deprecated - use POST /api/v5/account/bills-history-archive
+   * @deprecated - use applyForBillsHistoryArchive and getBillsHistoryArchive
    */
   getTransactionDetailsArchiveLink(params: {
     year: string;
