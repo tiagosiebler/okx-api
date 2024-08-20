@@ -329,6 +329,12 @@ export class RestClient extends BaseRestClient {
 
   /**
    * Apply for bill data since 1 February, 2021 except for the current quarter.
+   * Check the file link from the "Get bills details (since 2021)" endpoint in 30 hours to allow for data generation.
+   * During peak demand, data generation may take longer. If the file link is still unavailable after 48 hours, reach out to customer support for assistance.
+   * It is only applicable to the data from the unified account.
+   *
+   * This endpoint submits a request for bill data. You can then use getBillsHistoryArchive to get the link to the bill data.
+   * It may take some time to generate the data.
    */
   applyForBillsHistoryArchive(params: {
     year: string;
@@ -338,7 +344,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * Apply for bill data since 1 February, 2021 except for the current quarter.
+   * This endpoint returns the link to the bill data which you can request using applyForBillsHistoryArchive.
    */
   getBillsHistoryArchive(params: {
     year: string;
