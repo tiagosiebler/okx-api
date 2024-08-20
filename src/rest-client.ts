@@ -244,6 +244,8 @@ import {
   PublicBlockTrade,
   QuickMarginBorrowRepayResult,
   SetMmpConfigResult,
+  OrderPrecheckRequest,
+  AccountHistoryBill,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -323,6 +325,26 @@ export class RestClient extends BaseRestClient {
   /** Last 3 months */
   getBillsArchive(params?: any): Promise<AccountBill[]> {
     return this.getPrivate('/api/v5/account/bills-archive', params);
+  }
+
+  /**
+   * Apply for bill data since 1 February, 2021 except for the current quarter.
+   */
+  applyForBillsHistoryArchive(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<AccountHistoryBill[]> {
+    return this.postPrivate('/api/v5/account/bills-history-archive', params);
+  }
+
+  /**
+   * Apply for bill data since 1 February, 2021 except for the current quarter.
+   */
+  getBillsHistoryArchive(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  }): Promise<AccountHistoryBill[]> {
+    return this.postPrivate('/api/v5/account/bills-history-archive', params);
   }
 
   getAccountConfiguration(): Promise<AccountConfiguration[]> {
@@ -727,6 +749,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
+  /**
+   * @deprecated - use POST /api/v5/account/bills-history-archive
+   */
   applyTransactionDetailsArchive(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
@@ -739,6 +764,9 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/trade/fills-archive', params);
   }
 
+  /**
+   * @deprecated - use POST /api/v5/account/bills-history-archive
+   */
   getTransactionDetailsArchiveLink(params: {
     year: string;
     quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
@@ -822,6 +850,10 @@ export class RestClient extends BaseRestClient {
 
   getAccountRateLimit(): Promise<any[]> {
     return this.getPrivate('/api/v5/trade/account-rate-limit');
+  }
+
+  submitOrderPrecheck(params: OrderPrecheckRequest): Promise<any[]> {
+    return this.postPrivate('/api/v5/trade/order-precheck', params);
   }
 
   /**

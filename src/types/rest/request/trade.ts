@@ -88,6 +88,15 @@ export type AlgoOrderDetailsRequest =
       algoClOrdId: string;
     };
 
+interface AlgoTriggerOrder {
+  newTpTriggerPx?: string;
+  newTpTriggerPxType?: 'last' | 'index' | 'mark';
+  newTpOrdPx?: string;
+  newSlTriggerPx?: string;
+  newSlTriggerPxType?: 'last' | 'index' | 'mark';
+  newSlOrdPx?: string;
+}
+
 export interface AmendAlgoOrderRequest {
   instId: string;
   algoId?: string;
@@ -101,6 +110,10 @@ export interface AmendAlgoOrderRequest {
   newSlOrdPx?: string;
   newTpTriggerPxType?: 'last' | 'index' | 'mark';
   newSlTriggerPxType?: 'last' | 'index' | 'mark';
+  newTriggerPx: string;
+  newOrdPx: string;
+  newTriggerPxType?: 'last' | 'index' | 'mark';
+  attachAlgoOrds?: AlgoTriggerOrder[];
 }
 
 export interface CancelAlgoOrderRequest {
@@ -182,3 +195,25 @@ export interface GetTransactionDetailsArchiveRequest {
   quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
 }
 
+export interface OrderPrecheckRequest {
+  instId: string;
+  tdMode: string;
+  side: string;
+  posSide?: string;
+  ordType: string;
+  sz: string;
+  px?: string;
+  reduceOnly?: boolean;
+  tgtCcy?: string;
+  attachAlgoOrds?: {
+    attachAlgoClOrdId?: string;
+    tpTriggerPx?: string;
+    tpOrdPx?: string;
+    tpOrdKind?: string;
+    slTriggerPx?: string;
+    slOrdPx?: string;
+    tpTriggerPxType?: string;
+    slTriggerPxType?: string;
+    sz?: string;
+  }[];
+}
