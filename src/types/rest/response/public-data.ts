@@ -109,6 +109,7 @@ export interface Instrument {
   maxIcebergSz: string;
   maxTriggerSz: string;
   maxStopSz: string;
+  ruleType: string;
 }
 
 export interface EconomicCalendarData {
