@@ -56,8 +56,9 @@ Check out my related JavaScript/TypeScript/Node.js projects:
 
 Most methods accept JS objects. These can be populated using parameters specified by okx's API documentation, or check the type definition in the rest-client class methods.
 
-- [RestClient](src/rest-client.ts).
-- [OKX API Documentation](https://www.okx.com/docs-v5/en/#rest-api).
+- [RestClient](src/rest-client.ts)
+- [OKX API Documentation](https://www.okx.com/docs-v5/en/#rest-api)
+- [REST Endpoint Function List](./docs/endpointFunctionList.md)
 - [TSDoc Documentation (generated using typedoc via npm module)](https://tsdocs.dev/docs/okx-api)
 
 ## Contributions & Thanks
