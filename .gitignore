@@ -24,3 +24,4 @@ bundleReport.html
 .history/
 .idea
 privaterepotracker
+restClientRegex.ts
