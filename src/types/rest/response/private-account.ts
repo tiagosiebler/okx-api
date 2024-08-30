@@ -158,6 +158,12 @@ export interface AccountBill {
   type: string;
 }
 
+export interface AccountHistoryBill {
+  fileHref: string;
+  result: string;
+  ts: string;
+}
+
 export interface AccountConfiguration {
   acctLv: string;
   autoLoan: boolean;
@@ -179,6 +185,7 @@ export interface AccountConfiguration {
   ip: string;
   perm: string;
   mainUid: string;
+  discountType: '0' | '1';
 }
 
 export interface AccountPositionModeResult {
@@ -353,6 +360,7 @@ export interface AccountInstrument {
   state: string;
   stk: string;
   tickSz: string;
+  ruleType: string;
 }
 
 export interface QuickMarginBorrowRepayResult {

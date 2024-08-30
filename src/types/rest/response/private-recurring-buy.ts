@@ -5,7 +5,7 @@ export interface RecurringBuyOrderResult {
   sMsg: string;
 }
 
-export interface RecurringBuyInfoResult  {
+export interface RecurringBuyInfoResult {
   ccy: string;
   ratio: string;
 }
@@ -17,7 +17,7 @@ export interface RecurringBuyOrder {
   cTime: string;
   uTime: string;
   algoOrdType: 'recurring';
-  state: 'running' | 'stopping';
+  state: 'running' | 'stopping' | 'pause';
   stgyName: string;
   recurringList: RecurringBuyInfoResult[];
   period: 'monthly' | 'weekly' | 'daily' | 'hourly';
@@ -36,7 +36,6 @@ export interface RecurringBuyOrder {
   tag: string;
 }
 
-
 export interface RecurringBuyInfoOrder {
   ccy: string;
   ratio: string;
@@ -45,8 +44,6 @@ export interface RecurringBuyInfoOrder {
   avgPx: string;
   px: string;
 }
-
-
 
 export interface RecurringBuySubOrder {
   algoId: string;
