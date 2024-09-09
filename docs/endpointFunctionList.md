@@ -55,6 +55,8 @@ This table includes all endpoints from the official Exchange API docs and corres
 | `getAccountPositionRisk()` | :closed_lock_with_key:  | GET | `/api/v5/account/account-position-risk` |
 | `getBills()` | :closed_lock_with_key:  | GET | `/api/v5/account/bills` |
 | `getBillsArchive()` | :closed_lock_with_key:  | GET | `/api/v5/account/bills-archive` |
+| `requestBillsHistoryDownloadLink()` | :closed_lock_with_key:  | POST | `/api/v5/account/bills-history-archive` |
+| `getRequestedBillsHistoryLink()` | :closed_lock_with_key:  | GET | `/api/v5/account/bills-history-archive` |
 | `getAccountConfiguration()` | :closed_lock_with_key:  | GET | `/api/v5/account/config` |
 | `setPositionMode()` | :closed_lock_with_key:  | POST | `/api/v5/account/set-position-mode` |
 | `setLeverage()` | :closed_lock_with_key:  | POST | `/api/v5/account/set-leverage` |
@@ -65,6 +67,7 @@ This table includes all endpoints from the official Exchange API docs and corres
 | `getLeverageEstimatedInfo()` | :closed_lock_with_key:  | GET | `/api/v5/account/adjust-leverage-info` |
 | `getMaxLoan()` | :closed_lock_with_key:  | GET | `/api/v5/account/max-loan` |
 | `getFeeRates()` | :closed_lock_with_key:  | GET | `/api/v5/account/trade-fee` |
+| `getFeeRatesV2()` | :closed_lock_with_key:  | GET | `/api/v5/account/trade-fee` |
 | `getInterestAccrued()` | :closed_lock_with_key:  | GET | `/api/v5/account/interest-accrued` |
 | `getInterestRate()` | :closed_lock_with_key:  | GET | `/api/v5/account/interest-rate` |
 | `setGreeksDisplayType()` | :closed_lock_with_key:  | POST | `/api/v5/account/set-greeks` |
@@ -122,6 +125,7 @@ This table includes all endpoints from the official Exchange API docs and corres
 | `cancelMassOrder()` | :closed_lock_with_key:  | POST | `/api/v5/trade/mass-cancel` |
 | `cancelAllAfter()` | :closed_lock_with_key:  | POST | `/api/v5/trade/cancel-all-after` |
 | `getAccountRateLimit()` | :closed_lock_with_key:  | GET | `/api/v5/trade/account-rate-limit` |
+| `submitOrderPrecheck()` | :closed_lock_with_key:  | POST | `/api/v5/trade/order-precheck` |
 | `placeAlgoOrder()` | :closed_lock_with_key:  | POST | `/api/v5/trade/order-algo` |
 | `cancelAlgoOrder()` | :closed_lock_with_key:  | POST | `/api/v5/trade/cancel-algos` |
 | `amendAlgoOrder()` | :closed_lock_with_key:  | POST | `/api/v5/trade/amend-algos` |
@@ -147,6 +151,7 @@ This table includes all endpoints from the official Exchange API docs and corres
 | `getGridAIParameter()` |  | GET | `/api/v5/tradingBot/grid/ai-param` |
 | `computeGridMinInvestment()` |  | POST | `/api/v5/tradingBot/grid/min-investment` |
 | `getRSIBackTesting()` |  | GET | `/api/v5/tradingBot/public/rsi-back-testing` |
+| `getMaxGridQuantity()` |  | GET | `/api/v5/tradingBot/grid/grid-quantity` |
 | `createSignal()` | :closed_lock_with_key:  | POST | `/api/v5/tradingBot/signal/create-signal` |
 | `getSignals()` | :closed_lock_with_key:  | GET | `/api/v5/tradingBot/signal/signals` |
 | `createSignalBot()` | :closed_lock_with_key:  | POST | `/api/v5/tradingBot/signal/order-algo` |

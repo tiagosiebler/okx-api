@@ -425,7 +425,8 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
-   * @deprecated - Use getFeeRatesV2 instead
+   * @deprecated - Use getFeeRatesV2() instead, which uses an object for all parameters.
+   * In future, getFeeRates() will also use an object for params (breaking change if you continue using getFeeRates() as is)
    */
   getFeeRates(
     instType: InstrumentType,
