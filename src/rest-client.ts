@@ -246,7 +246,7 @@ import {
   SetMmpConfigResult,
   OrderPrecheckRequest,
   AccountHistoryBill,
-  MaxGridQuantityParams,
+  MaxGridQuantityRequest,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -424,6 +424,9 @@ export class RestClient extends BaseRestClient {
     });
   }
 
+  /**
+   * @deprecated - Use getFeeRatesV2 instead
+   */
   getFeeRates(
     instType: InstrumentType,
     instId?: string,
@@ -438,6 +441,16 @@ export class RestClient extends BaseRestClient {
       instFamily,
       ruleType,
     });
+  }
+
+  getFeeRatesV2(params: {
+    instType: InstrumentType;
+    instId?: string;
+    uly?: string;
+    instFamily?: string;
+    ruleType?: string;
+  }): Promise<AccountFeeRate[]> {
+    return this.getPrivate('/api/v5/account/trade-fee', params);
   }
 
   getInterestAccrued(params?: {
@@ -1092,7 +1105,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/tradingBot/public/rsi-back-testing', params);
   }
 
-  getMaxGridQuantity(params: MaxGridQuantityParams): Promise<
+  getMaxGridQuantity(params: MaxGridQuantityRequest): Promise<
     {
       maxGridQty: string;
     }[]

@@ -65,7 +65,7 @@ export interface GetRSIBackTestingRequest {
   duration?: string;
 }
 
-export interface MaxGridQuantityParams {
+export interface MaxGridQuantityRequest {
   instId: string;
   runType: '1' | '2';
   algoOrdType: 'grid' | 'contract_grid';
