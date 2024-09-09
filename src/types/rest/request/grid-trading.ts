@@ -24,7 +24,6 @@ export interface GridAlgoTrigger {
   stopType?: '1' | '2';
 }
 
-
 export interface GridAlgoOrderRequest {
   instId: string;
   algoOrdType: GridAlgoOrderType;
@@ -64,4 +63,13 @@ export interface GetRSIBackTestingRequest {
   timePeriod: string;
   triggerCond?: 'cross_up' | 'cross_down' | 'above' | 'below' | 'cross';
   duration?: string;
+}
+
+export interface MaxGridQuantityParams {
+  instId: string;
+  runType: '1' | '2';
+  algoOrdType: 'grid' | 'contract_grid';
+  maxPx: string;
+  minPx: string;
+  lever?: string;
 }
