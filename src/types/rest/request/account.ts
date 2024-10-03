@@ -130,7 +130,7 @@ export interface UpdateFixedLoanBorrowingOrderRequest {
 export interface GetFixedLoanBorrowingOrdersListRequest {
   ordId?: string;
   ccy?: string;
-  state?: '1' | '2' | '3' | '4' | '5' | '6' | '7';
+  state?: string;
   after?: string;
   before?: string;
   limit?: string;
@@ -156,5 +156,3 @@ export interface SetMMPConfigRequest {
   frozenInterval: string;
   qtyLimit: string;
 }
-
-
