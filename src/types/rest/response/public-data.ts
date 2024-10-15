@@ -180,3 +180,10 @@ export interface OptionTrades {
   markPx: string;
   ts: string;
 }
+
+export interface Announcement {
+  annType: string;
+  pTime: string;
+  title: string;
+  url: string;
+}

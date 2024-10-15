@@ -251,6 +251,7 @@ export interface AlgoOrderDetailsResult {
   algoClOrdId: string;
   amendPxOnTriggerType: string;
   cTime: string;
+  isTradeBorrowMode: boolean;
 }
 
 export interface AlgoOrderListItem {
@@ -301,6 +302,7 @@ export interface AlgoOrderListItem {
   algoClOrdId: string;
   triggerTime: string;
   amendPxOnTriggerType: string;
+  isTradeBorrowMode: boolean;
 }
 
 export interface HistoricAlgoOrder {
@@ -351,12 +353,11 @@ export interface HistoricAlgoOrder {
   triggerPxType: string;
   triggerTime: string;
   amendPxOnTriggerType: string;
+  isTradeBorrowMode: boolean;
 }
-
 
 export interface CancelAllAfterResponse {
   triggerTime: string;
   tag: string;
   ts: string;
 }
-

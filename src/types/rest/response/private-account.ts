@@ -193,6 +193,8 @@ export interface AccountConfiguration {
   perm: string;
   mainUid: string;
   discountType: '0' | '1';
+  enableSpotBorrow: boolean;
+  spotBorrowAutoRepay: boolean;
 }
 
 export interface AccountPositionModeResult {

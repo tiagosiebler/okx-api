@@ -249,6 +249,7 @@ import {
   MaxGridQuantityRequest,
   GetBorrowRepayHistoryRequest,
   BorrowRepayHistoryItem,
+  Announcement,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
 
@@ -634,6 +635,32 @@ export class RestClient extends BaseRestClient {
     );
   }
 
+  convertFixedLoanToMarketLoan(params: { ordId: string }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/convert-to-market-loan',
+      params
+    );
+  }
+
+  reduceFixedLoanLiabilities(params: {
+    ordId: string;
+    pendingRepay: boolean;
+  }): Promise<
+    {
+      ordId: string;
+      pendingRepay: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/reduce-liabilities',
+      params
+    );
+  }
+
   getFixedLoanBorrowOrders(
     params: GetFixedLoanBorrowingOrdersListRequest
   ): Promise<any[]> {
@@ -814,31 +841,6 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/fills-history', params);
   }
 
-  /**
-   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
-   */
-  applyTransactionDetailsArchive(params: {
-    year: string;
-    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
-  }): Promise<
-    {
-      result: string;
-      ts: string;
-    }[]
-  > {
-    return this.postPrivate('/api/v5/trade/fills-archive', params);
-  }
-
-  /**
-   * @deprecated - use requestBillsHistoryDownloadLink and getRequestedBillsHistoryLink
-   */
-  getTransactionDetailsArchiveLink(params: {
-    year: string;
-    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
-  }): Promise<any[]> {
-    return this.getPrivate('/api/v5/trade/fills-archive', params);
-  }
-
   /** Get easy convert currency list */
   getEasyConvertCurrencies(): Promise<any> {
     return this.getPrivate('/api/v5/trade/easy-convert-currency-list');
@@ -898,7 +900,11 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/trade/one-click-repay-history', params);
   }
 
-  cancelMassOrder(params: { instType: string; instFamily: string }): Promise<
+  cancelMassOrder(params: {
+    instType: string;
+    instFamily: string;
+    lockInterval?: string;
+  }): Promise<
     {
       result: boolean;
     }[]
@@ -2826,6 +2832,30 @@ export class RestClient extends BaseRestClient {
     state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled'
   ): Promise<any[]> {
     return this.get('/api/v5/system/status', { state });
+  }
+
+  /**
+   *
+   * Announcement endpoints
+   *
+   */
+
+  getAnnouncements(params?: { annType?: string; page?: string }): Promise<
+    {
+      totalPage: string;
+      details: Announcement[];
+    }[]
+  > {
+    return this.get('/api/v5/support/announcements', params);
+  }
+
+  getAnnouncementTypes(): Promise<
+    {
+      annType: string;
+      annTypeDesc: string;
+    }[]
+  > {
+    return this.get('/api/v5/support/announcement-types');
   }
 
   /**
