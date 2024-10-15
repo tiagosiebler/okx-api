@@ -134,6 +134,15 @@ export interface GetFixedLoanBorrowingOrdersListRequest {
   after?: string;
   before?: string;
   limit?: string;
+  term?: string;
+}
+
+export interface GetBorrowRepayHistoryRequest {
+  ccy?: string;
+  type?: 'auto_borrow' | 'auto_repay' | 'manual_borrow' | 'manual_repay';
+  after?: string;
+  before?: string;
+  limit?: string;
 }
 
 export interface PositionBuilderRequest {

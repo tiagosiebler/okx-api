@@ -20,6 +20,7 @@ export interface FundingCurrency {
   usedWdQuota: string;
   wdQuota: string;
   wdTickSz: string;
+  burningFeeRate: string;
 }
 
 export interface FundingBalance {
@@ -93,4 +94,6 @@ export interface NonTradableAsset {
   ctAddr: string;
   wdTickSz: string;
   needTag: boolean;
+  burningFeeRate: string;
+  feeCcy: string;
 }

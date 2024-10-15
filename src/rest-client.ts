@@ -247,6 +247,8 @@ import {
   OrderPrecheckRequest,
   AccountHistoryBill,
   MaxGridQuantityRequest,
+  GetBorrowRepayHistoryRequest,
+  BorrowRepayHistoryItem,
   Announcement,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
@@ -395,11 +397,22 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
+  /**
+   * @deprecated - Use getLeverageV2() instead, which uses an object for all parameters.
+   */
   getLeverage(instId: string, mgnMode: MarginMode): Promise<AccountLeverage[]> {
     return this.getPrivate('/api/v5/account/leverage-info', {
       instId,
       mgnMode,
     });
+  }
+
+  getLeverageV2(params: {
+    instId?: string;
+    ccy?: string;
+    mgnMode: MarginMode;
+  }): Promise<AccountLeverage[]> {
+    return this.getPrivate('/api/v5/account/leverage-info', params);
   }
 
   getLeverageEstimatedInfo(params: {
@@ -657,6 +670,33 @@ export class RestClient extends BaseRestClient {
     );
   }
 
+  manualBorrowRepay(params: {
+    ccy: string;
+    side: 'borrow' | 'repay';
+    amt: string;
+  }): Promise<
+    {
+      ccy: string;
+      side: 'borrow' | 'repay';
+      amt: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/spot-manual-borrow-repay', params);
+  }
+
+  setAutoRepay(params: { autoRepay: boolean }): Promise<
+    {
+      autoRepay: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-auto-repay', params);
+  }
+
+  getBorrowRepayHistory(
+    params?: GetBorrowRepayHistoryRequest
+  ): Promise<BorrowRepayHistoryItem[]> {
+    return this.getPrivate('/api/v5/account/spot-borrow-repay-history', params);
+  }
   positionBuilder(params: PositionBuilderRequest): Promise<any[]> {
     return this.postPrivate('/api/v5/account/position-builder', params);
   }
