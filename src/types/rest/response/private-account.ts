@@ -427,6 +427,7 @@ export interface FixedLoanBorrowingLimitDetail {
   borrowed: string;
   availBorrow: string;
   minBorrow: string;
+  term: string;
 }
 
 export interface FixedLoanBorrowingLimit {
@@ -463,4 +464,12 @@ export interface MMPConfig {
   mmpFrozenUntil: string;
   qtyLimit: string;
   timeInterval: string;
+}
+
+export interface BorrowRepayHistoryItem {
+  ccy: string;
+  type: 'auto_borrow' | 'auto_repay' | 'manual_borrow' | 'manual_repay';
+  amt: string;
+  accBorrowed: string;
+  ts: string;
 }

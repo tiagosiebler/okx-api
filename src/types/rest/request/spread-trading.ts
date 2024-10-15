@@ -3,7 +3,7 @@ export interface PlaceSpreadOrderRequest {
   clOrdId?: string;
   tag?: string;
   side: 'buy' | 'sell';
-  ordType: 'limit' | 'post_only' | 'ioc';
+  ordType: 'limit' | 'post_only' | 'ioc' | 'market';
   sz: string;
   px: string;
 }
@@ -18,7 +18,7 @@ export interface UpdateSpreadOrderRequest {
 
 export interface GetActiveSpreadOrdersRequest {
   sprdId?: string;
-  ordType?: 'limit' | 'post_only' | 'ioc';
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
   state?: 'live' | 'partially_filled';
   beginId?: string;
   endId?: string;
@@ -27,7 +27,7 @@ export interface GetActiveSpreadOrdersRequest {
 
 export interface GetSpreadOrderHistoryRequest {
   sprdId?: string;
-  ordType?: 'limit' | 'post_only' | 'ioc';
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
   state?: 'canceled' | 'filled';
   beginId?: string;
   endId?: string;
@@ -38,7 +38,7 @@ export interface GetSpreadOrderHistoryRequest {
 
 export interface GetSpreadOrderHistoryArchiveRequest {
   sprdId?: string;
-  ordType?: 'limit' | 'post_only' | 'ioc';
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
   state?: 'canceled' | 'filled';
   instType?: 'SPOT' | 'FUTURES' | 'SWAP';
   instFamily?: string;
