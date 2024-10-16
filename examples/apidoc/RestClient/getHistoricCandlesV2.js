@@ -1,9 +1,11 @@
 const { RestClient } = require('okx-api');
 
+  // This example shows how to call this OKX API endpoint with either node.js, javascript (js) or typescript (ts) with the npm module "okx-api" for OKX exchange
+  // This OKX API SDK is available on npm via "npm install okx-api"
   // ENDPOINT: /api/v5/market/history-candles
   // METHOD: GET
   // PUBLIC: YES
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1717
+  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1723
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',
@@ -11,9 +13,9 @@ const client = new RestClient({
 });
 
 client.getHistoricCandlesV2(params)
-  .then(response => {
+  .then((response) => {
     console.log(response);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
   });
