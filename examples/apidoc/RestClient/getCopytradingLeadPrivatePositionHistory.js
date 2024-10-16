@@ -1,9 +1,11 @@
 const { RestClient } = require('okx-api');
 
+  // This example shows how to call this OKX API endpoint with either node.js, javascript (js) or typescript (ts) with the npm module "okx-api" for OKX exchange
+  // This OKX API SDK is available on npm via "npm install okx-api"
   // ENDPOINT: /api/v5/copytrading/performance-subpositions-history
   // METHOD: GET
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1628
+  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1634
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',
@@ -11,9 +13,9 @@ const client = new RestClient({
 });
 
 client.getCopytradingLeadPrivatePositionHistory(params)
-  .then(response => {
+  .then((response) => {
     console.log(response);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
   });

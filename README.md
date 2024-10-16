@@ -34,6 +34,7 @@ npm install okx-api
 
 - Issues? Check the [issues tab](https://github.com/tiagosiebler/okx-api/issues).
 - Discuss & collaborate with other node devs? Join our [Node.js Algo Traders](https://t.me/nodetraders) engineering community on telegram.
+- Follow our announcement channel for real-time updates on [X/Twitter](https://x.com/QuantSDKs)
 
 <!-- template_related_projects -->
 
