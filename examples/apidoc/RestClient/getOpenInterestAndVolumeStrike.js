@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/rubik/stat/option/open-interest-volume-strike
   // METHOD: GET
   // PUBLIC: YES
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2339
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',

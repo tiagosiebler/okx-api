@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/account/risk-state
   // METHOD: GET
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L505
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',

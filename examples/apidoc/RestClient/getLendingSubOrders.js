@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/finance/fixed-loan/lending-sub-orders
   // METHOD: GET
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2804
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',

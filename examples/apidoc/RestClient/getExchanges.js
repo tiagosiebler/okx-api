@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/asset/exchange-list
   // METHOD: GET
   // PUBLIC: YES
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2450
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',
