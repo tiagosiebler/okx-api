@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/account/subaccount/set-loan-allocation
   // METHOD: POST
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2581
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',

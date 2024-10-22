@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/copytrading/unrealized-profit-sharing-details
   // METHOD: GET
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1420
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',

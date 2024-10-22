@@ -5,7 +5,6 @@ const { RestClient } = require('okx-api');
   // ENDPOINT: /api/v5/copytrading/amend-profit-sharing-ratio
   // METHOD: POST
   // PUBLIC: NO
-  // Link to function: https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L1460
 
 const client = new RestClient({
   apiKey: 'insert_api_key_here',
