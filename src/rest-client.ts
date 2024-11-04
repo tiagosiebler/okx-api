@@ -911,8 +911,8 @@ export class RestClient extends BaseRestClient {
   }
 
   /** Get easy convert currency list */
-  getEasyConvertCurrencies(): Promise<any> {
-    return this.getPrivate('/api/v5/trade/easy-convert-currency-list');
+  getEasyConvertCurrencies(params?: { source?: string }): Promise<any> {
+    return this.getPrivate('/api/v5/trade/easy-convert-currency-list', params);
   }
 
   /**
@@ -924,11 +924,13 @@ export class RestClient extends BaseRestClient {
    */
   submitEasyConvert(
     fromCcys: string[],
-    toCcy: string
+    toCcy: string,
+    source?: string
   ): Promise<APIResponse<any>> {
     return this.postPrivate('/api/v5/trade/easy-convert', {
       fromCcy: fromCcys,
       toCcy,
+      source,
     });
   }
 
@@ -2512,6 +2514,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/deposit-withdraw-status', params);
   }
 
+  /** @deprecated
+   * use submitEasyConvert() instead
+   */
   smallAssetsConvert(ccy: string[]): Promise<any[]> {
     return this.postPrivate('/api/v5/asset/convert-dust-assets', { ccy });
   }
@@ -2758,6 +2763,10 @@ export class RestClient extends BaseRestClient {
    * Financial product - ETH staking endpoints
    *
    */
+
+  getETHStakingProductInfo(): Promise<any[]> {
+    return this.get('/api/v5/finance/staking-defi/eth/product-info');
+  }
 
   purchaseETHStaking(params: { amt: string }): Promise<any[]> {
     return this.postPrivate(

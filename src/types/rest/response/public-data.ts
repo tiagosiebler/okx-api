@@ -110,6 +110,7 @@ export interface Instrument {
   maxTriggerSz: string;
   maxStopSz: string;
   ruleType: string;
+  auctionEndTime: string;
 }
 
 export interface EconomicCalendarData {

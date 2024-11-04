@@ -60,6 +60,7 @@ export interface SubAccountBalances {
   ordFroz: string;
   totalEq: string;
   uTime: string;
+  spotCopyTradingEq: string;
 }
 
 export interface SubAccountTransferResult {
