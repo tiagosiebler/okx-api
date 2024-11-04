@@ -16,6 +16,7 @@ export interface AccountBalance {
   ordFroz: string;
   totalEq: string;
   uTime: string;
+  spotCopyTradingEq: string;
 }
 
 export interface AccountBalanceDetail {
@@ -371,6 +372,7 @@ export interface AccountInstrument {
   stk: string;
   tickSz: string;
   ruleType: string;
+  auctionEndTime: string;
 }
 
 export interface QuickMarginBorrowRepayResult {
