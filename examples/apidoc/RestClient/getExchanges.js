@@ -7,8 +7,9 @@ const { RestClient } = require('okx-api');
   // PUBLIC: YES
 
 const client = new RestClient({
-  apiKey: 'insert_api_key_here',
-  apiSecret: 'insert_api_secret_here',
+    apiKey: 'apiKeyHere',
+    apiSecret: 'apiSecretHere',
+    apiPass: 'apiPassHere',
 });
 
 client.getExchanges(params)
