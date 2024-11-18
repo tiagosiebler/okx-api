@@ -252,6 +252,10 @@ export interface AlgoOrderDetailsResult {
   amendPxOnTriggerType: string;
   cTime: string;
   isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
 }
 
 export interface AlgoOrderListItem {
@@ -303,6 +307,10 @@ export interface AlgoOrderListItem {
   triggerTime: string;
   amendPxOnTriggerType: string;
   isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
 }
 
 export interface HistoricAlgoOrder {
@@ -354,6 +362,10 @@ export interface HistoricAlgoOrder {
   triggerTime: string;
   amendPxOnTriggerType: string;
   isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
 }
 
 export interface CancelAllAfterResponse {

@@ -15,10 +15,28 @@ export interface WithdrawRequest {
   amt: string;
   dest: '3' | '4';
   toAddr: string;
-  fee: string;
   chain?: string;
   areaCode?: string;
   clientId?: string;
+  // Recipient information for specific entity users doing on-chain/lightning withdrawal
+  rcvrInfo?: {
+    // Required: 'exchange' for exchange wallet, 'private' for private wallet
+    walletType: 'exchange' | 'private';
+    // Exchange ID (required if walletType = 'exchange'). Use '0' if exchange not in list
+    exchId?: string;
+    // Receiver's first name (required if walletType = 'exchange')
+    rcvrFirstName?: string;
+    // Receiver's last name (required if walletType = 'exchange')
+    rcvrLastName?: string;
+    // Recipient's country - English name or ISO 3166-1 two-letter code
+    rcvrCountry?: string;
+    // State/Province of the recipient
+    rcvrCountrySubDivision?: string;
+    // Town/city where the recipient is located
+    rcvrTownName?: string;
+    // Recipient's street address
+    rcvrStreetName?: string;
+  };
 }
 
 export interface FundingRateRequest {
