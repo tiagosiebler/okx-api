@@ -8,11 +8,10 @@ export interface FundingCurrency {
   chain: string;
   logoLink: string;
   mainNet: boolean;
-  maxFee: string;
+  fee: string;
   maxWd: string;
   minDep: string;
   minDepArrivalConfirm: string;
-  minFee: string;
   minWd: string;
   minWdUnlockConfirm: string;
   name: string;

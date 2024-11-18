@@ -12,7 +12,8 @@ export type AlgoOrderType =
   | 'trigger'
   | 'move_order_stop'
   | 'iceberg'
-  | 'twap';
+  | 'twap'
+  | 'chase';
 
 export type AlgoOrderState =
   | 'live'
