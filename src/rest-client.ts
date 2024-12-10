@@ -252,6 +252,17 @@ import {
   Announcement,
 } from './types';
 import { ASSET_BILL_TYPE } from './constants';
+import {
+  AccruedInterestItem,
+  AccruedInterestRequest,
+  AdjustCollateralRequest,
+  CollateralAssetsResponse,
+  LoanHistoryItem,
+  LoanHistoryRequest,
+  LoanInfo,
+  MaxLoanRequest,
+  MaxLoanResponse,
+} from './types/rest/response/private-flexible-loan';
 
 export class RestClient extends BaseRestClient {
   /**
@@ -498,12 +509,14 @@ export class RestClient extends BaseRestClient {
   getMaxLoan(
     instId: string,
     mgnMode: MarginMode,
-    mgnCcy?: string
+    mgnCcy?: string,
+    ccy?: string
   ): Promise<AccountMaxLoan[]> {
     return this.getPrivate('/api/v5/account/max-loan', {
       instId,
       mgnMode,
       mgnCcy,
+      ccy,
     });
   }
 
@@ -812,6 +825,26 @@ export class RestClient extends BaseRestClient {
 
   setAutoLoan(params: { autoLoan: boolean }): Promise<AutoLoanResult[]> {
     return this.postPrivate('/api/v5/account/set-auto-loan', params);
+  }
+
+  presetAccountLevelSwitch(params: {
+    acctLv: '2' | '3' | '4';
+    lever?: string;
+    riskOffsetType?: '1' | '2' | '3' | '4';
+  }): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/account/account-level-switch-preset',
+      params
+    );
+  }
+
+  getAccountSwitchPrecheck(params: {
+    acctLv: '1' | '2' | '3' | '4';
+  }): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/account/set-account-switch-precheck',
+      params
+    );
   }
 
   setAccountMode(params: {
@@ -2869,7 +2902,10 @@ export class RestClient extends BaseRestClient {
   }
 
   amendLendingOrder(params: LendingOrder): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/fixed-loan/lending-order', params);
+    return this.postPrivate(
+      '/api/v5/finance/fixed-loan/amend-lending-order',
+      params
+    );
   }
 
   getLendingOrders(params: GetLendingOrderListRequest): Promise<any[]> {
@@ -2882,6 +2918,56 @@ export class RestClient extends BaseRestClient {
   getLendingSubOrders(params: GetLendingSubOrderListRequest): Promise<any[]> {
     return this.getPrivate(
       '/api/v5/finance/fixed-loan/lending-sub-orders',
+      params
+    );
+  }
+
+  /**
+   *
+   * Financial product - Flexible loan endpoints
+   *
+   */
+
+  getBorrowableCurrencies(): Promise<
+    {
+      borrowCcy: string;
+    }[]
+  > {
+    return this.get('/api/v5/finance/flexible-loan/borrow-currencies');
+  }
+
+  getCollateralAssets(params?: {
+    ccy?: string;
+  }): Promise<CollateralAssetsResponse[]> {
+    return this.get('/api/v5/finance/flexible-loan/collateral-assets', params);
+  }
+
+  getMaxLoanAmount(params: MaxLoanRequest): Promise<MaxLoanResponse[]> {
+    return this.postPrivate('/api/v5/finance/flexible-loan/max-loan', params);
+  }
+
+  adjustCollateral(params: AdjustCollateralRequest): Promise<[]> {
+    return this.postPrivate(
+      '/api/v5/finance/flexible-loan/adjust-collateral',
+      params
+    );
+  }
+
+  getLoanInfo(): Promise<LoanInfo[]> {
+    return this.getPrivate('/api/v5/finance/flexible-loan/loan-info');
+  }
+  getLoanHistory(params?: LoanHistoryRequest): Promise<LoanHistoryItem[]> {
+    return this.getPrivate(
+      '/api/v5/finance/flexible-loan/loan-history',
+      params
+    );
+  }
+
+  getAccruedInterest(
+    params?: AccruedInterestRequest
+  ): Promise<AccruedInterestItem[]> {
+    return this.getPrivate(
+      '/api/v5/finance/flexible-loan/interest-accrued',
       params
     );
   }

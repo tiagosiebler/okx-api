@@ -45,29 +45,32 @@ export interface AlgoOrderRequest {
   tag?: string;
   reduceOnly?: boolean;
   tgtCcy?: string;
-
   tpTriggerPx?: numberInString;
   tpTriggerPxType?: PriceTriggerType;
   tpOrdPx?: numberInString;
-
+  tpOrdKind?: string;
   slTriggerPx?: numberInString;
   slTriggerPxType?: PriceTriggerType;
   slOrdPx?: numberInString;
-
+  cxlOnClosePos?: boolean;
   triggerPx?: numberInString;
   triggerPxType?: PriceTriggerType;
   orderPx?: numberInString;
-
+  chaseType?: string;
+  chaseVal?: numberInString;
+  maxChaseType?: string;
+  maxChaseVal?: numberInString;
   callbackRatio?: numberInString;
   callbackSpread?: numberInString;
   activePx?: numberInString;
-
   pxVar?: numberInString;
   pxSpread?: numberInString;
   szLimit?: numberInString;
   pxLimit?: numberInString;
-
   timeInterval?: string;
+  quickMgnType?: string;
+  closeFraction?: numberInString;
+  attachAlgoOrds?: AlgoTriggerOrder[];
 }
 
 export interface AmendOrderRequest {

@@ -2,8 +2,8 @@ const { RestClient } = require('okx-api');
 
   // This example shows how to call this OKX API endpoint with either node.js, javascript (js) or typescript (ts) with the npm module "okx-api" for OKX exchange
   // This OKX API SDK is available on npm via "npm install okx-api"
-  // ENDPOINT: /api/v5/finance/fixed-loan/amend-lending-order
-  // METHOD: POST
+  // ENDPOINT: /api/v5/finance/flexible-loan/loan-history
+  // METHOD: GET
   // PUBLIC: NO
 
 const client = new RestClient({
@@ -12,7 +12,7 @@ const client = new RestClient({
     apiPass: 'apiPassHere',
 });
 
-client.amendLendingOrder(params)
+client.getLoanHistory(params)
   .then((response) => {
     console.log(response);
   })

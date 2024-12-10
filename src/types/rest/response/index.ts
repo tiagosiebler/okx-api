@@ -8,3 +8,4 @@ export * from './private-signal-bot';
 export * from './private-recurring-buy';
 export * from './private-copy-trading';
 export * from './private-spread-trading';
+export * from './private-flexible-loan';
