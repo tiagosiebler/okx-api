@@ -506,10 +506,14 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/adjust-leverage-info', params);
   }
 
+  /**
+   * @deprecated - Use getMaxLoanV2() instead, which uses an object for all parameters.
+   * In future, getMaxLoan() will also use an object for params (breaking change if you continue using getMaxLoan() as is)
+   */
   getMaxLoan(
     instId: string,
     mgnMode: MarginMode,
-    mgnCcy?: string,
+    mgnCcy?: string | undefined,
     ccy?: string
   ): Promise<AccountMaxLoan[]> {
     return this.getPrivate('/api/v5/account/max-loan', {
@@ -518,6 +522,15 @@ export class RestClient extends BaseRestClient {
       mgnCcy,
       ccy,
     });
+  }
+
+  getMaxLoanV2(params: {
+    instId: string;
+    mgnMode: MarginMode;
+    mgnCcy?: string;
+    ccy?: string;
+  }): Promise<AccountMaxLoan[]> {
+    return this.getPrivate('/api/v5/account/max-loan', params);
   }
 
   /**
