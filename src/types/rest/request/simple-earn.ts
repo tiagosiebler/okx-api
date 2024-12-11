@@ -11,7 +11,7 @@ export interface GetLendingOrderListRequest {
 export interface LendingOrder {
   ccy: string;
   amt: string;
-  rate: string;
+  rate?: string;
   term: '30D';
   autoRenewal?: boolean;
 }

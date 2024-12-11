@@ -1,25 +1,36 @@
 import { ASSET_BILL_TYPE } from '../../../constants';
 
 export interface FundingCurrency {
-  canDep: boolean;
-  canInternal: boolean;
-  canWd: boolean;
-  ccy: string;
-  chain: string;
-  logoLink: string;
-  mainNet: boolean;
-  fee: string;
-  maxWd: string;
-  minDep: string;
-  minDepArrivalConfirm: string;
-  minWd: string;
-  minWdUnlockConfirm: string;
-  name: string;
-  needTag: boolean;
-  usedWdQuota: string;
-  wdQuota: string;
-  wdTickSz: string;
-  burningFeeRate: string;
+  ccy: string; // Currency code (e.g., "BTC")
+  name: string; // Currency name
+  logoLink: string; // Currency logo URL
+  chain: string; // Chain name (e.g., "BTC-Bitcoin")
+  ctAddr: string; // Contract address
+  canDep: boolean; // Deposit availability
+  canWd: boolean; // Withdrawal availability
+  canInternal: boolean; // Internal transfer availability
+  depEstOpenTime: string; // Estimated deposit opening time (timestamp)
+  wdEstOpenTime: string; // Estimated withdrawal opening time (timestamp)
+  minDep: string; // Minimum deposit amount
+  minWd: string; // Minimum withdrawal amount
+  minInternal: string; // Minimum internal transfer amount
+  maxWd: string; // Maximum withdrawal amount per transaction
+  wdTickSz: string; // Withdrawal precision (decimal places)
+  wdQuota: string; // 24h withdrawal limit in USD
+  usedWdQuota: string; // Used withdrawal quota in USD
+  fee: string; // Fixed withdrawal fee
+  minFee: string; // Minimum withdrawal fee (deprecated)
+  maxFee: string; // Maximum withdrawal fee (deprecated)
+  minFeeForCtAddr: string; // Minimum contract address withdrawal fee (deprecated)
+  maxFeeForCtAddr: string; // Maximum contract address withdrawal fee (deprecated)
+  burningFeeRate: string; // Burning fee rate (e.g., "0.05" for 5%)
+  mainNet: boolean; // Is main network
+  needTag: boolean; // Requires tag/memo for withdrawal
+  minDepArrivalConfirm: string; // Min confirmations for deposit credit
+  minWdUnlockConfirm: string; // Min confirmations for withdrawal unlock
+  depQuotaFixed: string; // Fixed deposit limit in USD
+  usedDepQuotaFixed: string; // Used fixed deposit quota in USD
+  depQuoteDailyLayer2: string; // Layer2 daily deposit limit
 }
 
 export interface FundingBalance {
