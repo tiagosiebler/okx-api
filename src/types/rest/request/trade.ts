@@ -1,15 +1,15 @@
 import {
-  TradeMode,
-  OrderSide,
-  PositionSide,
-  AlgoOrderType,
-  numberInString,
-  PriceTriggerType,
-  OrderType,
-  MarginMode,
-  InstrumentType,
   AlgoOrderState,
+  AlgoOrderType,
   AlgoPositionSide,
+  InstrumentType,
+  MarginMode,
+  numberInString,
+  OrderSide,
+  OrderType,
+  PositionSide,
+  PriceTriggerType,
+  TradeMode,
 } from '../shared';
 
 export interface AlgoRecentHistoryRequest {
@@ -31,6 +31,15 @@ export interface AlgoLongHistoryRequest {
   after?: string;
   before?: string;
   limit?: string;
+}
+
+interface AlgoTriggerOrder {
+  newTpTriggerPx?: string;
+  newTpTriggerPxType?: 'last' | 'index' | 'mark';
+  newTpOrdPx?: string;
+  newSlTriggerPx?: string;
+  newSlTriggerPxType?: 'last' | 'index' | 'mark';
+  newSlOrdPx?: string;
 }
 
 export interface AlgoOrderRequest {
@@ -90,15 +99,6 @@ export type AlgoOrderDetailsRequest =
   | {
       algoClOrdId: string;
     };
-
-interface AlgoTriggerOrder {
-  newTpTriggerPx?: string;
-  newTpTriggerPxType?: 'last' | 'index' | 'mark';
-  newTpOrdPx?: string;
-  newSlTriggerPx?: string;
-  newSlTriggerPxType?: 'last' | 'index' | 'mark';
-  newSlOrdPx?: string;
-}
 
 export interface AmendAlgoOrderRequest {
   instId: string;

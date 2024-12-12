@@ -2,10 +2,10 @@ import {
   AlgoOrderState,
   AlgoOrderType,
   AlgoPositionSide,
+  numberInString,
   OrderState,
   OrderType,
   PositionSide,
-  numberInString,
 } from '../shared';
 
 export interface OrderResult {

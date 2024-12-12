@@ -2,7 +2,7 @@ import { WsDataEvent, WsEvent, WsLoginEvent } from '../types';
 import { APIResponse } from '../types/rest';
 
 export function isRawAPIResponse(
-  response: unknown
+  response: unknown,
 ): response is APIResponse<unknown> {
   if (typeof response !== 'object' || !response) {
     return false;
@@ -67,4 +67,3 @@ export function isConnCountEvent(evtData: unknown): boolean {
 export function neverGuard(x: never, msg: string): Error {
   return new Error(`Unhandled value exception "${x}", ${msg}`);
 }
-

@@ -1,10 +1,11 @@
 import { Method } from 'axios';
+
 import { APIMarket, RestClientOptions } from '../types';
 
 export function serializeParams(
   params: object | undefined,
   method: Method,
-  strict_validation = false
+  strict_validation = false,
 ): string {
   if (!params) {
     return '';
@@ -19,7 +20,7 @@ export function serializeParams(
       const value = params[key];
       if (strict_validation === true && typeof value === 'undefined') {
         throw new Error(
-          'Failed to sign API request due to undefined parameter'
+          'Failed to sign API request due to undefined parameter',
         );
       }
       return `${key}=${value}`;
@@ -34,7 +35,7 @@ export const programId = '159881cb7207BCDE';
 
 export function getRestBaseUrl(
   market: APIMarket,
-  restClientOptions: RestClientOptions
+  restClientOptions: RestClientOptions,
 ) {
   if (restClientOptions.baseUrl) {
     return restClientOptions.baseUrl;

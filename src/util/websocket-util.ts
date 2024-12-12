@@ -191,7 +191,7 @@ const BUSINESS_CHANNELS = [
 export function getWsKeyForTopicChannel(
   market: APIMarket,
   channel: WsChannel,
-  isPrivate?: boolean
+  isPrivate?: boolean,
 ): WsKey {
   const isPrivateTopic =
     isPrivate === true || PRIVATE_CHANNELS.includes(channel);
@@ -203,7 +203,7 @@ export function getWsKeyForTopicChannel(
 export function getWsKeyForMarket(
   market: APIMarket,
   isPrivate: boolean,
-  isBusinessChannel: boolean
+  isBusinessChannel: boolean,
 ): WsKey {
   switch (market) {
     case 'prod': {
@@ -244,7 +244,7 @@ export function getWsKeyForMarket(
         : WS_KEY_MAP.businessDemoPublic;
     }
     default: {
-      throw neverGuard(market, `getWsKeyForTopic(): Unhandled market`);
+      throw neverGuard(market, 'getWsKeyForTopic(): Unhandled market');
     }
   }
 }
@@ -252,7 +252,7 @@ export function getWsKeyForMarket(
 /** Maps a WS key back to a WS URL */
 export function getWsUrlForWsKey(
   wsKey: WsKey,
-  wsClientOptions: WebsocketClientOptions
+  wsClientOptions: WebsocketClientOptions,
 ): string {
   if (wsClientOptions.wsUrl) {
     return wsClientOptions.wsUrl;
@@ -295,7 +295,7 @@ export function getWsUrlForWsKey(
 }
 
 export function getMaxTopicsPerSubscribeEvent(
-  market: APIMarket
+  market: APIMarket,
 ): number | null {
   switch (market) {
     case 'prod':
@@ -307,7 +307,7 @@ export function getMaxTopicsPerSubscribeEvent(
       return null;
     }
     default: {
-      throw neverGuard(market, `getWsKeyForTopic(): Unhandled market`);
+      throw neverGuard(market, 'getWsKeyForTopic(): Unhandled market');
     }
   }
 }

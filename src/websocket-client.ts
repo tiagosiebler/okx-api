@@ -1,14 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { EventEmitter } from 'events';
 import WebSocket from 'isomorphic-ws';
-
-import { signMessage } from './util/node-support';
 
 import {
   APICredentials,
   WebsocketClientOptions,
   WsAuthRequest,
   WsAuthRequestArg,
-  WsChannelConnInfoEvent,
   WsChannelSubUnSubRequestArg,
   WSClientConfigurableOptions,
   WsDataEvent,
@@ -16,29 +14,29 @@ import {
   WsSubRequest,
   WsUnsubRequest,
 } from './types';
-
 import {
-  isWsPong,
-  WsConnectionStateEnum,
-  PUBLIC_WS_KEYS,
-  PRIVATE_WS_KEYS,
-  WS_KEY_MAP,
   DefaultLogger,
-  getWsKeyForTopicChannel,
   getMaxTopicsPerSubscribeEvent,
-  isWsLoginEvent,
-  WsStore,
-  isWsErrorEvent,
+  getWsKeyForTopicChannel,
+  isConnCountEvent,
   isWsDataEvent,
+  isWsErrorEvent,
+  isWsLoginEvent,
+  isWsPong,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
-  isConnCountEvent,
+  PRIVATE_WS_KEYS,
+  PUBLIC_WS_KEYS,
+  WS_KEY_MAP,
+  WsConnectionStateEnum,
+  WsStore,
 } from './util';
+import { signMessage } from './util/node-support';
 import {
   getWsKeyForMarket,
   getWsUrlForWsKey,
-  WsKey,
   WS_EVENT_CODE_ENUM,
+  WsKey,
 } from './util/websocket-util';
 
 const loggerCategory = { category: 'okx-ws' };
@@ -75,7 +73,7 @@ interface WebsocketClientEvents {
 export declare interface WebsocketClient {
   on<U extends keyof WebsocketClientEvents>(
     event: U,
-    listener: WebsocketClientEvents[U]
+    listener: WebsocketClientEvents[U],
   ): this;
 
   emit<U extends keyof WebsocketClientEvents>(
@@ -86,12 +84,14 @@ export declare interface WebsocketClient {
 
 export class WebsocketClient extends EventEmitter {
   private logger: typeof DefaultLogger;
+
   private options: WebsocketClientOptions;
+
   private wsStore: WsStore<WsChannelSubUnSubRequestArg>;
 
   constructor(
     options: WSClientConfigurableOptions,
-    logger?: typeof DefaultLogger
+    logger?: typeof DefaultLogger,
   ) {
     super();
 
@@ -117,7 +117,7 @@ export class WebsocketClient extends EventEmitter {
    */
   public subscribe(
     wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean
+    isPrivateTopic?: boolean,
   ) {
     const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
 
@@ -125,7 +125,7 @@ export class WebsocketClient extends EventEmitter {
       const wsKey = getWsKeyForTopicChannel(
         this.options.market,
         wsEventArg.channel,
-        isPrivateTopic
+        isPrivateTopic,
       );
 
       // Persist topic for reconnects
@@ -142,11 +142,11 @@ export class WebsocketClient extends EventEmitter {
       if (
         !this.wsStore.isConnectionState(
           wsKey,
-          WsConnectionStateEnum.CONNECTING
+          WsConnectionStateEnum.CONNECTING,
         ) &&
         !this.wsStore.isConnectionState(
           wsKey,
-          WsConnectionStateEnum.RECONNECTING
+          WsConnectionStateEnum.RECONNECTING,
         )
       ) {
         return this.connect(wsKey);
@@ -161,14 +161,14 @@ export class WebsocketClient extends EventEmitter {
    */
   public unsubscribe(
     wsTopics: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean
+    isPrivateTopic?: boolean,
   ) {
     const wsEventArgs = Array.isArray(wsTopics) ? wsTopics : [wsTopics];
     wsEventArgs.forEach((wsEventArg) => {
       const wsKey = getWsKeyForTopicChannel(
         this.options.market,
         wsEventArg.channel,
-        isPrivateTopic
+        isPrivateTopic,
       );
 
       // Remove topic from persistence for reconnects
@@ -216,25 +216,25 @@ export class WebsocketClient extends EventEmitter {
   }
 
   public connectPublic(
-    businessEndpoint?: boolean
+    businessEndpoint?: boolean,
   ): Promise<WebSocket | undefined> {
     const isPrivate = false;
     const wsKey = getWsKeyForMarket(
       this.options.market,
       isPrivate,
-      !!businessEndpoint
+      !!businessEndpoint,
     );
     return this.connect(WS_KEY_MAP[wsKey]);
   }
 
   public connectPrivate(
-    businessEndpoint?: boolean
+    businessEndpoint?: boolean,
   ): Promise<WebSocket | undefined> {
     const isPrivate = true;
     const wsKey = getWsKeyForMarket(
       this.options.market,
       isPrivate,
-      !!businessEndpoint
+      !!businessEndpoint,
     );
     return this.connect(WS_KEY_MAP[wsKey]);
   }
@@ -244,7 +244,7 @@ export class WebsocketClient extends EventEmitter {
       if (this.wsStore.isWsOpen(wsKey)) {
         this.logger.error(
           'Refused to connect to ws with existing active connection',
-          { ...loggerCategory, wsKey }
+          { ...loggerCategory, wsKey },
         );
         return this.wsStore.getWs(wsKey);
       }
@@ -254,7 +254,7 @@ export class WebsocketClient extends EventEmitter {
       ) {
         this.logger.error(
           'Refused to connect to ws, connection attempt already active',
-          { ...loggerCategory, wsKey }
+          { ...loggerCategory, wsKey },
         );
         return;
       }
@@ -265,7 +265,7 @@ export class WebsocketClient extends EventEmitter {
       ) {
         this.wsStore.setConnectionState(
           wsKey,
-          WsConnectionStateEnum.CONNECTING
+          WsConnectionStateEnum.CONNECTING,
         );
       }
 
@@ -296,12 +296,12 @@ export class WebsocketClient extends EventEmitter {
             `${context} due to unexpected response error: "${
               error?.msg || error?.message || error
             }"`,
-            { ...loggerCategory, wsKey, error }
+            { ...loggerCategory, wsKey, error },
           );
           this.executeReconnectableClose(wsKey, 'unhandled onWsError');
         } else {
           this.logger.info(
-            `${wsKey} socket forcefully closed. Will not reconnect.`
+            `${wsKey} socket forcefully closed. Will not reconnect.`,
           );
         }
         break;
@@ -313,7 +313,7 @@ export class WebsocketClient extends EventEmitter {
    * Return params required to make authorized request
    */
   private async getWsAuthRequest(
-    wsKey: WsKey
+    wsKey: WsKey,
   ): Promise<WsAuthRequest | undefined> {
     const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
     const accounts = this.options.accounts;
@@ -333,7 +333,7 @@ export class WebsocketClient extends EventEmitter {
         try {
           const { signature, timestamp } = await this.getWsAuthSignature(
             wsKey,
-            credentials
+            credentials,
           );
 
           return {
@@ -344,7 +344,7 @@ export class WebsocketClient extends EventEmitter {
           };
         } catch (e) {
           this.logger.error(
-            `Account with key ${credentials.apiKey} could not be authenticateD: ${e}`
+            `Account with key ${credentials.apiKey} could not be authenticateD: ${e}`,
           );
         }
         return;
@@ -354,7 +354,7 @@ export class WebsocketClient extends EventEmitter {
 
       // Filter out failed accounts
       const authRequests: WsAuthRequestArg[] = signedAuthAccountRequests.filter(
-        (request): request is WsAuthRequestArg => !!request
+        (request): request is WsAuthRequestArg => !!request,
       );
 
       const authParams: WsAuthRequest = {
@@ -371,17 +371,17 @@ export class WebsocketClient extends EventEmitter {
 
   private async getWsAuthSignature(
     wsKey: WsKey,
-    credentials: APICredentials
+    credentials: APICredentials,
   ): Promise<{ signature: string; timestamp: string }> {
     const { apiKey, apiSecret } = credentials;
 
     if (!apiKey || !apiSecret) {
       this.logger.warning(
         'Cannot authenticate websocket, either api or secret missing.',
-        { ...loggerCategory, wsKey }
+        { ...loggerCategory, wsKey },
       );
       throw new Error(
-        `Cannot auth - missing api or secret in config (key: ${apiKey})`
+        `Cannot auth - missing api or secret in config (key: ${apiKey})`,
       );
     }
 
@@ -405,7 +405,7 @@ export class WebsocketClient extends EventEmitter {
 
   private async sendAuthRequest(wsKey: WsKey): Promise<void> {
     const logContext = { ...loggerCategory, wsKey, method: 'sendAuthRequest' };
-    this.logger.info(`Sending auth request...`, logContext);
+    this.logger.info('Sending auth request...', logContext);
     try {
       const authRequest = await this.getWsAuthRequest(wsKey);
       if (!authRequest) {
@@ -413,15 +413,15 @@ export class WebsocketClient extends EventEmitter {
       }
       this.logger.info(
         `Sending authentication request on wsKey(${wsKey})`,
-        logContext
+        logContext,
       );
       this.logger.silly(
         `Authenticating with event: ${JSON.stringify(
           authRequest,
           null,
-          2
+          2,
         )} on wsKey(${wsKey})`,
-        logContext
+        logContext,
       );
       return this.tryWsSend(wsKey, JSON.stringify(authRequest));
     } catch (e) {
@@ -438,7 +438,7 @@ export class WebsocketClient extends EventEmitter {
     ) {
       this.wsStore.setConnectionState(
         wsKey,
-        WsConnectionStateEnum.RECONNECTING
+        WsConnectionStateEnum.RECONNECTING,
       );
     }
 
@@ -468,7 +468,7 @@ export class WebsocketClient extends EventEmitter {
 
     this.wsStore.get(wsKey, true).activePongTimer = setTimeout(
       () => this.executeReconnectableClose(wsKey, 'Pong timeout'),
-      this.options.pongTimeout
+      this.options.pongTimeout,
     );
   }
 
@@ -497,7 +497,7 @@ export class WebsocketClient extends EventEmitter {
           ...loggerCategory,
           wsKey,
           reason,
-        }
+        },
       );
       this.reconnectWithDelay(wsKey, this.options.reconnectTimeout);
     }
@@ -540,26 +540,26 @@ export class WebsocketClient extends EventEmitter {
    */
   private requestSubscribeTopics(
     wsKey: WsKey,
-    topics: WsChannelSubUnSubRequestArg[]
+    topics: WsChannelSubUnSubRequestArg[],
   ) {
     if (!topics.length) {
       return;
     }
 
     const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-      this.options.market
+      this.options.market,
     );
     if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
       this.logger.silly(
-        `Subscribing to topics in batches of ${maxTopicsPerEvent}`
+        `Subscribing to topics in batches of ${maxTopicsPerEvent}`,
       );
-      for (var i = 0; i < topics.length; i += maxTopicsPerEvent) {
+      for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
         const batch = topics.slice(i, i + maxTopicsPerEvent);
         this.logger.silly(`Subscribing to batch of ${batch.length}`);
         this.requestSubscribeTopics(wsKey, batch);
       }
       this.logger.silly(
-        `Finished batch subscribing to ${topics.length} topics`
+        `Finished batch subscribing to ${topics.length} topics`,
       );
       return;
     }
@@ -579,26 +579,26 @@ export class WebsocketClient extends EventEmitter {
    */
   private requestUnsubscribeTopics(
     wsKey: WsKey,
-    topics: WsChannelSubUnSubRequestArg[]
+    topics: WsChannelSubUnSubRequestArg[],
   ) {
     if (!topics.length) {
       return;
     }
 
     const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-      this.options.market
+      this.options.market,
     );
     if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
       this.logger.silly(
-        `Unsubscribing to topics in batches of ${maxTopicsPerEvent}`
+        `Unsubscribing to topics in batches of ${maxTopicsPerEvent}`,
       );
-      for (var i = 0; i < topics.length; i += maxTopicsPerEvent) {
+      for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
         const batch = topics.slice(i, i + maxTopicsPerEvent);
         this.logger.silly(`Unsubscribing to batch of ${batch.length}`);
         this.requestUnsubscribeTopics(wsKey, batch);
       }
       this.logger.silly(
-        `Finished batch unsubscribing to ${topics.length} topics`
+        `Finished batch unsubscribing to ${topics.length} topics`,
       );
       return;
     }
@@ -615,26 +615,26 @@ export class WebsocketClient extends EventEmitter {
 
   public tryWsSend(wsKey: WsKey, wsMessage: string): void {
     try {
-      this.logger.silly(`Sending upstream ws message: `, {
+      this.logger.silly('Sending upstream ws message: ', {
         ...loggerCategory,
         wsMessage,
         wsKey,
       });
       if (!wsKey) {
         throw new Error(
-          `Cannot send message (wsKey not provided: wsKey(${wsKey}))`
+          `Cannot send message (wsKey not provided: wsKey(${wsKey}))`,
         );
       }
 
       const ws = this.wsStore.getWs(wsKey);
       if (!ws) {
         throw new Error(
-          `${wsKey} socket not connected yet, call "connect(${wsKey}) first then try again when the "open" event arrives`
+          `${wsKey} socket not connected yet, call "connect(${wsKey}) first then try again when the "open" event arrives`,
         );
       }
       ws.send(wsMessage);
     } catch (e) {
-      this.logger.error(`Failed to send WS message`, {
+      this.logger.error('Failed to send WS message', {
         ...loggerCategory,
         wsMessage,
         wsKey,
@@ -680,7 +680,7 @@ export class WebsocketClient extends EventEmitter {
     this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.CONNECTED);
     this.wsStore.get(wsKey, true)!.activePingTimer = setInterval(
       () => this.ping(wsKey),
-      this.options.pingInterval
+      this.options.pingInterval,
     );
 
     // Private websockets require an auth packet to be sent after opening the connection
@@ -716,7 +716,7 @@ export class WebsocketClient extends EventEmitter {
       const msg = JSON.parse(event?.data || event);
 
       if (isWsErrorEvent(msg)) {
-        this.logger.error(`WS error event: `, { ...msg, wsKey });
+        this.logger.error('WS error event: ', { ...msg, wsKey });
         return this.emit('error', { ...msg, wsKey });
       }
 
@@ -729,7 +729,7 @@ export class WebsocketClient extends EventEmitter {
         if (msg.code === WS_EVENT_CODE_ENUM.OK) {
           this.logger.info(
             `Authenticated successfully on wsKey(${wsKey})`,
-            logContext
+            logContext,
           );
           this.emit('response', { ...msg, wsKey });
 
@@ -743,7 +743,7 @@ export class WebsocketClient extends EventEmitter {
           return;
         }
 
-        this.logger.error(`Authentication failed: `, {
+        this.logger.error('Authentication failed: ', {
           ...logContext,
           ...msg,
           wsKey,
