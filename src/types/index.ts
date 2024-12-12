@@ -1,3 +1,3 @@
 export * from './rest';
-export * from './websockets';
 export * from './shared';
+export * from './websockets';

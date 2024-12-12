@@ -1,5 +1,3 @@
-import { InstrumentType } from '../shared';
-
 export type GridAlgoOrderType = 'grid' | 'contract_grid' | 'moon_grid';
 
 export interface GetGridAlgoOrdersRequest {

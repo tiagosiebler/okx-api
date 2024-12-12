@@ -1,4 +1,4 @@
-export interface CurrentSubposition{
+export interface CurrentSubposition {
   algoId: string;
   ccy: string;
   instId: string;
@@ -23,7 +23,7 @@ export interface CurrentSubposition{
   availSubPos: string;
 }
 
-export interface SubpositionsHistory{
+export interface SubpositionsHistory {
   ccy: string;
   closeAvgPx: string;
   closeTime: string;
@@ -276,8 +276,6 @@ export interface GetCopyTradersResult {
   copyTraderNumChgRatio: string;
   copyTraders: CopyTraderInfo[];
 }
-
-
 
 export interface GetPrivateLeadTraderRanksResult {
   dataVer: string;

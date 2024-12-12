@@ -1,4 +1,3 @@
-import { WS_EVENT_CODE_ENUM } from '../../util';
 import { WsChannel } from './request';
 
 export interface WsEvent {
@@ -29,6 +28,5 @@ export interface WsChannelConnInfoEvent extends WsEvent {
   connId: string;
   connCount: string;
 }
-
 
 export type WsResponse = WsEvent;

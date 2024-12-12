@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+
 import {
   APICredentials,
   APIMarket,
@@ -6,7 +7,7 @@ import {
   RestClientOptions,
 } from '../types';
 import { signMessage } from './node-support';
-import { serializeParams, programKey, programId } from './requestUtils';
+import { programId, programKey, serializeParams } from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
 
 // axios.interceptors.request.use((request) => {
@@ -43,10 +44,15 @@ interface SignedRequest<T> {
 
 export default abstract class BaseRestClient {
   private options: RestClientOptions;
+
   private baseUrl: string;
+
   private globalRequestOptions: AxiosRequestConfig;
+
   private apiKey: string | undefined;
+
   private apiSecret: string | undefined;
+
   private apiPassphrase: string | undefined;
 
   constructor(
@@ -54,7 +60,7 @@ export default abstract class BaseRestClient {
     baseUrl: string,
     options: RestClientOptions = {},
     requestOptions: AxiosRequestConfig = {},
-    market: APIMarket
+    market: APIMarket,
   ) {
     // this.environment = environment;
 
@@ -72,7 +78,7 @@ export default abstract class BaseRestClient {
       (!credentials.apiKey || !credentials.apiSecret || !credentials.apiPass)
     ) {
       throw new Error(
-        'API Key, Secret AND Passphrase are ALL required for private enpoints'
+        'API Key, Secret AND Passphrase are ALL required for private enpoints',
       );
     }
 
@@ -119,7 +125,7 @@ export default abstract class BaseRestClient {
       Array.isArray(params)
         ? params.map((p) => ({ ...p, [programKey]: programId }))
         : { ...params, [programKey]: programId },
-      false
+      false,
     );
   }
 
@@ -133,8 +139,8 @@ export default abstract class BaseRestClient {
   private async _call(
     method: Method,
     endpoint: string,
-    params: {} | undefined,
-    isPublicApi: boolean
+    params: object | undefined,
+    isPublicApi: boolean,
   ): Promise<any> {
     const options = {
       ...this.globalRequestOptions,
@@ -156,7 +162,7 @@ export default abstract class BaseRestClient {
       tsISO,
       method,
       endpoint,
-      params
+      params,
     );
 
     if (!options.headers) {
@@ -219,12 +225,12 @@ export default abstract class BaseRestClient {
   /**
    * Sign request
    */
-  private async signRequest<T extends Object>(
+  private async signRequest<T extends object>(
     isPublicApi: boolean,
     tsISO: string,
     method: Method,
     endpoint: string,
-    params: T | undefined
+    params: T | undefined,
   ): Promise<SignedRequest<T>> {
     const res: SignedRequest<T> = {
       requestBody: params,
@@ -244,7 +250,7 @@ export default abstract class BaseRestClient {
     const serializedParams = serializeParams(
       params,
       method,
-      this.options.strict_param_validation
+      this.options.strict_param_validation,
     );
 
     const message = tsISO + method + endpoint + serializedParams;

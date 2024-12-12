@@ -1,4 +1,5 @@
 import WebSocket from 'isomorphic-ws';
+
 import { DefaultLogger } from './logger';
 import { WsKey } from './websocket-util';
 
@@ -83,6 +84,7 @@ export class WsStore<WSComplexTopic> {
     WsKey | string,
     WsStoredState<WSComplexTopic | WSSimpleTopic>
   > = {};
+
   private logger: typeof DefaultLogger;
 
   constructor(logger: typeof DefaultLogger) {
@@ -93,15 +95,17 @@ export class WsStore<WSComplexTopic> {
   /** Get WS stored state for key, optionally create if missing */
   get(
     wsKey: WsKey,
-    createIfMissing?: true
+    createIfMissing?: true,
   ): WsStoredState<WSComplexTopic | WSSimpleTopic>;
+
   get(
     wsKey: WsKey,
-    createIfMissing?: false
+    createIfMissing?: false,
   ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined;
+
   get(
     wsKey: WsKey,
-    createIfMissing?: boolean
+    createIfMissing?: boolean,
   ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined {
     if (this.wsState[wsKey]) {
       return this.wsState[wsKey];
@@ -117,12 +121,12 @@ export class WsStore<WSComplexTopic> {
   }
 
   create(
-    wsKey: WsKey
+    wsKey: WsKey,
   ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined {
     if (this.hasExistingActiveConnection(wsKey)) {
       this.logger.warning(
         'WsStore setConnection() overwriting existing open connection: ',
-        this.getWs(wsKey)
+        this.getWs(wsKey),
       );
     }
     this.wsState[wsKey] = {
@@ -137,7 +141,7 @@ export class WsStore<WSComplexTopic> {
       const ws = this.getWs(wsKey);
       this.logger.warning(
         'WsStore deleting state for connection still open: ',
-        ws
+        ws,
       );
       ws?.close();
     }
@@ -158,7 +162,7 @@ export class WsStore<WSComplexTopic> {
     if (this.isWsOpen(wsKey)) {
       this.logger.warning(
         'WsStore setConnection() overwriting existing open connection: ',
-        this.getWs(wsKey)
+        this.getWs(wsKey),
       );
     }
     this.get(wsKey, true)!.ws = wsConnection;
@@ -231,7 +235,7 @@ export class WsStore<WSComplexTopic> {
   // Since topics are objects we can't rely on the set to detect duplicates
   getMatchingTopic(
     key: WsKey,
-    topic: WsTopic | WSComplexTopic
+    topic: WsTopic | WSComplexTopic,
   ): WSComplexTopic | WSSimpleTopic | undefined {
     if (typeof topic === 'string') {
       if (this.getTopics(key).has(topic)) {

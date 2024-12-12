@@ -5,20 +5,6 @@ import {
   WithdrawState,
 } from '../shared';
 
-export interface AccountBalance {
-  adjEq: string;
-  details: AccountBalanceDetail[];
-  imr: string;
-  isoEq: string;
-  mgnRatio: string;
-  mmr: string;
-  notionalUsd: string;
-  ordFroz: string;
-  totalEq: string;
-  uTime: string;
-  spotCopyTradingEq: string;
-}
-
 export interface AccountBalanceDetail {
   availBal: string;
   availEq: string;
@@ -50,6 +36,20 @@ export interface AccountBalanceDetail {
   spotUplRatio: string; // Spot unrealized profit and loss ratio.
   totalPnl: string; // Spot accumulated profit and loss. The unit is USD.
   totalPnlRatio: string; // Spot accumulated profit and loss ratio.
+}
+
+export interface AccountBalance {
+  adjEq: string;
+  details: AccountBalanceDetail[];
+  imr: string;
+  isoEq: string;
+  mgnRatio: string;
+  mmr: string;
+  notionalUsd: string;
+  ordFroz: string;
+  totalEq: string;
+  uTime: string;
+  spotCopyTradingEq: string;
 }
 
 export interface AccountPosition {

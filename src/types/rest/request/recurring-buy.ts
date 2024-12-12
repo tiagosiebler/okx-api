@@ -29,5 +29,3 @@ export interface GetRecurringBuyOrderListRequest {
   before?: string;
   limit?: string;
 }
-
-

@@ -37,6 +37,14 @@ export interface ExecuteBlockQuoteResult {
   legs: RFQQuoteLegExtended[];
 }
 
+export interface CreatedBlockQuoteLeg {
+  px: string;
+  sz: string;
+  instId: string;
+  side: string;
+  tgtCcy: string;
+}
+
 export interface CreateBlockQuoteResult {
   cTime: string;
   uTime: string;
@@ -47,14 +55,6 @@ export interface CreateBlockQuoteResult {
   state: string;
   validUntil: string;
   legs: CreatedBlockQuoteLeg[];
-}
-
-export interface CreatedBlockQuoteLeg {
-  px: string;
-  sz: string;
-  instId: string;
-  side: string;
-  tgtCcy: string;
 }
 
 export interface CancelBlockQuoteResult {

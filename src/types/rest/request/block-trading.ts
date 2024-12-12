@@ -22,6 +22,14 @@ export interface ExecuteBlockQuoteRequest {
   quoteId: string;
 }
 
+export interface CreateBlockQuoteLeg {
+  px: string;
+  sz: string;
+  instId: string;
+  side: OrderSide;
+  tgtCcy?: 'base_ccy' | 'quote_ccy';
+}
+
 export interface CreateBlockQuoteRequest {
   rfqId: string;
   clQuoteId?: string;
@@ -29,14 +37,6 @@ export interface CreateBlockQuoteRequest {
   anonymous?: boolean;
   expiresIn?: string;
   legs: CreateBlockQuoteLeg[];
-}
-
-export interface CreateBlockQuoteLeg {
-  px: string;
-  sz: string;
-  instId: string;
-  side: OrderSide;
-  tgtCcy?: 'base_ccy' | 'quote_ccy';
 }
 
 export interface CancelBlockQuoteRequest {
@@ -87,5 +87,3 @@ export interface SetMmpConfigRequest {
   frozenInterval: string;
   countLimit: string;
 }
-
-
