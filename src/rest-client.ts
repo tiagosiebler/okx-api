@@ -380,8 +380,8 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/instruments', params);
   }
 
-  getBalance(ccy?: string): Promise<AccountBalance[]> {
-    return this.getPrivate('/api/v5/account/balance', { ccy });
+  getBalance(params?: { ccy?: string }): Promise<AccountBalance[]> {
+    return this.getPrivate('/api/v5/account/balance', params);
   }
 
   getPositions(params?: GetPositionsParams): Promise<AccountPosition[]> {
@@ -395,11 +395,9 @@ export class RestClient extends BaseRestClient {
   }
 
   getAccountPositionRisk(
-    instType?: Omit<'SPOT', InstrumentType>,
+    params: { instType?: Omit<'SPOT', InstrumentType> } = {},
   ): Promise<AccountPositionRisk[]> {
-    return this.getPrivate('/api/v5/account/account-position-risk', {
-      instType,
-    });
+    return this.getPrivate('/api/v5/account/account-position-risk', params);
   }
 
   /** Up to last 7 days */
@@ -442,8 +440,10 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/config');
   }
 
-  setPositionMode(posMode: PosMode): Promise<AccountPositionModeResult[]> {
-    return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
+  setPositionMode(params: {
+    posMode: PosMode;
+  }): Promise<AccountPositionModeResult[]> {
+    return this.postPrivate('/api/v5/account/set-position-mode', params);
   }
 
   setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
@@ -478,14 +478,11 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
-  /**
-   * @deprecated - Use getLeverageV2() instead, which uses an object for all parameters.
-   */
-  getLeverage(instId: string, mgnMode: MarginMode): Promise<AccountLeverage[]> {
-    return this.getPrivate('/api/v5/account/leverage-info', {
-      instId,
-      mgnMode,
-    });
+  getLeverage(params: {
+    instId: string;
+    mgnMode: MarginMode;
+  }): Promise<AccountLeverage[]> {
+    return this.getPrivate('/api/v5/account/leverage-info', params);
   }
 
   getLeverageV2(params: {
@@ -507,25 +504,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/adjust-leverage-info', params);
   }
 
-  /**
-   * @deprecated - Use getMaxLoanV2() instead, which uses an object for all parameters.
-   * In future, getMaxLoan() will also use an object for params (breaking change if you continue using getMaxLoan() as is)
-   */
-  getMaxLoan(
-    instId: string,
-    mgnMode: MarginMode,
-    mgnCcy?: string | undefined,
-    ccy?: string,
-  ): Promise<AccountMaxLoan[]> {
-    return this.getPrivate('/api/v5/account/max-loan', {
-      instId,
-      mgnMode,
-      mgnCcy,
-      ccy,
-    });
-  }
-
-  getMaxLoanV2(params: {
+  getMaxLoan(params: {
     instId: string;
     mgnMode: MarginMode;
     mgnCcy?: string;
@@ -534,27 +513,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/max-loan', params);
   }
 
-  /**
-   * @deprecated - Use getFeeRatesV2() instead, which uses an object for all parameters.
-   * In future, getFeeRates() will also use an object for params (breaking change if you continue using getFeeRates() as is)
-   */
-  getFeeRates(
-    instType: InstrumentType,
-    instId?: string,
-    uly?: string,
-    instFamily?: string,
-    ruleType?: string,
-  ): Promise<AccountFeeRate[]> {
-    return this.getPrivate('/api/v5/account/trade-fee', {
-      instType,
-      instId,
-      uly,
-      instFamily,
-      ruleType,
-    });
-  }
-
-  getFeeRatesV2(params: {
+  getFeeRates(params: {
     instType: InstrumentType;
     instId?: string;
     uly?: string;
@@ -576,26 +535,23 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/interest-accrued', params);
   }
 
-  getInterestRate(ccy?: string): Promise<InterestRate[]> {
-    return this.getPrivate('/api/v5/account/interest-rate', { ccy });
+  getInterestRate(params?: { ccy?: string }): Promise<InterestRate[]> {
+    return this.getPrivate('/api/v5/account/interest-rate', params);
   }
 
-  setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<Greeks[]> {
-    return this.postPrivate('/api/v5/account/set-greeks', { greeksType });
+  setGreeksDisplayType(params: { greeksType: 'PA' | 'BS' }): Promise<Greeks[]> {
+    return this.postPrivate('/api/v5/account/set-greeks', params);
   }
 
-  setIsolatedMode(
-    isoMode: 'automatic' | 'autonomy',
-    type: 'MARGIN' | 'CONTRACTS',
-  ): Promise<AccountIsolatedMode[]> {
-    return this.postPrivate('/api/v5/account/set-isolated-mode', {
-      isoMode,
-      type,
-    });
+  setIsolatedMode(params: {
+    isoMode: 'automatic' | 'autonomy';
+    type: 'MARGIN' | 'CONTRACTS';
+  }): Promise<AccountIsolatedMode[]> {
+    return this.postPrivate('/api/v5/account/set-isolated-mode', params);
   }
 
-  getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawal[]> {
-    return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
+  getMaxWithdrawals(params?: { ccy?: string }): Promise<MaxWithdrawal[]> {
+    return this.getPrivate('/api/v5/account/max-withdrawal', params);
   }
 
   getAccountRiskState(): Promise<AccountRiskState[]> {
@@ -620,18 +576,13 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  borrowRepayVIPLoan(
-    ccy: string,
-    side: 'borrow' | 'repay',
-    amt: numberInString,
-    ordId?: string,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/account/borrow-repay', {
-      ccy,
-      side,
-      amt,
-      ordId,
-    });
+  borrowRepayVIPLoan(params: {
+    ccy: string;
+    side: 'borrow' | 'repay';
+    amt: numberInString;
+    ordId?: string;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/account/borrow-repay', params);
   }
 
   getVIPLoanBorrowRepayHistory(params?: any): Promise<any[]> {
@@ -810,8 +761,8 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/set-riskOffset-amt', params);
   }
 
-  getGreeks(ccy?: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/account/greeks', { ccy });
+  getGreeks(params?: { ccy?: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/account/greeks', params);
   }
 
   getPMLimitation(params: {
@@ -964,22 +915,20 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
+   *
    * Place easy convert : Convert small currencies to mainstream currencies.
    * Only applicable to the crypto balance less than $10.
    *
    * Maximum 5 currencies can be selected in one order.
    * If there are multiple currencies, separate them with commas in the "from" field.
+   *
    */
-  submitEasyConvert(
-    fromCcys: string[],
-    toCcy: string,
-    source?: string,
-  ): Promise<APIResponse<any>> {
-    return this.postPrivate('/api/v5/trade/easy-convert', {
-      fromCcy: fromCcys,
-      toCcy,
-      source,
-    });
+  submitEasyConvert(params: {
+    fromCcys: string[];
+    toCcy: string;
+    source?: string;
+  }): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/trade/easy-convert', params);
   }
 
   /** Get easy convert history : Get the history and status of easy convert trades. */
@@ -988,15 +937,17 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
+   *
    * Get one-click repay currency list : Get list of debt currency data and repay currencies.
    * Debt currencies include both cross and isolated debts.
    */
-  getOneClickRepayCurrencyList(
-    debtType?: 'cross' | 'isolated',
-  ): Promise<APIResponse<any>> {
-    return this.getPrivate('/api/v5/trade/one-click-repay-currency-list', {
-      debtType,
-    });
+  getOneClickRepayCurrencyList(params?: {
+    debtType?: 'cross' | 'isolated';
+  }): Promise<APIResponse<any>> {
+    return this.getPrivate(
+      '/api/v5/trade/one-click-repay-currency-list',
+      params,
+    );
   }
 
   /**
@@ -1004,14 +955,11 @@ export class RestClient extends BaseRestClient {
    * Isolated debts are not applicable.
    * The maximum repayment amount is based on the remaining available balance of funding and trading accounts.
    */
-  submitOneClickRepay(
-    debtCcys: string[],
-    repayCcy: string,
-  ): Promise<APIResponse<any>> {
-    return this.postPrivate('/api/v5/trade/one-click-repay', {
-      debtCcy: debtCcys.join(','),
-      repayCcy,
-    });
+  submitOneClickRepay(params: {
+    debtCcys: string[];
+    repayCcy: string;
+  }): Promise<APIResponse<any>> {
+    return this.postPrivate('/api/v5/trade/one-click-repay', params);
   }
 
   /** Get the history and status of one-click repay trades. */
@@ -1102,16 +1050,12 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/tradingBot/grid/order-algo', params);
   }
 
-  amendGridAlgoOrder(
-    algoId: string,
-    instId: string,
-    triggerPx: { slTriggerPx?: numberInString; tpTriggerPx?: numberInString },
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/tradingBot/grid/amend-order-algo', {
-      algoId,
-      instId,
-      ...triggerPx,
-    });
+  amendGridAlgoOrder(params: {
+    algoId: string;
+    instId: string;
+    triggerPx: { slTriggerPx?: numberInString; tpTriggerPx?: numberInString };
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/tradingBot/grid/amend-order-algo', params);
   }
 
   stopGridAlgoOrder(orders: StopGridAlgoOrderRequest[]): Promise<any[]> {
@@ -1160,75 +1104,58 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getGridAlgoOrderDetails(
-    algoOrdType: GridAlgoOrderType,
-    algoId: string,
-  ): Promise<any[]> {
-    return this.getPrivate('/api/v5/tradingBot/grid/orders-algo-details', {
-      algoOrdType,
-      algoId,
-    });
+  getGridAlgoOrderDetails(params: {
+    algoOrdType: GridAlgoOrderType;
+    algoId: string;
+  }): Promise<any[]> {
+    return this.getPrivate(
+      '/api/v5/tradingBot/grid/orders-algo-details',
+      params,
+    );
   }
 
-  getGridAlgoSubOrders(
-    algoOrdType: GridAlgoOrderType,
-    algoId: string,
-    type: GridAlgoSubOrderType,
-    groupId?: string,
+  getGridAlgoSubOrders(params: {
+    algoOrdType: GridAlgoOrderType;
+    algoId: string;
+    type: GridAlgoSubOrderType;
+    groupId?: string;
     pagination?: {
       after?: numberInString;
       before?: numberInString;
       limit?: number;
-    },
-  ): Promise<any[]> {
-    return this.getPrivate('/api/v5/tradingBot/grid/sub-orders', {
-      algoOrdType,
-      algoId,
-      type,
-      groupId,
-      ...pagination,
-    });
+    };
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/tradingBot/grid/sub-orders', params);
   }
 
-  /** Only contract grid supports this method */
-  getGridAlgoOrderPositions(
-    algoOrdType: 'contract_grid',
-    algoId: string,
-  ): Promise<any[]> {
-    return this.getPrivate('/api/v5/tradingBot/grid/positions', {
-      algoOrdType,
-      algoId,
-    });
+  getGridAlgoOrderPositions(params: {
+    algoOrdType: 'contract_grid';
+    algoId: string;
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/tradingBot/grid/positions', params);
   }
 
-  spotGridWithdrawIncome(algoId: string): Promise<any[]> {
-    return this.postPrivate('/api/v5/tradingBot/grid/withdraw-income', {
-      algoId,
-    });
+  spotGridWithdrawIncome(params: { algoId: string }): Promise<any[]> {
+    return this.postPrivate('/api/v5/tradingBot/grid/withdraw-income', params);
   }
 
-  computeGridMarginBalance(
-    algoId: string,
-    type: 'add' | 'reduce',
-    amt?: numberInString,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/tradingBot/grid/compute-margin-balance', {
-      algoId,
-      type,
-      amt,
-    });
+  computeGridMarginBalance(params: {
+    algoId: string;
+    type: 'add' | 'reduce';
+    amt?: numberInString;
+  }): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/compute-margin-balance',
+      params,
+    );
   }
 
-  adjustGridMarginBalance(
-    algoId: string,
-    type: 'add' | 'reduce',
-    change: { amt?: numberInString; percent?: numberInString },
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/tradingBot/grid/margin-balance', {
-      algoId,
-      type,
-      ...change,
-    });
+  adjustGridMarginBalance(params: {
+    algoId: string;
+    type: 'add' | 'reduce';
+    change: { amt?: numberInString; percent?: numberInString };
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/tradingBot/grid/margin-balance', params);
   }
 
   adjustGridInvestment(params: { algoId: string; amt: string }): Promise<
@@ -1242,18 +1169,13 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getGridAIParameter(
-    algoOrdType: GridAlgoOrderType,
-    instId: string,
-    direction: ContractGridDirection,
-    duration?: '7D' | '30D' | '180D',
-  ): Promise<any[]> {
-    return this.get('/api/v5/tradingBot/grid/ai-param', {
-      algoOrdType,
-      instId,
-      direction,
-      duration,
-    });
+  getGridAIParameter(params: {
+    algoOrdType: GridAlgoOrderType;
+    instId: string;
+    direction: ContractGridDirection;
+    duration?: '7D' | '30D' | '180D';
+  }): Promise<any[]> {
+    return this.get('/api/v5/tradingBot/grid/ai-param', params);
   }
 
   computeGridMinInvestment(params: {
@@ -1771,21 +1693,22 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getTickers(instrumentType: InstrumentType, uly?: string): Promise<Ticker[]> {
-    return this.get('/api/v5/market/tickers', {
-      instType: instrumentType,
-      uly,
-    });
+  getTickers(params: {
+    instrumentType: InstrumentType;
+    uly?: string;
+  }): Promise<Ticker[]> {
+    return this.get('/api/v5/market/tickers', params);
   }
 
-  getTicker(instId: string): Promise<Ticker[]> {
-    return this.get('/api/v5/market/ticker', {
-      instId,
-    });
+  getTicker(params: { instId: string }): Promise<Ticker[]> {
+    return this.get('/api/v5/market/ticker', params);
   }
 
-  getOrderBook(instId: string, sz?: numberInString): Promise<OrderBook[]> {
-    return this.get('/api/v5/market/books', { instId, sz });
+  getOrderBook(params: {
+    instId: string;
+    sz?: numberInString;
+  }): Promise<OrderBook[]> {
+    return this.get('/api/v5/market/books', params);
   }
 
   getFullOrderBook(params: {
@@ -1795,68 +1718,28 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/books-full', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
-  getCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<Candle[]> {
-    return this.get('/api/v5/market/candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getCandlesV2(params: CandleRequest): Promise<Candle[]> {
+  getCandles(params: CandleRequest): Promise<Candle[]> {
     return this.get('/api/v5/market/candles', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
-  getHistoricCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<Candle[]> {
-    return this.get('/api/v5/market/history-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getHistoricCandlesV2(params: CandleRequest): Promise<Candle[]> {
+  getHistoricCandles(params: CandleRequest): Promise<Candle[]> {
     return this.get('/api/v5/market/history-candles', params);
   }
 
-  getTrades(instId: string, limit?: number): Promise<Trade[]> {
-    return this.get('/api/v5/market/trades', { instId, limit });
+  getTrades(params: { instId: string; limit?: number }): Promise<Trade[]> {
+    return this.get('/api/v5/market/trades', params);
   }
 
-  getHistoricTrades(
-    instId: string,
+  getHistoricTrades(params: {
+    instId: string;
     pagination?: {
       after?: numberInString;
       before?: numberInString;
       limit?: numberInString;
       type?: '1' | '2';
-    },
-  ): Promise<Trade[]> {
-    return this.get('/api/v5/market/history-trades', { instId, ...pagination });
+    };
+  }): Promise<Trade[]> {
+    return this.get('/api/v5/market/history-trades', params);
   }
 
   getOptionTradesByInstrument(params: {
@@ -1986,12 +1869,15 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/rfq/public-trades', params);
   }
 
-  getBlockTickers(instType: InstrumentType, uly?: string): Promise<any[]> {
-    return this.get('/api/v5/market/block-tickers', { instType, uly });
+  getBlockTickers(params: {
+    instType: InstrumentType;
+    uly?: string;
+  }): Promise<any[]> {
+    return this.get('/api/v5/market/block-tickers', params);
   }
 
-  getBlockTicker(instId: string): Promise<any[]> {
-    return this.get('/api/v5/market/block-ticker', { instId });
+  getBlockTicker(params: { instId: string }): Promise<any[]> {
+    return this.get('/api/v5/market/block-ticker', params);
   }
 
   getBlockPublicTrades(params: {
@@ -2108,18 +1994,13 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(
-    instType: InstrumentType,
-    uly?: string,
-    instFamily?: string,
-    instId?: string,
-  ): Promise<Instrument[]> {
-    return this.get('/api/v5/public/instruments', {
-      instType,
-      uly,
-      instFamily,
-      instId,
-    });
+  getInstruments(params: {
+    instType: InstrumentType;
+    uly?: string;
+    instFamily?: string;
+    instId?: string;
+  }): Promise<Instrument[]> {
+    return this.get('/api/v5/public/instruments', params);
   }
 
   getDeliveryExerciseHistory(params: any): Promise<any[]> {
@@ -2201,102 +2082,22 @@ export class RestClient extends BaseRestClient {
     quoteCcy?: string;
     instId?: string;
   }): Promise<IndexTicker[]> {
-    return this.get('/api/v5/market/index-tickers', { ...params });
+    return this.get('/api/v5/market/index-tickers', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getIndexCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
-  getIndexCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/index-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getIndexCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
+  getIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/index-candles', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricIndexCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
-  getHistoricIndexCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/history-index-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getHistoricIndexCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
+  getHistoricIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/history-index-candles', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getMarkPriceCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
-  getMarkPriceCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/mark-price-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getMarkPriceCandlesV2(params: CandleRequest): Promise<CandleNoVolume[]> {
+  getMarkPriceCandles(params: CandleRequest): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/mark-price-candles', params);
   }
 
-  /**
-   * @deprecated this method's parameters will change to an object in the next release. Use getHistoricMarkPriceCandlesV2 instead.
-   *
-   * @param instId
-   * @param bar
-   * @param pagination
-   * @returns
-   */
   getHistoricMarkPriceCandles(
-    instId: string,
-    bar: string = '1m',
-    pagination?: Pagination,
-  ): Promise<CandleNoVolume[]> {
-    return this.get('/api/v5/market/historic-mark-price-candles', {
-      instId,
-      bar,
-      ...pagination,
-    });
-  }
-
-  getHistoricMarkPriceCandlesV2(
     params: CandleRequest,
   ): Promise<CandleNoVolume[]> {
     return this.get('/api/v5/market/history-mark-price-candles', params);
@@ -2310,8 +2111,8 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/exchange-rate');
   }
 
-  getIndexComponents(index: string): Promise<any[]> {
-    return this.get('/api/v5/market/index-components', { index });
+  getIndexComponents(params: { index: string }): Promise<any[]> {
+    return this.get('/api/v5/market/index-components', params);
   }
 
   getEconomicCalendar(
@@ -2320,18 +2121,8 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/public/economic-calendar', params);
   }
 
-  /**
-   * @deprecated
-   */
-  getPublicBlockTrades(instId: string): Promise<any[]> {
-    return this.get('/api/v5/market/block-trades', { instId });
-  }
-
-  /**
-   * @deprecated
-   */
-  getLiquidationOrders(params: any): Promise<any[]> {
-    return this.get('/api/v5/public/liquidation-orders', params);
+  getPublicBlockTrades(params: { instId: string }): Promise<any[]> {
+    return this.get('/api/v5/market/block-trades', params);
   }
 
   /**
@@ -2477,20 +2268,22 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getCurrencies(ccy?: string): Promise<FundingCurrency[]> {
-    return this.getPrivate('/api/v5/asset/currencies', { ccy });
+  getCurrencies(params: { ccy?: string }): Promise<FundingCurrency[]> {
+    return this.getPrivate('/api/v5/asset/currencies', params);
   }
 
-  getBalances(ccy?: string): Promise<FundingBalance[]> {
-    return this.getPrivate('/api/v5/asset/balances', { ccy });
+  getBalances(params: { ccy?: string }): Promise<FundingBalance[]> {
+    return this.getPrivate('/api/v5/asset/balances', params);
   }
 
   getNonTradableAssets(params?: { ccy?: string }): Promise<NonTradableAsset[]> {
     return this.getPrivate('/api/v5/asset/non-tradable-assets', params);
   }
 
-  getAccountAssetValuation(ccy?: string): Promise<AccountAssetValuation[]> {
-    return this.getPrivate('/api/v5/asset/asset-valuation', { ccy });
+  getAccountAssetValuation(params: {
+    ccy?: string;
+  }): Promise<AccountAssetValuation[]> {
+    return this.getPrivate('/api/v5/asset/asset-valuation', params);
   }
 
   fundsTransfer(params: FundsTransferRequest): Promise<FundTransferResult[]> {
@@ -2517,16 +2310,16 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/bills', params);
   }
 
-  getLightningDeposits(
-    ccy: string,
-    amt: numberInString,
-    to?: '6' | '18',
-  ): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/deposit-lightning', { ccy, amt, to });
+  getLightningDeposits(params: {
+    ccy: string;
+    amt: numberInString;
+    to?: '6' | '18';
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/asset/deposit-lightning', params);
   }
 
-  getDepositAddress(ccy: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/deposit-address', { ccy });
+  getDepositAddress(params: { ccy: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/asset/deposit-address', params);
   }
 
   getDepositHistory(params?: any): Promise<any[]> {
@@ -2537,20 +2330,16 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/withdrawal', params);
   }
 
-  submitWithdrawLightning(
-    ccy: string,
-    invoice: string,
-    memo?: string,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/asset/withdrawal-lightning', {
-      ccy,
-      invoice,
-      memo,
-    });
+  submitWithdrawLightning(params: {
+    ccy: string;
+    invoice: string;
+    memo?: string;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/asset/withdrawal-lightning', params);
   }
 
-  cancelWithdrawal(wdId: string): Promise<any[]> {
-    return this.postPrivate('/api/v5/asset/cancel-withdrawal', { wdId });
+  cancelWithdrawal(params: { wdId: string }): Promise<any[]> {
+    return this.postPrivate('/api/v5/asset/cancel-withdrawal', params);
   }
 
   getWithdrawalHistory(params?: WithdrawalHistoryRequest): Promise<any[]> {
@@ -2561,13 +2350,6 @@ export class RestClient extends BaseRestClient {
     params: GetDepositWithdrawStatusRequest,
   ): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/deposit-withdraw-status', params);
-  }
-
-  /** @deprecated
-   * use submitEasyConvert() instead
-   */
-  smallAssetsConvert(ccy: string[]): Promise<any[]> {
-    return this.postPrivate('/api/v5/asset/convert-dust-assets', { ccy });
   }
 
   getExchanges(): Promise<any[]> {
@@ -2586,11 +2368,11 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/convert/currencies');
   }
 
-  getConvertCurrencyPair(fromCcy: string, toCcy: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/asset/convert/currency-pair', {
-      fromCcy,
-      toCcy,
-    });
+  getConvertCurrencyPair(params: {
+    fromCcy: string;
+    toCcy: string;
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/asset/convert/currency-pair', params);
   }
 
   estimateConvertQuote(params: ConvertQuoteEstimateRequest): Promise<any[]> {
@@ -2616,37 +2398,29 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/users/subaccount/list', params);
   }
 
-  /** Reset the APIKey of a sub-account */
-  resetSubAccountAPIKey(
-    subAcct: string,
-    apiKey: string,
+  resetSubAccountAPIKey(params: {
+    subAcct: string;
+    apiKey: string;
     options?: {
       label?: string;
       perm?: string;
       ip?: string;
-    },
-  ): Promise<SubAccountAPIReset[]> {
-    return this.postPrivate('/api/v5/users/subaccount/modify-apikey', {
-      subAcct,
-      apiKey,
-      ...options,
-    });
+    };
+  }): Promise<SubAccountAPIReset[]> {
+    return this.postPrivate('/api/v5/users/subaccount/modify-apikey', params);
   }
 
-  /** Get sub-account trading balance */
-  getSubAccountBalances(subAcct: string): Promise<SubAccountBalances[]> {
-    return this.getPrivate('/api/v5/account/subaccount/balances', { subAcct });
+  getSubAccountBalances(params: {
+    subAcct: string;
+  }): Promise<SubAccountBalances[]> {
+    return this.getPrivate('/api/v5/account/subaccount/balances', params);
   }
 
-  /** Get sub-account funding balance */
-  getSubAccountFundingBalances(
-    subAcct: string,
-    ccy?: string,
-  ): Promise<FundingBalance[]> {
-    return this.getPrivate('/api/v5/asset/subaccount/balances', {
-      subAcct,
-      ccy,
-    });
+  getSubAccountFundingBalances(params: {
+    subAcct: string;
+    ccy?: string;
+  }): Promise<FundingBalance[]> {
+    return this.getPrivate('/api/v5/asset/subaccount/balances', params);
   }
 
   getSubAccountMaxWithdrawal(
@@ -2683,22 +2457,20 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/asset/subaccount/transfer', params);
   }
 
-  /** Set Permission Of Transfer Out */
-  setSubAccountTransferOutPermission(
-    subAcct: string,
-    canTransOut: boolean = true,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/users/subaccount/set-transfer-out', {
-      subAcct,
-      canTransOut,
-    });
+  setSubAccountTransferOutPermission(params: {
+    subAcct: string;
+    canTransOut: boolean;
+  }): Promise<any[]> {
+    return this.postPrivate(
+      '/api/v5/users/subaccount/set-transfer-out',
+      params,
+    );
   }
 
-  /** Get custody trading sub-account list */
-  getSubAccountCustodyTradingList(subAcct?: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/users/entrust-subaccount-list', {
-      subAcct,
-    });
+  getSubAccountCustodyTradingList(params: {
+    subAcct?: string;
+  }): Promise<any[]> {
+    return this.getPrivate('/api/v5/users/entrust-subaccount-list', params);
   }
 
   setSubAccountLoanAllocation(
@@ -2739,44 +2511,30 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/finance/staking-defi/offers', params);
   }
 
-  /** Earn/staking purchase */
-  submitStake(
-    productId: string,
+  submitStake(params: {
+    productId: string;
     investData: {
       ccy: string;
       amt: string;
-    }[],
-    term?: string,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/staking-defi/purchase', {
-      productId,
-      investData,
-      term,
-    });
+    }[];
+    term?: string;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/staking-defi/purchase', params);
   }
 
-  /** Earn/staking redeem */
-  redeemStake(
-    ordId: string,
-    protocolType: 'staking' | 'defi',
-    allowEarlyRedeem?: boolean,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/staking-defi/redeem', {
-      ordId,
-      protocolType,
-      allowEarlyRedeem,
-    });
+  redeemStake(params: {
+    ordId: string;
+    protocolType: 'staking' | 'defi';
+    allowEarlyRedeem?: boolean;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/staking-defi/redeem', params);
   }
 
-  /** Earn/staking cancel purchases/redemptions */
-  cancelStakingRequest(
-    ordId: string,
-    protocolType: 'staking' | 'defi',
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/staking-defi/cancel', {
-      ordId,
-      protocolType,
-    });
+  cancelStakingRequest(params: {
+    ordId: string;
+    protocolType: 'staking' | 'defi';
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/staking-defi/cancel', params);
   }
 
   /** Earn/staking get active orders */
@@ -2855,37 +2613,32 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSavingBalance(ccy?: string): Promise<any[]> {
-    return this.getPrivate('/api/v5/finance/savings/balance', { ccy });
+  getSavingBalance(params: { ccy?: string }): Promise<any[]> {
+    return this.getPrivate('/api/v5/finance/savings/balance', params);
   }
 
-  savingsPurchaseRedemption(
-    ccy: string,
-    amt: numberInString,
-    side: 'purchase' | 'redempt',
-    rate: numberInString,
-  ): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/savings/purchase-redempt', {
-      ccy,
-      amt,
-      side,
-      rate,
-    });
+  savingsPurchaseRedemption(params: {
+    ccy: string;
+    amt: numberInString;
+    side: 'purchase' | 'redempt';
+    rate: numberInString;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/savings/purchase-redempt', params);
   }
 
-  setLendingRate(ccy: string, rate: numberInString): Promise<any[]> {
-    return this.postPrivate('/api/v5/finance/savings/set-lending-rate', {
-      ccy,
-      rate,
-    });
+  setLendingRate(params: {
+    ccy: string;
+    rate: numberInString;
+  }): Promise<any[]> {
+    return this.postPrivate('/api/v5/finance/savings/set-lending-rate', params);
   }
 
   getLendingHistory(params?: PaginatedSymbolRequest): Promise<any[]> {
     return this.getPrivate('/api/v5/finance/savings/lending-history', params);
   }
 
-  getPublicBorrowInfo(ccy?: string): Promise<any[]> {
-    return this.get('/api/v5/finance/savings/lending-rate-summary', { ccy });
+  getPublicBorrowInfo(params: { ccy?: string }): Promise<any[]> {
+    return this.get('/api/v5/finance/savings/lending-rate-summary', params);
   }
 
   getPublicBorrowHistory(params?: PaginatedSymbolRequest): Promise<any[]> {
@@ -3009,10 +2762,10 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSystemStatus(
-    state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled',
-  ): Promise<any[]> {
-    return this.get('/api/v5/system/status', { state });
+  getSystemStatus(params: {
+    state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled';
+  }): Promise<any[]> {
+    return this.get('/api/v5/system/status', params);
   }
 
   /**
@@ -3044,14 +2797,6 @@ export class RestClient extends BaseRestClient {
    * Broker endpoints (private)
    *
    */
-
-  /**
-   *
-   * @deprecated
-   */
-  getBrokerAccountInformation(): Promise<any[]> {
-    return this.getPrivate('/api/v5/broker/nd/info');
-  }
 
   createSubAccount(params: {
     subAcct: string;
