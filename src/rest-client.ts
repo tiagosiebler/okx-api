@@ -382,7 +382,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getBalance(ccy?: string): Promise<AccountBalance[]> {
     return this.getPrivate('/api/v5/account/balance', { ccy });
@@ -400,7 +400,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getAccountPositionRisk(
     instType?: Omit<'SPOT', InstrumentType>,
@@ -452,7 +452,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   setPositionMode(posMode: PosMode): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', { posMode });
@@ -492,7 +492,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getLeverage(instId: string, mgnMode: MarginMode): Promise<AccountLeverage[]> {
     return this.getPrivate('/api/v5/account/leverage-info', {
@@ -522,7 +522,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getMaxLoan(
     instId: string,
@@ -549,7 +549,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getFeeRates(
     instType: InstrumentType,
@@ -591,7 +591,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getInterestRate(ccy?: string): Promise<InterestRate[]> {
     return this.getPrivate('/api/v5/account/interest-rate', { ccy });
@@ -599,7 +599,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   setGreeksDisplayType(greeksType: 'PA' | 'BS'): Promise<Greeks[]> {
     return this.postPrivate('/api/v5/account/set-greeks', { greeksType });
@@ -607,7 +607,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   setIsolatedMode(
     isoMode: 'automatic' | 'autonomy',
@@ -621,7 +621,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getMaxWithdrawals(ccy?: string): Promise<MaxWithdrawal[]> {
     return this.getPrivate('/api/v5/account/max-withdrawal', { ccy });
@@ -651,7 +651,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   borrowRepayVIPLoan(
     ccy: string,
@@ -845,7 +845,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getGreeks(ccy?: string): Promise<any[]> {
     return this.getPrivate('/api/v5/account/greeks', { ccy });
@@ -1003,7 +1003,7 @@ export class RestClient extends BaseRestClient {
   /**
    *
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    *
    * Place easy convert : Convert small currencies to mainstream currencies.
    * Only applicable to the crypto balance less than $10.
@@ -1032,7 +1032,7 @@ export class RestClient extends BaseRestClient {
   /**
    *
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    *
    * Get one-click repay currency list : Get list of debt currency data and repay currencies.
    * Debt currencies include both cross and isolated debts.
@@ -1047,7 +1047,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    *
    * Trade one-click repay to repay cross debts.
    * Isolated debts are not applicable.
@@ -1153,7 +1153,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   amendGridAlgoOrder(
     algoId: string,
@@ -1215,7 +1215,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getGridAlgoOrderDetails(
     algoOrdType: GridAlgoOrderType,
@@ -1229,7 +1229,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getGridAlgoSubOrders(
     algoOrdType: GridAlgoOrderType,
@@ -1253,7 +1253,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getGridAlgoOrderPositions(
     algoOrdType: 'contract_grid',
@@ -1267,7 +1267,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   spotGridWithdrawIncome(algoId: string): Promise<any[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/withdraw-income', {
@@ -1277,7 +1277,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   computeGridMarginBalance(
     algoId: string,
@@ -1293,7 +1293,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   adjustGridMarginBalance(
     algoId: string,
@@ -1320,7 +1320,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getGridAIParameter(
     algoOrdType: GridAlgoOrderType,
@@ -1853,7 +1853,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getTickers(instrumentType: InstrumentType, uly?: string): Promise<Ticker[]> {
     return this.get('/api/v5/market/tickers', {
@@ -1864,7 +1864,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getTicker(instId: string): Promise<Ticker[]> {
     return this.get('/api/v5/market/ticker', {
@@ -1874,7 +1874,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getOrderBook(instId: string, sz?: numberInString): Promise<OrderBook[]> {
     return this.get('/api/v5/market/books', { instId, sz });
@@ -1889,7 +1889,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getCandles(
     instId: string,
@@ -1909,7 +1909,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getHistoricCandles(
     instId: string,
@@ -1929,7 +1929,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getTrades(instId: string, limit?: number): Promise<Trade[]> {
     return this.get('/api/v5/market/trades', { instId, limit });
@@ -1937,7 +1937,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getHistoricTrades(
     instId: string,
@@ -2080,7 +2080,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getBlockTickers(instType: InstrumentType, uly?: string): Promise<any[]> {
     return this.get('/api/v5/market/block-tickers', { instType, uly });
@@ -2088,7 +2088,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getBlockTicker(instId: string): Promise<any[]> {
     return this.get('/api/v5/market/block-ticker', { instId });
@@ -2210,7 +2210,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getInstruments(
     instType: InstrumentType,
@@ -2303,7 +2303,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getIndexTickers(params: {
     quoteCcy?: string;
@@ -2314,7 +2314,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getIndexCandles(
     instId: string,
@@ -2334,7 +2334,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getHistoricIndexCandles(
     instId: string,
@@ -2354,7 +2354,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getMarkPriceCandles(
     instId: string,
@@ -2374,7 +2374,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getHistoricMarkPriceCandles(
     instId: string,
@@ -2404,7 +2404,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getIndexComponents(index: string): Promise<any[]> {
     return this.get('/api/v5/market/index-components', { index });
@@ -2418,7 +2418,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getPublicBlockTrades(instId: string): Promise<any[]> {
     return this.get('/api/v5/market/block-trades', { instId });
@@ -2576,7 +2576,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getCurrencies(ccy?: string): Promise<FundingCurrency[]> {
     return this.getPrivate('/api/v5/asset/currencies', { ccy });
@@ -2584,7 +2584,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getBalances(ccy?: string): Promise<FundingBalance[]> {
     return this.getPrivate('/api/v5/asset/balances', { ccy });
@@ -2596,7 +2596,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getAccountAssetValuation(ccy?: string): Promise<AccountAssetValuation[]> {
     return this.getPrivate('/api/v5/asset/asset-valuation', { ccy });
@@ -2628,7 +2628,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getLightningDeposits(
     ccy: string,
@@ -2640,7 +2640,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getDepositAddress(ccy: string): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/deposit-address', { ccy });
@@ -2656,7 +2656,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   submitWithdrawLightning(
     ccy: string,
@@ -2672,7 +2672,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   cancelWithdrawal(wdId: string): Promise<any[]> {
     return this.postPrivate('/api/v5/asset/cancel-withdrawal', { wdId });
@@ -2714,7 +2714,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getConvertCurrencyPair(fromCcy: string, toCcy: string): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/convert/currency-pair', {
@@ -2748,7 +2748,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   resetSubAccountAPIKey(
     subAcct: string,
@@ -2768,7 +2768,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getSubAccountBalances(subAcct: string): Promise<SubAccountBalances[]> {
     return this.getPrivate('/api/v5/account/subaccount/balances', { subAcct });
@@ -2776,7 +2776,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getSubAccountFundingBalances(
     subAcct: string,
@@ -2824,7 +2824,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   setSubAccountTransferOutPermission(
     subAcct: string,
@@ -2838,7 +2838,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getSubAccountCustodyTradingList(subAcct?: string): Promise<any[]> {
     return this.getPrivate('/api/v5/users/entrust-subaccount-list', {
@@ -2886,7 +2886,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   submitStake(
     productId: string,
@@ -2905,7 +2905,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   redeemStake(
     ordId: string,
@@ -2921,7 +2921,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   cancelStakingRequest(
     ordId: string,
@@ -3011,7 +3011,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getSavingBalance(ccy?: string): Promise<any[]> {
     return this.getPrivate('/api/v5/finance/savings/balance', { ccy });
@@ -3019,7 +3019,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   savingsPurchaseRedemption(
     ccy: string,
@@ -3037,7 +3037,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   setLendingRate(ccy: string, rate: numberInString): Promise<any[]> {
     return this.postPrivate('/api/v5/finance/savings/set-lending-rate', {
@@ -3052,7 +3052,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getPublicBorrowInfo(ccy?: string): Promise<any[]> {
     return this.get('/api/v5/finance/savings/lending-rate-summary', { ccy });
@@ -3181,7 +3181,7 @@ export class RestClient extends BaseRestClient {
 
   /**
    * @deprecated Breaking change: this function will change soon to accept a single object for all REST API parameters.
-   * See issue [https://github.com/tiagosiebler/okx-api/issues/88] for more details.
+   * See issue https://github.com/tiagosiebler/okx-api/issues/88 for more details.
    */
   getSystemStatus(
     state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled',
