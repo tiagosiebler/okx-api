@@ -60,7 +60,7 @@ export type Candle = [
   vol,
   volCcy,
   volCcyQuote,
-  confirm,
+  confirm
 ];
 
 export type CandleNoVolume = [
@@ -68,7 +68,7 @@ export type CandleNoVolume = [
   openPrice,
   highPrice,
   lowPrice,
-  closePrice,
+  closePrice
 ];
 
 export interface Trade {
@@ -88,7 +88,7 @@ export interface Instrument {
   category: string;
   baseCcy: string;
   quoteCcy: string;
-  settCcy: string;
+  settleCcy: string;
   ctVal: string;
   ctMult: string;
   ctValCcy: string;
