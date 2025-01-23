@@ -88,7 +88,7 @@ export interface Instrument {
   category: string;
   baseCcy: string;
   quoteCcy: string;
-  settCcy: string;
+  settleCcy: string;
   ctVal: string;
   ctMult: string;
   ctValCcy: string;
