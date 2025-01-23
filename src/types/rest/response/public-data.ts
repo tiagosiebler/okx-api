@@ -60,7 +60,7 @@ export type Candle = [
   vol,
   volCcy,
   volCcyQuote,
-  confirm
+  confirm,
 ];
 
 export type CandleNoVolume = [
@@ -68,7 +68,7 @@ export type CandleNoVolume = [
   openPrice,
   highPrice,
   lowPrice,
-  closePrice
+  closePrice,
 ];
 
 export interface Trade {
