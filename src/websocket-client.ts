@@ -269,7 +269,7 @@ export class WebsocketClient extends EventEmitter {
         );
       }
 
-      const url = getWsUrlForWsKey(wsKey, this.options);
+      const url = getWsUrlForWsKey(wsKey, this.options, this.logger);
       const ws = this.connectToWsUrl(url, wsKey);
 
       return this.wsStore.setWs(wsKey, ws);
