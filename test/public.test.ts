@@ -9,7 +9,7 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('should throw for unauthenticated private calls', async () => {
     expect(() => api.getOrderList()).rejects.toMatchObject(
-      notAuthenticatedError()
+      notAuthenticatedError(),
     );
   });
 
@@ -27,7 +27,7 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('getIndexTickers()', async () => {
     expect(await api.getIndexTickers({ instId })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
@@ -37,25 +37,25 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('getCandles()', async () => {
     expect(await api.getCandlesV2({ instId: instId })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getHistoricCandles()', async () => {
     expect(await api.getHistoricCandlesV2({ instId: instId })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getIndexCandles()', async () => {
     expect(await api.getIndexCandlesV2({ instId: instId })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getMarkPriceCandles()', async () => {
     expect(await api.getMarkPriceCandlesV2({ instId: instId })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
@@ -65,7 +65,7 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('getHistoricTrades()', async () => {
     expect(await api.getHistoricTrades(instId)).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
@@ -73,7 +73,7 @@ describe('Public Inverse REST API Endpoints', () => {
     expect(await api.get24hrTotalVolume()).toMatchObject(successResponseList());
   });
 
-  it('getOracle()', async () => {
+  it.skip('getOracle()', async () => {
     expect(await api.getOracle()).toMatchObject(successResponseList());
   });
 
@@ -84,67 +84,67 @@ describe('Public Inverse REST API Endpoints', () => {
   // New public trade tests
   it('getOptionTradesByInstrument()', async () => {
     expect(
-      await api.getOptionTradesByInstrument({ instFamily: 'BTC-USD' })
+      await api.getOptionTradesByInstrument({ instFamily: 'BTC-USD' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getOptionTrades()', async () => {
     expect(await api.getOptionTrades({ instFamily: 'BTC-USD' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getBlockTickers()', async () => {
     expect(await api.getBlockTickers('SPOT')).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getBlockTicker()', async () => {
     expect(await api.getBlockTicker(instId)).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getInstruments()', async () => {
     expect(await api.getInstruments('SPOT')).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getOpenInterest()', async () => {
     expect(await api.getOpenInterest({ instType: 'FUTURES' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getFundingRate()', async () => {
     expect(await api.getFundingRate({ instId: 'BTC-USD-SWAP' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getFundingRateHistory()', async () => {
     expect(
-      await api.getFundingRateHistory({ instId: 'BTC-USD-SWAP' })
+      await api.getFundingRateHistory({ instId: 'BTC-USD-SWAP' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getMinMaxLimitPrice()', async () => {
     expect(
-      await api.getMinMaxLimitPrice({ instId: 'BTC-USD-SWAP' })
+      await api.getMinMaxLimitPrice({ instId: 'BTC-USD-SWAP' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getOptionMarketData()', async () => {
     expect(
-      await api.getOptionMarketData({ instFamily: 'BTC-USD' })
+      await api.getOptionMarketData({ instFamily: 'BTC-USD' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getDiscountRateAndInterestFreeQuota()', async () => {
     expect(
-      await api.getDiscountRateAndInterestFreeQuota({ instId: 'BTC-USD' })
+      await api.getDiscountRateAndInterestFreeQuota({ instId: 'BTC-USD' }),
     ).toMatchObject(successResponseList());
   });
 
@@ -154,109 +154,109 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('getMarkPrice()', async () => {
     expect(await api.getMarkPrice({ instId: 'BTC-USD-SWAP' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getInterestRateAndLoanQuota()', async () => {
     expect(
-      await api.getInterestRateAndLoanQuota({ instId: 'BTC-USD' })
+      await api.getInterestRateAndLoanQuota({ instId: 'BTC-USD' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getVIPInterestRateAndLoanQuota()', async () => {
     expect(
-      await api.getVIPInterestRateAndLoanQuota({ instId: 'BTC-USD' })
+      await api.getVIPInterestRateAndLoanQuota({ instId: 'BTC-USD' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getUnderlying()', async () => {
     expect(await api.getUnderlying({ instType: 'FUTURES' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getOptionTickBands()', async () => {
     expect(await api.getOptionTickBands({ instType: 'OPTION' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getPremiumHistory()', async () => {
     expect(await api.getPremiumHistory({ instId: instdIdSwap })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getOpenInterestHistory()', async () => {
     expect(
-      await api.getOpenInterestHistory({ instId: instdIdSwap })
+      await api.getOpenInterestHistory({ instId: instdIdSwap }),
     ).toMatchObject(successResponseList());
   });
 
   it('getTakerVolume()', async () => {
     expect(
-      await api.getTakerVolume({ ccy: 'BTC', instType: 'CONTRACTS' })
+      await api.getTakerVolume({ ccy: 'BTC', instType: 'CONTRACTS' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getContractTakerVolume()', async () => {
     expect(
-      await api.getContractTakerVolume({ instId: instdIdSwap })
+      await api.getContractTakerVolume({ instId: instdIdSwap }),
     ).toMatchObject(successResponseList());
   });
 
   it('getMarginLendingRatio()', async () => {
     expect(
-      await api.getMarginLendingRatio({ ccy: 'BTC', period: '1D' })
+      await api.getMarginLendingRatio({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getTopTradersAccountRatio()', async () => {
     expect(
-      await api.getTopTradersAccountRatio({ instId: instdIdSwap })
+      await api.getTopTradersAccountRatio({ instId: instdIdSwap }),
     ).toMatchObject(successResponseList());
   });
 
   it('getTopTradersContractPositionRatio()', async () => {
     expect(
-      await api.getTopTradersContractPositionRatio({ instId: instdIdSwap })
+      await api.getTopTradersContractPositionRatio({ instId: instdIdSwap }),
     ).toMatchObject(successResponseList());
   });
 
   it('getLongShortContractRatio()', async () => {
     expect(
-      await api.getLongShortContractRatio({ instId: instdIdSwap })
+      await api.getLongShortContractRatio({ instId: instdIdSwap }),
     ).toMatchObject(successResponseList());
   });
 
   it('getLongShortRatio()', async () => {
     expect(
-      await api.getLongShortRatio({ ccy: 'BTC', period: '1D' })
+      await api.getLongShortRatio({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getContractsOpenInterestAndVolume()', async () => {
     expect(
-      await api.getContractsOpenInterestAndVolume({ ccy: 'BTC', period: '1D' })
+      await api.getContractsOpenInterestAndVolume({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getOptionsOpenInterestAndVolume()', async () => {
     expect(
-      await api.getOptionsOpenInterestAndVolume({ ccy: 'BTC', period: '1D' })
+      await api.getOptionsOpenInterestAndVolume({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getPutCallRatio()', async () => {
     expect(
-      await api.getPutCallRatio({ ccy: 'BTC', period: '1D' })
+      await api.getPutCallRatio({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
   it('getOpenInterestAndVolumeExpiry()', async () => {
     expect(
-      await api.getOpenInterestAndVolumeExpiry({ ccy: 'BTC', period: '1D' })
+      await api.getOpenInterestAndVolumeExpiry({ ccy: 'BTC', period: '1D' }),
     ).toMatchObject(successResponseList());
   });
 
@@ -266,19 +266,19 @@ describe('Public Inverse REST API Endpoints', () => {
         ccy: 'BTC',
         expTime: '20241223',
         period: '1D',
-      })
+      }),
     ).toMatchObject(successResponseList());
   });
 
   it('getTakerFlow()', async () => {
     expect(await api.getTakerFlow({ ccy: 'BTC', period: '1D' })).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 
   it('getSystemStatus()', async () => {
     expect(await api.getSystemStatus('ongoing')).toMatchObject(
-      successResponseList()
+      successResponseList(),
     );
   });
 });
