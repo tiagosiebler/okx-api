@@ -26,8 +26,8 @@ import { isRawAPIResponse } from './typeGuards';
 //         headers: response.headers,
 //       },
 //       null,
-//       2
-//     )
+//       2,
+//     ),
 //   );
 //   return response;
 // });
@@ -261,7 +261,7 @@ export default abstract class BaseRestClient {
 
     return {
       ...res,
-      sign: signMessage(message, this.apiSecret),
+      sign: await signMessage(message, this.apiSecret),
     };
   }
 
