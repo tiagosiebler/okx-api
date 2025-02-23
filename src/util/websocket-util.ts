@@ -329,3 +329,25 @@ export const WS_EVENT_CODE_ENUM = {
   LOGIN_FAILED: '60009',
   LOGIN_PARTIALLY_FAILED: '60022',
 };
+
+/**
+ * #305: ws.terminate() is undefined in browsers.
+ * This only works in node.js, not in browsers.
+ * Does nothing if `ws` is undefined. Does nothing in browsers.
+ */
+export function safeTerminateWs(
+  ws?: WebSocket | any,
+  fallbackToClose?: boolean,
+): boolean {
+  if (!ws) {
+    return false;
+  }
+  if (typeof ws['terminate'] === 'function') {
+    ws.terminate();
+    return true;
+  } else if (fallbackToClose) {
+    ws.close();
+  }
+
+  return false;
+}
