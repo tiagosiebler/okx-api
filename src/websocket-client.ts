@@ -35,6 +35,7 @@ import { signMessage } from './util/node-support';
 import {
   getWsKeyForMarket,
   getWsUrlForWsKey,
+  safeTerminateWs,
   WS_EVENT_CODE_ENUM,
   WsKey,
 } from './util/websocket-util';
@@ -196,7 +197,7 @@ export class WebsocketClient extends EventEmitter {
     const ws = this.wsStore.getWs(wsKey);
     ws?.close();
     if (force) {
-      ws?.terminate();
+      safeTerminateWs(ws);
     }
   }
 
@@ -485,7 +486,7 @@ export class WebsocketClient extends EventEmitter {
 
     const wasOpen = this.wsStore.isWsOpen(wsKey);
 
-    this.wsStore.getWs(wsKey)?.terminate();
+    safeTerminateWs(this.wsStore.getWs(wsKey), true);
     delete this.wsStore.get(wsKey, true).activePongTimer;
     this.clearPingTimer(wsKey);
     this.clearPongTimer(wsKey);
