@@ -1694,8 +1694,9 @@ export class RestClient extends BaseRestClient {
    */
 
   getTickers(params: {
-    instrumentType: InstrumentType;
+    instType: InstrumentType;
     uly?: string;
+    instFamily?: string;
   }): Promise<Ticker[]> {
     return this.get('/api/v5/market/tickers', params);
   }

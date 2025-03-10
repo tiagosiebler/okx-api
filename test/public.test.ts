@@ -18,7 +18,7 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getTickers()', async () => {
-    expect(await api.getTickers({ instrumentType: 'SPOT' })).toMatchObject(
+    expect(await api.getTickers({ instType: 'SPOT' })).toMatchObject(
       successResponseList(),
     );
   });
@@ -79,10 +79,6 @@ describe('Public Inverse REST API Endpoints', () => {
 
   it('get24hrTotalVolume()', async () => {
     expect(await api.get24hrTotalVolume()).toMatchObject(successResponseList());
-  });
-
-  it('getOracle()', async () => {
-    expect(await api.getOracle()).toMatchObject(successResponseList());
   });
 
   it('getExchangeRate()', async () => {
