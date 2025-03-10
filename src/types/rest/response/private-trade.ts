@@ -12,6 +12,7 @@ export interface OrderResult {
   clOrdId: string;
   ordId: string;
   tag: string;
+  ts: string;
   sCode: numberInString;
   sMsg: string;
 }
