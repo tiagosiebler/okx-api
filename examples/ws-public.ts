@@ -20,7 +20,7 @@ const wsClient = new WebsocketClient(
     // market: 'aws',
     // market: 'demo',
   },
-  logger // Optional: inject the custom logger here
+  logger, // Optional: inject the custom logger here
 );
 
 // Raw data will arrive on the 'update' event
@@ -28,7 +28,7 @@ wsClient.on('update', (data) => {
   console.log(
     new Date(),
     'ws update (raw data received)',
-    JSON.stringify(data, null, 2)
+    JSON.stringify(data, null, 2),
   );
   // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
 });
