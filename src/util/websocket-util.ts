@@ -1,4 +1,5 @@
 import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
+import { DefaultLogger } from './logger';
 import { neverGuard } from './typeGuards';
 
 export const WS_BASE_URL_MAP: Record<
@@ -253,6 +254,7 @@ export function getWsKeyForMarket(
 export function getWsUrlForWsKey(
   wsKey: WsKey,
   wsClientOptions: WebsocketClientOptions,
+  logger: typeof DefaultLogger,
 ): string {
   if (wsClientOptions.wsUrl) {
     return wsClientOptions.wsUrl;
@@ -285,7 +287,7 @@ export function getWsUrlForWsKey(
       return WS_BASE_URL_MAP.businessDemo.private;
     default: {
       const errorMessage = 'getWsUrl(): Unhandled wsKey: ';
-      this.logger.error(errorMessage, {
+      logger.error(errorMessage, {
         category: 'okx-ws',
         wsKey,
       });
@@ -327,3 +329,25 @@ export const WS_EVENT_CODE_ENUM = {
   LOGIN_FAILED: '60009',
   LOGIN_PARTIALLY_FAILED: '60022',
 };
+
+/**
+ * #305: ws.terminate() is undefined in browsers.
+ * This only works in node.js, not in browsers.
+ * Does nothing if `ws` is undefined. Does nothing in browsers.
+ */
+export function safeTerminateWs(
+  ws?: WebSocket | any,
+  fallbackToClose?: boolean,
+): boolean {
+  if (!ws) {
+    return false;
+  }
+  if (typeof ws['terminate'] === 'function') {
+    ws.terminate();
+    return true;
+  } else if (fallbackToClose) {
+    ws.close();
+  }
+
+  return false;
+}

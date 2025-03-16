@@ -46,10 +46,15 @@ export interface AccountBalance {
   mgnRatio: string;
   mmr: string;
   notionalUsd: string;
+  notionalUsdForBorrow: string;
+  notionalUsdForFutures: string;
+  notionalUsdForOption: string;
+  notionalUsdForSwap: string;
   ordFroz: string;
   totalEq: string;
   uTime: string;
   spotCopyTradingEq: string;
+  upl: string;
 }
 
 export interface AccountPosition {
