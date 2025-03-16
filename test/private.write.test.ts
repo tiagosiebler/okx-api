@@ -510,6 +510,7 @@ describe('Private REST API Endpoints (POST)', () => {
             ccy: 'BTC',
             side: 'repay',
             amt: '1',
+            ordId: '123123123123',
           }),
         ).toBeFalsy();
       } catch (e) {
