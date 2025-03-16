@@ -11,7 +11,7 @@ export function successResponseObject() {
 export function errorResponseObject(
   code: string,
   data: null | any = null,
-  msg: string
+  msg: string,
 ) {
   return {
     code,
@@ -34,7 +34,7 @@ export function minimumAssetRequirementError() {
   return errorResponseObject(
     '70006',
     [],
-    expect.stringMatching(/minimum asset requirement/gim)
+    expect.stringMatching(/minimum asset requirement/gim),
   );
 }
 

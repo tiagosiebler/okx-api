@@ -18,11 +18,15 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getTickers()', async () => {
-    expect(await api.getTickers('SPOT')).toMatchObject(successResponseList());
+    expect(await api.getTickers({ instType: 'SPOT' })).toMatchObject(
+      successResponseList(),
+    );
   });
 
   it('getTicker()', async () => {
-    expect(await api.getTicker(instId)).toMatchObject(successResponseList());
+    expect(await api.getTicker({ instId })).toMatchObject(
+      successResponseList(),
+    );
   });
 
   it('getIndexTickers()', async () => {
@@ -32,49 +36,49 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getOrderBook()', async () => {
-    expect(await api.getOrderBook(instId)).toMatchObject(successResponseList());
+    expect(await api.getOrderBook({ instId })).toMatchObject(
+      successResponseList(),
+    );
   });
 
   it('getCandles()', async () => {
-    expect(await api.getCandlesV2({ instId: instId })).toMatchObject(
+    expect(await api.getCandles({ instId: instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getHistoricCandles()', async () => {
-    expect(await api.getHistoricCandlesV2({ instId: instId })).toMatchObject(
+    expect(await api.getHistoricCandles({ instId: instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getIndexCandles()', async () => {
-    expect(await api.getIndexCandlesV2({ instId: instId })).toMatchObject(
+    expect(await api.getIndexCandles({ instId: instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getMarkPriceCandles()', async () => {
-    expect(await api.getMarkPriceCandlesV2({ instId: instId })).toMatchObject(
+    expect(await api.getMarkPriceCandles({ instId: instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getTrades()', async () => {
-    expect(await api.getTrades(instId)).toMatchObject(successResponseList());
+    expect(await api.getTrades({ instId })).toMatchObject(
+      successResponseList(),
+    );
   });
 
   it('getHistoricTrades()', async () => {
-    expect(await api.getHistoricTrades(instId)).toMatchObject(
+    expect(await api.getHistoricTrades({ instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('get24hrTotalVolume()', async () => {
     expect(await api.get24hrTotalVolume()).toMatchObject(successResponseList());
-  });
-
-  it.skip('getOracle()', async () => {
-    expect(await api.getOracle()).toMatchObject(successResponseList());
   });
 
   it('getExchangeRate()', async () => {
@@ -95,19 +99,19 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getBlockTickers()', async () => {
-    expect(await api.getBlockTickers('SPOT')).toMatchObject(
+    expect(await api.getBlockTickers({ instType: 'SPOT' })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getBlockTicker()', async () => {
-    expect(await api.getBlockTicker(instId)).toMatchObject(
+    expect(await api.getBlockTicker({ instId })).toMatchObject(
       successResponseList(),
     );
   });
 
   it('getInstruments()', async () => {
-    expect(await api.getInstruments('SPOT')).toMatchObject(
+    expect(await api.getInstruments({ instType: 'SPOT' })).toMatchObject(
       successResponseList(),
     );
   });
@@ -277,7 +281,7 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getSystemStatus()', async () => {
-    expect(await api.getSystemStatus('ongoing')).toMatchObject(
+    expect(await api.getSystemStatus({ state: 'ongoing' })).toMatchObject(
       successResponseList(),
     );
   });
