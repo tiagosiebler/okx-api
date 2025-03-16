@@ -119,6 +119,7 @@ const BUSINESS_CHANNELS = [
   'candle5m',
   'candle3m',
   'candle1m',
+  'candle1s',
   'candle1Yutc',
   'candle3Mutc',
   'candle1Mutc',
