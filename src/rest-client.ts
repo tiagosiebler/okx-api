@@ -1053,15 +1053,15 @@ export class RestClient extends BaseRestClient {
   amendGridAlgoOrder(params: {
     algoId: string;
     instId: string;
-    slTriggerPx: string;
-    tpTriggerPx: string;
-    tpRatio: string;
-    slRatio: string;
-    triggerParams: {
-      triggerAction: string;
-      triggerStrategy: string;
-      triggerPx: string;
-      stopType: string;
+    slTriggerPx?: string;
+    tpTriggerPx?: string;
+    tpRatio?: string;
+    slRatio?: string;
+    triggerParams?: {
+      triggerAction?: string;
+      triggerStrategy?: string;
+      triggerPx?: string;
+      stopType?: string;
     }[];
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/amend-order-algo', params);

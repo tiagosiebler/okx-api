@@ -598,7 +598,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.amendGridAlgoOrder({
             algoId,
             instId,
-            triggerPx: { tpTriggerPx: '10' },
+            tpTriggerPx: '10',
           }),
         ).toBeFalsy();
       } catch (e) {
@@ -649,7 +649,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.adjustGridMarginBalance({
             algoId,
             type: 'reduce',
-            change: { percent: '50' },
+            percent: '50',
           }),
         ).toBeFalsy();
       } catch (e) {
