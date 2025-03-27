@@ -48,7 +48,7 @@ describe('isDeepObjectMatch()', () => {
 
     it('should NOT match two equal strings', () => {
       expect(
-        isDeepObjectMatch('someTopic', 'someDifferentTopic')
+        isDeepObjectMatch('someTopic', 'someDifferentTopic'),
       ).toStrictEqual(false);
     });
   });
@@ -56,7 +56,7 @@ describe('isDeepObjectMatch()', () => {
   describe('mismatching types', () => {
     it('should NOT match a string to an object', () => {
       expect(
-        isDeepObjectMatch('someTopic', { topic: 'someTopic' })
+        isDeepObjectMatch('someTopic', { topic: 'someTopic' }),
       ).toStrictEqual(false);
     });
   });
@@ -64,7 +64,7 @@ describe('isDeepObjectMatch()', () => {
   describe('complex objects', () => {
     it('should match two equal objects with one key', () => {
       expect(
-        isDeepObjectMatch({ topic: 'someTopic' }, { topic: 'someTopic' })
+        isDeepObjectMatch({ topic: 'someTopic' }, { topic: 'someTopic' }),
       ).toStrictEqual(true);
     });
 
@@ -72,8 +72,8 @@ describe('isDeepObjectMatch()', () => {
       expect(
         isDeepObjectMatch(
           { topic: 'someTopic', symbol: 'BTCUSDT' },
-          { topic: 'someTopic', symbol: 'BTCUSDT' }
-        )
+          { topic: 'someTopic', symbol: 'BTCUSDT' },
+        ),
       ).toStrictEqual(true);
     });
 
@@ -81,8 +81,8 @@ describe('isDeepObjectMatch()', () => {
       expect(
         isDeepObjectMatch(
           { topic: 'someTopic', symbol: 'BTCUSDT' },
-          { symbol: 'BTCUSDT', topic: 'someTopic' }
-        )
+          { symbol: 'BTCUSDT', topic: 'someTopic' },
+        ),
       ).toStrictEqual(true);
     });
 
@@ -90,14 +90,14 @@ describe('isDeepObjectMatch()', () => {
       expect(
         isDeepObjectMatch(
           { topic: 'someTopic', symbol: 'ETHUSDT' },
-          { symbol: 'BTCUSDT', topic: 'someTopic' }
-        )
+          { symbol: 'BTCUSDT', topic: 'someTopic' },
+        ),
       ).toStrictEqual(false);
       expect(
         isDeepObjectMatch(
           { topic: 'someTopic', symbol: 'ETHUSDT' },
-          { topic: 'someTopic', symbol: 'BTCUSDT' }
-        )
+          { topic: 'someTopic', symbol: 'BTCUSDT' },
+        ),
       ).toStrictEqual(false);
     });
 
@@ -105,16 +105,16 @@ describe('isDeepObjectMatch()', () => {
       expect(
         isDeepObjectMatch(
           { topic: 'someTopic', symbol: 'ETHUSDT' },
-          { topic: 'someTopic' }
-        )
+          { topic: 'someTopic' },
+        ),
       ).toStrictEqual(false);
 
       expect(
-        isDeepObjectMatch(COMPLEX_TOPIC_GREEKS_1, COMPLEX_TOPIC_GREEKS_3)
+        isDeepObjectMatch(COMPLEX_TOPIC_GREEKS_1, COMPLEX_TOPIC_GREEKS_3),
       ).toStrictEqual(false);
 
       expect(
-        isDeepObjectMatch(COMPLEX_TOPIC_GREEKS_3, COMPLEX_TOPIC_GREEKS_1)
+        isDeepObjectMatch(COMPLEX_TOPIC_GREEKS_3, COMPLEX_TOPIC_GREEKS_1),
       ).toStrictEqual(false);
     });
   });
@@ -122,7 +122,7 @@ describe('isDeepObjectMatch()', () => {
 
 describe('WsStore', () => {
   let wsStore: WsStore<WsChannelSubUnSubRequestArg> = new WsStore(
-    DefaultLogger
+    DefaultLogger,
   );
 
   beforeEach(() => {
@@ -149,7 +149,7 @@ describe('WsStore', () => {
         COMPLEX_TOPIC_GREEKS_1,
         COMPLEX_TOPIC_GREEKS_3,
         COMPLEX_TOPIC_ACCOUNT,
-      ].sort()
+      ].sort(),
     );
   });
 
@@ -174,7 +174,7 @@ describe('WsStore', () => {
         COMPLEX_TOPIC_GREEKS_3,
         COMPLEX_TOPIC_POSITIONS_1,
         COMPLEX_TOPIC_POSITIONS_3,
-      ].sort()
+      ].sort(),
     );
   });
 
@@ -203,7 +203,7 @@ describe('WsStore', () => {
         COMPLEX_TOPIC_GREEKS_3,
         // COMPLEX_TOPIC_POSITIONS_1,// removed
         COMPLEX_TOPIC_POSITIONS_3,
-      ].sort()
+      ].sort(),
     );
   });
 
@@ -232,7 +232,7 @@ describe('WsStore', () => {
         COMPLEX_TOPIC_GREEKS_3,
         // COMPLEX_TOPIC_POSITIONS_1,// removed
         COMPLEX_TOPIC_POSITIONS_3,
-      ].sort()
+      ].sort(),
     );
   });
 });

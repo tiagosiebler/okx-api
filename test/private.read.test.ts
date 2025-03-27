@@ -2,7 +2,6 @@ import { RestClient } from '../src';
 import {
   algoIdParamError,
   errorResponseObject,
-  minimumAssetRequirementError,
   successResponseList,
 } from './response.util';
 
@@ -17,7 +16,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
       apiSecret: API_SECRET!,
       apiPass: API_PASSPHRASE!,
     },
-    'prod'
+    'prod',
   );
 
   const instrumentId = 'BTC-USDT';
@@ -35,11 +34,11 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           await api.getOrderDetails({
             instId: instrumentId,
             clOrdId: '2510789768709120',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('51603', [], 'Order does not exist')
+          errorResponseObject('51603', [], 'Order does not exist'),
         );
       }
     });
@@ -55,7 +54,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getOrderHistory()', async () => {
       try {
         expect(await api.getOrderHistory({ instType: 'SPOT' })).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -65,7 +64,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getOrderHistoryArchive()', async () => {
       try {
         expect(
-          await api.getOrderHistoryArchive({ instType: 'SPOT' })
+          await api.getOrderHistoryArchive({ instType: 'SPOT' }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -83,7 +82,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getFillsHistory()', async () => {
       try {
         expect(await api.getFillsHistory({ instType: 'SPOT' })).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -93,7 +92,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getAlgoOrderList()', async () => {
       try {
         expect(await api.getAlgoOrderList({ ordType: 'twap' })).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -103,7 +102,10 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getAlgoOrderHistory()', async () => {
       try {
         expect(
-          await api.getAlgoOrderHistory({ ordType: 'twap', state: 'effective' })
+          await api.getAlgoOrderHistory({
+            ordType: 'twap',
+            state: 'effective',
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -113,7 +115,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getEasyConvertCurrencies()', async () => {
       try {
         expect(await api.getEasyConvertCurrencies()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -123,7 +125,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getEasyConvertHistory()', async () => {
       try {
         expect(await api.getEasyConvertHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         // expect(e).toBeFalsy();
@@ -131,8 +133,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
@@ -145,8 +147,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
@@ -159,8 +161,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
@@ -207,7 +209,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getPublicRFQBlockTrades()', async () => {
       try {
         expect(await api.getPublicRFQBlockTrades()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -218,7 +220,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
   describe('Funding Endpoints', () => {
     it('getCurrencies()', async () => {
       try {
-        expect(await api.getCurrencies()).toMatchObject(successResponseList());
+        expect(await api.getCurrencies({})).toMatchObject(
+          successResponseList(),
+        );
       } catch (e) {
         expect(e).toBeFalsy();
       }
@@ -226,7 +230,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getBalances()', async () => {
       try {
-        expect(await api.getBalances()).toMatchObject(successResponseList());
+        expect(await api.getBalances({})).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
       }
@@ -234,8 +238,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getAccountAssetValuation()', async () => {
       try {
-        expect(await api.getAccountAssetValuation()).toMatchObject(
-          successResponseList()
+        expect(await api.getAccountAssetValuation({})).toMatchObject(
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -245,25 +249,31 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getFundsTransferState()', async () => {
       try {
         expect(
-          await api.getFundsTransferState({ clientId: 'fakeClientId' })
+          await api.getFundsTransferState({ clientId: 'fakeClientId' }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('58129', [], expect.stringMatching(/clientId/gim))
+          errorResponseObject(
+            '58129',
+            [],
+            expect.stringMatching(/clientId/gim),
+          ),
         );
       }
     });
 
     it('getLightningDeposits()', async () => {
       try {
-        expect(await api.getLightningDeposits('BTC', '0.005')).toBeFalsy();
+        expect(
+          await api.getLightningDeposits({ ccy: 'BTC', amt: '0.005' }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
             '58355',
             [],
-            expect.stringMatching(/account manager/gim)
-          )
+            expect.stringMatching(/account manager/gim),
+          ),
         );
       }
     });
@@ -271,10 +281,14 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     // Fails on test acc due to account configuration
     it.skip('getDepositAddress()', async () => {
       try {
-        expect(await api.getDepositAddress('BTC')).toBeFalsy();
+        expect(await api.getDepositAddress({ ccy: 'BTC' })).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('58306', [], expect.stringMatching(/identity/gim))
+          errorResponseObject(
+            '58306',
+            [],
+            expect.stringMatching(/identity/gim),
+          ),
         );
       }
     });
@@ -282,7 +296,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getDepositHistory()', async () => {
       try {
         expect(await api.getDepositHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -292,7 +306,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getWithdrawalHistory()', async () => {
       try {
         expect(await api.getWithdrawalHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -301,8 +315,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getSavingBalance()', async () => {
       try {
-        expect(await api.getSavingBalance()).toMatchObject(
-          successResponseList()
+        expect(await api.getSavingBalance({})).toMatchObject(
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -312,7 +326,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getLendingHistory()', async () => {
       try {
         expect(await api.getLendingHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -321,8 +335,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getPublicBorrowInfo()', async () => {
       try {
-        expect(await api.getPublicBorrowInfo()).toMatchObject(
-          successResponseList()
+        expect(await api.getPublicBorrowInfo({})).toMatchObject(
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -332,7 +346,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getPublicBorrowHistory()', async () => {
       try {
         expect(await api.getPublicBorrowHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -344,7 +358,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getConvertCurrencies()', async () => {
       try {
         expect(await api.getConvertCurrencies()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -353,9 +367,12 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getConvertCurrencyPair()', async () => {
       try {
-        expect(await api.getConvertCurrencyPair('BTC', 'USDT')).toMatchObject(
-          successResponseList()
-        );
+        expect(
+          await api.getConvertCurrencyPair({
+            fromCcy: 'BTC',
+            toCcy: 'USDT',
+          }),
+        ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
       }
@@ -364,7 +381,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getConvertHistory()', async () => {
       try {
         expect(await api.getConvertHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -392,7 +409,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getPositionsHistory()', async () => {
       try {
         expect(await api.getPositionsHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -402,7 +419,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getAccountPositionRisk()', async () => {
       try {
         expect(await api.getAccountPositionRisk()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -420,7 +437,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getBillsArchive()', async () => {
       try {
         expect(await api.getBillsArchive()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -430,7 +447,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getAccountConfiguration()', async () => {
       try {
         expect(await api.getAccountConfiguration()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -443,7 +460,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           await api.getMaxBuySellAmount({
             instId: instrumentId,
             tdMode: 'cash',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -456,7 +473,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           await api.getMaxBuySellAmount({
             instId: instrumentId,
             tdMode: 'cash',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -469,7 +486,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           await api.getMaxAvailableTradableAmount({
             instId: instrumentId,
             tdMode: 'cash',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -478,9 +495,9 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getLeverage()', async () => {
       try {
-        expect(await api.getLeverage(instrumentId, 'cross')).toMatchObject(
-          successResponseList()
-        );
+        expect(
+          await api.getLeverage({ instId: instrumentId, mgnMode: 'cross' }),
+        ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
       }
@@ -488,22 +505,24 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getMaxLoan()', async () => {
       try {
-        expect(await api.getMaxLoan(instrumentId, 'cross')).toBeFalsy();
+        expect(
+          await api.getMaxLoan({ instId: instrumentId, mgnMode: 'cross' }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
 
     it('getFeeRates()', async () => {
       try {
-        expect(await api.getFeeRates('SPOT')).toMatchObject(
-          successResponseList()
+        expect(await api.getFeeRates({ instType: 'SPOT' })).toMatchObject(
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -513,7 +532,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getInterestAccrued()', async () => {
       try {
         expect(await api.getInterestAccrued()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -523,7 +542,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getInterestRate()', async () => {
       try {
         expect(await api.getInterestRate()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -533,7 +552,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getMaxWithdrawals()', async () => {
       try {
         expect(await api.getMaxWithdrawals()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -548,8 +567,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
@@ -557,7 +576,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getVIPLoanBorrowRepayHistory()', async () => {
       try {
         expect(await api.getVIPLoanBorrowRepayHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -567,7 +586,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getBorrowInterestLimits()', async () => {
       try {
         expect(await api.getBorrowInterestLimits()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -584,8 +603,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '51010',
             [],
-            expect.stringMatching(/account mode/gim)
-          )
+            expect.stringMatching(/account mode/gim),
+          ),
         );
       }
     });
@@ -596,7 +615,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           await api.getPMLimitation({
             instType: 'FUTURES',
             uly: instrumentId,
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -614,36 +633,40 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
           errorResponseObject(
             '59500',
             [],
-            expect.stringMatching(/main account/gim)
-          )
+            expect.stringMatching(/main account/gim),
+          ),
         );
       }
     });
 
     it('getSubAccountBalances()', async () => {
       try {
-        expect(await api.getSubAccountBalances(subAccount)).toBeFalsy();
+        expect(
+          await api.getSubAccountBalances({ subAcct: subAccount }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
             '59500',
             [],
-            expect.stringMatching(/main account/gim)
-          )
+            expect.stringMatching(/main account/gim),
+          ),
         );
       }
     });
 
     it('getSubAccountFundingBalances()', async () => {
       try {
-        expect(await api.getSubAccountFundingBalances(subAccount)).toBeFalsy();
+        expect(
+          await api.getSubAccountFundingBalances({ subAcct: subAccount }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
             '59510',
             [],
-            expect.stringMatching(/someAccountName/gim)
-          )
+            expect.stringMatching(/someAccountName/gim),
+          ),
         );
       }
     });
@@ -651,7 +674,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it.skip('getSubAccountTransferHistory()', async () => {
       try {
         expect(await api.getSubAccountTransferHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -660,8 +683,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getSubAccountCustodyTradingList()', async () => {
       try {
-        expect(await api.getSubAccountCustodyTradingList()).toMatchObject(
-          successResponseList()
+        expect(await api.getSubAccountCustodyTradingList({})).toMatchObject(
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -677,7 +700,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         expect(
           await api.getGridAlgoOrderList({
             algoOrdType: 'grid',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -689,7 +712,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
         expect(
           await api.getGridAlgoOrderHistory({
             algoOrdType: 'grid',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -699,7 +722,10 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getGridAlgoOrderDetails()', async () => {
       try {
         expect(
-          await api.getGridAlgoOrderDetails('contract_grid', algoId)
+          await api.getGridAlgoOrderDetails({
+            algoOrdType: 'contract_grid',
+            algoId,
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(algoIdParamError());
@@ -709,7 +735,11 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getGridAlgoSubOrders()', async () => {
       try {
         expect(
-          await api.getGridAlgoSubOrders('contract_grid', algoId, 'filled')
+          await api.getGridAlgoSubOrders({
+            algoOrdType: 'contract_grid',
+            algoId,
+            type: 'filled',
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(algoIdParamError());
@@ -719,7 +749,10 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getGridAlgoOrderPositions()', async () => {
       try {
         expect(
-          await api.getGridAlgoOrderPositions('contract_grid', algoId)
+          await api.getGridAlgoOrderPositions({
+            algoOrdType: 'contract_grid',
+            algoId,
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(algoIdParamError());
@@ -729,7 +762,11 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getGridAIParameter()', async () => {
       try {
         expect(
-          await api.getGridAIParameter('grid', 'BTC-USDT', 'long')
+          await api.getGridAIParameter({
+            algoOrdType: 'grid',
+            instId: 'BTC-USDT',
+            direction: 'long',
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -741,7 +778,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getStakingOffers()', async () => {
       try {
         expect(await api.getStakingOffers()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -751,7 +788,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getActiveStakingOrders()', async () => {
       try {
         expect(await api.getActiveStakingOrders()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();
@@ -761,7 +798,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getStakingOrderHistory()', async () => {
       try {
         expect(await api.getStakingOrderHistory()).toMatchObject(
-          successResponseList()
+          successResponseList(),
         );
       } catch (e) {
         expect(e).toBeFalsy();

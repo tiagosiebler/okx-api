@@ -18,7 +18,7 @@ describe('Private REST API Endpoints (POST)', () => {
       apiSecret: API_SECRET!,
       apiPass: API_PASSPHRASE!,
     },
-    'prod'
+    'prod',
   );
 
   const instrumentId = 'BTC-USDT';
@@ -39,7 +39,7 @@ describe('Private REST API Endpoints (POST)', () => {
             side: 'buy',
             ordType: 'market',
             sz: '1000000',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -64,7 +64,7 @@ describe('Private REST API Endpoints (POST)', () => {
               ordType: 'market',
               sz: '1000000',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -77,7 +77,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.cancelOrder({
             instId: instrumentId,
             ordId: '12313123123',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -96,7 +96,7 @@ describe('Private REST API Endpoints (POST)', () => {
               instId: instrumentId,
               ordId: '12313123124',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -110,7 +110,7 @@ describe('Private REST API Endpoints (POST)', () => {
             instId: instrumentId,
             ordId: '12313123123',
             newSz: '500000',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -131,7 +131,7 @@ describe('Private REST API Endpoints (POST)', () => {
               ordId: '12313123124',
               newSz: '500000',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -144,7 +144,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.closePositions({
             instId: instrumentId,
             mgnMode: 'isolated',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -164,7 +164,7 @@ describe('Private REST API Endpoints (POST)', () => {
             pxLimit: '50000',
             pxVar: '0.5',
             timeInterval: '20',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -183,7 +183,7 @@ describe('Private REST API Endpoints (POST)', () => {
               instId: instrumentId,
               algoId: '123123124',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -191,7 +191,7 @@ describe('Private REST API Endpoints (POST)', () => {
     });
 
     it('cancelAdvanceAlgoOrder()', async () => {
-      const errorMatcher = /already stopped/gim;
+      //const errorMatcher = /already stopped/gim;
 
       try {
         expect(
@@ -204,7 +204,7 @@ describe('Private REST API Endpoints (POST)', () => {
               instId: instrumentId,
               algoId: '123123124',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -213,7 +213,12 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it.skip('submitEasyConvert()', async () => {
       try {
-        expect(await api.submitEasyConvert(['BTC'], 'USDT')).toBeFalsy();
+        expect(
+          await api.submitEasyConvert({
+            fromCcys: ['BTC'],
+            toCcy: 'USDT',
+          }),
+        ).toBeFalsy();
       } catch (e) {
         // currently failing. Asked OKX.
         // {"code": "50013", "data": [], "msg": "System busy, please try again later."}
@@ -226,7 +231,12 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('submitOneClickRepay()', async () => {
       try {
-        expect(await api.submitOneClickRepay(['BTC'], 'USDT')).toBeFalsy();
+        expect(
+          await api.submitOneClickRepay({
+            debtCcys: ['BTC'],
+            repayCcy: 'USDT',
+          }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -241,9 +251,9 @@ describe('Private REST API Endpoints (POST)', () => {
       side: 'buy',
     };
 
-    const errorCode = '70015';
+    // const errorCode = '70015';
     // Block trading is only available for OKX users who have completed identity verification level 2 or above
-    const errorMatch = expect.any(String);
+    // const errorMatch = expect.any(String);
     // const errorMatch = expect.stringMatching(/level 2 or above/gim);
 
     it('createBlockRFQ()', async () => {
@@ -252,7 +262,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.createBlockRFQ({
             counterparties: ['Trader1'],
             legs: [rfqLeg],
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -270,7 +280,7 @@ describe('Private REST API Endpoints (POST)', () => {
     it('cancelMultipleBlockRFQs()', async () => {
       try {
         expect(
-          await api.cancelMultipleBlockRFQs({ rfqIds: ['fakeId1'] })
+          await api.cancelMultipleBlockRFQs({ rfqIds: ['fakeId1'] }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -291,7 +301,7 @@ describe('Private REST API Endpoints (POST)', () => {
           await api.executeBlockQuote({
             quoteId: 'fakeQuoteId',
             rfqId: 'fkeId1',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -312,7 +322,7 @@ describe('Private REST API Endpoints (POST)', () => {
               },
             ],
             quoteSide: 'buy',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -324,7 +334,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(
           await api.cancelBlockQuote({
             quoteId: 'fakeId1',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -336,7 +346,7 @@ describe('Private REST API Endpoints (POST)', () => {
         expect(
           await api.cancelMultipleBlockQuotes({
             quoteIds: ['10123'],
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -361,7 +371,7 @@ describe('Private REST API Endpoints (POST)', () => {
             amt: '1.5',
             from: '18',
             to: '6',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -371,7 +381,12 @@ describe('Private REST API Endpoints (POST)', () => {
     it('savingsPurchaseRedemption()', async () => {
       try {
         expect(
-          await api.savingsPurchaseRedemption('BTC', '1', 'redempt', '1')
+          await api.savingsPurchaseRedemption({
+            ccy: 'BTC',
+            amt: '1',
+            side: 'redempt',
+            rate: '1',
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -380,7 +395,9 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('setLendingRate()', async () => {
       try {
-        expect(await api.setLendingRate('USDT', '1')).toBeFalsy();
+        expect(
+          await api.setLendingRate({ ccy: 'USDT', rate: '1' }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -398,7 +415,7 @@ describe('Private REST API Endpoints (POST)', () => {
             side: 'buy',
             rfqSz: '30',
             rfqSzCcy: 'USDT',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -415,7 +432,7 @@ describe('Private REST API Endpoints (POST)', () => {
             sz: '30',
             szCcy: 'USDT',
             quoteId: 'quoterETH-USDT16461885104612381',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toBeFalsy();
@@ -426,9 +443,9 @@ describe('Private REST API Endpoints (POST)', () => {
   describe('Account Endpoints', () => {
     it('setPositionMode()', async () => {
       try {
-        expect(await api.setPositionMode('long_short_mode')).toMatchObject(
-          successResponseList()
-        );
+        expect(
+          await api.setPositionMode({ posMode: 'long_short_mode' }),
+        ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -441,7 +458,7 @@ describe('Private REST API Endpoints (POST)', () => {
             lever: '5',
             instId: 'BTC-USDT',
             mgnMode: 'cross',
-          })
+          }),
         ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -456,7 +473,7 @@ describe('Private REST API Endpoints (POST)', () => {
             posSide: 'long',
             type: 'add',
             amt: '1',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -465,9 +482,9 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('setGreeksDisplayType()', async () => {
       try {
-        expect(await api.setGreeksDisplayType('PA')).toMatchObject(
-          successResponseList()
-        );
+        expect(
+          await api.setGreeksDisplayType({ greeksType: 'PA' }),
+        ).toMatchObject(successResponseList());
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -475,7 +492,12 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('setIsolatedMode()', async () => {
       try {
-        expect(await api.setIsolatedMode('automatic', 'CONTRACTS')).toBeFalsy();
+        expect(
+          await api.setIsolatedMode({
+            isoMode: 'automatic',
+            type: 'MARGIN',
+          }),
+        ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -484,11 +506,20 @@ describe('Private REST API Endpoints (POST)', () => {
     it('borrowRepayVIPLoan()', async () => {
       try {
         expect(
-          await api.borrowRepayVIPLoan('BTC', 'repay', '1', '1234113444')
+          await api.borrowRepayVIPLoan({
+            ccy: 'BTC',
+            side: 'repay',
+            amt: '1',
+            ordId: '123123123123',
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObject('59305', [], expect.stringMatching(/VIP loan/gim))
+          errorResponseObject(
+            '59305',
+            [],
+            expect.stringMatching(/VIP loan/gim),
+          ),
         );
       }
     });
@@ -498,7 +529,10 @@ describe('Private REST API Endpoints (POST)', () => {
     it('resetSubAccountAPIKey()', async () => {
       try {
         expect(
-          await api.resetSubAccountAPIKey('fakeSubAcc', 'fakeApiKey')
+          await api.resetSubAccountAPIKey({
+            subAcct: 'fakeSubAcc',
+            apiKey: 'fakeApiKey',
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -515,7 +549,7 @@ describe('Private REST API Endpoints (POST)', () => {
             to: '6',
             fromSubAccount: 'test-1',
             toSubAccount: 'test-2',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -525,7 +559,10 @@ describe('Private REST API Endpoints (POST)', () => {
     it('setSubAccountTransferOutPermission()', async () => {
       try {
         expect(
-          await api.setSubAccountTransferOutPermission('test-1', true)
+          await api.setSubAccountTransferOutPermission({
+            subAcct: 'test-1',
+            canTransOut: true,
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -548,7 +585,7 @@ describe('Private REST API Endpoints (POST)', () => {
             gridNum: '10',
             runType: '2',
             quoteSz: '25',
-          })
+          }),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -558,7 +595,11 @@ describe('Private REST API Endpoints (POST)', () => {
     it('amendGridAlgoOrder()', async () => {
       try {
         expect(
-          await api.amendGridAlgoOrder(algoId, instId, { tpTriggerPx: '10' })
+          await api.amendGridAlgoOrder({
+            algoId,
+            instId,
+            tpTriggerPx: '10',
+          }),
         ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
@@ -576,7 +617,7 @@ describe('Private REST API Endpoints (POST)', () => {
               algoOrdType: 'moon_grid',
               stopType: '1',
             },
-          ])
+          ]),
         ).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
@@ -585,7 +626,7 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('spotGridWithdrawIncome()', async () => {
       try {
-        expect(await api.spotGridWithdrawIncome(algoId)).toBeFalsy();
+        expect(await api.spotGridWithdrawIncome({ algoId })).toBeFalsy();
       } catch (e) {
         expect(e).toMatchObject(permissionErrorResponse());
       }
@@ -594,7 +635,7 @@ describe('Private REST API Endpoints (POST)', () => {
     it('computeGridMarginBalance()', async () => {
       try {
         expect(
-          await api.computeGridMarginBalance(algoId, 'reduce')
+          await api.computeGridMarginBalance({ algoId, type: 'reduce' }),
         ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
@@ -605,7 +646,11 @@ describe('Private REST API Endpoints (POST)', () => {
     it('adjustGridMarginBalance()', async () => {
       try {
         expect(
-          await api.adjustGridMarginBalance(algoId, 'reduce', { percent: '50' })
+          await api.adjustGridMarginBalance({
+            algoId,
+            type: 'reduce',
+            percent: '50',
+          }),
         ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
@@ -620,16 +665,11 @@ describe('Private REST API Endpoints (POST)', () => {
     it('submitStake()', async () => {
       try {
         expect(
-          await api.submitStake(
+          await api.submitStake({
             productId,
-            [
-              {
-                ccy: 'ZIL',
-                amt: '100',
-              },
-            ],
-            '30'
-          )
+            investData: [{ ccy: 'ZIL', amt: '100' }],
+            term: '30',
+          }),
         ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
@@ -639,7 +679,12 @@ describe('Private REST API Endpoints (POST)', () => {
 
     it('redeemStake()', async () => {
       try {
-        expect(await api.redeemStake('fakeOrderId', 'staking')).toBeFalsy();
+        expect(
+          await api.redeemStake({
+            ordId: 'fakeOrderId',
+            protocolType: 'staking',
+          }),
+        ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(permissionErrorResponse());
@@ -649,12 +694,15 @@ describe('Private REST API Endpoints (POST)', () => {
     it.skip('cancelStakingRequest()', async () => {
       try {
         expect(
-          await api.cancelStakingRequest('fakeOrderId', 'staking')
+          await api.cancelStakingRequest({
+            ordId: 'fakeOrderId',
+            protocolType: 'staking',
+          }),
         ).toBeFalsy();
       } catch (e) {
         // expect(e).toBeFalsy();
         expect(e).toMatchObject(
-          errorResponseObject('50026', [], expect.stringMatching(/System/gim))
+          errorResponseObject('50026', [], expect.stringMatching(/System/gim)),
         );
       }
     });
