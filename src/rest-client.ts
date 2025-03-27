@@ -1053,7 +1053,16 @@ export class RestClient extends BaseRestClient {
   amendGridAlgoOrder(params: {
     algoId: string;
     instId: string;
-    triggerPx: { slTriggerPx?: numberInString; tpTriggerPx?: numberInString };
+    slTriggerPx: string;
+    tpTriggerPx: string;
+    tpRatio: string;
+    slRatio: string;
+    triggerParams: {
+      triggerAction: string;
+      triggerStrategy: string;
+      triggerPx: string;
+      stopType: string;
+    }[];
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/amend-order-algo', params);
   }
@@ -1119,11 +1128,9 @@ export class RestClient extends BaseRestClient {
     algoId: string;
     type: GridAlgoSubOrderType;
     groupId?: string;
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: number;
-    };
+    after?: numberInString;
+    before?: numberInString;
+    limit?: number;
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/tradingBot/grid/sub-orders', params);
   }
@@ -1153,7 +1160,8 @@ export class RestClient extends BaseRestClient {
   adjustGridMarginBalance(params: {
     algoId: string;
     type: 'add' | 'reduce';
-    change: { amt?: numberInString; percent?: numberInString };
+    amt?: numberInString;
+    percent?: numberInString;
   }): Promise<any[]> {
     return this.postPrivate('/api/v5/tradingBot/grid/margin-balance', params);
   }
@@ -1733,12 +1741,10 @@ export class RestClient extends BaseRestClient {
 
   getHistoricTrades(params: {
     instId: string;
-    pagination?: {
-      after?: numberInString;
-      before?: numberInString;
-      limit?: numberInString;
-      type?: '1' | '2';
-    };
+    after?: numberInString;
+    before?: numberInString;
+    limit?: numberInString;
+    type?: '1' | '2';
   }): Promise<Trade[]> {
     return this.get('/api/v5/market/history-trades', params);
   }
@@ -2402,11 +2408,9 @@ export class RestClient extends BaseRestClient {
   resetSubAccountAPIKey(params: {
     subAcct: string;
     apiKey: string;
-    options?: {
-      label?: string;
-      perm?: string;
-      ip?: string;
-    };
+    label?: string;
+    perm?: string;
+    ip?: string;
   }): Promise<SubAccountAPIReset[]> {
     return this.postPrivate('/api/v5/users/subaccount/modify-apikey', params);
   }
