@@ -47,9 +47,6 @@ export function getRestBaseUrl(
     case 'prod': {
       return 'https://www.okx.com';
     }
-    case 'aws': {
-      return 'https://aws.okx.com';
-    }
   }
 }
 

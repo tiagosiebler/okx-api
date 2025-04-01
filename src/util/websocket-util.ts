@@ -10,17 +10,9 @@ export const WS_BASE_URL_MAP: Record<
     public: 'wss://ws.okx.com:8443/ws/v5/public',
     private: 'wss://ws.okx.com:8443/ws/v5/private',
   },
-  aws: {
-    public: 'wss://wsaws.okx.com:8443/ws/v5/public',
-    private: 'wss://wsaws.okx.com:8443/ws/v5/private',
-  },
   business: {
     public: 'wss://ws.okx.com:8443/ws/v5/business',
     private: 'wss://ws.okx.com:8443/ws/v5/business',
-  },
-  businessAws: {
-    public: 'wss://wsaws.okx.com:8443/ws/v5/business',
-    private: 'wss://wsaws.okx.com:8443/ws/v5/business',
   },
   businessDemo: {
     public: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
@@ -35,14 +27,10 @@ export const WS_BASE_URL_MAP: Record<
 export const WS_KEY_MAP = {
   prodPublic: 'prodPublic',
   prodPrivate: 'prodPrivate',
-  awsPublic: 'awsPublic',
-  awsPrivate: 'awsPrivate',
   demoPublic: 'demoPublic',
   demoPrivate: 'demoPrivate',
   businessPrivate: 'businessPrivate',
   businessPublic: 'businessPublic',
-  businessAwsPrivate: 'businessAwsPrivate',
-  businessAwsPublic: 'businessAwsPublic',
   businessDemoPublic: 'businessDemoPublic',
   businessDemoPrivate: 'businessDemoPrivate',
 } as const;
@@ -52,18 +40,14 @@ export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
-  WS_KEY_MAP.awsPrivate,
   WS_KEY_MAP.businessPrivate,
-  WS_KEY_MAP.businessAwsPrivate,
   WS_KEY_MAP.demoPrivate,
   WS_KEY_MAP.businessDemoPrivate,
 ];
 
 export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPublic,
-  WS_KEY_MAP.awsPublic,
   WS_KEY_MAP.businessPublic,
-  WS_KEY_MAP.businessAwsPublic,
   WS_KEY_MAP.demoPublic,
   WS_KEY_MAP.businessDemoPublic,
 ];
@@ -216,14 +200,6 @@ export function getWsKeyForMarket(
       }
       return isPrivate ? WS_KEY_MAP.prodPrivate : WS_KEY_MAP.prodPublic;
     }
-    case 'aws': {
-      if (isBusinessChannel) {
-        return isPrivate
-          ? WS_KEY_MAP.businessAwsPrivate
-          : WS_KEY_MAP.businessAwsPublic;
-      }
-      return isPrivate ? WS_KEY_MAP.awsPrivate : WS_KEY_MAP.awsPublic;
-    }
     case 'demo': {
       if (isBusinessChannel) {
         return isPrivate
@@ -234,11 +210,6 @@ export function getWsKeyForMarket(
     }
     case 'business': {
       return isPrivate ? WS_KEY_MAP.businessPrivate : WS_KEY_MAP.businessPublic;
-    }
-    case 'businessAws': {
-      return isPrivate
-        ? WS_KEY_MAP.businessAwsPrivate
-        : WS_KEY_MAP.businessAwsPublic;
     }
     case 'businessDemo': {
       return isPrivate
@@ -266,10 +237,6 @@ export function getWsUrlForWsKey(
       return WS_BASE_URL_MAP.prod.public;
     case 'prodPrivate':
       return WS_BASE_URL_MAP.prod.private;
-    case 'awsPublic':
-      return WS_BASE_URL_MAP.aws.public;
-    case 'awsPrivate':
-      return WS_BASE_URL_MAP.aws.private;
     case 'demoPublic':
       return WS_BASE_URL_MAP.demo.public;
     case 'demoPrivate':
@@ -278,10 +245,6 @@ export function getWsUrlForWsKey(
       return WS_BASE_URL_MAP.business.public;
     case 'businessPrivate':
       return WS_BASE_URL_MAP.business.private;
-    case 'businessAwsPublic':
-      return WS_BASE_URL_MAP.businessAws.public;
-    case 'businessAwsPrivate':
-      return WS_BASE_URL_MAP.businessAws.private;
     case 'businessDemoPublic':
       return WS_BASE_URL_MAP.businessDemo.public;
     case 'businessDemoPrivate':
@@ -302,11 +265,9 @@ export function getMaxTopicsPerSubscribeEvent(
 ): number | null {
   switch (market) {
     case 'prod':
-    case 'aws':
     case 'demo':
     case 'business':
-    case 'businessDemo':
-    case 'businessAws': {
+    case 'businessDemo': {
       return null;
     }
     default: {

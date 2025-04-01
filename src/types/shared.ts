@@ -4,10 +4,4 @@ export interface APICredentials {
   apiPass: string;
 }
 
-export type APIMarket =
-  | 'prod'
-  | 'business'
-  | 'businessAws'
-  | 'aws'
-  | 'demo'
-  | 'businessDemo';
+export type APIMarket = 'prod' | 'business' | 'demo' | 'businessDemo';
