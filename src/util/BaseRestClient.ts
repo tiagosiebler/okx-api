@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 
-import {
-  APICredentials,
-  APIMarket,
-  APIResponse,
-  RestClientOptions,
-} from '../types';
+import { APIResponse, RestClientOptions } from '../types';
 import { signMessage } from './node-support';
-import { programId, programKey, serializeParams } from './requestUtils';
+import {
+  getRestBaseUrl,
+  programId,
+  programKey,
+  serializeParams,
+} from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
 
 // axios.interceptors.request.use((request) => {
@@ -56,11 +56,8 @@ export default abstract class BaseRestClient {
   private apiPassphrase: string | undefined;
 
   constructor(
-    credentials: APICredentials | undefined | null,
-    baseUrl: string,
     options: RestClientOptions = {},
     requestOptions: AxiosRequestConfig = {},
-    market: APIMarket,
   ) {
     // this.environment = environment;
 
@@ -70,13 +67,15 @@ export default abstract class BaseRestClient {
       ...options,
     };
 
-    this.baseUrl = baseUrl;
+    this.baseUrl = getRestBaseUrl(options.market || 'prod', options);
+
+    const hasOneCredential =
+      options.apiKey || options.apiSecret || options.apiPass;
+    const hasAllCredentials =
+      !!options.apiKey && !!options.apiSecret && !!options.apiPass;
 
     // Allow empty object
-    if (
-      credentials &&
-      (!credentials.apiKey || !credentials.apiSecret || !credentials.apiPass)
-    ) {
+    if (hasOneCredential && !hasAllCredentials) {
       throw new Error(
         'API Key, Secret AND Passphrase are ALL required for private enpoints',
       );
@@ -94,16 +93,16 @@ export default abstract class BaseRestClient {
     }
 
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
-    if (market === 'demo') {
+    if (options.market === 'demo') {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
 
     this.globalRequestOptions.headers['Content-Type'] = 'application/json';
     this.globalRequestOptions.headers['Accept'] = 'application/json';
 
-    this.apiKey = credentials?.apiKey;
-    this.apiSecret = credentials?.apiSecret;
-    this.apiPassphrase = credentials?.apiPass;
+    this.apiKey = options?.apiKey;
+    this.apiSecret = options?.apiSecret;
+    this.apiPassphrase = options?.apiPass;
   }
 
   public get(endpoint: string, params?: any) {

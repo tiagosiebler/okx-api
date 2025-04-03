@@ -1,4 +1,12 @@
+import { APIMarket } from '../shared';
+
 export interface RestClientOptions {
+  apiKey?: string;
+  apiSecret?: string;
+  apiPass?: string;
+
+  market?: APIMarket;
+
   // Default: false. If true, we'll throw errors if any params are undefined
   strict_param_validation?: boolean;
 
