@@ -263,11 +263,16 @@ import {
   MaxLoanResponse,
 } from './types/rest/response/private-flexible-loan';
 import BaseRestClient from './util/BaseRestClient';
-import { getRestBaseUrl } from './util/requestUtils';
 
 export class RestClient extends BaseRestClient {
   /**
    * @public Creates an instance of the REST API client.
+   *
+   * @param credentials - Note: This parameter will be removed! Pass `null` here and use the restClientOptions parameter (3rd one) instead!
+   * @param environment - Note: This parameter will be removed! Pass `prod` here and use the restClientOptions parameter (3rd one) instead!
+   * @param restClientOptions
+   * @param requestOptions
+   * @returns
    */
   constructor(
     credentials?: APICredentials | null,
@@ -276,11 +281,14 @@ export class RestClient extends BaseRestClient {
     requestOptions: AxiosRequestConfig = {},
   ) {
     super(
-      credentials,
-      getRestBaseUrl(environment, restClientOptions),
-      restClientOptions,
+      {
+        apiKey: credentials?.apiKey,
+        apiSecret: credentials?.apiSecret,
+        apiPass: credentials?.apiPass,
+        market: environment,
+        ...restClientOptions,
+      },
       requestOptions,
-      environment,
     );
     return this;
   }
@@ -327,7 +335,7 @@ export class RestClient extends BaseRestClient {
     console.log(result);
 
     console.log(
-      `Your approximate latency to exchange server: 
+      `Your approximate latency to exchange server:
       One way: ${estimatedOneWayLatency}ms.
       Round trip: ${roundTripTime}ms.
       `,
