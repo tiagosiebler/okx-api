@@ -268,8 +268,8 @@ export class RestClient extends BaseRestClient {
   /**
    * @public Creates an instance of the REST API client.
    *
-   * @param credentials @deprecated to use it, just pass `null` and use the restClientOptions parameter (3rd one) instead
-   * @param environment @deprecated to use it, just pass `prod` and use the restClientOptions parameter (3rd one) instead
+   * @param credentials - Note: This parameter will be removed! Pass `null` here and use the restClientOptions parameter (3rd one) instead!
+   * @param environment - Note: This parameter will be removed! Pass `prod` here and use the restClientOptions parameter (3rd one) instead!
    * @param restClientOptions
    * @param requestOptions
    * @returns
