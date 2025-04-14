@@ -482,3 +482,14 @@ export interface BorrowRepayHistoryItem {
   accBorrowed: string;
   ts: string;
 }
+
+export interface SetCollateralAssetsResult {
+  type: 'all' | 'custom';
+  ccyList: string[];
+  collateralEnabled: boolean;
+}
+
+export interface GetCollateralAssetsResult {
+  ccy: string;
+  collateralEnabled: boolean;
+}

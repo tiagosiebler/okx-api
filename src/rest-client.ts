@@ -486,6 +486,9 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
+  /**
+   * @deprecated Use getLeverageV2 instead
+   */
   getLeverage(params: {
     instId: string;
     mgnMode: MarginMode;
@@ -564,6 +567,32 @@ export class RestClient extends BaseRestClient {
 
   getAccountRiskState(): Promise<AccountRiskState[]> {
     return this.getPrivate('/api/v5/account/risk-state');
+  }
+
+  setAccountCollateralAssets(params: {
+    type: 'all' | 'custom';
+    collateralEnabled: boolean;
+    ccyList?: string[];
+  }): Promise<
+    {
+      type: string;
+      ccyList: string[];
+      collateralEnabled: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-collateral-assets', params);
+  }
+
+  getAccountCollateralAssets(params?: {
+    ccy?: string;
+    collateralEnabled?: boolean;
+  }): Promise<
+    {
+      ccy: string;
+      collateralEnabled: boolean;
+    }[]
+  > {
+    return this.getPrivate('/api/v5/account/collateral-assets', params);
   }
 
   submitQuickMarginBorrowRepay(
