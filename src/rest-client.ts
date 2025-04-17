@@ -494,6 +494,18 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/leverage-info', params);
   }
 
+  /**
+   * @deprecated - will be removed in next major release
+   * Use getLeverage() instead
+   */
+  getLeverageV2(params: {
+    instId?: string;
+    ccy?: string;
+    mgnMode: MarginMode;
+  }): Promise<AccountLeverage[]> {
+    return this.getPrivate('/api/v5/account/leverage-info', params);
+  }
+
   getLeverageEstimatedInfo(params: {
     instType: string;
     mgnMode: MarginMode;
