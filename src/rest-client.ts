@@ -486,17 +486,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/account/position/margin-balance', params);
   }
 
-  /**
-   * @deprecated Use getLeverageV2 instead
-   */
   getLeverage(params: {
-    instId: string;
-    mgnMode: MarginMode;
-  }): Promise<AccountLeverage[]> {
-    return this.getPrivate('/api/v5/account/leverage-info', params);
-  }
-
-  getLeverageV2(params: {
     instId?: string;
     ccy?: string;
     mgnMode: MarginMode;
