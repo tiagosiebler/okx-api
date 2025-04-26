@@ -50,7 +50,7 @@ wsClient.on('error', (data) => {
 
   const INVALID_API_KEY_ERROR = '60005';
   if (data.event === 'error' && data.code === INVALID_API_KEY_ERROR) {
-    console.error(`Detected auth failure - closing websocket`);
+    console.error('Detected auth failure - closing websocket');
     wsClient.close(data.wsKey);
   }
 });

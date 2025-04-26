@@ -1,4 +1,4 @@
-import { RestClient, OrderRequest } from '../src/index';
+import { OrderRequest, RestClient } from '../src/index';
 
 // or
 // import { RestClient, OrderRequest } from 'okx-api';
@@ -18,7 +18,7 @@ const API_PASS = process.env.API_PASSPHRASE_COM;
 
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(
-    `Missing api credentials. Use environmental variables or hard code in the script`
+    'Missing api credentials. Use environmental variables or hard code in the script',
   );
 }
 
@@ -40,11 +40,11 @@ const client = new RestClient({
 /** Get available balance for an asset */
 async function getAssetBalance(
   client: RestClient,
-  coin: string
+  coin: string,
 ): Promise<number | null> {
   const allBalances = await client.getBalance();
   const usdtBalanceResult = allBalances[0].details.find(
-    (bal) => bal.ccy === coin
+    (bal) => bal.ccy === coin,
   );
 
   const usdtBalance = Number(usdtBalanceResult?.availBal);

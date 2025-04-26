@@ -10,11 +10,11 @@ const client = new RestClient();
  */
 (async () => {
   try {
-    const results = await client.getInstruments('SPOT');
+    const results = await client.getInstruments({ instType: 'SPOT' });
 
     console.log(
       'result: ',
-      results.filter((row) => row.baseCcy === 'SUI')
+      results.filter((row) => row.baseCcy === 'SUI'),
     );
 
     return;

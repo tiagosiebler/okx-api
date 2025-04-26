@@ -402,9 +402,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/account/positions-history', params);
   }
 
-  getAccountPositionRisk(
-    params: { instType?: Omit<'SPOT', InstrumentType> } = {},
-  ): Promise<AccountPositionRisk[]> {
+  getAccountPositionRisk(params?: {
+    instType?: Omit<'SPOT', InstrumentType>;
+  }): Promise<AccountPositionRisk[]> {
     return this.getPrivate('/api/v5/account/account-position-risk', params);
   }
 
@@ -1537,7 +1537,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/copytrading/apply-lead-trading', params);
   }
 
-  stopCopytradingLeadTrading(params: { instType?: 'SWAP' }): Promise<
+  stopCopytradingLeadTrading(params?: { instType?: 'SWAP' }): Promise<
     {
       result: boolean;
     }[]
@@ -1951,7 +1951,7 @@ export class RestClient extends BaseRestClient {
     return this.postPrivate('/api/v5/sprd/cancel-order', params);
   }
 
-  cancelAllSpreadOrders(params: { sprdId?: string }): Promise<
+  cancelAllSpreadOrders(params?: { sprdId?: string }): Promise<
     {
       result: boolean;
     }[]
@@ -2124,7 +2124,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/premium-history', params);
   }
 
-  getIndexTickers(params: {
+  getIndexTickers(params?: {
     quoteCcy?: string;
     instId?: string;
   }): Promise<IndexTicker[]> {
@@ -2314,11 +2314,11 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getCurrencies(params: { ccy?: string }): Promise<FundingCurrency[]> {
+  getCurrencies(params?: { ccy?: string }): Promise<FundingCurrency[]> {
     return this.getPrivate('/api/v5/asset/currencies', params);
   }
 
-  getBalances(params: { ccy?: string }): Promise<FundingBalance[]> {
+  getBalances(params?: { ccy?: string }): Promise<FundingBalance[]> {
     return this.getPrivate('/api/v5/asset/balances', params);
   }
 
@@ -2326,7 +2326,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/non-tradable-assets', params);
   }
 
-  getAccountAssetValuation(params: {
+  getAccountAssetValuation(params?: {
     ccy?: string;
   }): Promise<AccountAssetValuation[]> {
     return this.getPrivate('/api/v5/asset/asset-valuation', params);
@@ -2337,7 +2337,7 @@ export class RestClient extends BaseRestClient {
   }
 
   /** Either parameter transId or clientId is required. */
-  getFundsTransferState(params: {
+  getFundsTransferState(params?: {
     transId?: string;
     clientId?: string;
     type?: '0' | '1' | '2';
@@ -2511,7 +2511,7 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getSubAccountCustodyTradingList(params: {
+  getSubAccountCustodyTradingList(params?: {
     subAcct?: string;
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/users/entrust-subaccount-list', params);
@@ -2657,7 +2657,7 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getSavingBalance(params: { ccy?: string }): Promise<any[]> {
+  getSavingBalance(params?: { ccy?: string }): Promise<any[]> {
     return this.getPrivate('/api/v5/finance/savings/balance', params);
   }
 
@@ -2681,7 +2681,7 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/finance/savings/lending-history', params);
   }
 
-  getPublicBorrowInfo(params: { ccy?: string }): Promise<any[]> {
+  getPublicBorrowInfo(params?: { ccy?: string }): Promise<any[]> {
     return this.get('/api/v5/finance/savings/lending-rate-summary', params);
   }
 
