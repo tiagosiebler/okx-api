@@ -1,5 +1,5 @@
 // If you cloned the repo and are using typescript, you can import from src directly:
-import { WebsocketClient, DefaultLogger } from '../src';
+import { DefaultLogger, WebsocketClient } from '../src';
 
 // or use the module installed via `npm install okx-api`:
 // import { WebsocketClient, DefaultLogger } from 'okx-api';
@@ -57,7 +57,7 @@ const wsClient = new WebsocketClient(
       // },
     ],
   },
-  logger
+  logger,
 );
 
 // Raw data will arrive on the 'update' event
