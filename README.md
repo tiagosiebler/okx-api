@@ -104,6 +104,48 @@ Create API credentials at okx
   - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
   - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
 
+### Example 
+
+```ts
+import { RestClient } from 'okx-api';
+
+const client = new RestClient({
+  apiKey: 'apiKeyHere', 
+  apiSecret: 'apiSecretHere',
+  apiPass: 'apiPassHere',
+});
+
+// Submit a buy and sell market order
+(async () => {
+  try {
+    const allBalances = await client.getBalance();
+    console.log('All balances: ', allBalances);
+
+    const buyResult = await client.submitOrder({
+      instId: 'BTC-USDT',
+      ordType: 'market',
+      side: 'buy',
+      sz: '0.1',
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
+    });
+    console.log('buy order result: ', buyResult);
+
+    const sellResult = await client.submitOrder({
+      instId: 'BTC-USDT',
+      ordType: 'market',
+      side: 'sell',
+      sz: '0.1',
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
+    });
+    console.log('Sell order result: ', sellResult);
+  } catch (e) {
+    console.error('request failed: ', e);
+  }
+})();
+```
+
 ## Websocket Client
 
 This connector includes a high-performance node.js & typescript websocket client for the OKX public & private websockets.

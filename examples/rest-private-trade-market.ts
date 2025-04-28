@@ -8,13 +8,10 @@ const API_KEY = process.env.API_KEY_COM;
 const API_SECRET = process.env.API_SECRET_COM;
 const API_PASS = process.env.API_PASSPHRASE_COM;
 
-/**
- * Execute this script using ts-node. The above environmental variables can be passed in one command (unix & macOS):
- *
- * API_KEY_COM="yourapikey" API_SECRET_COM="yourapisecret" API_PASSPHRASE_COM="yourapipassphrase" ts-node examples/rest-private-trade-market.ts
- *
- * If you don't have ts-node, install it using npm: https://github.com/TypeStrong/ts-node#installation
- */
+// If running from CLI in unix, you can pass env vars as such:
+// API_KEY_COM=‘lkm12n3-2ba3-1mxf-fn13-lkm12n3a’ API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade-market.ts
+
+// note the single quotes, preventing special characters such as $ from being incorrectly passed
 
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(

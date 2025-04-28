@@ -9,9 +9,14 @@ const API_KEY = process.env.API_KEY_COM;
 const API_SECRET = process.env.API_SECRET_COM;
 const API_PASS = process.env.API_PASS_COM;
 
+// If running from CLI in unix, you can pass env vars as such:
+// API_KEY_COM=‘lkm12n3-2ba3-1mxf-fn13-lkm12n3a’ API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade.ts
+
+// note the single quotes, preventing special characters such as $ from being incorrectly passed
+
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(
-    `Missing api credentials. Use environmental variables or hard code in the script`
+    'Missing api credentials. Use environmental variables or hard code in the script',
   );
 }
 
@@ -48,7 +53,7 @@ function promiseSleep(milliseconds) {
 // WARNING: for sensitive math you should be using a library such as decimal.js!
 function roundDown(value, decimals) {
   return Number(
-    Math.floor(parseFloat(value + 'e' + decimals)) + 'e-' + decimals
+    Math.floor(parseFloat(value + 'e' + decimals)) + 'e-' + decimals,
   );
 }
 
@@ -74,7 +79,7 @@ function roundDown(value, decimals) {
     const allBalances = await client.getBalance();
     // const balances = allBalances.filter((bal) => Number(bal.available) != 0);
     const usdtBalanceResult = allBalances[0].details.find(
-      (bal) => bal.ccy === 'USDT'
+      (bal) => bal.ccy === 'USDT',
     );
     console.log('BTC balance result: ', usdtBalanceResult);
 
