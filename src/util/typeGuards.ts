@@ -44,7 +44,16 @@ export function isWsOrderEvent(evtData: unknown): evtData is WsOrderEvent {
     return false;
   }
 
-  if ('data' in evtData && 'op' in evtData && evtData.op === 'order') {
+  if (
+    'data' in evtData &&
+    'op' in evtData &&
+    (evtData.op === 'order' ||
+      evtData.op === 'batch-orders' ||
+      evtData.op === 'cancel-orders' ||
+      evtData.op === 'batch-cancel-orders' ||
+      evtData.op === 'amend-order' ||
+      evtData.op === 'batch-amend-orders')
+  ) {
     return true;
   }
 

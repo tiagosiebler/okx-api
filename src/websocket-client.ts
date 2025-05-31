@@ -767,7 +767,7 @@ export class WebsocketClient extends EventEmitter {
       if (isWsOrderEvent(msg)) {
         return this.emit('response', {
           data: msg.data,
-          event: 'order',
+          event: msg.op,
           code: msg.code,
           msg: msg.msg,
           arg: {

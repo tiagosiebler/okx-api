@@ -7,7 +7,12 @@ export interface WsEvent {
     | 'subscribe'
     | 'unsubscribe'
     | 'channel-conn-count'
-    | 'order';
+    | 'order'
+    | 'batch-orders'
+    | 'cancel-order'
+    | 'batch-cancel-orders'
+    | 'amend-order'
+    | 'batch-amend-orders';
   code?: string;
   msg?: string;
   arg?: any;
@@ -16,7 +21,13 @@ export interface WsEvent {
 
 export interface WsOrderEvent {
   id: string;
-  op: 'order';
+  op:
+    | 'order'
+    | 'batch-orders'
+    | 'cancel-order'
+    | 'batch-cancel-orders'
+    | 'amend-order'
+    | 'batch-amend-orders';
   data: {
     clOrdId: string;
     ordId: string;
