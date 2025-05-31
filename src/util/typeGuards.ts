@@ -49,7 +49,7 @@ export function isWsOrderEvent(evtData: unknown): evtData is WsOrderEvent {
     'op' in evtData &&
     (evtData.op === 'order' ||
       evtData.op === 'batch-orders' ||
-      evtData.op === 'cancel-orders' ||
+      evtData.op === 'cancel-order' ||
       evtData.op === 'batch-cancel-orders' ||
       evtData.op === 'amend-order' ||
       evtData.op === 'batch-amend-orders')
