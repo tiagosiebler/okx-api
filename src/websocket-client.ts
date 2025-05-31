@@ -22,6 +22,7 @@ import {
   isWsDataEvent,
   isWsErrorEvent,
   isWsLoginEvent,
+  isWsOrderEvent,
   isWsPong,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
@@ -761,6 +762,19 @@ export class WebsocketClient extends EventEmitter {
 
       if (isConnCountEvent(msg)) {
         return this.emit('response', { ...msg, wsKey });
+      }
+
+      if (isWsOrderEvent(msg)) {
+        return this.emit('response', {
+          data: msg.data,
+          event: 'order',
+          code: msg.code,
+          msg: msg.msg,
+          arg: {
+            uid: msg.id,
+          },
+          wsKey,
+        });
       }
 
       this.logger.error('Unhandled/unrecognised ws event message', {

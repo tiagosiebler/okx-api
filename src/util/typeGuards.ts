@@ -1,4 +1,4 @@
-import { WsDataEvent, WsEvent, WsLoginEvent } from '../types';
+import { WsDataEvent, WsEvent, WsLoginEvent, WsOrderEvent } from '../types';
 import { APIResponse } from '../types/rest';
 
 export function isRawAPIResponse(
@@ -36,6 +36,18 @@ export function isWsDataEvent(evtData: unknown): evtData is WsDataEvent {
   if ('arg' in evtData && 'data' in evtData) {
     return true;
   }
+  return false;
+}
+
+export function isWsOrderEvent(evtData: unknown): evtData is WsOrderEvent {
+  if (typeof evtData !== 'object' || !evtData) {
+    return false;
+  }
+
+  if ('data' in evtData && 'op' in evtData && evtData.op === 'order') {
+    return true;
+  }
+
   return false;
 }
 
