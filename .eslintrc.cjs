@@ -20,7 +20,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'webpack.config.js'],
+  ignorePatterns: ['.eslintrc.js', 'webpack.config.js', 'examples/apidoc'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -33,6 +33,10 @@ module.exports = {
     'array-bracket-spacing': ['error', 'never'],
     'linebreak-style': ['error', 'unix'],
     'lines-between-class-members': ['warn', 'always'],
+    '@typescript-eslint/no-empty-object-type': [
+      'error',
+      { allowObjectTypes: 'always' },
+    ],
     semi: ['error', 'always'],
     'new-cap': 'off',
     'no-console': 'off',
