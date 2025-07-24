@@ -16,6 +16,13 @@ export interface WSClientConfigurableOptions {
   reconnectTimeout?: number;
   requestOptions?: any;
   wsUrl?: string;
+
+  /**
+   * Allows you to provide a custom "signMessage" function, e.g. to use node's much faster createHmac method
+   *
+   * Look in the examples folder for a demonstration on using node's createHmac instead.
+   */
+  customSignMessageFn?: (message: string, secret: string) => Promise<string>;
 }
 
 export interface WebsocketClientOptions extends WSClientConfigurableOptions {

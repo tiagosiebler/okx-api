@@ -31,7 +31,7 @@ import {
   WsConnectionStateEnum,
   WsStore,
 } from './util';
-import { signMessage } from './util/node-support';
+import { signMessage } from './util/webCryptoAPI';
 import {
   getWsKeyForMarket,
   getWsUrlForWsKey,
@@ -396,7 +396,12 @@ export class WebsocketClient extends EventEmitter {
 
     const signatureRequest = timestamp + 'GET' + '/users/self/verify';
 
-    const signature = await signMessage(signatureRequest, apiSecret);
+    const signature = await signMessage(
+      signatureRequest,
+      apiSecret,
+      'base64',
+      'SHA-256',
+    );
 
     return {
       signature,
