@@ -14,19 +14,14 @@ if (!API_KEY || !API_SECRET || !API_PASS) {
   );
 }
 
-const demoRestClient = new RestClient(
-  {
-    // okx api credentials
-    apiKey: API_KEY,
-    apiSecret: API_SECRET,
-    apiPass: API_PASS,
-  },
-  'demo', // this doesn't matter, the value below will be used instead
-  {
-    // the environment to connect to
-    market: 'demo',
-  },
-);
+const demoRestClient = new RestClient({
+  // okx api credentials
+  apiKey: API_KEY,
+  apiSecret: API_SECRET,
+  apiPass: API_PASS,
+  // the environment to connect to
+  market: 'demo',
+});
 
 const demoWsClient = new WebsocketClient({
   market: 'demo',
