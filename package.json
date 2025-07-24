@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:public": "jest --testPathIgnorePatterns='.*private.*'",
+    "test:private": "jest --testPathPattern='.*private.*'",
     "test:watch": "jest --watch",
     "clean": "rm -rf lib dist",
     "build": "tsc",
