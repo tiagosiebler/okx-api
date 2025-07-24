@@ -1,0 +1,7381 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+The content has been processed where content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: .github/, examples/apidoc/, docs/images/, docs/endpointFunctionList.md, test/, src/util/
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+
+================================================================
+Directory Structure
+================================================================
+examples/
+  demo-trading.ts
+  README.md
+  rest-private-trade-market.ts
+  rest-private-trade.ts
+  rest-public.ts
+  ws-private-handle-auth-fail.ts
+  ws-private.ts
+  ws-public.ts
+src/
+  constants/
+    funding.ts
+    index.ts
+  types/
+    rest/
+      request/
+        account.ts
+        block-trading.ts
+        convert.ts
+        copy-trading.ts
+        funding.ts
+        grid-trading.ts
+        index.ts
+        public.ts
+        recurring-buy.ts
+        shared.ts
+        signal-bot.ts
+        simple-earn.ts
+        spread-trading.ts
+        subaccount.ts
+        trade.ts
+      response/
+        index.ts
+        private-account.ts
+        private-block-trading.ts
+        private-copy-trading.ts
+        private-flexible-loan.ts
+        private-funding.ts
+        private-recurring-buy.ts
+        private-signal-bot.ts
+        private-spread-trading.ts
+        private-subaccount.ts
+        private-trade.ts
+        public-data.ts
+      client.ts
+      index.ts
+      shared.ts
+    websockets/
+      client.ts
+      event.ts
+      index.ts
+      request.ts
+    index.ts
+    shared.ts
+  index.ts
+  rest-client.ts
+  websocket-client.ts
+webpack/
+  webpack.config.js
+.eslintrc.cjs
+.gitignore
+.jshintrc
+.nvmrc
+.prettierrc
+index.js
+jest.config.js
+jsconfig.json
+LICENSE.md
+package.json
+README.md
+tsconfig.json
+tsconfig.linting.json
+
+================================================================
+Files
+================================================================
+
+================
+File: examples/README.md
+================
+# Examples
+
+These samples can be executed using `ts-node`:
+```
+ts-node ./examples/rest-spot-public.ts
+```
+
+================
+File: src/constants/funding.ts
+================
+/**
+ * Asset bill type, auto-generated using table from funding asset bill details:
+ * https://www.okx.com/docs-v5/en/#rest-api-funding-asset-bills-details
+ */
+export enum ASSET_BILL_TYPE {
+  DEPOSIT = '1',
+  WITHDRAWAL = '2',
+  CANCELED_WITHDRAWAL = '13',
+  TRANSFER_TO_SUB_ACCOUNT = '20',
+  TRANSFER_FROM_SUB_ACCOUNT = '21',
+  CLAIM = '28',
+  SYSTEM_REVERSAL = '47',
+  RECEIVED_FROM_ACTIVITIES = '48',
+  GIVEN_AWAY_TO_ACTIVITIES = '49',
+  RECEIVED_FROM_APPOINTMENTS = '50',
+  DEDUCTED_FROM_APPOINTMENTS = '51',
+  RED_PACKET_SENT = '52',
+  RED_PACKET_SNATCHED = '53',
+  RED_PACKET_REFUNDED = '54',
+  CONVERSION = '61',
+  CLAIM_REBATE_CARD = '68',
+  DISTRIBUTE_REBATE_CARD = '69',
+  TOKEN_RECEIVED = '72',
+  TOKEN_GIVEN_AWAY = '73',
+  TOKEN_REFUNDED = '74',
+  SUBSCRIPTION_TO_SAVINGS = '75',
+  REDEMPTION_TO_SAVINGS = '76',
+  DISTRIBUTE = '77',
+  LOCK_UP = '78',
+  NODE_VOTING = '79',
+  STAKING_1 = '80',
+  VOTE_REDEMPTION = '81',
+  STAKING_REDEMPTION_1 = '82',
+  STAKING_YIELD = '83',
+  VIOLATION_FEE = '84',
+  POW_MINING_YIELD = '85',
+  CLOUD_MINING_PAY = '86',
+  CLOUD_MINING_YIELD = '87',
+  SUBSIDY = '88',
+  STAKING_2 = '89',
+  STAKING_SUBSCRIPTION = '90',
+  STAKING_REDEMPTION_2 = '91',
+  ADD_COLLATERAL = '92',
+  REDEEM_COLLATERAL = '93',
+  INVESTMENT = '94',
+  BORROWER_BORROWS = '95',
+  PRINCIPAL_TRANSFERRED_IN = '96',
+  BORROWER_TRANSFERRED_LOAN_OUT = '97',
+  BORROWER_TRANSFERRED_INTEREST_OUT = '98',
+  INVESTOR_TRANSFERRED_INTEREST_IN = '99',
+  PREPAYMENT_PENALTY_TRANSFERRED_IN = '102',
+  PREPAYMENT_PENALTY_TRANSFERRED_OUT = '103',
+  FEE_TRANSFERRED_IN = '104',
+  FEE_TRANSFERRED_OUT = '105',
+  OVERDUE_FEE_TRANSFERRED_IN = '106',
+  OVERDUE_FEE_TRANSFERRED_OUT = '107',
+  OVERDUE_INTEREST_TRANSFERRED_OUT = '108',
+  OVERDUE_INTEREST_TRANSFERRED_IN = '109',
+  COLLATERAL_FOR_CLOSED_POSITION_TRANSFERRED_IN = '110',
+  COLLATERAL_FOR_CLOSED_POSITION_TRANSFERRED_OUT = '111',
+  COLLATERAL_FOR_LIQUIDATION_TRANSFERRED_IN = '112',
+  COLLATERAL_FOR_LIQUIDATION_TRANSFERRED_OUT = '113',
+  INSURANCE_FUND_TRANSFERRED_IN = '114',
+  INSURANCE_FUND_TRANSFERRED_OUT_ = '115',
+  PLACE_AN_ORDER = '116',
+  FULFILL_AN_ORDER = '117',
+  CANCEL_AN_ORDER = '118',
+  MERCHANTS_UNLOCK_DEPOSIT = '119',
+  MERCHANTS_ADD_DEPOSIT = '120',
+  FIATGATEWAY_PLACE_AN_ORDER = '121',
+  FIATGATEWAY_CANCEL_AN_ORDER = '122',
+  FIATGATEWAY_FULFILL_AN_ORDER = '123',
+  JUMPSTART_UNLOCKING = '124',
+  MANUAL_DEPOSIT = '125',
+  INTEREST_DEPOSIT = '126',
+  INVESTMENT_FEE_TRANSFERRED_IN = '127',
+  INVESTMENT_FEE_TRANSFERRED_OUT = '128',
+  REWARDS_TRANSFERRED_IN = '129',
+  TRANSFERRED_FROM_TRADING_ACCOUNT = '130',
+  TRANSFERRED_TO_TRADING_ACCOUNT = '131',
+  FROZEN_BY_CUSTOMER_SERVICE = '132',
+  UNFROZEN_BY_CUSTOMER_SERVICE = '133',
+  TRANSFERRED_BY_CUSTOMER_SERVICE = '134',
+  CROSS_CHAIN_EXCHANGE = '135',
+  CONVERT = '136',
+  ETH_2_0_SUBSCRIPTION = '137',
+  ETH_2_0_SWAPPING = '138',
+  ETH_2_0_EARNINGS = '139',
+  FEE_TRANSFER_IN = '141',
+  FEE_TRANSFER_OUT = '142',
+  SYSTEM_REVERSE = '143',
+  TRANSFER_OUT_OF_UNIFIED_ACCOUNT_RESERVE = '144',
+  REWARD_EXPIRED = '145',
+  CUSTOMER_FEEDBACK = '146',
+  VESTED_SUSHI_REWARDS = '147',
+  AFFILIATE_COMMISSION = '150',
+  REFERRAL_REWARD = '151',
+  BROKER_REWARD = '152',
+  JOINER_REWARD = '153',
+  MYSTERY_BOX_REWARD = '154',
+  REWARDS_WITHDRAW = '155',
+  FEE_REBATE_1 = '156',
+  COLLECTED_CRYPTO = '157',
+  DUAL_INVESTMENT_SUBSCRIBE = '160',
+  DUAL_INVESTMENT_COLLECTION = '161',
+  DUAL_INVESTMENT_PROFIT = '162',
+  DUAL_INVESTMENT_REFUND = '163',
+  NEW_YEAR_REWARDS_2022 = '169',
+  REFERRAL_REFERRED_CUSTOMER = '170',
+  REFERRAL_WAS_REFERRED = '171',
+  SUB_AFFILIATE_COMMISSION = '172',
+  FEE_REBATE_2 = '173',
+  PAY = '174',
+  LOCKED_COLLATERAL = '175',
+  LOAN = '176',
+  ADDED_COLLATERAL = '177',
+  RETURNED_COLLATERAL = '178',
+  REPAYMENT = '179',
+  UNLOCKED_COLLATERAL = '180',
+  REPAY_AIRDROPPED_CRYPTO = '181',
+  FEEDBACK_BOUNTY = '182',
+  INVITE_FRIENDS_REWARDS = '183',
+  DIVIDE_THE_REWARD_POOL = '184',
+  BROKER_CONVERT_REWARD = '185',
+  FREEETH = '186',
+  CONVERT_TRANSFER = '187',
+  SLOT_AUCTION_CONVERSION = '188',
+  MYSTERY_BOX_BONUS = '189',
+  CARD_PAYMENT_BUY_1 = '193',
+  CARD_PAYMENT_BUY_2 = '194',
+  UNTRADABLE_ASSET_WITHDRAWAL = '195',
+  UNTRADABLE_ASSET_WITHDRAWAL_REVOKED = '196',
+  UNTRADABLE_ASSET_DEPOSIT = '197',
+  UNTRADABLE_ASSET_COLLECTION_1 = '198',
+  UNTRADABLE_ASSET_COLLECTION_2 = '199',
+  BUY = '200',
+  WIN_CRYPTO_WITH_SATOSHI = '211',
+}
+⋮----
+export type AssetBillType = `${ASSET_BILL_TYPE}`;
+
+================
+File: src/constants/index.ts
+================
+
+
+================
+File: src/types/rest/request/convert.ts
+================
+export interface ConvertQuoteEstimateRequest {
+  baseCcy: string;
+  quoteCcy: string;
+  side: string;
+  rfqSz: string;
+  rfqSzCcy: string;
+  clTReqId?: string;
+  tag?: string;
+}
+export interface ConvertTradeRequest {
+  quoteId: string;
+  baseCcy: string;
+  quoteCcy: string;
+  side: string;
+  sz: string;
+  szCcy: string;
+  clTReqId?: string;
+  tag?: string;
+}
+
+================
+File: src/types/rest/request/copy-trading.ts
+================
+export interface GetCurrentSubpositionsRequest {
+  instType?: 'SPOT' | 'SWAP';
+  instId?: string;
+  uniqueCode?: string;
+  subPosType?: 'lead' | 'copy';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSubpositionsHistoryRequest {
+  instType?: 'SPOT' | 'SWAP';
+  instId?: string;
+  subPosType?: 'lead' | 'copy';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface PlaceCTAlgoOrderRequest {
+  instType?: 'SPOT' | 'SWAP';
+  subPosId: string;
+  tpTriggerPx?: string;
+  slTriggerPx?: string;
+  tpOrdPx?: string;
+  slOrdPx?: string;
+  tpTriggerPxType?: 'last' | 'index' | 'mark';
+  slTriggerPxType?: 'last' | 'index' | 'mark';
+  tag?: string;
+  subPosType?: 'lead' | 'copy';
+}
+⋮----
+export interface CloseSubpositionRequest {
+  instType?: 'SPOT' | 'SWAP';
+  subPosType?: 'lead' | 'copy';
+  subPosId: string;
+  ordType?: 'market' | 'limit';
+  px?: string;
+  tag?: string;
+}
+⋮----
+export interface GetCTProfitDetailsRequest {
+  instType?: 'SPOT' | 'SWAP';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface CopySettingsRequest {
+  instType?: 'SWAP';
+  uniqueCode: string;
+  copyMgnMode: 'cross' | 'isolated' | 'copy';
+  copyInstIdType: 'custom' | 'copy';
+  instId?: string;
+  copyMode?: 'fixed_amount' | 'ratio_copy';
+  copyTotalAmt: string;
+  copyAmt?: string;
+  copyRatio?: string;
+  tpRatio?: string;
+  slRatio?: string;
+  slTotalAmt?: string;
+  subPosCloseType: 'market_close' | 'copy_close' | 'manual_close';
+}
+⋮----
+export interface GetCTBatchLeverageInfoRequest {
+  mgnMode: 'cross' | 'isolated';
+  uniqueCode: string;
+  instId?: string;
+}
+⋮----
+export interface SetCTBatchLeverageRequest {
+  mgnMode: 'cross' | 'isolated';
+  lever: string;
+  instId: string;
+}
+⋮----
+export interface GetCTHistoryLeadTradersRequest {
+  instType?: 'SWAP';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetLeadTraderRanksRequest {
+  instType?: 'SWAP';
+  sortType?:
+    | 'overview'
+    | 'pnl'
+    | 'aum'
+    | 'win_ratio'
+    | 'pnl_ratio'
+    | 'current_copy_trader_pnl';
+  state?: '0' | '1';
+  minLeadDays?: '1' | '2' | '3' | '4';
+  minAssets?: string;
+  maxAssets?: string;
+  minAum?: string;
+  maxAum?: string;
+  dataVer?: string;
+  page?: string;
+  limit?: string;
+}
+⋮----
+export interface GetLeadTraderStatsRequest {
+  instType?: 'SWAP';
+  uniqueCode: string;
+  lastDays: '1' | '2' | '3' | '4';
+}
+⋮----
+export interface GetLeadTraderPositionsRequest {
+  instType?: 'SWAP';
+  uniqueCode: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetCopyTradersRequest {
+  instType?: 'SWAP';
+  uniqueCode: string;
+  limit?: string;
+}
+⋮----
+export interface GetPrivateLeadTraderRanksRequest {
+  instType?: 'SWAP';
+  sortType?:
+    | 'overview'
+    | 'pnl'
+    | 'aum'
+    | 'win_ratio'
+    | 'pnl_ratio'
+    | 'current_copy_trader_pnl';
+  state?: '0' | '1';
+  minLeadDays?: '1' | '2' | '3' | '4';
+  minAssets?: string;
+  maxAssets?: string;
+  minAum?: string;
+  maxAum?: string;
+  dataVer?: string;
+  page?: string;
+  limit?: string;
+}
+
+================
+File: src/types/rest/request/public.ts
+================
+export interface EconomicCalendarRequest {
+  region?: string;
+  importance?: '1' | '2' | '3';
+  before?: string;
+  after?: string;
+  limit?: string;
+}
+⋮----
+export interface UnitConvertRequest {
+  type?: '1' | '2';
+  instId: string;
+  sz: string;
+  px?: string;
+  unit?: 'coin' | 'usds';
+  opType: 'open' | 'close';
+}
+⋮----
+export interface CandleRequest {
+  instId: string;
+  after?: string;
+  before?: string;
+  bar?: string;
+  limit?: string;
+}
+⋮----
+export interface GetPremiumHistoryRequest {
+  instId: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetContractOpenInterestHistoryRequest {
+  instId: string;
+  period?: string;
+  end?: string;
+  begin?: string;
+  limit?: string;
+}
+⋮----
+export interface GetContractTakerVolumeRequest {
+  instId: string;
+  period?: string;
+  unit?: string;
+  end?: string;
+  begin?: string;
+  limit?: string;
+}
+⋮----
+export interface GetTopTradersContractLongShortRatioRequest {
+  instId: string;
+  period?: string;
+  end?: string;
+  begin?: string;
+  limit?: string;
+}
+⋮----
+export interface GetOptionTradesRequest {
+  instId?: string;
+  instFamily?: string;
+  optType?: 'C' | 'P';
+}
+
+================
+File: src/types/rest/request/shared.ts
+================
+import { numberInString } from '../shared';
+⋮----
+export interface PaginatedSymbolRequest {
+  ccy?: string;
+  after?: numberInString;
+  before?: numberInString;
+  limit?: numberInString;
+}
+
+================
+File: src/types/rest/request/signal-bot.ts
+================
+export interface CreateSignalRequest {
+  signalChanName: string;
+  signalChanDesc?: string;
+}
+⋮----
+export interface GetSignalsRequest {
+  signalSourceType: string;
+  signalChanId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface EntrySettingParam {
+  allowMultipleEntry?: string;
+  entryType?: string;
+  amt?: string;
+  ratio?: { ratio: string }[];
+}
+⋮----
+export interface ExitSettingParam {
+  tpSlType: string;
+  tpPct?: string;
+  slPct?: string;
+}
+⋮----
+export interface CreateSignalBotRequest {
+  signalChanId: string;
+  lever: string;
+  investAmt: string;
+  subOrdType: string;
+  includeAll?: boolean;
+  instIds?: string;
+  ratio?: string;
+  entrySettingParam?: EntrySettingParam;
+  exitSettingParam?: ExitSettingParam;
+}
+⋮----
+export interface AdjustMarginBalanceRequest {
+  algoId: string;
+  type: 'add' | 'reduce';
+  amt: string;
+  allowReinvest?: boolean;
+}
+⋮----
+export interface AmendTPSLRequest {
+  algoId: string;
+  exitSettingParam: ExitSettingParam;
+}
+⋮----
+export interface SetSignalInstrumentsRequest {
+  algoId: string;
+  instIds: string[];
+  includeAll: boolean;
+}
+⋮----
+export interface GetSignalBotRequest {
+  algoOrdType: string;
+  algoId: string;
+  after: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSignalBotPositionHistoryRequest {
+  algoId?: string;
+  instId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface PlaceSubOrderRequest {
+  instId: string;
+  algoId: string;
+  side: 'buy' | 'sell';
+  ordType: 'market' | 'limit';
+  sz: string;
+  px?: string;
+  reduceOnly?: boolean;
+}
+⋮----
+export interface CancelSubOrderRequest {
+  algoId: string;
+  instId: string;
+  signalOrdId: string;
+}
+⋮----
+export interface GetSignalBotSubOrdersRequest {
+  algoId: string;
+  algoOrdType: 'contract';
+  type?: 'live' | 'filled';
+  clOrdId?: string;
+  state?: 'live' | 'partially_filled' | 'filled' | 'cancelled';
+  signalOrdId?: string;
+  after?: string;
+  before?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSignalBotEventHistoryRequest {
+  algoId: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+
+================
+File: src/types/rest/request/subaccount.ts
+================
+type AccountType = '6' | '18';
+⋮----
+export interface SubAccountTransferRequest {
+  ccy: string;
+  amt: string;
+  from: AccountType;
+  to: AccountType;
+  fromSubAccount: string;
+  toSubAccount: string;
+  loanTrans?: boolean;
+  omitPosRisk?: boolean;
+}
+⋮----
+export interface GetSubAccountMaxWithdrawalsRequest {
+  subAcct: string;
+  ccy?: string;
+}
+⋮----
+export interface GetManagedSubAccountTransferHistoryRequest {
+  ccy?: string;
+  type?: '0' | '1';
+  subAcct?: string;
+  subUid?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface LoanAllocation {
+  subAcct: string;
+  loanAlloc: string;
+}
+⋮----
+export interface SetSubAccountLoanAllocationRequest {
+  enable: boolean;
+  alloc?: LoanAllocation[];
+}
+
+================
+File: src/types/rest/response/private-recurring-buy.ts
+================
+export interface RecurringBuyOrderResult {
+  algoId: string;
+  algoClOrdId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface RecurringBuyInfoResult {
+  ccy: string;
+  ratio: string;
+}
+⋮----
+export interface RecurringBuyOrder {
+  algoId: string;
+  algoClOrdId: string;
+  instType: string;
+  cTime: string;
+  uTime: string;
+  algoOrdType: 'recurring';
+  state: 'running' | 'stopping' | 'pause';
+  stgyName: string;
+  recurringList: RecurringBuyInfoResult[];
+  period: 'monthly' | 'weekly' | 'daily' | 'hourly';
+  recurringDay?: string;
+  recurringHour?: string;
+  recurringTime: string;
+  timeZone: string;
+  amt: string;
+  investmentAmt: string;
+  investmentCcy: 'USDT' | 'USDC';
+  totalPnl: string;
+  totalAnnRate: string;
+  pnlRatio: string;
+  mktCap: string;
+  cycles: string;
+  tag: string;
+}
+⋮----
+export interface RecurringBuyInfoOrder {
+  ccy: string;
+  ratio: string;
+  totalAmt: string;
+  profit: string;
+  avgPx: string;
+  px: string;
+}
+⋮----
+export interface RecurringBuySubOrder {
+  algoId: string;
+  instType: string;
+  instId: string;
+  algoOrdType: 'recurring';
+  ordId: string;
+  cTime: string;
+  uTime: string;
+  tdMode: 'cross' | 'cash';
+  ordType: 'market';
+  sz: string;
+  state: 'canceled' | 'live' | 'partially_filled' | 'filled' | 'cancelling';
+  side: 'buy' | 'sell';
+  px: string;
+  fee: string;
+  feeCcy: string;
+  avgPx: string;
+  accFillSz: string;
+  tag: string;
+}
+
+================
+File: src/types/rest/response/private-signal-bot.ts
+================
+export interface CreateSignalResult {
+  signalChanId: string;
+  signalToken: string;
+}
+⋮----
+export interface GetSignalsResult {
+  signalChanId: string;
+  signalChanName: string;
+  signalChanDesc: string;
+  signalChanToken: string;
+  signalSourceType: string;
+}
+⋮----
+export interface CreateSignalBotResult {
+  algoId: string;
+  algoClOrdId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface CancelSignalBotsResult {
+  algoId: string;
+  sCode: string;
+  sMsg: string;
+}
+
+================
+File: src/types/rest/response/private-spread-trading.ts
+================
+export interface PlaceSpreadOrderResponse {
+  ordId: string;
+  clOrdId: string;
+  tag: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface CancelSpreadOrderResponse {
+  ordId: string;
+  clOrdId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface UpdateSpreadOrderResponse {
+  ordId: string;
+  clOrdId: string;
+  reqId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface SpreadOrder {
+  instId: string;
+  ordId: string;
+  clOrdId: string;
+  tag: string;
+  px: string;
+  sz: string;
+  ordType: 'limit' | 'post_only' | 'ioc';
+  side: 'buy' | 'sell';
+  fillSz: string;
+  fillPx: string;
+  tradeId: string;
+  accFillSz: string;
+  pendingFillSz: string;
+  pendingSettleSz: string;
+  canceledSz: string;
+  avgPx: string;
+  state: 'canceled' | 'live' | 'partially_filled' | 'filled';
+  cancelSource: string;
+  uTime: string;
+  cTime: string;
+}
+⋮----
+export interface SpreadTradeLeg {
+  instId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  fee: string;
+  szCont: string;
+  feeCcy: string;
+  tradeId: string;
+}
+⋮----
+export interface SpreadTrade {
+  sprdId: string;
+  tradeId: string;
+  ordId: string;
+  clOrdId: string;
+  tag: string;
+  fillPx: string;
+  fillSz: string;
+  side: 'buy' | 'sell';
+  state: 'filled' | 'rejected';
+  execType: 'T' | 'M';
+  ts: string;
+  legs: SpreadTradeLeg[];
+}
+⋮----
+export interface SpreadLeg {
+  instId: string;
+  side: 'buy' | 'sell';
+}
+⋮----
+export interface SpreadDetails {
+  sprdId: string;
+  sprdType: 'linear' | 'inverse' | 'hybrid';
+  state: 'live' | 'expired' | 'suspend';
+  baseCcy: string;
+  szCcy: string;
+  quoteCcy: string;
+  tickSz: string;
+  minSz: string;
+  lotSz: string;
+  listTime: string;
+  expTime: string;
+  uTime: string;
+  legs: SpreadLeg[];
+}
+⋮----
+export interface OrderBookEntry {
+  price: string;
+  quantity: string;
+  orderCount: string;
+}
+⋮----
+export interface SpreadOrderBook {
+  asks: OrderBookEntry[];
+  bids: OrderBookEntry[];
+  ts: string;
+}
+⋮----
+export interface SpreadTicker {
+  sprdId: string;
+  last: string;
+  lastSz: string;
+  askPx: string;
+  askSz: string;
+  bidPx: string;
+  bidSz: string;
+  open24h: string;
+  high24h: string;
+  low24h: string;
+  vol24h: string;
+  ts: string;
+}
+⋮----
+export interface PublicSpreadTrade {
+  sprdId: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  ts: string;
+}
+⋮----
+export interface SpreadCandle {
+  ts: string;
+  o: string;
+  h: string;
+  l: string;
+  c: string;
+  vol: string;
+  confirm: string;
+}
+
+================
+File: src/types/rest/index.ts
+================
+
+
+================
+File: src/types/websockets/client.ts
+================
+import { APICredentials, APIMarket } from '../shared';
+⋮----
+export interface WSClientConfigurableOptions {
+  accounts?: APICredentials[];
+
+  /**
+   * The API group this client should connect to:
+   * market: 'prod' (default)
+   * market: 'aws'
+   * market: 'demo'
+   */
+  market?: APIMarket;
+
+  pongTimeout?: number;
+  pingInterval?: number;
+  reconnectTimeout?: number;
+  requestOptions?: any;
+  wsUrl?: string;
+}
+⋮----
+/**
+   * The API group this client should connect to:
+   * market: 'prod' (default)
+   * market: 'aws'
+   * market: 'demo'
+   */
+⋮----
+export interface WebsocketClientOptions extends WSClientConfigurableOptions {
+  market: APIMarket;
+  pongTimeout: number;
+  pingInterval: number;
+  reconnectTimeout: number;
+}
+
+================
+File: src/types/websockets/index.ts
+================
+
+
+================
+File: .jshintrc
+================
+{
+  "esversion": 8,
+  "asi": true,
+  "laxbreak": true,
+  "predef": [ "-Promise" ]
+}
+
+================
+File: .prettierrc
+================
+{
+  "tabWidth": 2,
+  "singleQuote": true
+}
+
+================
+File: index.js
+================
+
+
+================
+File: jest.config.js
+================
+// jest.config.js
+⋮----
+verbose: true, // report individual test
+bail: false, // enable to stop test when an error occur,
+⋮----
+// coverage strategy
+
+================
+File: jsconfig.json
+================
+{
+  "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs"
+  },
+  "exclude": [
+      "node_modules",
+      "**/node_modules/*",
+      "coverage",
+      "doc"
+  ]
+}
+
+================
+File: LICENSE.md
+================
+Copyright 2022 Tiago Siebler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+================
+File: tsconfig.json
+================
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "lib": ["es2017","dom"],
+    "outDir": "lib"
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "coverage",
+    "doc"
+  ]
+}
+
+================
+File: examples/demo-trading.ts
+================
+import { RestClient, WebsocketClient } from '../src/index';
+⋮----
+// or
+// import { RestClient} from 'okx-api';
+⋮----
+// read from environmental variables, your demo trading keys
+⋮----
+// okx api credentials
+⋮----
+'demo', // this doesn't matter, the value below will be used instead
+⋮----
+// the environment to connect to
+⋮----
+// Raw data will arrive on the 'update' event
+⋮----
+// console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+⋮----
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+⋮----
+// console.log('ws response: ', JSON.stringify(data, null, 2));
+⋮----
+// Subscribe to demo account events:
+⋮----
+/** Simple examples for private REST API calls with bybit's V5 REST APIs */
+⋮----
+// Trade USDT linear perps
+
+================
+File: examples/rest-public.ts
+================
+import { RestClient } from '../src/index';
+⋮----
+// or
+// import { RestClient } from 'okx-api';
+⋮----
+/**
+ * This is a simple script wrapped in a immediately invoked function expression, designed to make public API calls without credentials
+ */
+
+================
+File: examples/ws-public.ts
+================
+import { DefaultLogger, WebsocketClient } from '../src';
+⋮----
+// or use the module installed via `npm install okx-api`:
+// import { WebsocketClient, DefaultLogger } from 'okx-api';
+⋮----
+// or if you're not using typescript (e.g. pure nodejs), change the "import" to "require":
+// const { WebsocketClient, DefaultLogger } = require('okx-api');
+⋮----
+// Optional: Inject a custom logger.
+// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+⋮----
+// silly: (...params) => console.log('silly', ...params),
+⋮----
+// prod is used by default, but you can choose other markets through this parameter:
+// market: 'prod',
+// market: 'aws',
+// market: 'demo',
+⋮----
+logger, // Optional: inject the custom logger here
+⋮----
+// Raw data will arrive on the 'update' event
+⋮----
+// console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+⋮----
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+⋮----
+// Send one topic at a time
+⋮----
+// Or an array of requests
+⋮----
+/**
+ *
+ * Examples for each channel: https://www.okx.com/docs-v5/en/#websocket-api-public-channel
+ *
+ */
+⋮----
+// Instruments channel
+⋮----
+// Tickers channel
+⋮----
+// Open interest channel
+⋮----
+// Candlesticks channel
+⋮----
+// Trades channel
+⋮----
+// Estimated delivery/exercise price channel
+⋮----
+// Mark price channel
+⋮----
+// Mark price candlesticks channel
+⋮----
+// Price limit channel
+⋮----
+// Order book channel
+⋮----
+// OPTION summary channel
+⋮----
+// Funding rate channel
+⋮----
+// Index candlesticks channel
+⋮----
+// Index tickers channel
+⋮----
+// Status channel
+⋮----
+// Liquidation orders channel
+
+================
+File: src/types/rest/request/block-trading.ts
+================
+import { OrderSide, RFQLeg } from '../shared';
+⋮----
+export interface CreateBlockRFQRequest {
+  counterparties: string[];
+  anonymous?: boolean;
+  clRfqId?: string;
+  legs: RFQLeg[];
+}
+⋮----
+export interface CancelBlockRFQRequest {
+  rfqId?: string;
+  clRfqId?: string;
+}
+⋮----
+export interface CancelMultipleBlockRFQRequest {
+  rfqIds?: string[];
+  clRfqIds?: string[];
+}
+⋮----
+export interface ExecuteBlockQuoteRequest {
+  rfqId: string;
+  quoteId: string;
+}
+⋮----
+export interface CreateBlockQuoteLeg {
+  px: string;
+  sz: string;
+  instId: string;
+  side: OrderSide;
+  tgtCcy?: 'base_ccy' | 'quote_ccy';
+}
+⋮----
+export interface CreateBlockQuoteRequest {
+  rfqId: string;
+  clQuoteId?: string;
+  quoteSide: OrderSide;
+  anonymous?: boolean;
+  expiresIn?: string;
+  legs: CreateBlockQuoteLeg[];
+}
+⋮----
+export interface CancelBlockQuoteRequest {
+  quoteId?: string;
+  clQuoteId?: string;
+}
+⋮----
+export interface CancelMultipleBlockQuoteRequest {
+  quoteIds?: string[];
+  clQuoteIds?: string[];
+}
+⋮----
+export interface GetBlockRFQSParams {
+  rfqId?: string;
+  clRfqId?: string;
+  state?: string;
+  beginId?: string;
+  endId?: string;
+  limit?: string;
+}
+⋮----
+export interface GetBlockQuoteParams {
+  rfqId?: string;
+  clRfqId?: string;
+  quoteId?: string;
+  clQuoteId?: string;
+  state?: string;
+  beginId?: string;
+  endId?: string;
+  limit?: string;
+}
+⋮----
+export interface MakerInstrumentData {
+  uly?: string;
+  instId?: string;
+  maxBlockSz?: string;
+  makerPxBand?: string;
+}
+⋮----
+export interface SetQuoteProductsRequest {
+  instType: string;
+  includeAll?: boolean;
+  data: MakerInstrumentData[];
+}
+⋮----
+export interface SetMmpConfigRequest {
+  timeInterval: string;
+  frozenInterval: string;
+  countLimit: string;
+}
+
+================
+File: src/types/rest/request/funding.ts
+================
+export interface FundsTransferRequest {
+  ccy: string;
+  amt: string;
+  from: '6' | '18';
+  to: '6' | '18';
+  subAcct?: string;
+  type?: '0' | '1' | '2' | '3' | '4';
+  loanTrans?: boolean;
+  clientId?: string;
+  omitPosRisk?: string;
+}
+⋮----
+export interface WithdrawRequest {
+  ccy: string;
+  amt: string;
+  dest: '3' | '4';
+  toAddr: string;
+  chain?: string;
+  areaCode?: string;
+  clientId?: string;
+  // Recipient information for specific entity users doing on-chain/lightning withdrawal
+  rcvrInfo?: {
+    // Required: 'exchange' for exchange wallet, 'private' for private wallet
+    walletType: 'exchange' | 'private';
+    // Exchange ID (required if walletType = 'exchange'). Use '0' if exchange not in list
+    exchId?: string;
+    // Receiver's first name (required if walletType = 'exchange')
+    rcvrFirstName?: string;
+    // Receiver's last name (required if walletType = 'exchange')
+    rcvrLastName?: string;
+    // Recipient's country - English name or ISO 3166-1 two-letter code
+    rcvrCountry?: string;
+    // State/Province of the recipient
+    rcvrCountrySubDivision?: string;
+    // Town/city where the recipient is located
+    rcvrTownName?: string;
+    // Recipient's street address
+    rcvrStreetName?: string;
+  };
+}
+⋮----
+// Recipient information for specific entity users doing on-chain/lightning withdrawal
+⋮----
+// Required: 'exchange' for exchange wallet, 'private' for private wallet
+⋮----
+// Exchange ID (required if walletType = 'exchange'). Use '0' if exchange not in list
+⋮----
+// Receiver's first name (required if walletType = 'exchange')
+⋮----
+// Receiver's last name (required if walletType = 'exchange')
+⋮----
+// Recipient's country - English name or ISO 3166-1 two-letter code
+⋮----
+// State/Province of the recipient
+⋮----
+// Town/city where the recipient is located
+⋮----
+// Recipient's street address
+⋮----
+export interface FundingRateRequest {
+  instId: string;
+  before?: string;
+  after?: string;
+  limit?: string;
+}
+⋮----
+export interface GetDepositWithdrawStatusRequest {
+  wdId?: string;
+  txId?: string;
+  ccy?: string;
+  to?: string;
+  chain?: string;
+}
+
+================
+File: src/types/rest/request/grid-trading.ts
+================
+export type GridAlgoOrderType = 'grid' | 'contract_grid' | 'moon_grid';
+⋮----
+export interface GetGridAlgoOrdersRequest {
+  algoOrdType: GridAlgoOrderType;
+  algoId?: string;
+  instId?: string;
+  instType?: 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GridAlgoTrigger {
+  triggerAction: 'start' | 'stop';
+  triggerStrategy: 'instant' | 'price' | 'rsi';
+  delaySeconds?: string;
+  timeframe?: '3m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D';
+  thold?: string;
+  triggerCond?: 'cross_up' | 'cross_down' | 'above' | 'below' | 'cross';
+  timePeriod?: string;
+  triggerPx?: string;
+  stopType?: '1' | '2';
+}
+⋮----
+export interface GridAlgoOrderRequest {
+  instId: string;
+  algoOrdType: GridAlgoOrderType;
+  maxPx: string;
+  minPx: string;
+  gridNum: string;
+  runType: '1' | '2';
+  quoteSz?: string;
+  baseSz?: string;
+  sz?: string;
+  direction?: 'long' | 'short' | 'neutral';
+  lever?: string;
+  basePos?: boolean;
+  tpRatio?: string;
+  slRatio?: string;
+  triggerParams?: GridAlgoTrigger[];
+}
+⋮----
+export interface StopGridAlgoOrderRequest {
+  algoId: string;
+  instId: string;
+  algoOrdType: GridAlgoOrderType;
+  stopType: '1' | '2';
+}
+⋮----
+export interface CloseContractGridPositionRequest {
+  algoId: string;
+  mktClose: boolean;
+  sz?: string;
+  px?: string;
+}
+⋮----
+export interface GetRSIBackTestingRequest {
+  instId: string;
+  timeframe: '3m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D';
+  thold: string;
+  timePeriod: string;
+  triggerCond?: 'cross_up' | 'cross_down' | 'above' | 'below' | 'cross';
+  duration?: string;
+}
+⋮----
+export interface MaxGridQuantityRequest {
+  instId: string;
+  runType: '1' | '2';
+  algoOrdType: 'grid' | 'contract_grid';
+  maxPx: string;
+  minPx: string;
+  lever?: string;
+}
+
+================
+File: src/types/rest/request/index.ts
+================
+
+
+================
+File: src/types/rest/request/recurring-buy.ts
+================
+export interface RecurringBuyInfo {
+  ccy: string;
+  ratio: string;
+}
+⋮----
+export interface PlaceRecurringBuyOrderRequest {
+  stgyName: string;
+  recurringList: RecurringBuyInfo[];
+  period: 'monthly' | 'weekly' | 'daily' | 'hourly';
+  recurringDay?: string;
+  recurringHour?: string;
+  recurringTime: string;
+  timeZone: string;
+  amt: string;
+  investmentCcy: 'USDT' | 'USDC';
+  tdMode: 'cross' | 'cash';
+  algoClOrdId?: string;
+  tag?: string;
+}
+⋮----
+export interface AmendRecurringBuyOrderRequest {
+  algoId: string;
+  stgyName: string;
+}
+⋮----
+export interface GetRecurringBuyOrderListRequest {
+  algoId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+
+================
+File: src/types/rest/request/simple-earn.ts
+================
+export interface GetLendingOrderListRequest {
+  ordId?: string;
+  ccy?: string;
+  term?: '30D';
+  state?: 'pending' | 'earning' | 'expired' | 'settled';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface LendingOrder {
+  ccy: string;
+  amt: string;
+  rate?: string;
+  term: '30D';
+  autoRenewal?: boolean;
+}
+⋮----
+export interface GetLendingSubOrderListRequest {
+  ordId: string;
+  state?: 'earning' | 'expired' | 'settled';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+
+================
+File: src/types/rest/request/spread-trading.ts
+================
+export interface PlaceSpreadOrderRequest {
+  sprdId: string;
+  clOrdId?: string;
+  tag?: string;
+  side: 'buy' | 'sell';
+  ordType: 'limit' | 'post_only' | 'ioc' | 'market';
+  sz: string;
+  px: string;
+}
+⋮----
+export interface UpdateSpreadOrderRequest {
+  ordId?: string;
+  clOrdId?: string;
+  reqId?: string;
+  newSz?: string;
+  newPx?: string;
+}
+⋮----
+export interface GetActiveSpreadOrdersRequest {
+  sprdId?: string;
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
+  state?: 'live' | 'partially_filled';
+  beginId?: string;
+  endId?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSpreadOrderHistoryRequest {
+  sprdId?: string;
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
+  state?: 'canceled' | 'filled';
+  beginId?: string;
+  endId?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSpreadOrderHistoryArchiveRequest {
+  sprdId?: string;
+  ordType?: 'limit' | 'post_only' | 'ioc' | 'market';
+  state?: 'canceled' | 'filled';
+  instType?: 'SPOT' | 'FUTURES' | 'SWAP';
+  instFamily?: string;
+  beginId?: string;
+  endId?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSpreadTradesRequest {
+  sprdId?: string;
+  tradeId?: string;
+  ordId?: string;
+  beginId?: string;
+  endId?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface GetSpreadsRequest {
+  baseCcy?: string;
+  instId?: string;
+  sprdId?: string;
+  state?: 'live' | 'suspend' | 'expired';
+}
+⋮----
+export interface GetSpreadCandlesRequest {
+  sprdId: string;
+  bar?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+
+================
+File: src/types/rest/response/private-block-trading.ts
+================
+import { RFQLeg, RFQQuoteLegExtended } from '../shared';
+⋮----
+export interface BlockCounterParty {
+  traderName: string;
+  traderCode: string;
+  type: never; // Currently not live
+}
+⋮----
+type: never; // Currently not live
+⋮----
+export interface CreateRFQResult {
+  cTime: string;
+  uTime: string;
+  traderCode: string;
+  rfqId: string;
+  clRfqId: string;
+  state: string;
+  validUntil: string;
+  counterparties: string[];
+  legs: Required<RFQLeg>[];
+}
+⋮----
+export interface CancelBlockRFQResult {
+  rfqId: string;
+  clRfqId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface ExecuteBlockQuoteResult {
+  blockTdId: string;
+  rfqId: string;
+  clRfqId: string;
+  quoteId: string;
+  clQuoteId: string;
+  tTraderCode: string;
+  mTraderCode: string;
+  cTime: string;
+  legs: RFQQuoteLegExtended[];
+}
+⋮----
+export interface CreatedBlockQuoteLeg {
+  px: string;
+  sz: string;
+  instId: string;
+  side: string;
+  tgtCcy: string;
+}
+⋮----
+export interface CreateBlockQuoteResult {
+  cTime: string;
+  uTime: string;
+  quoteId: string;
+  clQuoteId: string;
+  rfqId: string;
+  quoteSide: string;
+  state: string;
+  validUntil: string;
+  legs: CreatedBlockQuoteLeg[];
+}
+⋮----
+export interface CancelBlockQuoteResult {
+  rfqId: string;
+  clQuoteId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface BlockRFQResult {
+  rfqId: string;
+  clRfqId: string;
+  traderCode: string;
+  validUntil: string;
+  state: string;
+  counterparties: string[];
+  legs: Required<RFQLeg>[];
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface BlockQuoteLeg {
+  px: string;
+  sz: string;
+  instId: string;
+  side: string;
+  tgtCcy: string;
+}
+⋮----
+export interface GetBlockQuoteResult {
+  validUntil: string;
+  uTime: string;
+  cTime: string;
+  legs: BlockQuoteLeg[];
+  quoteId: string;
+  rfqId: string;
+  quoteSide: string;
+  state: string;
+  clQuoteId: string;
+  clRfqId: string;
+  traderCode: string;
+}
+⋮----
+export interface BlockMakerInstrumentData {
+  uly?: string;
+  instId?: string;
+  maxBlockSz?: string;
+  makerPxBand?: string;
+}
+⋮----
+export interface BlockMakerInstrumentSettings {
+  instType: string;
+  includeALL: boolean;
+  data: BlockMakerInstrumentData[];
+}
+⋮----
+export interface SetMmpConfigResult {
+  timeInterval: string;
+  frozenInterval: string;
+  countLimit: string;
+}
+⋮----
+export interface BlockMMPConfig {
+  frozenInterval: string;
+  mmpFrozen: boolean;
+  mmpFrozenUntil: string;
+  countLimit: string;
+  timeInterval: string;
+}
+⋮----
+export interface PublicBlockTrade {
+  instId: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  fillVol?: string;
+  fwdPx?: string;
+  idxPx?: string;
+  markPx?: string;
+  ts: string;
+}
+
+================
+File: src/types/rest/response/private-copy-trading.ts
+================
+export interface CurrentSubposition {
+  algoId: string;
+  ccy: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  margin: string;
+  markPx: string;
+  mgnMode: string;
+  openAvgPx: string;
+  openOrdId: string;
+  openTime: string;
+  posSide: string;
+  slOrdPx: string;
+  slTriggerPx: string;
+  subPos: string;
+  subPosId: string;
+  tpOrdPx: string;
+  tpTriggerPx: string;
+  uniqueCode: string;
+  upl: string;
+  uplRatio: string;
+  availSubPos: string;
+}
+⋮----
+export interface SubpositionsHistory {
+  ccy: string;
+  closeAvgPx: string;
+  closeTime: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  margin: string;
+  markPx: string;
+  mgnMode: string;
+  openAvgPx: string;
+  openOrdId: string;
+  openTime: string;
+  pnl: string;
+  pnlRatio: string;
+  posSide: string;
+  profitSharingAmt: string;
+  subPos: string;
+  closeSubPos: string;
+  type: string;
+  subPosId: string;
+  uniqueCode: string;
+}
+⋮----
+export interface PlaceCTAlgoOrderResult {
+  subPosId: string;
+  tag: string;
+}
+⋮----
+export interface GetCTProfitDetailsResult {
+  ccy: string;
+  nickName: string;
+  profitSharingAmt: string;
+  profitSharingId: string;
+  portLink: string;
+  ts: string;
+  instType: string;
+}
+⋮----
+export interface GetCTTotalProfitResult {
+  ccy: string;
+  totalProfitSharingAmt: string;
+  instType: string;
+}
+⋮----
+export interface GetCTUnrealizedProfitResult {
+  ccy: string;
+  nickName: string;
+  portLink: string;
+  ts: string;
+  unrealizedProfitSharingAmt: string;
+  instType: string;
+}
+⋮----
+export interface AccountConfigurationDetails {
+  copyTraderNum: string;
+  instType: 'SPOT' | 'SWAP';
+  maxCopyTraderNum: string;
+  profitSharingRatio: string;
+  roleType: '0' | '1' | '2';
+}
+⋮----
+export interface GetAccountConfigurationResult {
+  uniqueCode: string;
+  nickName: string;
+  portLink: string;
+  details: AccountConfigurationDetails[];
+}
+⋮----
+export interface CopySettingsInstId {
+  instId: string;
+  enabled: string;
+}
+⋮----
+export interface GetCopySettingsResult {
+  ccy: string;
+  copyAmt: string;
+  copyInstIdType: 'custom' | 'copy';
+  copyMgnMode: 'cross' | 'isolated' | 'copy';
+  copyMode: 'fixed_amount' | 'ratio_copy';
+  copyRatio: string;
+  copyState: '0' | '1';
+  copyTotalAmt: string;
+  instIds: CopySettingsInstId[];
+  slRatio: string;
+  slTotalAmt: string;
+  subPosCloseType: 'market_close' | 'copy_close' | 'manual_close';
+  tpRatio: string;
+}
+⋮----
+export interface LeverageInfo {
+  lever: string;
+  posSide: 'long' | 'short';
+}
+⋮----
+export interface GetCTBatchLeverageInfoResult {
+  instId: string;
+  mgnMode: 'cross' | 'isolated';
+  leadTraderLevers: LeverageInfo[];
+  myLevers: LeverageInfo[];
+}
+⋮----
+export interface SetCTBatchLeverageResult {
+  succInstId: string;
+  failInstId: string;
+  result: '0' | '1' | '2';
+}
+⋮----
+export interface GetCTMyLeadTradersResult {
+  portLink: string;
+  nickName: string;
+  margin: string;
+  copyTotalAmt: string;
+  copyTotalPnl: string;
+  uniqueCode: string;
+  ccy: string;
+  profitSharingRatio: string;
+  beginCopyTime: string;
+  upl: string;
+  todayPnl: string;
+  leadMode: 'public' | 'private';
+}
+⋮----
+export interface GetCTHistoryLeadTradersResult {
+  portLink: string;
+  nickName: string;
+  uniqueCode: string;
+  copyNum: string;
+  copyTotalAmt: string;
+  copyTotalPnl: string;
+  copyAmt: string;
+  copyMode: 'fixed_amount' | 'ratio_copy';
+  copyRatio: string;
+  ccy: string;
+  profitSharingRatio: string;
+  beginCopyTime: string;
+  endCopyTime: string;
+  copyRelId: string;
+  copyState: '0' | '1';
+  leadMode: 'public' | 'private';
+}
+⋮----
+export interface GetCopyTradingConfigResult {
+  maxCopyAmt: string;
+  minCopyAmt: string;
+  maxCopyTotalAmt: string;
+  minCopyRatio: string;
+  maxCopyRatio: string;
+  maxTpRatio: string;
+  maxSlRatio: string;
+}
+⋮----
+export interface PnlRatio {
+  beginTs: string;
+  pnlRatio: string;
+}
+⋮----
+export interface LeadTraderRank {
+  accCopyTraderNum: string;
+  aum: string;
+  ccy: string;
+  copyState: '0' | '1';
+  copyTraderNum: string;
+  leadDays: string;
+  maxCopyTraderNum: string;
+  nickName: string;
+  pnl: string;
+  pnlRatio: string;
+  pnlRatios: PnlRatio[];
+  portLink: string;
+  traderInsts: string[];
+  uniqueCode: string;
+  winRatio: string;
+}
+⋮----
+export interface GetLeadTraderRanksResult {
+  dataVer: string;
+  ranks: LeadTraderRank[];
+  totalPage: string;
+}
+⋮----
+export interface LeadTraderPnl {
+  beginTs: string;
+  pnl: string;
+  pnlRatio: string;
+}
+⋮----
+export interface LeadTraderStats {
+  avgSubPosNotional: string;
+  ccy: string;
+  curCopyTraderPnl: string;
+  investAmt: string;
+  lossDays: string;
+  profitDays: string;
+  winRatio: string;
+}
+⋮----
+export interface LeadTraderPreference {
+  ccy: string;
+  ratio: string;
+}
+⋮----
+export interface LeadTraderCurrentPosition {
+  ccy: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  margin: string;
+  markPx: string;
+  mgnMode: string;
+  openAvgPx: string;
+  openTime: string;
+  posSide: string;
+  subPos: string;
+  subPosId: string;
+  uniqueCode: string;
+  upl: string;
+  uplRatio: string;
+}
+⋮----
+export interface LeadTraderPositionHistory {
+  ccy: string;
+  closeAvgPx: string;
+  closeTime: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  margin: string;
+  mgnMode: string;
+  openAvgPx: string;
+  openTime: string;
+  pnl: string;
+  pnlRatio: string;
+  posSide: string;
+  subPos: string;
+  subPosId: string;
+  uniqueCode: string;
+}
+⋮----
+export interface CopyTraderInfo {
+  beginCopyTime: string;
+  nickName: string;
+  portLink: string;
+  pnl: string;
+}
+⋮----
+export interface GetCopyTradersResult {
+  copyTotalPnl: string;
+  ccy: string;
+  copyTraderNumChg: string;
+  copyTraderNumChgRatio: string;
+  copyTraders: CopyTraderInfo[];
+}
+⋮----
+export interface GetPrivateLeadTraderRanksResult {
+  dataVer: string;
+  chanType: 'OKX' | 'ND';
+  ranks: LeadTraderRank[];
+  totalPage: string;
+}
+
+================
+File: src/types/rest/response/private-flexible-loan.ts
+================
+export interface CollateralAsset {
+  ccy: string;
+  amt: string;
+  notionalUsd: string;
+}
+⋮----
+export interface CollateralAssetsResponse {
+  assets: CollateralAsset[];
+}
+⋮----
+export interface SupplementaryCollateral {
+  ccy: string;
+  amt: string;
+}
+⋮----
+export interface MaxLoanRequest {
+  borrowCcy: string;
+  supCollateral?: SupplementaryCollateral[];
+}
+⋮----
+export interface MaxLoanResponse {
+  borrowCcy: string;
+  maxLoan: string;
+  notionalUsd: string;
+  remainingQuota: string;
+}
+⋮----
+export interface AdjustCollateralRequest {
+  type: 'add' | 'reduce';
+  collateralCcy: string;
+  collateralAmt: string;
+}
+⋮----
+export interface LoanCurrencyData {
+  ccy: string;
+  amt: string;
+}
+⋮----
+export interface RiskWarningData {
+  instId: string;
+  liqPx: string;
+}
+⋮----
+export interface LoanInfo {
+  loanNotionalUsd: string;
+  loanData: LoanCurrencyData[];
+  collateralNotionalUsd: string;
+  collateralData: LoanCurrencyData[];
+  riskWarningData: RiskWarningData;
+  curLTV: string;
+  marginCallLTV: string;
+  liqLTV: string;
+}
+⋮----
+export interface LoanHistoryRequest {
+  type?:
+    | 'borrowed'
+    | 'repaid'
+    | 'collateral_locked'
+    | 'collateral_released'
+    | 'forced_repayment_buy'
+    | 'forced_repayment_sell'
+    | 'forced_liquidation'
+    | 'partial_liquidation';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface LoanHistoryItem {
+  refId: string;
+  type: string;
+  ccy: string;
+  amt: string;
+  ts: string;
+}
+⋮----
+export interface AccruedInterestRequest {
+  ccy?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface AccruedInterestItem {
+  refId: string;
+  ccy: string;
+  loan: string;
+  interest: string;
+  interestRate: string;
+  ts: string;
+}
+
+================
+File: src/types/rest/response/private-subaccount.ts
+================
+export interface SubAccount {
+  enable: boolean;
+  subAcct: string;
+  type: string;
+  label: string;
+  mobile: string;
+  gAuth: boolean;
+  canTransOut: boolean;
+  ts: string;
+}
+⋮----
+export interface SubAccountAPIReset {
+  subAcct: string;
+  label: string;
+  apiKey: string;
+  perm: string;
+  ip: string;
+  ts: string;
+}
+⋮----
+export interface SubAccountBalanceDetail {
+  availBal: string;
+  availEq: string;
+  cashBal: string;
+  ccy: string;
+  crossLiab: string;
+  disEq: string;
+  eq: string;
+  eqUsd: string;
+  frozenBal: string;
+  interest: string;
+  isoEq: string;
+  isoLiab: string;
+  liab: string;
+  maxLoan: string;
+  mgnRatio: string;
+  notionalLever: string;
+  ordFrozen: string;
+  twap: string;
+  uTime: string;
+  upl: string;
+  uplLiab: string;
+  spotBal: string; // Spot balance. The unit is currency, e.g. BTC.
+  openAvgPx: string[]; // Spot average cost price. The unit is USD.
+  accAvgPx: string[]; // Spot accumulated cost price. The unit is USD.
+  spotUpl: string; // Spot unrealized profit and loss. The unit is USD.
+  spotUplRatio: string; // Spot unrealized profit and loss ratio.
+  totalPnl: string; // Spot accumulated profit and loss. The unit is USD.
+  totalPnlRatio: string; // Spot accumulated profit and loss ratio.
+}
+⋮----
+spotBal: string; // Spot balance. The unit is currency, e.g. BTC.
+openAvgPx: string[]; // Spot average cost price. The unit is USD.
+accAvgPx: string[]; // Spot accumulated cost price. The unit is USD.
+spotUpl: string; // Spot unrealized profit and loss. The unit is USD.
+spotUplRatio: string; // Spot unrealized profit and loss ratio.
+totalPnl: string; // Spot accumulated profit and loss. The unit is USD.
+totalPnlRatio: string; // Spot accumulated profit and loss ratio.
+⋮----
+export interface SubAccountBalances {
+  adjEq: string;
+  details: SubAccountBalanceDetail[];
+  imr: string;
+  isoEq: string;
+  mgnRatio: string;
+  mmr: string;
+  notionalUsd: string;
+  ordFroz: string;
+  totalEq: string;
+  uTime: string;
+  spotCopyTradingEq: string;
+}
+⋮----
+export interface SubAccountTransferResult {
+  transId: string;
+}
+⋮----
+export interface SubAccountMaxWithdrawal {
+  ccy: string;
+  maxWd: string;
+  maxWdEx: string;
+  spotOffsetMaxWd: string;
+  spotOffsetMaxWdEx: string;
+}
+⋮----
+export interface ManagedSubAccountTransfer {
+  billId: string;
+  ccy: string;
+  amt: string;
+  type: string;
+  subAcct: string;
+  subUid: string;
+  ts: string;
+}
+
+================
+File: src/types/rest/shared.ts
+================
+export type numberInString<T = string> = T;
+⋮----
+export interface APIResponse<T> {
+  code: '0';
+  msg: '';
+  data: T;
+}
+⋮----
+export type AlgoOrderType =
+  | 'conditional'
+  | 'oco'
+  | 'trigger'
+  | 'move_order_stop'
+  | 'iceberg'
+  | 'twap'
+  | 'chase';
+⋮----
+export type AlgoOrderState =
+  | 'live'
+  | 'pause'
+  | 'partially_effective'
+  | 'effective'
+  | 'canceled'
+  | 'order_failed'
+  | 'partially_failed';
+⋮----
+export type AlgoPositionSide = 'long' | 'short';
+⋮----
+export type ContractGridDirection = 'long' | 'short' | 'neutral';
+⋮----
+export type GridAlgoSubOrderType = 'live' | 'filled';
+⋮----
+export type InstrumentType = 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION';
+⋮----
+export type MarginMode = 'cross' | 'isolated';
+⋮----
+export type OrderSide = 'buy' | 'sell';
+⋮----
+export type OrderType =
+  | 'market'
+  | 'limit'
+  | 'post_only'
+  | 'fok'
+  | 'ioc'
+  | 'optimal_limit_ioc';
+⋮----
+export type OrderState =
+  | 'canceled'
+  | 'live'
+  | 'partially_filled'
+  | 'filled'
+  | 'mmp_canceled';
+⋮----
+export type PositionSide = 'net' | 'long' | 'short';
+⋮----
+export type PriceTriggerType = 'last' | 'index' | 'mark';
+⋮----
+export interface RFQLeg {
+  instId: string;
+  sz: string;
+  side: OrderSide;
+  tgtCcy?: string;
+}
+⋮----
+export interface RFQQuoteLegExtended {
+  px: string;
+  sz: string;
+  instId: string;
+  side: string;
+  fee: string;
+  feeCcy: string;
+  tradeId: string;
+}
+⋮----
+export type TradeMode = 'cross' | 'isolated' | 'cash';
+⋮----
+export interface TimestampObject {
+  ts: numberInString;
+}
+⋮----
+export interface Pagination {
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export type PosMode = 'long_short_mode' | 'net_mode';
+⋮----
+export type AccountLevel = '1' | '2' | '3' | '4';
+⋮----
+export type WithdrawState =
+  | '-3'
+  | '-2'
+  | '-1'
+  | '0'
+  | '1'
+  | '2'
+  | '4'
+  | '5'
+  | '6'
+  | '8'
+  | '9'
+  | '10'
+  | '12';
+
+================
+File: src/types/websockets/event.ts
+================
+import { WsChannel } from './request';
+⋮----
+export interface WsEvent {
+  event: 'error' | 'login' | 'subscribe' | 'unsubscribe' | 'channel-conn-count';
+  code?: string;
+  msg?: string;
+  arg?: any;
+  data?: any;
+}
+⋮----
+export interface WsDataEvent<T = any> {
+  arg: {
+    channel: WsChannel;
+    uid?: string;
+    instId?: string;
+    instFamily?: string;
+  };
+  data: T;
+}
+⋮----
+export interface WsLoginEvent extends WsEvent {
+  event: 'login';
+}
+⋮----
+export interface WsChannelConnInfoEvent extends WsEvent {
+  event: 'channel-conn-count';
+  channel: string;
+  connId: string;
+  connCount: string;
+}
+⋮----
+export type WsResponse = WsEvent;
+
+================
+File: src/types/index.ts
+================
+
+
+================
+File: src/types/shared.ts
+================
+export interface APICredentials {
+  apiKey: string;
+  apiSecret: string;
+  apiPass: string;
+}
+⋮----
+export type APIMarket = 'prod' | 'business' | 'demo' | 'businessDemo';
+
+================
+File: src/index.ts
+================
+
+
+================
+File: webpack/webpack.config.js
+================
+function generateConfig(name) {
+⋮----
+path: path.resolve(__dirname, '../dist'),
+⋮----
+// Add '.ts' and '.tsx' as resolvable extensions.
+⋮----
+[path.resolve(__dirname, '../lib/util/node-support.js')]: path.resolve(
+⋮----
+// All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+⋮----
+// All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+⋮----
+new BundleAnalyzerPlugin({
+⋮----
+module.exports = generateConfig('okxapi');
+
+================
+File: .nvmrc
+================
+v22.11.0
+
+================
+File: tsconfig.linting.json
+================
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "dist/cjs",
+    "target": "esnext",
+    "rootDir": "../",
+    "allowJs": true
+  },
+  "include": [
+    "src/**/*.*",
+    "test/**/*.*",
+    "examples/**/*.*",
+    ".eslintrc.cjs",
+    "jest.config.ts",
+    "webpack/webpack.config.ts"
+  ]
+}
+
+================
+File: examples/rest-private-trade.ts
+================
+import { RestClient } from '../src/index';
+import { OrderRequest } from '../src/types/rest';
+⋮----
+// or
+// import { SpotClient } from 'okx-api';
+⋮----
+// read from environmental variables
+⋮----
+// If running from CLI in unix, you can pass env vars as such:
+// API_KEY_COM='lkm12n3-2ba3-1mxf-fn13-lkm12n3a' API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade.ts
+⋮----
+// note the single quotes, preventing special characters such as $ from being incorrectly passed
+⋮----
+// apiKey: 'apiKeyHere',
+⋮----
+// apiSecret: 'apiSecretHere',
+⋮----
+// apiPass: 'apiPassHere',
+⋮----
+// const wsClient = new WebsocketClient({
+//   apiKey: API_KEY,
+//   apiSecret: API_SECRET,
+//   apiPass: API_PASS,
+// });
+⋮----
+function logWSEvent(type, data)
+⋮----
+// simple sleep function
+function promiseSleep(milliseconds)
+⋮----
+// WARNING: for sensitive math you should be using a library such as decimal.js!
+function roundDown(value, decimals)
+⋮----
+/** This is a simple script wrapped in a immediately invoked function expression, designed to check for any available BTC balance and immediately sell the full amount for USDT */
+⋮----
+// // Add event listeners to log websocket events on account
+// wsClient.on('update', (data) => logWSEvent('update', data));
+// wsClient.on('open', (data) => logWSEvent('open', data));
+// wsClient.on('response', (data) => logWSEvent('response', data));
+// wsClient.on('reconnect', (data) => logWSEvent('reconnect', data));
+// wsClient.on('reconnected', (data) => logWSEvent('reconnected', data));
+// wsClient.on('authenticated', (data) => logWSEvent('authenticated', data));
+// wsClient.on('exception', (data) => logWSEvent('exception', data));
+⋮----
+// // Subscribe to private account topics
+// wsClient.subscribeTopic('SPBL', 'account');
+// wsClient.subscribeTopic('SPBL', 'orders');
+⋮----
+// wait briefly for ws to be ready (could also use the response or authenticated events, to make sure topics are subscribed to before starting)
+⋮----
+// const balances = allBalances.filter((bal) => Number(bal.available) != 0);
+⋮----
+// console.log('balance: ', JSON.stringify(balances, null, 2));
+⋮----
+// const symbol = 'BTCUSDT_SPBL';
+⋮----
+// const symbolsResult = await client.getSymbols();
+// const btcRules = symbolsResult.data.find((rule) => rule.symbol === symbol);
+// console.log('btc trading rules: ', btcRules);
+// if (!btcRules) {
+//   return console.log('no rules found for trading ' + symbol);
+// }
+⋮----
+// const quantityScale = Number(btcRules.quantityScale);
+// // const quantityRoundedDown = btcAmount - btcAmount % 0.01
+// const quantity = roundDown(btcAmount, quantityScale);
+⋮----
+// const order = {
+//   symbol: symbol,
+//   side: 'sell',
+//   force: 'normal',
+//   orderType: 'market',
+//   quantity: String(quantity),
+// } as const;
+⋮----
+// console.log('submitting order: ', order);
+⋮----
+// const sellResult = await client.submitOrder(order);
+⋮----
+// console.log('sell result: ', sellResult);
+
+================
+File: examples/ws-private-handle-auth-fail.ts
+================
+// If you cloned the repo and are using typescript, you can import from src directly:
+import { WebsocketClient } from '../src';
+⋮----
+/**
+ *
+ * This simple example demonstrates one way to handle failed authentication, stopping the
+ * websocket client from running into a reconnect-loop when authentication fails (e.g. bad API keys).
+ *
+ * However, keep in mind it might be safer to make a test REST API call (e.g. fetch account balance) before
+ * trying to make a private WS connection to the account.
+ *
+ */
+⋮----
+// For private topics, include one or more accounts in an array. Otherwise only public topics will work
+⋮----
+// Raw data will arrive on the 'update' event
+⋮----
+// console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+⋮----
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+⋮----
+// console.log('ws response: ', JSON.stringify(data, null, 2));
+⋮----
+// Optional, connect before subscribing:
+⋮----
+// This is optional though. The wsclient will automatically open and subscribe if the connection doesn't exist yet.
+⋮----
+// Subscribe one event at a time:
+
+================
+File: src/types/rest/request/account.ts
+================
+import {
+  InstrumentType,
+  MarginMode,
+  PositionSide,
+  WithdrawState,
+} from '../shared';
+⋮----
+export interface SetLeverageRequest {
+  instId?: string;
+  ccy?: string;
+  lever: string;
+  mgnMode: MarginMode;
+  posSide?: 'long' | 'short';
+}
+⋮----
+export interface ChangePositionMarginRequest {
+  instId: string;
+  posSide: PositionSide;
+  type: 'add' | 'reduce';
+  amt: string;
+  ccy?: string;
+  auto?: boolean;
+  loanTrans?: boolean;
+}
+⋮----
+export interface GetPositionsParams {
+  instType?: InstrumentType;
+  instId?: string;
+  posId?: string;
+}
+⋮----
+export interface GetHistoricPositionParams {
+  instType?: InstrumentType;
+  instId?: string;
+  mgnMode?: string;
+  type?: string;
+  posId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface WithdrawalHistoryRequest {
+  ccy?: string;
+  wdId?: string;
+  clientId?: string;
+  txId?: string;
+  type?: '3' | '4';
+  state?: WithdrawState;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetInstrumentsRequest {
+  instType: 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION';
+  uly?: string;
+  instFamily?: string;
+  instId?: string;
+}
+⋮----
+export interface QuickMarginBorrowRepayRequest {
+  instId: string;
+  ccy: string;
+  side: 'borrow' | 'repay';
+  amt: string;
+  posSide?: 'long' | 'short';
+}
+⋮----
+export interface GetQuickMarginBorrowRepayHistoryRequest {
+  instId?: string;
+  ccy?: string;
+  side?: 'borrow' | 'repay';
+  after?: string;
+  before?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface GetVIPInterestRequest {
+  ccy?: string;
+  ordId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetVIPLoanOrderListRequest {
+  ordId?: string;
+  state?: '1' | '2' | '3' | '4' | '5';
+  ccy?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetVIPLoanOrderDetailRequest {
+  ordId: string;
+  ccy?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface GetFixedLoanBorrowQuoteRequest {
+  type: 'normal' | 'reborrow';
+  ccy?: string;
+  amt?: string;
+  maxRate?: string;
+  term?: string;
+  ordId?: string;
+}
+⋮----
+export interface SubmitFixedLoanBorrowingOrderRequest {
+  ccy: string;
+  amt: string;
+  maxRate: string;
+  term: string;
+  reborrow?: boolean;
+  reborrowRate?: string;
+}
+⋮----
+export interface UpdateFixedLoanBorrowingOrderRequest {
+  ordId: string;
+  reborrow?: boolean;
+  renewMaxRate?: string;
+}
+⋮----
+export interface GetFixedLoanBorrowingOrdersListRequest {
+  ordId?: string;
+  ccy?: string;
+  state?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+  term?: string;
+}
+⋮----
+export interface GetBorrowRepayHistoryRequest {
+  ccy?: string;
+  type?: 'auto_borrow' | 'auto_repay' | 'manual_borrow' | 'manual_repay';
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface PositionBuilderRequest {
+  inclRealPosAndEq?: boolean;
+  spotOffsetType?: '1' | '2' | '3';
+  simPos?: {
+    instId: string;
+    pos: string;
+  }[];
+  simAsset?: {
+    ccy: string;
+    amt: string;
+  }[];
+  greeksType?: 'BS' | 'PA' | 'CASH';
+}
+⋮----
+export interface SetMMPConfigRequest {
+  instFamily: string;
+  timeInterval: string;
+  frozenInterval: string;
+  qtyLimit: string;
+}
+
+================
+File: src/types/rest/request/trade.ts
+================
+import {
+  AlgoOrderState,
+  AlgoOrderType,
+  AlgoPositionSide,
+  InstrumentType,
+  MarginMode,
+  numberInString,
+  OrderSide,
+  OrderType,
+  PositionSide,
+  PriceTriggerType,
+  TradeMode,
+} from '../shared';
+⋮----
+export interface AlgoRecentHistoryRequest {
+  ordType: AlgoOrderType;
+  algoId?: string;
+  instType?: InstrumentType;
+  instId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+export interface AlgoLongHistoryRequest {
+  ordType: AlgoOrderType;
+  state?: AlgoOrderState;
+  algoId?: string;
+  instType?: InstrumentType;
+  instId?: string;
+  after?: string;
+  before?: string;
+  limit?: string;
+}
+⋮----
+interface AlgoTriggerOrder {
+  newTpTriggerPx?: string;
+  newTpTriggerPxType?: 'last' | 'index' | 'mark';
+  newTpOrdPx?: string;
+  newSlTriggerPx?: string;
+  newSlTriggerPxType?: 'last' | 'index' | 'mark';
+  newSlOrdPx?: string;
+}
+⋮----
+export interface AlgoOrderRequest {
+  instId: string;
+  tdMode: TradeMode;
+  ccy?: string;
+  side: OrderSide;
+  posSide?: AlgoPositionSide;
+  ordType: AlgoOrderType;
+  algoClOrdId?: string;
+  sz: numberInString;
+  tag?: string;
+  reduceOnly?: boolean;
+  tgtCcy?: string;
+  tpTriggerPx?: numberInString;
+  tpTriggerPxType?: PriceTriggerType;
+  tpOrdPx?: numberInString;
+  tpOrdKind?: string;
+  slTriggerPx?: numberInString;
+  slTriggerPxType?: PriceTriggerType;
+  slOrdPx?: numberInString;
+  cxlOnClosePos?: boolean;
+  triggerPx?: numberInString;
+  triggerPxType?: PriceTriggerType;
+  orderPx?: numberInString;
+  chaseType?: string;
+  chaseVal?: numberInString;
+  maxChaseType?: string;
+  maxChaseVal?: numberInString;
+  callbackRatio?: numberInString;
+  callbackSpread?: numberInString;
+  activePx?: numberInString;
+  pxVar?: numberInString;
+  pxSpread?: numberInString;
+  szLimit?: numberInString;
+  pxLimit?: numberInString;
+  timeInterval?: string;
+  quickMgnType?: string;
+  closeFraction?: numberInString;
+  attachAlgoOrds?: AlgoTriggerOrder[];
+}
+⋮----
+export interface AmendOrderRequest {
+  instId: string;
+  cxlOnFail?: boolean;
+  ordId?: string;
+  clOrdId?: string;
+  reqId?: string;
+  newSz?: string;
+  newPx?: string;
+}
+⋮----
+export type AlgoOrderDetailsRequest =
+  | {
+      algoId: string;
+    }
+  | {
+      algoClOrdId: string;
+    };
+⋮----
+export interface AmendAlgoOrderRequest {
+  instId: string;
+  algoId?: string;
+  algoClOrdId?: string;
+  cxlOnFail?: boolean;
+  reqId?: string;
+  newSz?: string;
+  newTpTriggerPx?: string;
+  newTpOrdPx?: string;
+  newSlTriggerPx?: string;
+  newSlOrdPx?: string;
+  newTpTriggerPxType?: 'last' | 'index' | 'mark';
+  newSlTriggerPxType?: 'last' | 'index' | 'mark';
+  newTriggerPx: string;
+  newOrdPx: string;
+  newTriggerPxType?: 'last' | 'index' | 'mark';
+  attachAlgoOrds?: AlgoTriggerOrder[];
+}
+⋮----
+export interface CancelAlgoOrderRequest {
+  algoId: string;
+  instId: string;
+}
+⋮----
+export interface ClosePositionRequest {
+  instId: string;
+  posSide?: PositionSide;
+  mgnMode: MarginMode;
+  ccy?: string;
+  autoCxl?: boolean;
+  clOrdId?: string;
+  tag?: string;
+}
+⋮----
+export interface FillsHistoryRequest {
+  instType?: InstrumentType;
+  uly?: string;
+  instId?: string;
+  ordId?: string;
+  after?: string;
+  before?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface OrderIdRequest {
+  instId: string;
+  ordId?: string;
+  clOrdId?: string;
+}
+⋮----
+export interface OrderHistoryRequest {
+  instType: InstrumentType;
+  uly?: string;
+  instId?: string;
+  ordType?: OrderType;
+  state?: string;
+  category?: string;
+  after?: string;
+  before?: string;
+  begin?: string;
+  end?: string;
+  limit?: string;
+}
+⋮----
+export interface OrderRequest {
+  instId: string;
+  tdMode: TradeMode;
+  ccy?: string;
+  clOrdId?: string;
+  tag?: string;
+  side: OrderSide;
+  posSide?: PositionSide;
+  ordType: OrderType;
+  /** Quantity to buy or sell */
+  sz: numberInString;
+  px?: string;
+  reduceOnly?: boolean;
+  /** A spot buy on BTC-USDT with "base_ccy" would mean the QTY (sz) is in USDT */
+  tgtCcy?: 'base_ccy' | 'quote_ccy';
+  banAmend?: boolean;
+  /** Take Profit & Stop Loss params */
+  tpTriggerPx?: string;
+  tpOrdPx?: string;
+  slTriggerPx?: string;
+  slOrdPx?: string;
+  tpTriggerPxType?: PriceTriggerType;
+  slTriggerPxType?: PriceTriggerType;
+  /** Quick margin type */
+  quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
+}
+⋮----
+/** Quantity to buy or sell */
+⋮----
+/** A spot buy on BTC-USDT with "base_ccy" would mean the QTY (sz) is in USDT */
+⋮----
+/** Take Profit & Stop Loss params */
+⋮----
+/** Quick margin type */
+⋮----
+export interface GetTransactionDetailsArchiveRequest {
+  year: string;
+  quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+}
+⋮----
+export interface OrderPrecheckRequest {
+  instId: string;
+  tdMode: string;
+  side: string;
+  posSide?: string;
+  ordType: string;
+  sz: string;
+  px?: string;
+  reduceOnly?: boolean;
+  tgtCcy?: string;
+  attachAlgoOrds?: {
+    attachAlgoClOrdId?: string;
+    tpTriggerPx?: string;
+    tpOrdPx?: string;
+    tpOrdKind?: string;
+    slTriggerPx?: string;
+    slOrdPx?: string;
+    tpTriggerPxType?: string;
+    slTriggerPxType?: string;
+    sz?: string;
+  }[];
+}
+
+================
+File: src/types/rest/response/index.ts
+================
+
+
+================
+File: src/types/rest/client.ts
+================
+import { APIMarket } from '../shared';
+⋮----
+export interface RestClientOptions {
+  apiKey?: string;
+  apiSecret?: string;
+  apiPass?: string;
+
+  market?: APIMarket;
+
+  // Default: false. If true, we'll throw errors if any params are undefined
+  strict_param_validation?: boolean;
+
+  // Optionally override API protocol + domain
+  // e.g 'https://api.bytick.com'
+  baseUrl?: string;
+
+  // Default: true. whether to try and post-process request exceptions.
+  parse_exceptions?: boolean;
+
+  /**
+   * Enable keep alive for REST API requests (via axios).
+   */
+  keepAlive?: boolean;
+
+  /**
+   * When using HTTP KeepAlive, how often to send TCP KeepAlive packets over sockets being kept alive. Default = 1000.
+   * Only relevant if keepAlive is set to true.
+   * Default: 1000 (defaults comes from https agent)
+   */
+  keepAliveMsecs?: number;
+}
+⋮----
+// Default: false. If true, we'll throw errors if any params are undefined
+⋮----
+// Optionally override API protocol + domain
+// e.g 'https://api.bytick.com'
+⋮----
+// Default: true. whether to try and post-process request exceptions.
+⋮----
+/**
+   * Enable keep alive for REST API requests (via axios).
+   */
+⋮----
+/**
+   * When using HTTP KeepAlive, how often to send TCP KeepAlive packets over sockets being kept alive. Default = 1000.
+   * Only relevant if keepAlive is set to true.
+   * Default: 1000 (defaults comes from https agent)
+   */
+
+================
+File: src/types/websockets/request.ts
+================
+export interface WsAuthRequestArg {
+  apiKey: string;
+  passphrase: string;
+  timestamp: string;
+  sign: string;
+}
+⋮----
+export type WsTradeOp =
+  | 'order'
+  | 'batch-orders'
+  | 'cancel-order'
+  | 'batch-cancel-orders'
+  | 'amend-order'
+  | 'batch-amend-order';
+⋮----
+export type WsRequestOp = 'login' | 'subscribe' | 'unsubscribe';
+⋮----
+export type WsPrivateChannel =
+  | 'account'
+  | 'positions'
+  | 'balance_and_position'
+  | 'orders'
+  | 'orders-algo'
+  | 'algo-advance'
+  | 'liquidation-warning'
+  | 'account-greeks'
+  | 'grid-orders-spot'
+  | 'grid-orders-contract'
+  | 'grid-orders-moon'
+  | 'grid-positions'
+  | 'grid-sub-orders';
+⋮----
+export type WsPublicKlineChannel =
+  | 'candle1Y'
+  | 'candle6M'
+  | 'candle3M'
+  | 'candle1M'
+  | 'candle1W'
+  | 'candle1D'
+  | 'candle2D'
+  | 'candle3D'
+  | 'candle5D'
+  | 'candle12H'
+  | 'candle6H'
+  | 'candle4H'
+  | 'candle2H'
+  | 'candle1H'
+  | 'candle30m'
+  | 'candle15m'
+  | 'candle5m'
+  | 'candle3m'
+  | 'candle1m'
+  | 'candle1s'
+  | 'candle1Yutc'
+  | 'candle3Mutc'
+  | 'candle1Mutc'
+  | 'candle1Wutc'
+  | 'candle1Dutc'
+  | 'candle2Dutc'
+  | 'candle3Dutc'
+  | 'candle5Dutc'
+  | 'candle12Hutc'
+  | 'candle6Hutc';
+⋮----
+export type WsPublicMarkPriceKlineChannel =
+  | 'mark-price-candle1Y'
+  | 'mark-price-candle6M'
+  | 'mark-price-candle3M'
+  | 'mark-price-candle1M'
+  | 'mark-price-candle1W'
+  | 'mark-price-candle1D'
+  | 'mark-price-candle2D'
+  | 'mark-price-candle3D'
+  | 'mark-price-candle5D'
+  | 'mark-price-candle12H'
+  | 'mark-price-candle6H'
+  | 'mark-price-candle4H'
+  | 'mark-price-candle2H'
+  | 'mark-price-candle1H'
+  | 'mark-price-candle30m'
+  | 'mark-price-candle15m'
+  | 'mark-price-candle5m'
+  | 'mark-price-candle3m'
+  | 'mark-price-candle1m'
+  | 'mark-price-candle1Yutc'
+  | 'mark-price-candle3Mutc'
+  | 'mark-price-candle1Mutc'
+  | 'mark-price-candle1Wutc'
+  | 'mark-price-candle1Dutc'
+  | 'mark-price-candle2Dutc'
+  | 'mark-price-candle3Dutc'
+  | 'mark-price-candle5Dutc'
+  | 'mark-price-candle12Hutc'
+  | 'mark-price-candle6Hutc';
+⋮----
+export type WsPublicIndexKlineChannel =
+  | 'index-candle1Y'
+  | 'index-candle6M'
+  | 'index-candle3M'
+  | 'index-candle1M'
+  | 'index-candle1W'
+  | 'index-candle1D'
+  | 'index-candle2D'
+  | 'index-candle3D'
+  | 'index-candle5D'
+  | 'index-candle12H'
+  | 'index-candle6H'
+  | 'index-candle4H index -candle2H'
+  | 'index-candle1H'
+  | 'index-candle30m'
+  | 'index-candle15m'
+  | 'index-candle5m'
+  | 'index-candle3m'
+  | 'index-candle1m'
+  | 'index-candle1Yutc'
+  | 'index-candle3Mutc'
+  | 'index-candle1Mutc'
+  | 'index-candle1Wutc'
+  | 'index-candle1Dutc'
+  | 'index-candle2Dutc'
+  | 'index-candle3Dutc'
+  | 'index-candle5Dutc'
+  | 'index-candle12Hutc'
+  | 'index-candle6Hutc';
+⋮----
+export type WsPublicOrderBooksChannel =
+  | 'books'
+  | 'books5'
+  | 'bbo-tbt'
+  | 'books-l2-tbt'
+  | 'books50-l2-tpt';
+⋮----
+export type WsPublicChannel =
+  | 'instruments'
+  | 'tickers'
+  | 'open-interest'
+  | WsPublicKlineChannel
+  | WsPublicMarkPriceKlineChannel
+  | WsPublicIndexKlineChannel
+  | 'trades'
+  | 'estimated-price'
+  | 'mark-price'
+  | 'price-limit'
+  | WsPublicOrderBooksChannel
+  | 'opt-summary'
+  | 'funding-rate'
+  | 'index-tickers'
+  | 'status'
+  | 'liquidation-orders';
+⋮----
+export type WsBusinessPrivateChannel =
+  | 'orders-algo'
+  | 'algo-advance'
+  | 'deposit-info'
+  | 'withdrawal-info'
+  | 'grid-orders-spot'
+  | 'grid-orders-contract'
+  | 'grid-orders-moon'
+  | 'grid-positions'
+  | 'grid-sub-orders'
+  | 'algo-recurring-buy';
+⋮----
+export type WsBusinessPublicChannel =
+  | WsPublicKlineChannel
+  | WsPublicMarkPriceKlineChannel
+  | WsPublicIndexKlineChannel;
+⋮----
+export type WsBusinessChannel =
+  | WsBusinessPrivateChannel
+  | WsBusinessPublicChannel;
+⋮----
+export type WsChannel = WsPublicChannel | WsPrivateChannel | WsBusinessChannel;
+⋮----
+export interface WsBaseRequest {
+  op: WsRequestOp;
+  args: any[];
+}
+⋮----
+/** Used to trigger order actions over websockets (e.g. placing & cancelling orders) */
+export interface WsTradeBaseRequest {
+  op: WsTradeOp;
+  id: string;
+  args: any[];
+}
+⋮----
+export interface WsBaseRequestArg {
+  channel: WsChannel;
+}
+⋮----
+/**
+ *
+ * Args to be sent with top level requests
+ *
+ */
+⋮----
+export interface WsPrivateChannelArgTickers extends WsBaseRequestArg {
+  channel: 'tickers';
+  instId: string;
+}
+⋮----
+export interface WsPrivateChannelArgWithCcy extends WsBaseRequestArg {
+  channel: 'account' | 'account-greeks' | 'withdrawal-info';
+  ccy?: string;
+}
+⋮----
+export type WsChannelArgInstType =
+  | 'SPOT'
+  | 'MARGIN'
+  | 'SWAP'
+  | 'FUTURES'
+  | 'OPTION'
+  | 'ANY';
+⋮----
+export interface WsPrivateChannelArgWithInstFamily extends WsBaseRequestArg {
+  channel: 'positions' | 'orders' | 'orders-algo' | 'liquidation-warning';
+  instType: WsChannelArgInstType;
+  instFamily?: string;
+  instId?: string;
+}
+⋮----
+export interface WsPrivateChannelArgAlgo extends WsBaseRequestArg {
+  channel: 'algo-advance';
+  instType: WsChannelArgInstType;
+  instId?: string;
+  algoId?: string;
+}
+⋮----
+export interface WsPrivateChannelArgBalanceAndPosition
+  extends WsBaseRequestArg {
+  channel: 'balance_and_position';
+}
+⋮----
+export interface WsPrivateChannelArgGridOrders extends WsBaseRequestArg {
+  channel: 'grid-orders-spot' | 'grid-orders-contract' | 'grid-orders-moon';
+  instType: 'SPOT' | 'ANY';
+  instId?: string;
+  algoId?: string;
+}
+⋮----
+export interface WsPrivateChannelArgGridOther extends WsBaseRequestArg {
+  channel: 'grid-positions' | 'grid-sub-orders';
+  algoId: string;
+}
+⋮----
+export interface WsPublicChannelArgInstType extends WsBaseRequestArg {
+  channel: 'instruments';
+  instType: WsChannelArgInstType;
+}
+⋮----
+export interface WsPublicChannelArgInstId extends WsBaseRequestArg {
+  channel:
+    | 'tickers'
+    | 'open-interest'
+    | WsPublicKlineChannel
+    | WsPublicMarkPriceKlineChannel
+    | WsPublicIndexKlineChannel
+    | 'trades'
+    | 'mark-price'
+    | 'price-limit'
+    | WsPublicOrderBooksChannel
+    | 'funding-rate'
+    | 'index-tickers';
+  instId: string;
+}
+⋮----
+export type WsPublicChannelArgInstIdOrFamily = {
+  channel: 'estimated-price';
+  instType: 'OPTION' | 'FUTURES';
+} & (
+  | {
+      instId: string;
+    }
+  | {
+      instFamily: string;
+    }
+);
+⋮----
+export interface WsPublicChannelArgOptionSummary extends WsBaseRequestArg {
+  channel: 'opt-summary';
+  instFamily: string;
+}
+⋮----
+export interface WsPublicChannelArgStatus extends WsBaseRequestArg {
+  channel: 'status';
+}
+⋮----
+export interface WsPublicChannelArgLiquidationOrders extends WsBaseRequestArg {
+  channel: 'liquidation-orders';
+  instType: 'SWAP' | 'FUTURES';
+}
+⋮----
+export type WsChannelSubUnSubRequestArg =
+  | WsPrivateChannelArgTickers
+  | WsPrivateChannelArgWithCcy
+  | WsPrivateChannelArgWithInstFamily
+  | WsPrivateChannelArgAlgo
+  | WsPrivateChannelArgBalanceAndPosition
+  | WsPrivateChannelArgGridOrders
+  | WsPrivateChannelArgGridOther
+  | WsPublicChannelArgInstType
+  | WsPublicChannelArgInstId
+  | WsPublicChannelArgInstIdOrFamily
+  | WsPublicChannelArgOptionSummary
+  | WsPublicChannelArgStatus
+  | WsPublicChannelArgLiquidationOrders;
+⋮----
+/**
+ *
+ * Top level requests with args
+ *
+ */
+⋮----
+export interface WsSubRequest extends WsBaseRequest {
+  op: 'subscribe';
+  args: WsChannelSubUnSubRequestArg[];
+}
+⋮----
+export interface WsUnsubRequest extends WsBaseRequest {
+  op: 'unsubscribe';
+  args: WsChannelSubUnSubRequestArg[];
+}
+⋮----
+export interface WsAuthRequest extends WsBaseRequest {
+  op: 'login';
+  args: WsAuthRequestArg[];
+}
+
+================
+File: .gitignore
+================
+!.gitkeep
+.DS_STORE
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+pids
+*.pid
+*.seed
+*.pid.lock
+node_modules/
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+.env
+.env.test
+.cache
+lib
+bundleReport.html
+.history/
+.idea
+privaterepotracker
+restClientRegex.ts
+testfile.ts
+localtest.sh
+
+repomix.sh
+
+================
+File: examples/rest-private-trade-market.ts
+================
+import { OrderRequest, RestClient } from '../src/index';
+⋮----
+// or
+// import { RestClient, OrderRequest } from 'okx-api';
+⋮----
+// read from environmental variables
+⋮----
+// If running from CLI in unix, you can pass env vars as such:
+// API_KEY_COM='lkm12n3-2ba3-1mxf-fn13-lkm12n3a' API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade-market.ts
+⋮----
+// note the single quotes, preventing special characters such as $ from being incorrectly passed
+⋮----
+// apiKey: 'apiKeyHere',
+⋮----
+// apiSecret: 'apiSecretHere',
+⋮----
+// apiPass: 'apiPassHere',
+⋮----
+/** Get available balance for an asset */
+async function getAssetBalance(
+  client: RestClient,
+  coin: string,
+): Promise<number | null>
+⋮----
+/**
+ * This is a simple REST API demo script wrapped in a immediately invoked function expression. The logic below will immediately execute if you run this script.
+ *
+ * It is designed to:
+ * - check for any available USDT balance
+ * - immediately use half the balance to buy bitcoin (in spot)
+ * - check the available BTC balance
+ * - immediately sell all available BTC back to USDT
+ */
+
+================
+File: examples/ws-private.ts
+================
+// If you cloned the repo and are using typescript, you can import from src directly:
+import { DefaultLogger, WebsocketClient } from '../src';
+⋮----
+// or use the module installed via `npm install okx-api`:
+// import { WebsocketClient, DefaultLogger } from 'okx-api';
+⋮----
+// or if you're not using typescript (e.g. pure nodejs), change the "import" to "require":
+// const { WebsocketClient, DefaultLogger } = require('okx-api');
+⋮----
+// Optional: Inject a custom logger.
+// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+⋮----
+// silly: (...params) => console.log('silly', ...params),
+⋮----
+// For private events, all 3 of the following are required (per account):
+⋮----
+// If running from CLI in unix, you can pass env vars as such:
+// API_KEY_COM='lkm12n3-2ba3-1mxf-fn13-lkm12n3a' API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/ws-private.ts
+⋮----
+// note the single quotes, preventing special characters such as $ from being incorrectly passed
+⋮----
+// The market defaults to "prod" for the live environment, but you can also ask to use the aws or demo environments:
+// market: 'prod',
+// market: 'aws',
+// market: 'demo',
+⋮----
+// For private topics, include one or more accounts in an array. Otherwise only public topics will work
+⋮----
+// {
+//   apiKey: 'yourApiKeyHere',
+//   apiSecret: 'yourApiSecretHere',
+//   apiPass: 'yourApiPassHere',
+// },
+// {
+//   apiKey: 'anotherAccountKey',
+//   apiSecret: 'anotherAccountSecret',
+//   apiPass: 'anotherAccountPass',
+// },
+⋮----
+// Raw data will arrive on the 'update' event
+⋮----
+// console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+⋮----
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+⋮----
+// console.log('ws response: ', JSON.stringify(data, null, 2));
+⋮----
+// Optional, connect before subscribing:
+// wsClient.connectPrivate();
+⋮----
+// This is optional though. The wsclient will automatically open and subscribe if the connection doesn't exist yet.
+⋮----
+/**
+   * # Subscribing to channels
+   *
+   * Subscribe to channels using the inner "args" part of the subscription request described in the OKX API docs.
+   *
+   * For example, if the docs state your request should look as such:
+   {
+     op: "subscribe",
+     args: [
+       {
+         channel: "account"
+       }
+     ]
+   }
+   *
+   * You should call the wsClient.subscribe function using only the "args".
+   *
+   * Either of these examples is correct (one channel vs one or more channels in an array):
+   wsClient.subscribe({
+     channel: 'account'
+   });
+
+   wsClient.subscribe([
+     {
+       channel: "account"
+     }
+   ])
+   */
+⋮----
+// Subscribe one event at a time:
+⋮----
+// OR, combine multiple subscription events into one request using an array instead of an object:
+⋮----
+/**
+ * Examples for each private channel listed in the API docs:
+ * https://www.okx.com/docs-v5/en/#websocket-api-private-channel
+ */
+⋮----
+// Account events for all symbols
+⋮----
+// Account events for specific symbol only
+⋮----
+// Withdrawal events for specific symbol only
+⋮----
+// Position events on any instrument type
+⋮----
+// Position events on specific instruments
+⋮----
+// Balance & position channel
+⋮----
+// Order channel
+⋮----
+// Order channel with extra args
+⋮----
+// Algo orders channel
+⋮----
+// Advance algo orders channel
+⋮----
+// Position risk warning channel
+⋮----
+// Account greeks channel
+⋮----
+// Spot grid algo orders channel
+⋮----
+// Contract grid orders channel
+⋮----
+// Moon grid orders channel
+⋮----
+// Moon grid orders channel
+⋮----
+// Grid positions channel
+⋮----
+// Grid sub orders channel
+
+================
+File: src/types/rest/response/private-funding.ts
+================
+import { ASSET_BILL_TYPE } from '../../../constants';
+⋮----
+export interface FundingCurrency {
+  ccy: string; // Currency code (e.g., "BTC")
+  name: string; // Currency name
+  logoLink: string; // Currency logo URL
+  chain: string; // Chain name (e.g., "BTC-Bitcoin")
+  ctAddr: string; // Contract address
+  canDep: boolean; // Deposit availability
+  canWd: boolean; // Withdrawal availability
+  canInternal: boolean; // Internal transfer availability
+  depEstOpenTime: string; // Estimated deposit opening time (timestamp)
+  wdEstOpenTime: string; // Estimated withdrawal opening time (timestamp)
+  minDep: string; // Minimum deposit amount
+  minWd: string; // Minimum withdrawal amount
+  minInternal: string; // Minimum internal transfer amount
+  maxWd: string; // Maximum withdrawal amount per transaction
+  wdTickSz: string; // Withdrawal precision (decimal places)
+  wdQuota: string; // 24h withdrawal limit in USD
+  usedWdQuota: string; // Used withdrawal quota in USD
+  fee: string; // Fixed withdrawal fee
+  minFee: string; // Minimum withdrawal fee (deprecated)
+  maxFee: string; // Maximum withdrawal fee (deprecated)
+  minFeeForCtAddr: string; // Minimum contract address withdrawal fee (deprecated)
+  maxFeeForCtAddr: string; // Maximum contract address withdrawal fee (deprecated)
+  burningFeeRate: string; // Burning fee rate (e.g., "0.05" for 5%)
+  mainNet: boolean; // Is main network
+  needTag: boolean; // Requires tag/memo for withdrawal
+  minDepArrivalConfirm: string; // Min confirmations for deposit credit
+  minWdUnlockConfirm: string; // Min confirmations for withdrawal unlock
+  depQuotaFixed: string; // Fixed deposit limit in USD
+  usedDepQuotaFixed: string; // Used fixed deposit quota in USD
+  depQuoteDailyLayer2: string; // Layer2 daily deposit limit
+}
+⋮----
+ccy: string; // Currency code (e.g., "BTC")
+name: string; // Currency name
+logoLink: string; // Currency logo URL
+chain: string; // Chain name (e.g., "BTC-Bitcoin")
+ctAddr: string; // Contract address
+canDep: boolean; // Deposit availability
+canWd: boolean; // Withdrawal availability
+canInternal: boolean; // Internal transfer availability
+depEstOpenTime: string; // Estimated deposit opening time (timestamp)
+wdEstOpenTime: string; // Estimated withdrawal opening time (timestamp)
+minDep: string; // Minimum deposit amount
+minWd: string; // Minimum withdrawal amount
+minInternal: string; // Minimum internal transfer amount
+maxWd: string; // Maximum withdrawal amount per transaction
+wdTickSz: string; // Withdrawal precision (decimal places)
+wdQuota: string; // 24h withdrawal limit in USD
+usedWdQuota: string; // Used withdrawal quota in USD
+fee: string; // Fixed withdrawal fee
+minFee: string; // Minimum withdrawal fee (deprecated)
+maxFee: string; // Maximum withdrawal fee (deprecated)
+minFeeForCtAddr: string; // Minimum contract address withdrawal fee (deprecated)
+maxFeeForCtAddr: string; // Maximum contract address withdrawal fee (deprecated)
+burningFeeRate: string; // Burning fee rate (e.g., "0.05" for 5%)
+mainNet: boolean; // Is main network
+needTag: boolean; // Requires tag/memo for withdrawal
+minDepArrivalConfirm: string; // Min confirmations for deposit credit
+minWdUnlockConfirm: string; // Min confirmations for withdrawal unlock
+depQuotaFixed: string; // Fixed deposit limit in USD
+usedDepQuotaFixed: string; // Used fixed deposit quota in USD
+depQuoteDailyLayer2: string; // Layer2 daily deposit limit
+⋮----
+export interface FundingBalance {
+  availBal: string;
+  bal: string;
+  ccy: string;
+  frozenBal: string;
+}
+⋮----
+export interface AccountAssetValuation {
+  details: {
+    classic: string;
+    earn: string;
+    funding: string;
+    trading: string;
+  };
+  totalBal: string;
+  ts: string;
+}
+⋮----
+export interface FundTransferResult {
+  transId: string;
+  ccy: string;
+  clientId: string;
+  from: string;
+  amt: string;
+  to: string;
+}
+export interface FundTransferState {
+  amt: string;
+  ccy: string;
+  clientId: string;
+  from: string;
+  instId: never; // deprecated
+  state: string;
+  subAcct: string;
+  to: string;
+  toInstId: never; // deprecated
+  transId: string;
+  type: string;
+}
+⋮----
+instId: never; // deprecated
+⋮----
+toInstId: never; // deprecated
+⋮----
+export interface AssetBillDetails {
+  billId: string;
+  ccy: string;
+  clientId: string;
+  balChg: string;
+  bal: string;
+  type: `${ASSET_BILL_TYPE}`;
+  ts: string;
+}
+⋮----
+export interface WithdrawResponse {
+  ccy: string;
+  chain: string;
+  amt: string;
+  wdId: string;
+  clientId: string;
+}
+⋮----
+export interface NonTradableAsset {
+  ccy: string;
+  name: string;
+  logoLink: string;
+  bal: string;
+  canWd: boolean;
+  chain: string;
+  minWd: string;
+  wdAll: boolean;
+  fee: string;
+  ctAddr: string;
+  wdTickSz: string;
+  needTag: boolean;
+  burningFeeRate: string;
+  feeCcy: string;
+}
+
+================
+File: src/websocket-client.ts
+================
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+import { EventEmitter } from 'events';
+import WebSocket from 'isomorphic-ws';
+⋮----
+import {
+  APICredentials,
+  WebsocketClientOptions,
+  WsAuthRequest,
+  WsAuthRequestArg,
+  WsChannelSubUnSubRequestArg,
+  WSClientConfigurableOptions,
+  WsDataEvent,
+  WsEvent,
+  WsSubRequest,
+  WsUnsubRequest,
+} from './types';
+import {
+  DefaultLogger,
+  getMaxTopicsPerSubscribeEvent,
+  getWsKeyForTopicChannel,
+  isConnCountEvent,
+  isWsDataEvent,
+  isWsErrorEvent,
+  isWsLoginEvent,
+  isWsPong,
+  isWsSubscribeEvent,
+  isWsUnsubscribeEvent,
+  PRIVATE_WS_KEYS,
+  PUBLIC_WS_KEYS,
+  WS_KEY_MAP,
+  WsConnectionStateEnum,
+  WsStore,
+} from './util';
+import { signMessage } from './util/node-support';
+import {
+  getWsKeyForMarket,
+  getWsUrlForWsKey,
+  safeTerminateWs,
+  WS_EVENT_CODE_ENUM,
+  WsKey,
+} from './util/websocket-util';
+⋮----
+export type WsClientEvent =
+  | 'open'
+  | 'update'
+  | 'close'
+  | 'error'
+  | 'reconnect'
+  | 'reconnected'
+  | 'response';
+⋮----
+type WsKeyObject = { wsKey: WsKey };
+⋮----
+interface WebsocketClientEvents {
+  /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
+  open: (evt: { event: any } & WsKeyObject) => void;
+  /** Reconnecting a dropped connection */
+  reconnect: (evt: { event: any } & WsKeyObject) => void;
+  /** Successfully reconnected a connection that dropped */
+  reconnected: (evt: { event: any } & WsKeyObject) => void;
+  /** Connection closed */
+  close: (evt: { event: any } & WsKeyObject) => void;
+  /** Received reply to websocket command (e.g. after subscribing to topics or authenticating) */
+  response: (response: WsEvent & WsKeyObject) => void;
+  /** Received data for a topic/channel */
+  update: (response: WsDataEvent & WsKeyObject) => void;
+  /** Exception from ws client OR custom listeners */
+  error: (response: any) => void;
+}
+⋮----
+/** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
+⋮----
+/** Reconnecting a dropped connection */
+⋮----
+/** Successfully reconnected a connection that dropped */
+⋮----
+/** Connection closed */
+⋮----
+/** Received reply to websocket command (e.g. after subscribing to topics or authenticating) */
+⋮----
+/** Received data for a topic/channel */
+⋮----
+/** Exception from ws client OR custom listeners */
+⋮----
+// Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
+export declare interface WebsocketClient {
+  on<U extends keyof WebsocketClientEvents>(
+    event: U,
+    listener: WebsocketClientEvents[U],
+  ): this;
+
+  emit<U extends keyof WebsocketClientEvents>(
+    event: U,
+    ...args: Parameters<WebsocketClientEvents[U]>
+  ): boolean;
+}
+⋮----
+on<U extends keyof WebsocketClientEvents>(
+    event: U,
+    listener: WebsocketClientEvents[U],
+  ): this;
+⋮----
+emit<U extends keyof WebsocketClientEvents>(
+    event: U,
+    ...args: Parameters<WebsocketClientEvents[U]>
+  ): boolean;
+⋮----
+export class WebsocketClient extends EventEmitter
+⋮----
+constructor(
+    options: WSClientConfigurableOptions,
+    logger?: typeof DefaultLogger,
+)
+⋮----
+// add default error handling so this doesn't crash node (if the user didn't set a handler)
+⋮----
+/**
+   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
+   * @param wsEvents topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   */
+public subscribe(
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+)
+⋮----
+// Persist topic for reconnects
+⋮----
+// if connected, send subscription request
+⋮----
+// start connection process if it hasn't yet begun. Topics are automatically subscribed to on-connect
+⋮----
+/**
+   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
+   * @param wsTopics topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   */
+public unsubscribe(
+    wsTopics: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+)
+⋮----
+// Remove topic from persistence for reconnects
+⋮----
+// unsubscribe request only necessary if active connection exists
+⋮----
+/** Get the WsStore that tracks websocket & topic state */
+public getWsStore(): WsStore<WsChannelSubUnSubRequestArg>
+⋮----
+public close(wsKey: WsKey, force?: boolean)
+⋮----
+public closeAll(force?: boolean)
+⋮----
+/**
+   * Request connection of all dependent (public & private) websockets, instead of waiting for automatic connection by library
+   */
+public connectAll(): Promise<WebSocket | undefined>[]
+⋮----
+public connectPublic(
+    businessEndpoint?: boolean,
+): Promise<WebSocket | undefined>
+⋮----
+public connectPrivate(
+    businessEndpoint?: boolean,
+): Promise<WebSocket | undefined>
+⋮----
+private async connect(wsKey: WsKey): Promise<WebSocket | undefined>
+⋮----
+private parseWsError(context: string, error: any, wsKey: WsKey)
+⋮----
+/**
+   * Return params required to make authorized request
+   */
+private async getWsAuthRequest(
+    wsKey: WsKey,
+): Promise<WsAuthRequest | undefined>
+⋮----
+// Filter out failed accounts
+⋮----
+private async getWsAuthSignature(
+    wsKey: WsKey,
+    credentials: APICredentials,
+): Promise<
+⋮----
+// const signatureExpiresAt = timestamp + 5;
+⋮----
+private async sendAuthRequest(wsKey: WsKey): Promise<void>
+⋮----
+private reconnectWithDelay(wsKey: WsKey, connectionDelayMs: number)
+⋮----
+private ping(wsKey: WsKey)
+⋮----
+/**
+   * Closes a connection, if it's even open. If open, this will trigger a reconnect asynchronously.
+   * If closed, trigger a reconnect immediately
+   */
+private executeReconnectableClose(wsKey: WsKey, reason: string)
+⋮----
+private clearTimers(wsKey: WsKey)
+⋮----
+// Send a ping at intervals
+private clearPingTimer(wsKey: WsKey)
+⋮----
+// Expect a pong within a time limit
+private clearPongTimer(wsKey: WsKey)
+⋮----
+private clearReconnectTimer(wsKey: WsKey)
+⋮----
+/**
+   * @private Use the `subscribe(topics)` method to subscribe to topics. Send WS message to subscribe to topics.
+   */
+private requestSubscribeTopics(
+    wsKey: WsKey,
+    topics: WsChannelSubUnSubRequestArg[],
+)
+⋮----
+/**
+   * @private Use the `unsubscribe(topics)` method to unsubscribe from topics. Send WS message to unsubscribe from topics.
+   */
+private requestUnsubscribeTopics(
+    wsKey: WsKey,
+    topics: WsChannelSubUnSubRequestArg[],
+)
+⋮----
+public tryWsSend(wsKey: WsKey, wsMessage: string): void
+⋮----
+private connectToWsUrl(url: string, wsKey: WsKey): WebSocket
+⋮----
+private async onWsOpen(event: unknown, wsKey: WsKey)
+⋮----
+// Private websockets require an auth packet to be sent after opening the connection
+⋮----
+// Any requested private topics will be subscribed to once authentication succeeds (in onWsMessage handler)
+⋮----
+// Private topics will be subscribed to once authentication is confirmed as successful
+⋮----
+// Public topics can be subscribed to immediately
+⋮----
+// Since public channels have their own ws key, these topics must be public ones already
+⋮----
+private onWsMessage(event: any, wsKey: WsKey)
+⋮----
+// any message can clear the pong timer - wouldn't get a message if the ws dropped
+⋮----
+// Successfully authenticated
+⋮----
+// Since private topics have a dedicated WsKey, these are automatically all private topics (no filtering required before the subscribe call)
+⋮----
+// this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
+⋮----
+private onWsClose(event, wsKey: WsKey)
+
+================
+File: .eslintrc.cjs
+================
+// 'require-extensions', // only once moved to ESM
+⋮----
+// 'plugin:require-extensions/recommended', // only once moved to ESM
+⋮----
+// 'no-unused-vars': ['warn'],
+
+================
+File: src/types/rest/response/private-trade.ts
+================
+import {
+  AlgoOrderState,
+  AlgoOrderType,
+  AlgoPositionSide,
+  numberInString,
+  OrderState,
+  OrderType,
+  PositionSide,
+} from '../shared';
+⋮----
+export interface OrderResult {
+  clOrdId: string;
+  ordId: string;
+  tag: string;
+  ts: string;
+  sCode: numberInString;
+  sMsg: string;
+}
+⋮----
+export interface CancelledOrderResult {
+  clOrdId: string;
+  ordId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface AmendedOrder {
+  clOrdId: string;
+  ordId: string;
+  reqId: string;
+  sCode: string;
+  sMsg: string;
+}
+export interface ClosedPositions {
+  instId: string;
+  posSide: PositionSide;
+}
+⋮----
+export interface OrderDetails {
+  instType: string;
+  instId: string;
+  ccy: string;
+  ordId: string;
+  clOrdId: string;
+  tag: string;
+  px: string;
+  sz: string;
+  pnl: string;
+  ordType: OrderType;
+  side: string;
+  posSide: PositionSide;
+  tdMode: string;
+  accFillSz: string;
+  fillPx: string;
+  tradeId: string;
+  fillSz: string;
+  fillTime: string;
+  state: OrderState;
+  avgPx: string;
+  lever: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  tpOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  slOrdPx: string;
+  feeCcy: string;
+  fee: string;
+  rebateCcy: string;
+  rebate: string;
+  tgtCcy: string;
+  category: string;
+  uTime: string;
+  cTime: string;
+}
+⋮----
+export interface OrderListItem {
+  accFillSz: string;
+  avgPx: string;
+  cTime: string;
+  category: string;
+  ccy: string;
+  clOrdId: string;
+  fee: string;
+  feeCcy: string;
+  fillPx: string;
+  fillSz: string;
+  fillTime: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  ordId: string;
+  ordType: OrderType;
+  pnl: string;
+  posSide: PositionSide;
+  px: string;
+  pxUsd: string;
+  pxVol: string;
+  pxType: string;
+  rebate: string;
+  rebateCcy: string;
+  side: string;
+  attachAlgoClOrdId: string;
+  slOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  attachAlgoOrds: any[];
+  state: OrderState;
+  stpId: string;
+  stpMode: string;
+  sz: string;
+  tag: string;
+  tgtCcy: string;
+  tdMode: string;
+  source: string;
+  tpOrdPx: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  tradeId: string;
+  reduceOnly: string;
+  quickMgnType: string;
+  algoClOrdId: string;
+  algoId: string;
+  uTime: string;
+}
+⋮----
+export interface HistoricOrder {
+  instType: string;
+  instId: string;
+  ccy: string;
+  ordId: string;
+  clOrdId: string;
+  tag: string;
+  px: string;
+  pxUsd: string;
+  pxVol: string;
+  pxType: string;
+  sz: string;
+  ordType: OrderType;
+  side: string;
+  posSide: PositionSide;
+  tdMode: string;
+  accFillSz: string;
+  fillPx: string;
+  tradeId: string;
+  fillSz: string;
+  fillTime: string;
+  state: OrderState;
+  avgPx: string;
+  lever: string;
+  attachAlgoClOrdId: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  tpOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  slOrdPx: string;
+  attachAlgoOrds: any[];
+  stpId: string;
+  stpMode: string;
+  feeCcy: string;
+  fee: string;
+  rebateCcy: string;
+  source: string;
+  rebate: string;
+  tgtCcy: string;
+  pnl: string;
+  category: string;
+  reduceOnly: string;
+  cancelSource: string;
+  cancelSourceReason: string;
+  algoClOrdId: string;
+  algoId: string;
+  uTime: string;
+  cTime: string;
+}
+⋮----
+export interface OrderFill {
+  instType: string;
+  instId: string;
+  tradeId: string;
+  ordId: string;
+  clOrdId: string;
+  billId: string;
+  tag: string;
+  fillPx: string;
+  fillSz: string;
+  side: string;
+  posSide: PositionSide;
+  execType: string;
+  feeCcy: string;
+  fee: string;
+  ts: string;
+}
+⋮----
+export interface AlgoOrderResult {
+  algoId: string;
+  algoClOrdId: string;
+  sCode: string;
+  sMsg: string;
+}
+⋮----
+export interface AmendAlgoOrderResult extends AlgoOrderResult {
+  reqId: string;
+}
+⋮----
+export interface AlgoOrderDetailsResult {
+  instType: string;
+  instId: string;
+  ordId: string;
+  ordIdList: string[];
+  ccy: string;
+  clOrdId: string;
+  algoId: string;
+  attachAlgoOrds: any[];
+  sz: string;
+  closeFraction: string;
+  ordType: AlgoOrderType;
+  side: string;
+  posSide: AlgoPositionSide;
+  tdMode: string;
+  tgtCcy: string;
+  state: AlgoOrderState;
+  lever: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  tpOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  slOrdPx: string;
+  triggerPx: string;
+  triggerPxType: string;
+  ordPx: string;
+  actualSz: string;
+  actualPx: string;
+  actualSide: string;
+  pxVar: string;
+  pxSpread: string;
+  pxLimit: string;
+  szLimit: string;
+  tag: string;
+  timeInterval: string;
+  callbackRatio: string;
+  callbackSpread: string;
+  activePx: string;
+  moveTriggerPx: string;
+  reduceOnly: string;
+  triggerTime: string;
+  quickMgnType: string;
+  last: string;
+  failCode: string;
+  algoClOrdId: string;
+  amendPxOnTriggerType: string;
+  cTime: string;
+  isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
+}
+⋮----
+export interface AlgoOrderListItem {
+  activePx: string;
+  actualPx: string;
+  actualSide: string;
+  actualSz: string;
+  algoId: string;
+  attachAlgoOrds: any[];
+  cTime: string;
+  callbackRatio: string;
+  callbackSpread: string;
+  ccy: string;
+  clOrdId: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  moveTriggerPx: string;
+  ordId: string;
+  ordIdList: any[];
+  ordPx: string;
+  ordType: AlgoOrderType;
+  posSide: AlgoPositionSide;
+  pxLimit: string;
+  pxSpread: string;
+  pxVar: string;
+  side: string;
+  slOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  state: AlgoOrderState;
+  sz: string;
+  closeFraction: string;
+  szLimit: string;
+  tag: string;
+  tdMode: string;
+  tgtCcy: string;
+  timeInterval: string;
+  tpOrdPx: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  triggerPx: string;
+  reduceOnly: string;
+  triggerPxType: string;
+  quickMgnType: string;
+  last: string;
+  failCode: string;
+  algoClOrdId: string;
+  triggerTime: string;
+  amendPxOnTriggerType: string;
+  isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
+}
+⋮----
+export interface HistoricAlgoOrder {
+  activePx: string;
+  actualPx: string;
+  actualSide: string;
+  actualSz: string;
+  algoClOrdId: string;
+  algoId: string;
+  attachAlgoOrds: any[];
+  cTime: string;
+  callbackRatio: string;
+  callbackSpread: string;
+  ccy: string;
+  clOrdId: string;
+  closeFraction: string;
+  failCode: string;
+  instId: string;
+  instType: string;
+  last: string;
+  lever: string;
+  moveTriggerPx: string;
+  ordId: string;
+  ordIdList: string[];
+  ordPx: string;
+  ordType: AlgoOrderType;
+  posSide: AlgoPositionSide;
+  pxLimit: string;
+  pxSpread: string;
+  pxVar: string;
+  quickMgnType: string;
+  reduceOnly: string;
+  side: string;
+  slOrdPx: string;
+  slTriggerPx: string;
+  slTriggerPxType: string;
+  state: AlgoOrderState;
+  sz: string;
+  szLimit: string;
+  tag: string;
+  tdMode: string;
+  tgtCcy: string;
+  timeInterval: string;
+  tpOrdPx: string;
+  tpTriggerPx: string;
+  tpTriggerPxType: string;
+  triggerPx: string;
+  triggerPxType: string;
+  triggerTime: string;
+  amendPxOnTriggerType: string;
+  isTradeBorrowMode: boolean;
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
+}
+⋮----
+export interface CancelAllAfterResponse {
+  triggerTime: string;
+  tag: string;
+  ts: string;
+}
+
+================
+File: README.md
+================
+# Node.js & Typescript OKX (OKEX) API & WebSocket SDK
+
+[![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml) [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1] [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1] [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/okx-api">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoDarkMode2.svg?raw=true#gh-dark-mode-only">
+      <img alt="SDK Logo" src="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoBrightMode2.svg?raw=true#gh-light-mode-only">
+    </picture>
+  </a>
+</p>
+
+[1]: https://www.npmjs.com/package/okx-api
+
+Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets:
+
+- Complete integration with all OKX APIs, including the v5 APIs.
+- TypeScript support (with type declarations for most API requests & responses).
+- Over 100 end-to-end tests making real API calls & WebSocket connections, validating any changes before they reach npm.
+- Robust WebSocket integration
+  - Configurable connection heartbeats (automatically detect failing connections).
+  - Automatic reconnect then resubscribe workflows.
+  - Automatic authentication and heartbeat handling.
+- Browser support (via webpack bundle - see "Browser Usage" below).
+
+## Installation
+
+```bash
+npm install okx-api
+```
+
+## Issues & Discussion
+
+- Issues? Check the [issues tab](https://github.com/tiagosiebler/okx-api/issues).
+- Discuss & collaborate with other node devs? Join our [Node.js Algo Traders](https://t.me/nodetraders) engineering community on telegram.
+- Follow our announcement channel for real-time updates on [X/Twitter](https://x.com/sieblyio)
+
+<!-- template_related_projects -->
+
+## Related projects
+
+Check out my related JavaScript/TypeScript/Node.js projects:
+
+- Try my REST API & WebSocket SDKs:
+  - [Bybit-api Node.js SDK](https://www.npmjs.com/package/bybit-api)
+  - [Okx-api Node.js SDK](https://www.npmjs.com/package/okx-api)
+  - [Binance Node.js SDK](https://www.npmjs.com/package/binance)
+  - [Gateio-api Node.js SDK](https://www.npmjs.com/package/gateio-api)
+  - [Bitget-api Node.js SDK](https://www.npmjs.com/package/bitget-api)
+  - [Kucoin-api Node.js SDK](https://www.npmjs.com/package/kucoin-api)
+  - [Coinbase-api Node.js SDK](https://www.npmjs.com/package/coinbase-api)
+  - [Bitmart-api Node.js SDK](https://www.npmjs.com/package/bitmart-api)
+- Try my misc utilities:
+  - [OrderBooks Node.js](https://www.npmjs.com/package/orderbooks)
+  - [Crypto Exchange Account State Cache](https://www.npmjs.com/package/accountstate)
+- Check out my examples:
+  - [awesome-crypto-examples Node.js](https://github.com/tiagosiebler/awesome-crypto-examples)
+  <!-- template_related_projects_end -->
+
+## Documentation
+
+Most methods accept JS objects. These can be populated using parameters specified by okx's API documentation, or check the type definition in the rest-client class methods.
+
+- [RestClient](src/rest-client.ts)
+- [OKX API Documentation](https://www.okx.com/docs-v5/en/#rest-api)
+- [REST Endpoint Function List](./docs/endpointFunctionList.md)
+- [TSDoc Documentation (generated using typedoc via npm module)](https://tsdocs.dev/docs/okx-api)
+
+## Contributions & Thanks
+
+Support my efforts to make algo trading accessible to all - register with my referral links:
+
+- [Bybit](https://www.bybit.com/en-US/register?affiliate_id=9410&language=en-US&group_id=0&group_type=1)
+- [Binance](https://www.binance.com/en/register?ref=20983262)
+- [OKX](https://www.okx.com/join/18504944)
+
+For more ways to give thanks & support my efforts, visit [Contributions & Thanks](https://github.com/tiagosiebler/awesome-crypto-examples/wiki/Contributions-&-Thanks)!
+
+## Structure
+
+This project uses typescript. Resources are stored in 3 key structures:
+
+- [src](./src) - the whole connector written in typescript
+- [lib](./lib) - the javascript version of the project (compiled from typescript). This should not be edited directly, as it will be overwritten with each release. This is also the version published to npm.
+- [dist](./dist) - the packed bundle of the project for use in browser environments (manual, using webpack).
+- [examples](./examples) - some implementation examples & demonstrations. Contributions are welcome!
+
+---
+
+# Usage
+
+Create API credentials at okx
+
+- [OKX my-api](https://www.okx.com/account/my-api)
+
+## REST Client
+
+### Requests & Responses
+
+- If your IDE doesn't have IntelliSense, check the [rest-client.ts](./src/rest-client.ts) for a list of methods, params & return types.
+- Requests follow the same ordering and format as the categories in the [API docs](https://www.okx.com/docs-v5/en/#rest-api).
+- Responses are parsed automatically for less nesting. Error responses are thrown in full:
+  - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
+  - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
+
+### Example 
+
+```ts
+import { RestClient } from 'okx-api';
+
+const client = new RestClient({
+  apiKey: 'apiKeyHere', 
+  apiSecret: 'apiSecretHere',
+  apiPass: 'apiPassHere',
+});
+
+// Submit a buy and sell market order
+(async () => {
+  try {
+    const allBalances = await client.getBalance();
+    console.log('All balances: ', allBalances);
+
+    const buyResult = await client.submitOrder({
+      instId: 'BTC-USDT',
+      ordType: 'market',
+      side: 'buy',
+      sz: '0.1',
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
+    });
+    console.log('buy order result: ', buyResult);
+
+    const sellResult = await client.submitOrder({
+      instId: 'BTC-USDT',
+      ordType: 'market',
+      side: 'sell',
+      sz: '0.1',
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
+    });
+    console.log('Sell order result: ', sellResult);
+  } catch (e) {
+    console.error('request failed: ', e);
+  }
+})();
+```
+
+## Websocket Client
+
+This connector includes a high-performance node.js & typescript websocket client for the OKX public & private websockets.
+
+- If your IDE doesn't have IntelliSense, check the [websocket-client.ts](./src/websocket-client.ts) for a list of methods, params & return types.
+- When subscribing to channels, only the "args" should be passed as an object or array when calling the websocket client subcribe() function: [API docs](https://www.okx.com/docs-v5/en/#websocket-api-subscribe).
+- TypeScript recommended (but it is not required) for a richer experience:
+  ![typescript-subscribe](./docs/images/subscribe-with-typescript.gif)
+- The ws client will automatically open connections as needed when subscribing to a channel.
+- If the connection is lost for any reason, the ws client will detect this (via the connection heartbeats). It will then:
+  - Automatically teardown the dead connection.
+  - Automatically respawn a fresh connection.
+  - Automatically reauthenticate, if using private channels.
+  - Automatically resubscribe to previously subscribed topics.
+  - Resume producing events as before, without extra handling needed in your logic.
+- The ws client will automatically authenticate if accounts are provided and a private channel is subscribed to.
+- Up to 100 accounts are supported on the private connection, as per the [API docs](https://www.okx.com/docs-v5/en/#websocket-api-login). Authentication is automatic if accounts are provided.
+- For examples in using the websocket client, check the examples in the repo:
+  - Private channels (account data): [examples/ws-private.ts](./examples/ws-private.ts)
+  - Public chanels (market data): [examples/ws-public.ts](./examples/ws-public.ts)
+  - These examples are written in TypeScript, so can be executed with ts-node for easy testing:
+    `ts-node examples/ws-private.ts`
+  - Or convert them to javascript:
+    - Change the `import { ... } from 'okx-api'` to `const { ... } = require('okx-api');`
+    - Rename the file to `ws-private.js`
+    - And execute with node: `node examples/ws-private.js`
+
+### Public Events
+
+See [examples/ws-public.ts](./examples/ws-public.ts) for a full example:
+
+![typescript-events-public](./docs/images/subscribe-events-public.gif)
+
+### Private Events
+
+See [examples/ws-private.ts](./examples/ws-private.ts) for a full example:
+
+![typescript-events](./docs/images/subscribe-events.gif)
+
+## Browser/Frontend Usage
+
+### Import
+
+This is the "modern" way, allowing the package to be directly imported into frontend projects with full typescript support.
+
+1. Install these dependencies
+   ```sh
+   npm install crypto-browserify stream-browserify
+   ```
+2. Add this to your `tsconfig.json`
+   ```json
+   {
+     "compilerOptions": {
+       "paths": {
+         "crypto": [
+           "./node_modules/crypto-browserify"
+         ],
+         "stream": [
+           "./node_modules/stream-browserify"
+         ]
+   }
+   ```
+3. Declare this in the global context of your application (ex: in polyfills for angular)
+   ```js
+   (window as any).global = window;
+   ```
+
+### Webpack
+
+This is the "old" way of using this package on webpages. This will build a minified js bundle that can be pulled in using a script tag on a website.
+
+Build a bundle using webpack:
+
+- `npm install`
+- `npm build`
+- `npm pack`
+
+The bundle can be found in `dist/`. Altough usage should be largely consistent, smaller differences will exist. Documentation is still TODO.
+
+---
+
+<!-- template_contributions -->
+
+### Contributions & Thanks
+
+Have my projects helped you? Share the love, there are many ways you can show your thanks:
+
+- Star & share my projects.
+- Are my projects useful? Sponsor me on Github and support my effort to maintain & improve them: https://github.com/sponsors/tiagosiebler
+- Have an interesting project? Get in touch & invite me to it.
+- Or buy me all the coffee:
+  - ETH(ERC20): `0xA3Bda8BecaB4DCdA539Dc16F9C54a592553Be06C` <!-- metamask -->
+
+<!---
+old ones:
+  - BTC: `1C6GWZL1XW3jrjpPTS863XtZiXL1aTK7Jk`
+  - BTC(SegWit): `bc1ql64wr9z3khp2gy7dqlmqw7cp6h0lcusz0zjtls`
+  - ETH(ERC20): `0xe0bbbc805e0e83341fadc210d6202f4022e50992`
+  - USDT(TRC20): `TA18VUywcNEM9ahh3TTWF3sFpt9rkLnnQa
+-->
+<!-- template_contributions_end -->
+
+### Contributions & Pull Requests
+
+Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
+
+<!-- template_star_history -->
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bybit-api,tiagosiebler/okx-api,tiagosiebler/binance,tiagosiebler/bitget-api,tiagosiebler/bitmart-api,tiagosiebler/gateio-api,tiagosiebler/kucoin-api,tiagosiebler/coinbase-api,tiagosiebler/orderbooks,tiagosiebler/accountstate,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&tiagosiebler/okx-api&tiagosiebler/binance&tiagosiebler/bitget-api&tiagosiebler/bitmart-api&tiagosiebler/gateio-api&tiagosiebler/kucoin-api&tiagosiebler/coinbase-api&tiagosiebler/orderbooks&tiagosiebler/accountstate&tiagosiebler/awesome-crypto-examples&Date)
+
+<!-- template_star_history_end -->
+
+================
+File: src/types/rest/response/public-data.ts
+================
+import { InstrumentType, numberInString } from '../shared';
+⋮----
+export interface Ticker {
+  instType: InstrumentType;
+  instId: string;
+  last: numberInString;
+  lastSz: numberInString;
+  askPx: numberInString;
+  askSz: numberInString;
+  bidPx: numberInString;
+  bidSz: numberInString;
+  open24h: numberInString;
+  high24h: numberInString;
+  low24h: numberInString;
+  volCcy24h: numberInString;
+  vol24h: numberInString;
+  sodUtc0: numberInString;
+  sodUtc8: numberInString;
+  ts: numberInString;
+}
+⋮----
+export interface IndexTicker {
+  instId: string;
+  idxPx: string;
+  high24h: string;
+  sodUtc0: string;
+  open24h: string;
+  low24h: string;
+  sodUtc8: string;
+  ts: string;
+}
+⋮----
+type OBPrice = string;
+type OBAssetQty = string;
+type OBOrderCount = string;
+type OrderBookLevel = [OBPrice, OBAssetQty, '0', OBOrderCount];
+⋮----
+export interface OrderBook {
+  asks: OrderBookLevel[];
+  bids: OrderBookLevel[];
+  ts: string;
+}
+⋮----
+type timestamp = string;
+type openPrice = string;
+type highPrice = string;
+type lowPrice = string;
+type closePrice = string;
+type vol = string;
+type volCcy = string;
+type volCcyQuote = string;
+type confirm = string;
+⋮----
+export type Candle = [
+  timestamp,
+  openPrice,
+  highPrice,
+  lowPrice,
+  closePrice,
+  vol,
+  volCcy,
+  volCcyQuote,
+  confirm,
+];
+⋮----
+export type CandleNoVolume = [
+  timestamp,
+  openPrice,
+  highPrice,
+  lowPrice,
+  closePrice,
+];
+⋮----
+export interface Trade {
+  instId: string;
+  side: string;
+  sz: string;
+  px: string;
+  tradeId: string;
+  ts: string;
+}
+⋮----
+export interface Instrument {
+  instType: InstrumentType;
+  instId: string;
+  uly: string;
+  instFamily: string;
+  category: string;
+  baseCcy: string;
+  quoteCcy: string;
+  settleCcy: string;
+  ctVal: string;
+  ctMult: string;
+  ctValCcy: string;
+  optType: string;
+  stk: string;
+  listTime: string;
+  expTime: string;
+  lever: string;
+  tickSz: string;
+  lotSz: string;
+  minSz: string;
+  ctType: string;
+  alias: string;
+  state: string;
+  maxLmtSz: string;
+  maxMktSz: string;
+  maxTwapSz: string;
+  maxIcebergSz: string;
+  maxTriggerSz: string;
+  maxStopSz: string;
+  ruleType: string;
+  auctionEndTime: string;
+}
+⋮----
+export interface EconomicCalendarData {
+  calendarId: string;
+  date: string;
+  region: string;
+  category: string;
+  event: string;
+  refDate: string;
+  actual: string;
+  previous: string;
+  forecast: string;
+  dateSpan: string;
+  importance: string;
+  uTime: string;
+  prevInitial: string;
+  ccy: string;
+  unit: string;
+}
+⋮----
+export interface UnitConvertData {
+  type: '1' | '2';
+  instId: string;
+  px: string;
+  sz: string;
+  unit: 'coin' | 'usds';
+}
+⋮----
+export interface FundingRateHistory {
+  instType: string;
+  instId: string;
+  fundingRate: string;
+  realizedRate: string;
+  fundingTime: string;
+  method: string;
+}
+⋮----
+export interface SystemTime {
+  ts: string;
+}
+⋮----
+export interface OptionsTradeInfo {
+  instId: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  ts: string;
+}
+⋮----
+export interface OptionTrade {
+  vol24h: string;
+  optType: 'C' | 'P';
+  tradeInfo: OptionsTradeInfo[];
+}
+⋮----
+export interface OptionTrades {
+  instId: string;
+  instFamily: string;
+  tradeId: string;
+  px: string;
+  sz: string;
+  side: 'buy' | 'sell';
+  optType: 'C' | 'P';
+  fillVol: string;
+  fwdPx: string;
+  idxPx: string;
+  markPx: string;
+  ts: string;
+}
+⋮----
+export interface Announcement {
+  annType: string;
+  pTime: string;
+  title: string;
+  url: string;
+}
+
+================
+File: src/types/rest/response/private-account.ts
+================
+import {
+  AccountLevel,
+  MarginMode,
+  PositionSide,
+  WithdrawState,
+} from '../shared';
+⋮----
+export interface AccountBalanceDetail {
+  availBal: string;
+  availEq: string;
+  cashBal: string;
+  ccy: string;
+  crossLiab: string;
+  disEq: string;
+  eq: string;
+  eqUsd: string;
+  frozenBal: string;
+  interest: string;
+  isoEq: string;
+  isoLiab: string;
+  isoUpl: string;
+  liab: string;
+  maxLoan: string;
+  mgnRatio: string;
+  notionalLever: string;
+  ordFrozen: string;
+  twap: string;
+  uTime: string;
+  upl: string;
+  uplLiab: string;
+  stgyEq: string;
+  spotBal: string; // Spot balance. The unit is currency, e.g. BTC.
+  openAvgPx: string[]; // Spot average cost price. The unit is USD.
+  accAvgPx: string[]; // Spot accumulated cost price. The unit is USD.
+  spotUpl: string; // Spot unrealized profit and loss. The unit is USD.
+  spotUplRatio: string; // Spot unrealized profit and loss ratio.
+  totalPnl: string; // Spot accumulated profit and loss. The unit is USD.
+  totalPnlRatio: string; // Spot accumulated profit and loss ratio.
+}
+⋮----
+spotBal: string; // Spot balance. The unit is currency, e.g. BTC.
+openAvgPx: string[]; // Spot average cost price. The unit is USD.
+accAvgPx: string[]; // Spot accumulated cost price. The unit is USD.
+spotUpl: string; // Spot unrealized profit and loss. The unit is USD.
+spotUplRatio: string; // Spot unrealized profit and loss ratio.
+totalPnl: string; // Spot accumulated profit and loss. The unit is USD.
+totalPnlRatio: string; // Spot accumulated profit and loss ratio.
+⋮----
+export interface AccountBalance {
+  adjEq: string;
+  details: AccountBalanceDetail[];
+  imr: string;
+  isoEq: string;
+  mgnRatio: string;
+  mmr: string;
+  notionalUsd: string;
+  notionalUsdForBorrow: string;
+  notionalUsdForFutures: string;
+  notionalUsdForOption: string;
+  notionalUsdForSwap: string;
+  ordFroz: string;
+  totalEq: string;
+  uTime: string;
+  spotCopyTradingEq: string;
+  upl: string;
+}
+⋮----
+export interface AccountPosition {
+  adl: string;
+  availPos: string;
+  avgPx: string;
+  cTime: string;
+  ccy: string;
+  deltaBS: string;
+  deltaPA: string;
+  gammaBS: string;
+  gammaPA: string;
+  imr: string;
+  instId: string;
+  instType: string;
+  interest: string;
+  usdPx: string;
+  last: string;
+  lever: string;
+  liab: string;
+  liabCcy: string;
+  liqPx: string;
+  markPx: string;
+  margin: string;
+  mgnMode: MarginMode;
+  mgnRatio: string;
+  mmr: string;
+  notionalUsd: string;
+  optVal: string;
+  pTime: string;
+  pos: string;
+  posCcy: string;
+  posId: string;
+  posSide: PositionSide;
+  thetaBS: string;
+  thetaPA: string;
+  tradeId: string;
+  uTime: string;
+  upl: string;
+  uplRatio: string;
+  vegaBS: string;
+  vegaPA: string;
+}
+⋮----
+export interface HistoricAccountPosition {
+  cTime: string;
+  ccy: string;
+  closeAvgPx: string;
+  closeTotalPos: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  mgnMode: MarginMode;
+  openAvgPx: string;
+  openMaxPos: string;
+  pnl: string;
+  pnlRatio: string;
+  posId: string;
+  posSide: PositionSide;
+  triggerPx: string;
+  type: string;
+  uTime: string;
+  uly: string;
+}
+⋮----
+export interface AccountBalanceRiskData {
+  ccy: string;
+  disEq: string;
+  eq: string;
+}
+⋮----
+export interface AccountPositionRiskData {
+  baseBal: string;
+  ccy: string;
+  instId: string;
+  instType: string;
+  mgnMode: MarginMode;
+  notionalCcy: string;
+  notionalUsd: string;
+  pos: string;
+  posCcy: string;
+  posId: string;
+  posSide: PositionSide;
+  quoteBal: string;
+}
+⋮----
+export interface AccountPositionRisk {
+  adjEq: string;
+  balData: AccountBalanceRiskData[];
+  posData: AccountPositionRiskData[];
+  ts: string;
+}
+⋮----
+export interface AccountBill {
+  bal: string;
+  balChg: string;
+  billId: string;
+  ccy: string;
+  execType: string;
+  fee: string;
+  from: string;
+  instId: string;
+  instType: string;
+  mgnMode: MarginMode;
+  notes: string;
+  ordId: string;
+  pnl: string;
+  posBal: string;
+  posBalChg: string;
+  subType: string;
+  sz: string;
+  to: string;
+  ts: string;
+  type: string;
+}
+⋮----
+export interface AccountHistoryBill {
+  fileHref: string;
+  result: string;
+  ts: string;
+}
+⋮----
+export interface AccountConfiguration {
+  acctLv: string;
+  autoLoan: boolean;
+  ctIsoMode: string;
+  greeksType: string;
+  level: string;
+  levelTmp: string;
+  mgnIsoMode: string;
+  posMode: string;
+  spotOffsetType: string;
+  uid: string;
+  label: string;
+  roleType: string;
+  traderInsts: any[];
+  spotRoleType: string;
+  spotTraderInsts: any[];
+  opAuth: string;
+  kycLv: string;
+  ip: string;
+  perm: string;
+  mainUid: string;
+  discountType: '0' | '1';
+  enableSpotBorrow: boolean;
+  spotBorrowAutoRepay: boolean;
+}
+⋮----
+export interface AccountPositionModeResult {
+  posMode: string;
+}
+⋮----
+export interface AccountModeResult {
+  acctLv: AccountLevel;
+}
+⋮----
+export interface AutoLoanResult {
+  autoLoan: boolean;
+}
+⋮----
+export interface AccountLeverageResult {
+  lever: string;
+  mgnMode: MarginMode;
+  instId: string;
+  posSide: PositionSide;
+}
+⋮----
+export interface AccountMaxOrderAmount {
+  ccy: string;
+  instId: string;
+  maxBuy: string;
+  maxSell: string;
+}
+⋮----
+export interface AccountMaxTradableAmount {
+  instId: string;
+  availBuy: string;
+  availSell: string;
+}
+⋮----
+export interface AccountChangeMarginResult {
+  amt: string;
+  ccy: string;
+  instId: string;
+  leverage: string;
+  posSide: PositionSide;
+  type: string;
+}
+⋮----
+export interface AccountLeverage {
+  instId: string;
+  mgnMode: MarginMode;
+  posSide: PositionSide;
+  lever: string;
+}
+⋮----
+export interface AccountMaxLoan {
+  instId: string;
+  mgnMode: MarginMode;
+  mgnCcy: string;
+  maxLoan: string;
+  ccy: string;
+  side: string;
+}
+⋮----
+export interface AccountFeeRate {
+  category: never;
+  delivery: string;
+  exercise: string;
+  instType: string;
+  level: string;
+  maker: string;
+  makerU: string;
+  taker: string;
+  takerU: string;
+  ts: string;
+  ruleType: string;
+}
+⋮----
+export interface AccountIsolatedMode {
+  isoMode: 'autonomy' | 'automatic';
+}
+⋮----
+export interface AdjustLeverageInfo {
+  estAvailQuoteTrans: string;
+  estAvailTrans: string;
+  estLiqPx: string;
+  estMgn: string;
+  estQuoteMgn: string;
+  estMaxAmt: string;
+  estQuoteMaxAmt: string;
+  existOrd: boolean;
+  maxLever: string;
+  minLever: string;
+}
+⋮----
+export interface InterestAccrued {
+  type: '1' | '2';
+  ccy: string;
+  instId: string;
+  mgnMode: MarginMode;
+  interest: string;
+  interestRate: string;
+  liab: string;
+  ts: string;
+}
+⋮----
+export interface InterestRate {
+  interestRate: string;
+  ccy: string;
+}
+⋮----
+export interface Greeks {
+  greeksType: string;
+}
+⋮----
+export interface MaxWithdrawal {
+  ccy: string;
+  maxWd: string;
+  maxWdEx: string;
+  spotOffsetMaxWd: string;
+  spotOffsetMaxWdEx: string;
+}
+⋮----
+export interface AccountRiskState {
+  atRisk: string;
+  atRiskIdx: string;
+  atRiskMgn: string;
+  ts: string;
+}
+⋮----
+export interface WithdrawalHistory {
+  ccy: string;
+  chain: string;
+  nonTradableAsset: boolean;
+  amt: string;
+  ts: string;
+  from: string;
+  areaCodeFrom: string;
+  to: string;
+  areaCodeTo: string;
+  tag: string;
+  pmtId: string;
+  memo: string;
+  addrExt: any;
+  txId: string;
+  fee: string;
+  feeCcy: string;
+  state: WithdrawState;
+  wdId: string;
+  clientId: string;
+}
+⋮----
+export interface AccountInstrument {
+  baseCcy: string;
+  ctMult: string;
+  ctType: string;
+  ctVal: string;
+  ctValCcy: string;
+  expTime: string;
+  instFamily: string;
+  instId: string;
+  instType: string;
+  lever: string;
+  listTime: string;
+  lotSz: string;
+  maxIcebergSz: string;
+  maxLmtAmt: string;
+  maxLmtSz: string;
+  maxMktAmt: string;
+  maxMktSz: string;
+  maxStopSz: string;
+  maxTriggerSz: string;
+  maxTwapSz: string;
+  minSz: string;
+  optType: string;
+  quoteCcy: string;
+  settleCcy: string;
+  state: string;
+  stk: string;
+  tickSz: string;
+  ruleType: string;
+  auctionEndTime: string;
+}
+⋮----
+export interface QuickMarginBorrowRepayResult {
+  instId: string;
+  ccy: string;
+  side: 'borrow' | 'repay';
+  amt: string;
+  posSide: string;
+  ts: string;
+}
+⋮----
+export interface QuickMarginBorrowRepayRecord {
+  instId: string;
+  ccy: string;
+  side: 'borrow' | 'repay';
+  accBorrowed: string;
+  amt: string;
+  refId: string;
+  ts: string;
+}
+⋮----
+export interface VIPInterest {
+  ordId: string;
+  ccy: string;
+  interest: string;
+  interestRate: string;
+  liab: string;
+  ts: string;
+}
+⋮----
+export interface VIPLoanOrder {
+  ts: string;
+  nextRefreshTime: string;
+  ccy: string;
+  ordId: string;
+  state: '1' | '2' | '3' | '4' | '5';
+  origRate: string;
+  curRate: string;
+  dueAmt: string;
+  borrowAmt: string;
+  repayAmt: string;
+}
+⋮----
+export interface VIPLoanOrderDetail {
+  amt: string;
+  ccy: string;
+  failReason: string;
+  rate: string;
+  ts: string;
+  type: '1' | '2' | '3' | '4';
+}
+⋮----
+export interface FixedLoanBorrowingLimitDetail {
+  ccy: string;
+  used: string;
+  borrowed: string;
+  availBorrow: string;
+  minBorrow: string;
+  term: string;
+}
+⋮----
+export interface FixedLoanBorrowingLimit {
+  totalBorrowLmt: string;
+  totalAvailBorrow: string;
+  borrowed: string;
+  used: string;
+  availRepay: string;
+  details: FixedLoanBorrowingLimitDetail[];
+  ts: string;
+}
+⋮----
+export interface FixedLoanBorrowQuote {
+  ccy: string;
+  term: string;
+  estAvailBorrow: string;
+  estRate: string;
+  estInterest: string;
+  penaltyInterest: string;
+  ts: string;
+}
+⋮----
+export interface SetMMPConfigResult {
+  instFamily: string;
+  timeInterval: string;
+  frozenInterval: string;
+  qtyLimit: string;
+}
+⋮----
+export interface MMPConfig {
+  frozenInterval: string;
+  instFamily: string;
+  mmpFrozen: boolean;
+  mmpFrozenUntil: string;
+  qtyLimit: string;
+  timeInterval: string;
+}
+⋮----
+export interface BorrowRepayHistoryItem {
+  ccy: string;
+  type: 'auto_borrow' | 'auto_repay' | 'manual_borrow' | 'manual_repay';
+  amt: string;
+  accBorrowed: string;
+  ts: string;
+}
+⋮----
+export interface SetCollateralAssetsResult {
+  type: 'all' | 'custom';
+  ccyList: string[];
+  collateralEnabled: boolean;
+}
+⋮----
+export interface GetCollateralAssetsResult {
+  ccy: string;
+  collateralEnabled: boolean;
+}
+
+================
+File: src/rest-client.ts
+================
+import { AxiosRequestConfig } from 'axios';
+⋮----
+import { ASSET_BILL_TYPE } from './constants';
+import {
+  AccountAssetValuation,
+  AccountBalance,
+  AccountBill,
+  AccountChangeMarginResult,
+  AccountConfiguration,
+  AccountFeeRate,
+  AccountHistoryBill,
+  AccountInstrument,
+  AccountIsolatedMode,
+  AccountLevel,
+  AccountLeverage,
+  AccountLeverageResult,
+  AccountMaxLoan,
+  AccountMaxOrderAmount,
+  AccountMaxTradableAmount,
+  AccountModeResult,
+  AccountPosition,
+  AccountPositionModeResult,
+  AccountPositionRisk,
+  AccountRiskState,
+  AdjustLeverageInfo,
+  AdjustMarginBalanceRequest,
+  AlgoLongHistoryRequest,
+  AlgoOrderDetailsRequest,
+  AlgoOrderDetailsResult,
+  AlgoOrderListItem,
+  AlgoOrderRequest,
+  AlgoOrderResult,
+  AlgoRecentHistoryRequest,
+  AmendAlgoOrderRequest,
+  AmendAlgoOrderResult,
+  AmendedOrder,
+  AmendOrderRequest,
+  AmendRecurringBuyOrderRequest,
+  AmendTPSLRequest,
+  Announcement,
+  APICredentials,
+  APIMarket,
+  APIResponse,
+  AssetBillDetails,
+  AutoLoanResult,
+  BlockCounterParty,
+  BlockMakerInstrumentSettings,
+  BlockMMPConfig,
+  BlockRFQResult,
+  BorrowRepayHistoryItem,
+  CancelAlgoOrderRequest,
+  CancelAllAfterResponse,
+  CancelBlockQuoteRequest,
+  CancelBlockQuoteResult,
+  CancelBlockRFQRequest,
+  CancelBlockRFQResult,
+  CancelledOrderResult,
+  CancelMultipleBlockQuoteRequest,
+  CancelMultipleBlockRFQRequest,
+  CancelSignalBotsResult,
+  CancelSpreadOrderResponse,
+  CancelSubOrderRequest,
+  Candle,
+  CandleNoVolume,
+  CandleRequest,
+  ChangePositionMarginRequest,
+  CloseContractGridPositionRequest,
+  ClosedPositions,
+  ClosePositionRequest,
+  CloseSubpositionRequest,
+  ContractGridDirection,
+  ConvertQuoteEstimateRequest,
+  ConvertTradeRequest,
+  CopySettingsRequest,
+  CreateBlockQuoteRequest,
+  CreateBlockQuoteResult,
+  CreateBlockRFQRequest,
+  CreateRFQResult,
+  CreateSignalBotRequest,
+  CreateSignalBotResult,
+  CreateSignalRequest,
+  CreateSignalResult,
+  CurrentSubposition,
+  EconomicCalendarData,
+  EconomicCalendarRequest,
+  ExecuteBlockQuoteRequest,
+  ExecuteBlockQuoteResult,
+  FillsHistoryRequest,
+  FixedLoanBorrowingLimit,
+  FixedLoanBorrowQuote,
+  FundingBalance,
+  FundingCurrency,
+  FundingRateRequest,
+  FundsTransferRequest,
+  FundTransferResult,
+  FundTransferState,
+  GetAccountConfigurationResult,
+  GetActiveSpreadOrdersRequest,
+  GetBlockQuoteParams,
+  GetBlockQuoteResult,
+  GetBlockRFQSParams,
+  GetBorrowRepayHistoryRequest,
+  GetContractOpenInterestHistoryRequest,
+  GetContractTakerVolumeRequest,
+  GetCopySettingsResult,
+  GetCopyTradersRequest,
+  GetCopyTradersResult,
+  GetCopyTradingConfigResult,
+  GetCTBatchLeverageInfoRequest,
+  GetCTBatchLeverageInfoResult,
+  GetCTHistoryLeadTradersRequest,
+  GetCTHistoryLeadTradersResult,
+  GetCTMyLeadTradersResult,
+  GetCTProfitDetailsRequest,
+  GetCTProfitDetailsResult,
+  GetCTTotalProfitResult,
+  GetCTUnrealizedProfitResult,
+  GetCurrentSubpositionsRequest,
+  GetDepositWithdrawStatusRequest,
+  GetFixedLoanBorrowingOrdersListRequest,
+  GetFixedLoanBorrowQuoteRequest,
+  GetGridAlgoOrdersRequest,
+  GetHistoricPositionParams,
+  GetInstrumentsRequest,
+  GetLeadTraderPositionsRequest,
+  GetLeadTraderRanksRequest,
+  GetLeadTraderRanksResult,
+  GetLeadTraderStatsRequest,
+  GetLendingOrderListRequest,
+  GetLendingSubOrderListRequest,
+  GetManagedSubAccountTransferHistoryRequest,
+  GetOptionTradesRequest,
+  GetPositionsParams,
+  GetPremiumHistoryRequest,
+  GetPrivateLeadTraderRanksRequest,
+  GetPrivateLeadTraderRanksResult,
+  GetQuickMarginBorrowRepayHistoryRequest,
+  GetRecurringBuyOrderListRequest,
+  GetRSIBackTestingRequest,
+  GetSignalBotEventHistoryRequest,
+  GetSignalBotPositionHistoryRequest,
+  GetSignalBotRequest,
+  GetSignalBotSubOrdersRequest,
+  GetSignalsRequest,
+  GetSignalsResult,
+  GetSpreadCandlesRequest,
+  GetSpreadOrderHistoryArchiveRequest,
+  GetSpreadOrderHistoryRequest,
+  GetSpreadsRequest,
+  GetSpreadTradesRequest,
+  GetSubAccountMaxWithdrawalsRequest,
+  GetSubpositionsHistoryRequest,
+  GetTopTradersContractLongShortRatioRequest,
+  GetVIPInterestRequest,
+  GetVIPLoanOrderDetailRequest,
+  GetVIPLoanOrderListRequest,
+  Greeks,
+  GridAlgoOrderRequest,
+  GridAlgoOrderType,
+  GridAlgoSubOrderType,
+  HistoricAccountPosition,
+  HistoricAlgoOrder,
+  HistoricOrder,
+  IndexTicker,
+  Instrument,
+  InstrumentType,
+  InterestAccrued,
+  InterestRate,
+  LeadTraderCurrentPosition,
+  LeadTraderPnl,
+  LeadTraderPositionHistory,
+  LeadTraderPreference,
+  LeadTraderStats,
+  LendingOrder,
+  ManagedSubAccountTransfer,
+  MarginMode,
+  MaxGridQuantityRequest,
+  MaxWithdrawal,
+  MMPConfig,
+  NonTradableAsset,
+  numberInString,
+  OptionTrade,
+  OptionTrades,
+  OrderBook,
+  OrderDetails,
+  OrderFill,
+  OrderHistoryRequest,
+  OrderIdRequest,
+  OrderListItem,
+  OrderPrecheckRequest,
+  OrderRequest,
+  OrderResult,
+  PaginatedSymbolRequest,
+  Pagination,
+  PlaceCTAlgoOrderRequest,
+  PlaceCTAlgoOrderResult,
+  PlaceRecurringBuyOrderRequest,
+  PlaceSpreadOrderRequest,
+  PlaceSpreadOrderResponse,
+  PlaceSubOrderRequest,
+  PositionBuilderRequest,
+  PositionSide,
+  PosMode,
+  PublicBlockTrade,
+  PublicSpreadTrade,
+  QuickMarginBorrowRepayRecord,
+  QuickMarginBorrowRepayRequest,
+  QuickMarginBorrowRepayResult,
+  RecurringBuyOrder,
+  RecurringBuyOrderResult,
+  RecurringBuySubOrder,
+  RestClientOptions,
+  SetCTBatchLeverageRequest,
+  SetCTBatchLeverageResult,
+  SetLeverageRequest,
+  SetMMPConfigRequest,
+  SetMmpConfigRequest,
+  SetMMPConfigResult,
+  SetMmpConfigResult,
+  SetQuoteProductsRequest,
+  SetSignalInstrumentsRequest,
+  SetSubAccountLoanAllocationRequest,
+  SpreadCandle,
+  SpreadDetails,
+  SpreadOrder,
+  SpreadOrderBook,
+  SpreadTicker,
+  SpreadTrade,
+  StopGridAlgoOrderRequest,
+  SubAccount,
+  SubAccountAPIReset,
+  SubAccountBalances,
+  SubAccountMaxWithdrawal,
+  SubAccountTransferRequest,
+  SubAccountTransferResult,
+  SubmitFixedLoanBorrowingOrderRequest,
+  SubpositionsHistory,
+  SystemTime,
+  Ticker,
+  TimestampObject,
+  Trade,
+  UnitConvertData,
+  UnitConvertRequest,
+  UpdateFixedLoanBorrowingOrderRequest,
+  UpdateSpreadOrderRequest,
+  UpdateSpreadOrderResponse,
+  VIPInterest,
+  VIPLoanOrder,
+  VIPLoanOrderDetail,
+  WithdrawalHistoryRequest,
+  WithdrawRequest,
+  WithdrawResponse,
+} from './types';
+import {
+  AccruedInterestItem,
+  AccruedInterestRequest,
+  AdjustCollateralRequest,
+  CollateralAssetsResponse,
+  LoanHistoryItem,
+  LoanHistoryRequest,
+  LoanInfo,
+  MaxLoanRequest,
+  MaxLoanResponse,
+} from './types/rest/response/private-flexible-loan';
+import BaseRestClient from './util/BaseRestClient';
+⋮----
+export class RestClient extends BaseRestClient
+⋮----
+/**
+   * @public Creates an instance of the REST API client.
+   *
+   * @param credentials - Note: This parameter will be removed! Pass `null` here and use the restClientOptions parameter (3rd one) instead!
+   * @param environment - Note: This parameter will be removed! Pass `prod` here and use the restClientOptions parameter (3rd one) instead!
+   * @param restClientOptions
+   * @param requestOptions
+   * @returns
+   */
+constructor(
+    credentials?: APICredentials | null,
+    environment: APIMarket = 'prod',
+    restClientOptions: RestClientOptions = {},
+    requestOptions: AxiosRequestConfig = {},
+)
+⋮----
+/**
+   *
+   * Custom SDK functions
+   *
+   */
+⋮----
+/**
+   * This method is used to get the latency and time sync between the client and the server.
+   * This is not official API endpoint and is only used for internal testing purposes.
+   * Use this method to check the latency and time sync between the client and the server.
+   * Final values might vary slightly, but it should be within few ms difference.
+   * If you have any suggestions or improvements to this measurement, please create an issue or pull request on GitHub.
+   */
+async fetchLatencySummary(): Promise<any>
+⋮----
+// Adjust server time by adding estimated one-way latency
+⋮----
+// Calculate time difference between adjusted server time and local time
+⋮----
+/**
+   *
+   * OKX misc endpoints
+   *
+   */
+⋮----
+async getServerTime(): Promise<number>
+⋮----
+/**
+   *
+   * Trading account endpoints
+   *
+   */
+⋮----
+getAccountInstruments(
+    params: GetInstrumentsRequest,
+): Promise<AccountInstrument[]>
+⋮----
+getBalance(params?:
+⋮----
+getPositions(params?: GetPositionsParams): Promise<AccountPosition[]>
+⋮----
+getPositionsHistory(
+    params?: GetHistoricPositionParams,
+): Promise<HistoricAccountPosition[]>
+⋮----
+getAccountPositionRisk(params?: {
+    instType?: Omit<'SPOT', InstrumentType>;
+}): Promise<AccountPositionRisk[]>
+⋮----
+/** Up to last 7 days */
+getBills(params?: any): Promise<AccountBill[]>
+⋮----
+/** Last 3 months */
+getBillsArchive(params?: any): Promise<AccountBill[]>
+⋮----
+/**
+   * Apply for bill data since 1 February, 2021 except for the current quarter.
+   * Check the file link from the "Get bills details (since 2021)" endpoint in 30 hours to allow for data generation.
+   * During peak demand, data generation may take longer. If the file link is still unavailable after 48 hours, reach out to customer support for assistance.
+   * It is only applicable to the data from the unified account.
+   *
+   * This endpoint submits a request for bill data. You can then use getRequestedBillsHistoryLink to get the link to the bill data.
+   * It may take some time to generate the data.
+   */
+requestBillsHistoryDownloadLink(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+}): Promise<AccountHistoryBill[]>
+⋮----
+/**
+   * This endpoint returns the link to the bill data which you can request using requestBillsHistoryDownloadLink.
+   */
+getRequestedBillsHistoryLink(params: {
+    year: string;
+    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+}): Promise<AccountHistoryBill[]>
+⋮----
+getAccountConfiguration(): Promise<AccountConfiguration[]>
+⋮----
+setPositionMode(params: {
+    posMode: PosMode;
+}): Promise<AccountPositionModeResult[]>
+⋮----
+setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]>
+⋮----
+/** Max buy/sell amount or open amount */
+getMaxBuySellAmount(params: {
+    instId: string;
+    tdMode: 'cross' | 'isolated' | 'cash';
+    ccy?: string;
+    px?: string;
+    leverage?: string;
+    unSpotOffset?: boolean;
+}): Promise<AccountMaxOrderAmount[]>
+⋮----
+getMaxAvailableTradableAmount(params: {
+    instId: string;
+    ccy?: string;
+    tdMode: 'cross' | 'isolated' | 'cash';
+    reduceOnly?: boolean;
+    unSpotOffset?: boolean;
+}): Promise<AccountMaxTradableAmount[]>
+⋮----
+changePositionMargin(
+    params: ChangePositionMarginRequest,
+): Promise<AccountChangeMarginResult[]>
+⋮----
+getLeverage(params: {
+    instId?: string;
+    ccy?: string;
+    mgnMode: MarginMode;
+}): Promise<AccountLeverage[]>
+⋮----
+/**
+   * @deprecated - will be removed in next major release
+   * Use getLeverage() instead
+   */
+getLeverageV2(params: {
+    instId?: string;
+    ccy?: string;
+    mgnMode: MarginMode;
+}): Promise<AccountLeverage[]>
+⋮----
+getLeverageEstimatedInfo(params: {
+    instType: string;
+    mgnMode: MarginMode;
+    lever: string;
+    instId?: string;
+    ccy?: string;
+    posSide: PositionSide;
+}): Promise<AdjustLeverageInfo[]>
+⋮----
+getMaxLoan(params: {
+    instId: string;
+    mgnMode: MarginMode;
+    mgnCcy?: string;
+    ccy?: string;
+}): Promise<AccountMaxLoan[]>
+⋮----
+getFeeRates(params: {
+    instType: InstrumentType;
+    instId?: string;
+    uly?: string;
+    instFamily?: string;
+    ruleType?: string;
+}): Promise<AccountFeeRate[]>
+⋮----
+getInterestAccrued(params?: {
+    type?: '1' | '2';
+    ccy?: string;
+    instId?: string;
+    mgnMode?: MarginMode;
+    after?: string;
+    before?: string;
+    limit?: string;
+}): Promise<InterestAccrued[]>
+⋮----
+getInterestRate(params?:
+⋮----
+setGreeksDisplayType(params:
+⋮----
+setIsolatedMode(params: {
+    isoMode: 'automatic' | 'autonomy';
+    type: 'MARGIN' | 'CONTRACTS';
+}): Promise<AccountIsolatedMode[]>
+⋮----
+getMaxWithdrawals(params?:
+⋮----
+getAccountRiskState(): Promise<AccountRiskState[]>
+⋮----
+setAccountCollateralAssets(params: {
+    type: 'all' | 'custom';
+    collateralEnabled: boolean;
+    ccyList?: string[];
+  }): Promise<
+    {
+      type: string;
+      ccyList: string[];
+      collateralEnabled: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-collateral-assets', params);
+⋮----
+getAccountCollateralAssets(params?: {
+    ccy?: string;
+    collateralEnabled?: boolean;
+  }): Promise<
+    {
+      ccy: string;
+      collateralEnabled: boolean;
+    }[]
+  > {
+    return this.getPrivate('/api/v5/account/collateral-assets', params);
+⋮----
+submitQuickMarginBorrowRepay(
+    params: QuickMarginBorrowRepayRequest,
+): Promise<QuickMarginBorrowRepayResult[]>
+⋮----
+getQuickMarginBorrowRepayHistory(
+    params: GetQuickMarginBorrowRepayHistoryRequest,
+): Promise<QuickMarginBorrowRepayRecord[]>
+⋮----
+borrowRepayVIPLoan(params: {
+    ccy: string;
+    side: 'borrow' | 'repay';
+    amt: numberInString;
+    ordId?: string;
+}): Promise<any[]>
+⋮----
+getVIPLoanBorrowRepayHistory(params?: any): Promise<any[]>
+⋮----
+getVIPInterestAccrued(params: GetVIPInterestRequest): Promise<VIPInterest[]>
+⋮----
+getVIPInterestDeducted(
+    params: GetVIPInterestRequest,
+): Promise<VIPInterest[]>
+⋮----
+getVIPLoanOrders(
+    params: GetVIPLoanOrderListRequest,
+): Promise<VIPLoanOrder[]>
+⋮----
+getVIPLoanOrder(
+    params: GetVIPLoanOrderDetailRequest,
+): Promise<VIPLoanOrderDetail[]>
+⋮----
+getBorrowInterestLimits(params?: {
+    type?: '1' | '2';
+    ccy?: string;
+}): Promise<any[]>
+⋮----
+getFixedLoanBorrowLimit(): Promise<FixedLoanBorrowingLimit[]>
+⋮----
+getFixedLoanBorrowQuote(
+    params: GetFixedLoanBorrowQuoteRequest,
+): Promise<FixedLoanBorrowQuote[]>
+⋮----
+submitFixedLoanBorrowOrder(
+    params: SubmitFixedLoanBorrowingOrderRequest,
+  ): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/borrowing-order',
+      params,
+    );
+⋮----
+updateFixedLoanBorrowOrder(
+    params: UpdateFixedLoanBorrowingOrderRequest,
+  ): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/amend-borrowing-order',
+      params,
+    );
+⋮----
+manualRenewFixedLoanBorrowOrder(params: {
+    ordId: string;
+    maxRate: string;
+  }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/manual-reborrow',
+      params,
+    );
+⋮----
+repayFixedLoanBorrowOrder(params: { ordId: string }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/repay-borrowing-order',
+      params,
+    );
+⋮----
+convertFixedLoanToMarketLoan(params: { ordId: string }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/convert-to-market-loan',
+      params,
+    );
+⋮----
+reduceFixedLoanLiabilities(params: {
+    ordId: string;
+    pendingRepay: boolean;
+  }): Promise<
+    {
+      ordId: string;
+      pendingRepay: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/fixed-loan/reduce-liabilities',
+      params,
+    );
+⋮----
+getFixedLoanBorrowOrders(
+    params: GetFixedLoanBorrowingOrdersListRequest,
+): Promise<any[]>
+⋮----
+manualBorrowRepay(params: {
+    ccy: string;
+    side: 'borrow' | 'repay';
+    amt: string;
+  }): Promise<
+    {
+      ccy: string;
+      side: 'borrow' | 'repay';
+      amt: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/spot-manual-borrow-repay', params);
+⋮----
+setAutoRepay(params: { autoRepay: boolean }): Promise<
+    {
+      autoRepay: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-auto-repay', params);
+⋮----
+getBorrowRepayHistory(
+    params?: GetBorrowRepayHistoryRequest,
+): Promise<BorrowRepayHistoryItem[]>
+⋮----
+positionBuilder(params: PositionBuilderRequest): Promise<any[]>
+⋮----
+updateRiskOffsetAmount(params: {
+    ccy: string;
+    clSpotInUseAmt: string;
+  }): Promise<
+    {
+      ccy: string;
+      clSpotInUseAmt: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-riskOffset-amt', params);
+⋮----
+getGreeks(params?:
+⋮----
+getPMLimitation(params: {
+    instType: 'SWAP' | 'FUTURES' | 'OPTION';
+    uly?: string;
+    instFamily?: string;
+}): Promise<any[]>
+⋮----
+updateRiskOffsetType(params: { type: '1' | '2' | '3' | '4' }): Promise<
+    {
+      type: '1' | '2' | '3' | '4';
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/set-riskOffset-type', params);
+⋮----
+activateOption(): Promise<
+    {
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/activate-option');
+⋮----
+setAutoLoan(params:
+⋮----
+presetAccountLevelSwitch(params: {
+    acctLv: '2' | '3' | '4';
+    lever?: string;
+    riskOffsetType?: '1' | '2' | '3' | '4';
+}): Promise<any[]>
+⋮----
+getAccountSwitchPrecheck(params: {
+    acctLv: '1' | '2' | '3' | '4';
+}): Promise<any[]>
+⋮----
+setAccountMode(params: {
+    acctLv: AccountLevel;
+}): Promise<AccountModeResult[]>
+⋮----
+resetMMPStatus(params: { instType?: 'OPTION'; instFamily: string }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/account/mmp-reset', params);
+⋮----
+setMMPConfig(params: SetMMPConfigRequest): Promise<SetMMPConfigResult[]>
+⋮----
+getMMPConfig(params?:
+⋮----
+/**
+   *
+   * Orderbook trading - trade endpoints
+   *
+   */
+⋮----
+submitOrder(params: OrderRequest): Promise<OrderResult[]>
+⋮----
+submitMultipleOrders(params: OrderRequest[]): Promise<OrderResult[]>
+⋮----
+cancelOrder(params: OrderIdRequest): Promise<CancelledOrderResult[]>
+⋮----
+cancelMultipleOrders(
+    params: OrderIdRequest[],
+): Promise<CancelledOrderResult[]>
+⋮----
+amendOrder(params: AmendOrderRequest): Promise<AmendedOrder[]>
+⋮----
+amendMultipleOrders(params: AmendOrderRequest[]): Promise<AmendedOrder[]>
+⋮----
+closePositions(params: ClosePositionRequest): Promise<ClosedPositions[]>
+⋮----
+getOrderDetails(params: OrderIdRequest): Promise<OrderDetails[]>
+⋮----
+getOrderList(params?: OrderHistoryRequest): Promise<OrderListItem[]>
+⋮----
+/**
+   * Get history for last 7 days
+   */
+getOrderHistory(params: OrderHistoryRequest): Promise<HistoricOrder[]>
+⋮----
+/**
+   * Get history for last 3 months
+   */
+getOrderHistoryArchive(
+    params: OrderHistoryRequest,
+): Promise<HistoricOrder[]>
+⋮----
+/**
+   * Get history for last 7 days
+   */
+getFills(params?: FillsHistoryRequest): Promise<OrderFill[]>
+⋮----
+/**
+   * Get history for last 3 months
+   */
+getFillsHistory(params: FillsHistoryRequest): Promise<OrderFill[]>
+⋮----
+/** Get easy convert currency list */
+getEasyConvertCurrencies(params?:
+⋮----
+/**
+   *
+   * Place easy convert : Convert small currencies to mainstream currencies.
+   * Only applicable to the crypto balance less than $10.
+   *
+   * Maximum 5 currencies can be selected in one order.
+   * If there are multiple currencies, separate them with commas in the "from" field.
+   *
+   */
+submitEasyConvert(params: {
+    fromCcys: string[];
+    toCcy: string;
+    source?: string;
+}): Promise<APIResponse<any>>
+⋮----
+/** Get easy convert history : Get the history and status of easy convert trades. */
+getEasyConvertHistory(params?: Pagination): Promise<APIResponse<any>>
+⋮----
+/**
+   *
+   * Get one-click repay currency list : Get list of debt currency data and repay currencies.
+   * Debt currencies include both cross and isolated debts.
+   */
+getOneClickRepayCurrencyList(params?: {
+    debtType?: 'cross' | 'isolated';
+}): Promise<APIResponse<any>>
+⋮----
+/**
+   * Trade one-click repay to repay cross debts.
+   * Isolated debts are not applicable.
+   * The maximum repayment amount is based on the remaining available balance of funding and trading accounts.
+   */
+submitOneClickRepay(params: {
+    debtCcys: string[];
+    repayCcy: string;
+}): Promise<APIResponse<any>>
+⋮----
+/** Get the history and status of one-click repay trades. */
+getOneClickRepayHistory(params?: Pagination): Promise<APIResponse<any>>
+⋮----
+cancelMassOrder(params: {
+    instType: string;
+    instFamily: string;
+    lockInterval?: string;
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/trade/mass-cancel', params);
+⋮----
+cancelAllAfter(params: {
+    timeOut: string;
+    tag?: string;
+}): Promise<CancelAllAfterResponse[]>
+⋮----
+getAccountRateLimit(): Promise<any[]>
+⋮----
+submitOrderPrecheck(params: OrderPrecheckRequest): Promise<any[]>
+⋮----
+/**
+   *
+   * Orderbook trading - Algo trading endpoints
+   *
+   */
+⋮----
+placeAlgoOrder(params: AlgoOrderRequest): Promise<AlgoOrderResult[]>
+⋮----
+cancelAlgoOrder(
+    params: CancelAlgoOrderRequest[],
+): Promise<AlgoOrderResult[]>
+⋮----
+amendAlgoOrder(
+    params: AmendAlgoOrderRequest,
+): Promise<AmendAlgoOrderResult[]>
+⋮----
+cancelAdvanceAlgoOrder(
+    params: CancelAlgoOrderRequest[],
+): Promise<AlgoOrderResult[]>
+⋮----
+getAlgoOrderDetails(
+    params: AlgoOrderDetailsRequest,
+): Promise<AlgoOrderDetailsResult[]>
+⋮----
+getAlgoOrderList(
+    params: AlgoRecentHistoryRequest,
+): Promise<AlgoOrderListItem[]>
+⋮----
+getAlgoOrderHistory(
+    params: AlgoLongHistoryRequest,
+): Promise<HistoricAlgoOrder[]>
+⋮----
+/**
+   *
+   * Orderbook trading - Grid trading endpoints
+   *
+   */
+⋮----
+placeGridAlgoOrder(params: GridAlgoOrderRequest): Promise<any[]>
+⋮----
+amendGridAlgoOrder(params: {
+    algoId: string;
+    instId: string;
+    slTriggerPx?: string;
+    tpTriggerPx?: string;
+    tpRatio?: string;
+    slRatio?: string;
+    triggerParams?: {
+      triggerAction?: string;
+      triggerStrategy?: string;
+      triggerPx?: string;
+      stopType?: string;
+    }[];
+}): Promise<any[]>
+⋮----
+stopGridAlgoOrder(orders: StopGridAlgoOrderRequest[]): Promise<any[]>
+⋮----
+closeGridContractPosition(
+    params: CloseContractGridPositionRequest,
+): Promise<any[]>
+⋮----
+cancelGridContractCloseOrder(params: {
+    algoId: string;
+    ordId: string;
+}): Promise<any[]>
+⋮----
+instantTriggerGridAlgoOrder(params: { algoId: string }): Promise<
+    {
+      algoId: string;
+      algoClOrdId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/order-instant-trigger',
+      params,
+    );
+⋮----
+getGridAlgoOrderList(params: GetGridAlgoOrdersRequest): Promise<any[]>
+⋮----
+getGridAlgoOrderHistory(params: GetGridAlgoOrdersRequest): Promise<any[]>
+⋮----
+getGridAlgoOrderDetails(params: {
+    algoOrdType: GridAlgoOrderType;
+    algoId: string;
+}): Promise<any[]>
+⋮----
+getGridAlgoSubOrders(params: {
+    algoOrdType: GridAlgoOrderType;
+    algoId: string;
+    type: GridAlgoSubOrderType;
+    groupId?: string;
+    after?: numberInString;
+    before?: numberInString;
+    limit?: number;
+}): Promise<any[]>
+⋮----
+getGridAlgoOrderPositions(params: {
+    algoOrdType: 'contract_grid';
+    algoId: string;
+}): Promise<any[]>
+⋮----
+spotGridWithdrawIncome(params:
+⋮----
+computeGridMarginBalance(params: {
+    algoId: string;
+    type: 'add' | 'reduce';
+    amt?: numberInString;
+}): Promise<any[]>
+⋮----
+adjustGridMarginBalance(params: {
+    algoId: string;
+    type: 'add' | 'reduce';
+    amt?: numberInString;
+    percent?: numberInString;
+}): Promise<any[]>
+⋮----
+adjustGridInvestment(params: { algoId: string; amt: string }): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/grid/adjust-investment',
+      params,
+    );
+⋮----
+getGridAIParameter(params: {
+    algoOrdType: GridAlgoOrderType;
+    instId: string;
+    direction: ContractGridDirection;
+    duration?: '7D' | '30D' | '180D';
+}): Promise<any[]>
+⋮----
+computeGridMinInvestment(params: {
+    amt: string;
+    ccy: string;
+}): Promise<any[]>
+⋮----
+getRSIBackTesting(params: GetRSIBackTestingRequest): Promise<
+    {
+      triggerNum: string;
+    }[]
+  > {
+    return this.get('/api/v5/tradingBot/public/rsi-back-testing', params);
+⋮----
+getMaxGridQuantity(params: MaxGridQuantityRequest): Promise<
+    {
+      maxGridQty: string;
+    }[]
+  > {
+    return this.get('/api/v5/tradingBot/grid/grid-quantity', params);
+⋮----
+/**
+   *
+   * Orderbook trading - Signal bot trading endpoints
+   *
+   */
+⋮----
+createSignal(params: CreateSignalRequest): Promise<CreateSignalResult[]>
+⋮----
+getSignals(params: GetSignalsRequest): Promise<GetSignalsResult[]>
+⋮----
+createSignalBot(
+    params: CreateSignalBotRequest,
+): Promise<CreateSignalBotResult[]>
+⋮----
+cancelSignalBots(params: {
+    algoId: string;
+}): Promise<CancelSignalBotsResult[]>
+⋮----
+updateSignalMargin(params: AdjustMarginBalanceRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/margin-balance', params);
+⋮----
+updateSignalTPSL(params: AmendTPSLRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/amendTPSL', params);
+⋮----
+setSignalInstruments(params: SetSignalInstrumentsRequest): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/tradingBot/signal/set-instruments',
+      params,
+    );
+⋮----
+getSignalBotOrder(params: {
+    algoOrdType: string;
+    algoId: string;
+}): Promise<any[]>
+⋮----
+getActiveSignalBot(params: GetSignalBotRequest): Promise<any[]>
+⋮----
+getSignalBotHistory(params: GetSignalBotRequest): Promise<any[]>
+⋮----
+getSignalBotPositions(params: {
+    algoOrdType: string;
+    algoId: string;
+}): Promise<any[]>
+⋮----
+getSignalBotPositionHistory(
+    params: GetSignalBotPositionHistoryRequest,
+): Promise<any[]>
+⋮----
+closeSignalBotPosition(params: { algoId: string; instId: string }): Promise<
+    {
+      algoId: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/tradingBot/signal/close-position', params);
+⋮----
+placeSignalBotSubOrder(params: PlaceSubOrderRequest): Promise<any[]>
+⋮----
+cancelSubOrder(params: CancelSubOrderRequest): Promise<any[]>
+⋮----
+getSignalBotSubOrders(params: GetSignalBotSubOrdersRequest): Promise<any[]>
+⋮----
+getSignalBotEventHistory(
+    params: GetSignalBotEventHistoryRequest,
+): Promise<any[]>
+⋮----
+/**
+   *
+   * Orderbook trading - Recurring buy endpoints
+   *
+   */
+⋮----
+submitRecurringBuyOrder(
+    params: PlaceRecurringBuyOrderRequest,
+): Promise<RecurringBuyOrderResult[]>
+⋮----
+amendRecurringBuyOrder(
+    params: AmendRecurringBuyOrderRequest,
+): Promise<RecurringBuyOrderResult[]>
+⋮----
+stopRecurringBuyOrder(params: {
+    algoId: string;
+}): Promise<RecurringBuyOrderResult[]>
+⋮----
+getRecurringBuyOrders(
+    params: GetRecurringBuyOrderListRequest,
+): Promise<RecurringBuyOrder[]>
+⋮----
+getRecurringBuyOrderHistory(
+    params: GetRecurringBuyOrderListRequest,
+): Promise<RecurringBuyOrder[]>
+⋮----
+getRecurringBuyOrderDetails(params: {
+    algoId: string;
+}): Promise<RecurringBuyOrder[]>
+⋮----
+getRecurringBuySubOrders(
+    params: GetRecurringBuyOrderListRequest,
+): Promise<RecurringBuySubOrder[]>
+⋮----
+/**
+   *
+   * Orderbook trading - Copy trading endpoints
+   *
+   */
+⋮----
+getCopytradingSubpositions(
+    params?: GetCurrentSubpositionsRequest,
+): Promise<CurrentSubposition[]>
+⋮----
+getCopytradingSubpositionsHistory(
+    params?: GetSubpositionsHistoryRequest,
+): Promise<SubpositionsHistory[]>
+⋮----
+submitCopytradingAlgoOrder(
+    params: PlaceCTAlgoOrderRequest,
+): Promise<PlaceCTAlgoOrderResult[]>
+⋮----
+closeCopytradingSubposition(params: CloseSubpositionRequest): Promise<
+    {
+      subPosId: string;
+      tag: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/close-subposition', params);
+⋮----
+getCopytradingInstruments(params?: { instType?: 'SPOT' | 'SWAP' }): Promise<
+    {
+      instId: string;
+      enabled: boolean;
+    }[]
+  > {
+    return this.getPrivate('/api/v5/copytrading/instruments', params);
+⋮----
+setCopytradingInstruments(params: {
+    instType?: 'SPOT' | 'SWAP';
+    instId: string;
+  }): Promise<
+    {
+      instId: string;
+      enabled: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/set-instruments', params);
+⋮----
+getCopytradingProfitDetails(
+    params?: GetCTProfitDetailsRequest,
+): Promise<GetCTProfitDetailsResult[]>
+⋮----
+getCopytradingTotalProfit(params?: {
+    instType?: 'SPOT' | 'SWAP';
+}): Promise<GetCTTotalProfitResult[]>
+⋮----
+getCopytradingUnrealizedProfit(params?: {
+    instType?: 'SPOT' | 'SWAP';
+}): Promise<GetCTUnrealizedProfitResult[]>
+⋮----
+getCopytradingTotalUnrealizedProfit(params?: { instType?: 'SWAP' }): Promise<
+    {
+      instType?: 'SWAP';
+      instId: string;
+    }[]
+  > {
+    return this.getPrivate(
+      '/api/v5/copytrading/total-unrealized-profit-sharing',
+      params,
+    );
+⋮----
+applyCopytradingLeadTrading(params: {
+    profitSharingTs: string;
+    totalUnrealizedProfitSharingAmt: string;
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/apply-lead-trading', params);
+⋮----
+stopCopytradingLeadTrading(params?: { instType?: 'SWAP' }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/stop-lead-trading', params);
+⋮----
+updateCopytradingProfitSharing(params: {
+    instType?: 'SWAP';
+    profitSharingRatio: string;
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/copytrading/amend-profit-sharing-ratio',
+      params,
+    );
+⋮----
+getCopytradingAccount(): Promise<GetAccountConfigurationResult[]>
+⋮----
+setCopytradingFirstCopy(params: CopySettingsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/first-copy-settings', params);
+⋮----
+updateCopytradingCopySettings(params: CopySettingsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/amend-copy-settings', params);
+⋮----
+stopCopytradingCopy(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+    subPosCloseType: 'market_close' | 'copy_close' | 'manual_close';
+  }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/copytrading/stop-copy-trading', params);
+⋮----
+getCopytradingCopySettings(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+}): Promise<GetCopySettingsResult[]>
+⋮----
+getCopytradingBatchLeverageInfo(
+    params: GetCTBatchLeverageInfoRequest,
+): Promise<GetCTBatchLeverageInfoResult[]>
+⋮----
+setCopytradingBatchLeverage(
+    params: SetCTBatchLeverageRequest,
+): Promise<SetCTBatchLeverageResult[]>
+⋮----
+getCopytradingMyLeadTraders(params?: {
+    instType?: 'SWAP';
+}): Promise<GetCTMyLeadTradersResult[]>
+⋮----
+getCopytradingLeadTradersHistory(
+    params?: GetCTHistoryLeadTradersRequest,
+): Promise<GetCTHistoryLeadTradersResult[]>
+⋮----
+getCopytradingConfig(params?: {
+    instType?: 'SWAP';
+}): Promise<GetCopyTradingConfigResult[]>
+⋮----
+getCopytradingLeadRanks(
+    params?: GetLeadTraderRanksRequest,
+): Promise<GetLeadTraderRanksResult[]>
+⋮----
+getCopytradingLeadWeeklyPnl(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+}): Promise<LeadTraderPnl[]>
+⋮----
+getCopytradingLeadDailyPnl(
+    params: GetLeadTraderStatsRequest,
+): Promise<LeadTraderPnl[]>
+⋮----
+getCopytradingLeadStats(
+    params: GetLeadTraderStatsRequest,
+): Promise<LeadTraderStats[]>
+⋮----
+getCopytradingLeadPreferences(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+}): Promise<LeadTraderPreference[]>
+⋮----
+getCopytradingLeadOpenPositions(
+    params: GetLeadTraderPositionsRequest,
+): Promise<LeadTraderCurrentPosition[]>
+⋮----
+getCopytradingLeadPositionHistory(
+    params: GetLeadTraderPositionsRequest,
+): Promise<LeadTraderPositionHistory[]>
+⋮----
+getCopyTraders(
+    params: GetCopyTradersRequest,
+): Promise<GetCopyTradersResult[]>
+⋮----
+getCopytradingLeadPrivateRanks(
+    params?: GetPrivateLeadTraderRanksRequest,
+): Promise<GetPrivateLeadTraderRanksResult[]>
+⋮----
+getCopytradingLeadPrivateWeeklyPnl(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+}): Promise<LeadTraderPnl[]>
+⋮----
+getCopytradingPLeadPrivateDailyPnl(
+    params: GetLeadTraderStatsRequest,
+): Promise<LeadTraderPnl[]>
+⋮----
+geCopytradingLeadPrivateStats(
+    params: GetLeadTraderStatsRequest,
+): Promise<LeadTraderStats[]>
+⋮----
+getCopytradingLeadPrivatePreferences(params: {
+    instType?: 'SWAP';
+    uniqueCode: string;
+}): Promise<LeadTraderPreference[]>
+⋮----
+getCopytradingLeadPrivateOpenPositions(
+    params: GetLeadTraderPositionsRequest,
+): Promise<LeadTraderCurrentPosition[]>
+⋮----
+getCopytradingLeadPrivatePositionHistory(
+    params: GetLeadTraderPositionsRequest,
+): Promise<LeadTraderPositionHistory[]>
+⋮----
+getCopyTradersPrivate(
+    params: GetCopyTradersRequest,
+): Promise<GetCopyTradersResult[]>
+⋮----
+/**
+   *
+   * Orderbook trading - Market data endpoints
+   *
+   */
+⋮----
+getTickers(params: {
+    instType: InstrumentType;
+    uly?: string;
+    instFamily?: string;
+}): Promise<Ticker[]>
+⋮----
+getTicker(params:
+⋮----
+getOrderBook(params: {
+    instId: string;
+    sz?: numberInString;
+}): Promise<OrderBook[]>
+⋮----
+getFullOrderBook(params: {
+    instId: string;
+    sz?: string;
+}): Promise<OrderBook[]>
+⋮----
+getCandles(params: CandleRequest): Promise<Candle[]>
+⋮----
+getHistoricCandles(params: CandleRequest): Promise<Candle[]>
+⋮----
+getTrades(params:
+⋮----
+getHistoricTrades(params: {
+    instId: string;
+    after?: numberInString;
+    before?: numberInString;
+    limit?: numberInString;
+    type?: '1' | '2';
+}): Promise<Trade[]>
+⋮----
+getOptionTradesByInstrument(params: {
+    instFamily: string;
+}): Promise<OptionTrade[]>
+⋮----
+getOptionTrades(params: GetOptionTradesRequest): Promise<OptionTrades[]>
+⋮----
+get24hrTotalVolume(): Promise<any[]>
+⋮----
+/**
+   *
+   * Block trading - REST endpoints
+   *
+   */
+⋮----
+getBlockCounterParties(): Promise<BlockCounterParty[]>
+⋮----
+createBlockRFQ(params: CreateBlockRFQRequest): Promise<CreateRFQResult[]>
+⋮----
+cancelBlockRFQ(
+    params: CancelBlockRFQRequest,
+): Promise<CancelBlockRFQResult[]>
+⋮----
+cancelMultipleBlockRFQs(
+    params: CancelMultipleBlockRFQRequest,
+): Promise<CancelBlockRFQResult[]>
+⋮----
+cancelAllRFQs(): Promise<TimestampObject[]>
+⋮----
+executeBlockQuote(
+    params: ExecuteBlockQuoteRequest,
+): Promise<ExecuteBlockQuoteResult[]>
+⋮----
+getQuoteProducts(): Promise<BlockMakerInstrumentSettings[]>
+⋮----
+updateBlockQuoteProducts(params: SetQuoteProductsRequest): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/maker-instrument-settings', params);
+⋮----
+resetBlockMmp(): Promise<
+    {
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/mmp-reset');
+⋮----
+updateBlockMmpConfig(
+    params: SetMmpConfigRequest,
+): Promise<SetMmpConfigResult[]>
+⋮----
+getBlockMmpConfig(): Promise<BlockMMPConfig[]>
+⋮----
+createBlockQuote(
+    params: CreateBlockQuoteRequest,
+): Promise<CreateBlockQuoteResult[]>
+⋮----
+cancelBlockQuote(
+    params: CancelBlockQuoteRequest,
+): Promise<CancelBlockQuoteResult[]>
+⋮----
+cancelMultipleBlockQuotes(
+    params: CancelMultipleBlockQuoteRequest,
+): Promise<CancelBlockQuoteResult[]>
+⋮----
+cancelAllBlockQuotes(): Promise<TimestampObject[]>
+⋮----
+cancelAllBlockAfter(params: { timeOut: string }): Promise<
+    {
+      triggerTime: string;
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/rfq/cancel-all-after', params);
+⋮----
+getBlockRFQs(params?: GetBlockRFQSParams): Promise<BlockRFQResult[]>
+⋮----
+getBlockQuotes(params?: GetBlockQuoteParams): Promise<GetBlockQuoteResult[]>
+⋮----
+getBlockTrades(params?: any): Promise<any[]>
+⋮----
+getPublicRFQBlockTrades(params?: any): Promise<any[]>
+⋮----
+getBlockTickers(params: {
+    instType: InstrumentType;
+    uly?: string;
+}): Promise<any[]>
+⋮----
+getBlockTicker(params:
+⋮----
+getBlockPublicTrades(params: {
+    instId: string;
+}): Promise<PublicBlockTrade[]>
+⋮----
+/**
+   *
+   * Spread trading - REST endpoints
+   *
+   */
+⋮----
+submitSpreadOrder(
+    params: PlaceSpreadOrderRequest,
+): Promise<PlaceSpreadOrderResponse[]>
+⋮----
+cancelSpreadOrder(params?: {
+    ordId?: string;
+    clOrdId?: string;
+}): Promise<CancelSpreadOrderResponse[]>
+⋮----
+cancelAllSpreadOrders(params?: { sprdId?: string }): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/sprd/mass-cancel', params);
+⋮----
+updateSpreadOrder(
+    params: UpdateSpreadOrderRequest,
+): Promise<UpdateSpreadOrderResponse[]>
+⋮----
+getSpreadOrder(params: {
+    ordId?: string;
+    clOrdId?: string;
+}): Promise<SpreadOrder[]>
+⋮----
+getSpreadActiveOrders(
+    params?: GetActiveSpreadOrdersRequest,
+): Promise<SpreadOrder[]>
+⋮----
+getSpreadOrdersRecent(
+    params?: GetSpreadOrderHistoryRequest,
+): Promise<SpreadOrder[]>
+⋮----
+getSpreadOrdersArchive(
+    params?: GetSpreadOrderHistoryArchiveRequest,
+): Promise<SpreadOrder[]>
+⋮----
+getSpreadTrades(params?: GetSpreadTradesRequest): Promise<SpreadTrade[]>
+⋮----
+getSpreads(params?: GetSpreadsRequest): Promise<SpreadDetails[]>
+⋮----
+getSpreadOrderBook(params: {
+    sprdId: string;
+    sz?: string;
+}): Promise<SpreadOrderBook[]>
+⋮----
+getSpreadTicker(params:
+⋮----
+getSpreadPublicTrades(params?: {
+    sprdId?: string;
+}): Promise<PublicSpreadTrade[]>
+⋮----
+getSpreadCandles(params: GetSpreadCandlesRequest): Promise<SpreadCandle[]>
+⋮----
+getSpreadHistoryCandles(
+    params: GetSpreadCandlesRequest,
+): Promise<SpreadCandle[]>
+⋮----
+cancelSpreadAllAfter(params: { timeOut: string }): Promise<
+    {
+      triggerTime: string;
+      ts: string;
+    }[]
+  > {
+    return this.postPrivate('/api/v5/sprd/cancel-all-after', params);
+⋮----
+/**
+   *
+   * Public data - rest endpoints
+   *
+   */
+⋮----
+getInstruments(params: {
+    instType: InstrumentType;
+    uly?: string;
+    instFamily?: string;
+    instId?: string;
+}): Promise<Instrument[]>
+⋮----
+getDeliveryExerciseHistory(params: any): Promise<any[]>
+⋮----
+getOpenInterest(params: any): Promise<any[]>
+⋮----
+getFundingRate(params: any): Promise<any[]>
+⋮----
+getFundingRateHistory(params: FundingRateRequest): Promise<any[]>
+⋮----
+getMinMaxLimitPrice(params: any): Promise<any[]>
+⋮----
+getOptionMarketData(params: any): Promise<any[]>
+⋮----
+getEstimatedDeliveryExercisePrice(params: any): Promise<any[]>
+⋮----
+getDiscountRateAndInterestFreeQuota(params: any): Promise<any[]>
+⋮----
+getSystemTime(params: any): Promise<SystemTime[]>
+⋮----
+getMarkPrice(params: any): Promise<any[]>
+⋮----
+getPositionTiers(params: any): Promise<any[]>
+⋮----
+getInterestRateAndLoanQuota(params: any): Promise<any[]>
+⋮----
+getVIPInterestRateAndLoanQuota(params: any): Promise<any[]>
+⋮----
+getUnderlying(params: any): Promise<any[]>
+⋮----
+getInsuranceFund(params: any): Promise<any[]>
+⋮----
+getUnitConvert(params: UnitConvertRequest): Promise<UnitConvertData[]>
+⋮----
+getOptionTickBands(params: {
+    instType: string;
+    instFamily?: string;
+}): Promise<any[]>
+⋮----
+getPremiumHistory(params: GetPremiumHistoryRequest): Promise<any[]>
+⋮----
+getIndexTickers(params?: {
+    quoteCcy?: string;
+    instId?: string;
+}): Promise<IndexTicker[]>
+⋮----
+getIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]>
+⋮----
+getHistoricIndexCandles(params: CandleRequest): Promise<CandleNoVolume[]>
+⋮----
+getMarkPriceCandles(params: CandleRequest): Promise<CandleNoVolume[]>
+⋮----
+getHistoricMarkPriceCandles(
+    params: CandleRequest,
+): Promise<CandleNoVolume[]>
+⋮----
+getOracle(): Promise<any[]>
+⋮----
+getExchangeRate(): Promise<any[]>
+⋮----
+getIndexComponents(params:
+⋮----
+getEconomicCalendar(
+    params: EconomicCalendarRequest,
+): Promise<EconomicCalendarData[]>
+⋮----
+getPublicBlockTrades(params:
+⋮----
+/**
+   *
+   * Trading statistics - REST endpoints
+   *
+   */
+⋮----
+getSupportCoin(): Promise<any[]>
+⋮----
+getOpenInterestHistory(
+    params: GetContractOpenInterestHistoryRequest,
+): Promise<any[]>
+⋮----
+getTakerVolume(params: {
+    instType: string;
+    ccy: string;
+    period?: string;
+    end?: string;
+    begin?: string;
+}): Promise<any[]>
+⋮----
+getContractTakerVolume(
+    params: GetContractTakerVolumeRequest,
+): Promise<any[]>
+⋮----
+getMarginLendingRatio(params: {
+    ccy: string;
+    begin?: numberInString;
+    end?: numberInString;
+    period: '5m' | '1H' | '1D';
+}): Promise<any[]>
+⋮----
+getTopTradersAccountRatio(
+    params: GetTopTradersContractLongShortRatioRequest,
+): Promise<any[]>
+⋮----
+getTopTradersContractPositionRatio(
+    params: GetTopTradersContractLongShortRatioRequest,
+): Promise<any[]>
+⋮----
+getLongShortContractRatio(
+    params: GetTopTradersContractLongShortRatioRequest,
+): Promise<any[]>
+⋮----
+getLongShortRatio(params: {
+    ccy: string;
+    begin?: numberInString;
+    end?: numberInString;
+    period: '5m' | '1H' | '1D';
+}): Promise<any[]>
+⋮----
+getContractsOpenInterestAndVolume(params: {
+    ccy: string;
+    begin?: numberInString;
+    end?: numberInString;
+    period: '5m' | '1H' | '1D';
+}): Promise<any[]>
+⋮----
+getOptionsOpenInterestAndVolume(params: {
+    ccy: string;
+    period: '8H' | '1D';
+}): Promise<any[]>
+⋮----
+getPutCallRatio(params: {
+    ccy: string;
+    period: '8H' | '1D';
+}): Promise<any[]>
+⋮----
+getOpenInterestAndVolumeExpiry(params: {
+    ccy: string;
+    period: '8H' | '1D';
+}): Promise<any[]>
+⋮----
+getOpenInterestAndVolumeStrike(params: {
+    ccy: string;
+    expTime: string;
+    period: '8H' | '1D';
+}): Promise<any[]>
+⋮----
+getTakerFlow(params:
+⋮----
+/**
+   *
+   * Funding account - REST endpoints
+   *
+   */
+⋮----
+getCurrencies(params?:
+⋮----
+getBalances(params?:
+⋮----
+getNonTradableAssets(params?:
+⋮----
+getAccountAssetValuation(params?: {
+    ccy?: string;
+}): Promise<AccountAssetValuation[]>
+⋮----
+fundsTransfer(params: FundsTransferRequest): Promise<FundTransferResult[]>
+⋮----
+/** Either parameter transId or clientId is required. */
+getFundsTransferState(params?: {
+    transId?: string;
+    clientId?: string;
+    type?: '0' | '1' | '2';
+}): Promise<FundTransferState[]>
+⋮----
+getAssetBillsDetails(params?: {
+    ccy?: string;
+    type?: `${ASSET_BILL_TYPE}`;
+    clientId?: string;
+    after?: numberInString;
+    before?: numberInString;
+    limit?: numberInString;
+}): Promise<AssetBillDetails[]>
+⋮----
+getLightningDeposits(params: {
+    ccy: string;
+    amt: numberInString;
+    to?: '6' | '18';
+}): Promise<any[]>
+⋮----
+getDepositAddress(params:
+⋮----
+getDepositHistory(params?: any): Promise<any[]>
+⋮----
+submitWithdraw(params: WithdrawRequest): Promise<WithdrawResponse[]>
+⋮----
+submitWithdrawLightning(params: {
+    ccy: string;
+    invoice: string;
+    memo?: string;
+}): Promise<any[]>
+⋮----
+cancelWithdrawal(params:
+⋮----
+getWithdrawalHistory(params?: WithdrawalHistoryRequest): Promise<any[]>
+⋮----
+getDepositWithdrawStatus(
+    params: GetDepositWithdrawStatusRequest,
+): Promise<any[]>
+⋮----
+getExchanges(): Promise<any[]>
+⋮----
+applyForMonthlyStatement(params?:
+⋮----
+getMonthlyStatement(params:
+⋮----
+getConvertCurrencies(): Promise<any[]>
+⋮----
+getConvertCurrencyPair(params: {
+    fromCcy: string;
+    toCcy: string;
+}): Promise<any[]>
+⋮----
+estimateConvertQuote(params: ConvertQuoteEstimateRequest): Promise<any[]>
+⋮----
+convertTrade(params: ConvertTradeRequest): Promise<any[]>
+⋮----
+getConvertHistory(params?: any): Promise<any[]>
+⋮----
+/**
+   *
+   * Subaccount - REST endpoints
+   *
+   */
+⋮----
+/** View sub-account list */
+getSubAccountList(params?: any): Promise<SubAccount[]>
+⋮----
+resetSubAccountAPIKey(params: {
+    subAcct: string;
+    apiKey: string;
+    label?: string;
+    perm?: string;
+    ip?: string;
+}): Promise<SubAccountAPIReset[]>
+⋮----
+getSubAccountBalances(params: {
+    subAcct: string;
+}): Promise<SubAccountBalances[]>
+⋮----
+getSubAccountFundingBalances(params: {
+    subAcct: string;
+    ccy?: string;
+}): Promise<FundingBalance[]>
+⋮----
+getSubAccountMaxWithdrawal(
+    params: GetSubAccountMaxWithdrawalsRequest,
+): Promise<SubAccountMaxWithdrawal[]>
+⋮----
+/** History of sub-account transfer */
+getSubAccountTransferHistory(params?: {
+    ccy?: string;
+    type?: '0' | '1';
+    subAcct?: string;
+    after?: string;
+    before?: string;
+    limit?: string;
+}): Promise<any[]>
+⋮----
+getManagedSubAccountTransferHistory(
+    params: GetManagedSubAccountTransferHistoryRequest,
+): Promise<ManagedSubAccountTransfer[]>
+⋮----
+/** Master accounts manage the transfers between sub-accounts */
+transferSubAccountBalance(
+    params: SubAccountTransferRequest,
+): Promise<SubAccountTransferResult[]>
+⋮----
+setSubAccountTransferOutPermission(params: {
+    subAcct: string;
+    canTransOut: boolean;
+}): Promise<any[]>
+⋮----
+getSubAccountCustodyTradingList(params?: {
+    subAcct?: string;
+}): Promise<any[]>
+⋮----
+setSubAccountLoanAllocation(
+    params: SetSubAccountLoanAllocationRequest,
+  ): Promise<
+    {
+      result: boolean;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/account/subaccount/set-loan-allocation',
+      params,
+    );
+⋮----
+getSubAccountBorrowInterestAndLimit(params: {
+    subAcct: string;
+    ccy?: string;
+}): Promise<any[]>
+⋮----
+/**
+   *
+   * Financial product - on chain earn endpoints
+   *
+   */
+⋮----
+/** Get earn offers */
+getStakingOffers(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+}): Promise<any[]>
+⋮----
+submitStake(params: {
+    productId: string;
+    investData: {
+      ccy: string;
+      amt: string;
+    }[];
+    term?: string;
+}): Promise<any[]>
+⋮----
+redeemStake(params: {
+    ordId: string;
+    protocolType: 'staking' | 'defi';
+    allowEarlyRedeem?: boolean;
+}): Promise<any[]>
+⋮----
+cancelStakingRequest(params: {
+    ordId: string;
+    protocolType: 'staking' | 'defi';
+}): Promise<any[]>
+⋮----
+/** Earn/staking get active orders */
+getActiveStakingOrders(params?: {
+    productId?: string;
+    protocolType?: 'staking' | 'defi';
+    ccy?: string;
+    state?: '8' | '13' | '9' | '1' | '2';
+}): Promise<any[]>
+⋮----
+/** Earn/staking get order history */
+getStakingOrderHistory(params?: {
+    productId?: string;
+    protocolType?: string;
+    ccy?: string;
+    after?: string;
+    before?: string;
+    limit?: string;
+}): Promise<any[]>
+⋮----
+/**
+   *
+   * Financial product - ETH staking endpoints
+   *
+   */
+⋮----
+getETHStakingProductInfo(): Promise<any[]>
+⋮----
+purchaseETHStaking(params:
+⋮----
+redeemETHStaking(params:
+⋮----
+getETHStakingBalance(): Promise<any[]>
+⋮----
+getETHStakingHistory(params: {
+    type: 'purchase' | 'redeem';
+    status?: 'pending' | 'success' | 'failed';
+    after?: string;
+    before?: string;
+    limit?: string;
+}): Promise<any[]>
+⋮----
+getAPYHistory(params:
+⋮----
+/**
+   *
+   * Financial product - simple earn flexible endpoints
+   *
+   */
+⋮----
+getSavingBalance(params?:
+⋮----
+savingsPurchaseRedemption(params: {
+    ccy: string;
+    amt: numberInString;
+    side: 'purchase' | 'redempt';
+    rate: numberInString;
+}): Promise<any[]>
+⋮----
+setLendingRate(params: {
+    ccy: string;
+    rate: numberInString;
+}): Promise<any[]>
+⋮----
+getLendingHistory(params?: PaginatedSymbolRequest): Promise<any[]>
+⋮----
+getPublicBorrowInfo(params?:
+⋮----
+getPublicBorrowHistory(params?: PaginatedSymbolRequest): Promise<any[]>
+⋮----
+/**
+   *
+   * Financial product - simple earn fixed endpoints
+   *
+   */
+⋮----
+getLendingOffers(params?:
+⋮----
+getLendingAPYHistory(params:
+⋮----
+getLendingVolume(params:
+⋮----
+placeLendingOrder(params: LendingOrder): Promise<any[]>
+⋮----
+amendLendingOrder(params: LendingOrder): Promise<any[]>
+⋮----
+getLendingOrders(params: GetLendingOrderListRequest): Promise<any[]>
+⋮----
+getLendingSubOrders(params: GetLendingSubOrderListRequest): Promise<any[]>
+⋮----
+/**
+   *
+   * Financial product - Flexible loan endpoints
+   *
+   */
+⋮----
+getBorrowableCurrencies(): Promise<
+    {
+      borrowCcy: string;
+    }[]
+  > {
+    return this.get('/api/v5/finance/flexible-loan/borrow-currencies');
+⋮----
+getCollateralAssets(params?: {
+    ccy?: string;
+}): Promise<CollateralAssetsResponse[]>
+⋮----
+getMaxLoanAmount(params: MaxLoanRequest): Promise<MaxLoanResponse[]>
+⋮----
+adjustCollateral(params: AdjustCollateralRequest): Promise<[]>
+⋮----
+getLoanInfo(): Promise<LoanInfo[]>
+⋮----
+getLoanHistory(params?: LoanHistoryRequest): Promise<LoanHistoryItem[]>
+⋮----
+getAccruedInterest(
+    params?: AccruedInterestRequest,
+): Promise<AccruedInterestItem[]>
+⋮----
+/**
+   *
+   * Affiliate endpoints
+   *
+   */
+⋮----
+getInviteeDetail(params:
+⋮----
+getAffiliateRebateInfo(params:
+⋮----
+/**
+   *
+   * Status endpoints (public)
+   *
+   */
+⋮----
+getSystemStatus(params: {
+    state?: 'scheduled' | 'ongoing' | 'pre_open' | 'completed' | 'canceled';
+}): Promise<any[]>
+⋮----
+/**
+   *
+   * Announcement endpoints
+   *
+   */
+⋮----
+getAnnouncements(params?: { annType?: string; page?: string }): Promise<
+    {
+      totalPage: string;
+      details: Announcement[];
+    }[]
+  > {
+    return this.get('/api/v5/support/announcements', params);
+⋮----
+getAnnouncementTypes(): Promise<
+    {
+      annType: string;
+      annTypeDesc: string;
+    }[]
+  > {
+    return this.get('/api/v5/support/announcement-types');
+⋮----
+/**
+   *
+   * Broker endpoints (private)
+   *
+   */
+⋮----
+createSubAccount(params: {
+    subAcct: string;
+    label?: string;
+    clientIP?: string;
+    mainAcct: string;
+}): Promise<any[]>
+⋮----
+deleteSubAccount(params:
+⋮----
+createSubAccountAPIKey(params: {
+    subAcct: string;
+    label: string;
+    passphrase: string;
+    ip?: string;
+    perm?: string;
+}): Promise<any[]>
+
+================
+File: package.json
+================
+{
+  "name": "okx-api",
+  "version": "2.0.6",
+  "description": "Complete & robust Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/*",
+    "index.js"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rm -rf lib dist",
+    "build": "tsc",
+    "build:clean": "npm run clean && npm run build",
+    "build:watch": "npm run clean && tsc --watch",
+    "pack": "webpack --config webpack/webpack.config.js",
+    "lint": "eslint src",
+    "prepublish": "npm run build:clean",
+    "betapublish": "npm publish --tag beta"
+  },
+  "author": "Tiago Siebler (https://github.com/tiagosiebler)",
+  "contributors": [],
+  "dependencies": {
+    "axios": "^1.6.7",
+    "isomorphic-ws": "^4.0.1",
+    "ws": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-require-extensions": "^0.1.3",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.7.3"
+  },
+  "optionalDependencies": {
+    "source-map-loader": "^4.0.0",
+    "ts-loader": "^9.3.1",
+    "webpack": "^5.74.0",
+    "webpack-bundle-analyzer": "^4.6.1",
+    "webpack-cli": "^4.10.0"
+  },
+  "keywords": [
+    "okx",
+    "okx api",
+    "okex",
+    "okex api",
+    "api",
+    "websocket",
+    "rest",
+    "rest api",
+    "usdt",
+    "trading bots",
+    "nodejs",
+    "node",
+    "trading",
+    "cryptocurrency",
+    "bitcoin",
+    "best"
+  ],
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/tiagosiebler"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tiagosiebler/okx-api"
+  },
+  "bugs": {
+    "url": "https://github.com/tiagosiebler/okx-api/issues"
+  },
+  "homepage": "https://github.com/tiagosiebler/okx-api#readme"
+}
+
+
+
+
+================================================================
+End of Codebase
+================================================================

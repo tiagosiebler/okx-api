@@ -104,13 +104,13 @@ Create API credentials at okx
   - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
   - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
 
-### Example 
+### Example
 
 ```ts
 import { RestClient } from 'okx-api';
 
 const client = new RestClient({
-  apiKey: 'apiKeyHere', 
+  apiKey: 'apiKeyHere',
   apiSecret: 'apiSecretHere',
   apiPass: 'apiPassHere',
 });
@@ -224,6 +224,12 @@ Build a bundle using webpack:
 - `npm pack`
 
 The bundle can be found in `dist/`. Altough usage should be largely consistent, smaller differences will exist. Documentation is still TODO.
+
+## Use with LLMs & AI
+
+This SDK includes a bundled `llms.txt` file in the root of the repository. If you're developing with LLMs, use the included `llms.txt` with your LLM - it will significantly improve the LLMs understanding of how to correctly use this SDK.
+
+This file contains AI optimised structure of all the functions in this package, and their parameters for easier use with any learning models or artificial intelligence.
 
 ---
 
