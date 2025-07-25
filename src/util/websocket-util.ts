@@ -1,6 +1,9 @@
 import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
+import { WSAPIRequestOKX } from '../types/websockets/ws-api';
 import { DefaultLogger } from './logger';
 import { neverGuard } from './typeGuards';
+
+export const WS_LOGGER_CATEGORY = { category: 'okx-ws' };
 
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
@@ -249,6 +252,9 @@ export function getWsKeyForTopicChannel(
   return getWsKeyForMarket(market, isPrivateTopic, isBusinessChannel);
 }
 
+/**
+ * Returns wsKey for product group. Demo resolution is handled in URL lookup function, separately.
+ */
 export function getWsKeyForMarket(
   market: APIMarket,
   isPrivate: boolean,
@@ -283,7 +289,9 @@ export function getWsKeyForMarket(
   }
 }
 
-/** Maps a WS key back to a WS URL */
+/**
+ * Maps a WS key back to a WS URL. Resolves to demo wsKey automatically, if configured.
+ */
 export function getWsUrlForWsKey(
   wsKey: WsKey,
   wsClientOptions: WebsocketClientOptions,
@@ -292,24 +300,39 @@ export function getWsUrlForWsKey(
   if (wsClientOptions.wsUrl) {
     return wsClientOptions.wsUrl;
   }
-
+  const isDemoTrading = !!wsClientOptions?.demoTrading;
+  const LIVE_OR_DEMO: 'live' | 'demo' = isDemoTrading ? 'demo' : 'live';
   switch (wsKey) {
+    // Global (www.okx.com)
     case 'prodPublic':
-      return WS_BASE_URL_MAP.prod.public;
+    case 'prodDemoPublic':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].public;
     case 'prodPrivate':
-      return WS_BASE_URL_MAP.prod.private;
-    case 'demoPublic':
-      return WS_BASE_URL_MAP.demo.public;
-    case 'demoPrivate':
-      return WS_BASE_URL_MAP.demo.private;
-    case 'businessPublic':
-      return WS_BASE_URL_MAP.business.public;
-    case 'businessPrivate':
-      return WS_BASE_URL_MAP.business.private;
-    case 'businessDemoPublic':
-      return WS_BASE_URL_MAP.businessDemo.public;
-    case 'businessDemoPrivate':
-      return WS_BASE_URL_MAP.businessDemo.private;
+    case 'prodDemoPrivate':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].private;
+    case 'prodBusiness':
+    case 'prodDemoBusiness':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].business;
+    // EEA (my.okx.com)
+    case 'eeaLivePublic':
+    case 'eeaDemoPublic':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].public;
+    case 'eeaLivePrivate':
+    case 'eeaDemoPrivate':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].private;
+    case 'eeaLiveBusiness':
+    case 'eeaDemoBusiness':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].business;
+    // US (app.okx.com)
+    case 'usLivePublic':
+    case 'usDemoPublic':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].public;
+    case 'usLivePrivate':
+    case 'usDemoPrivate':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].private;
+    case 'usLiveBusiness':
+    case 'usDemoBusiness':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].business;
     default: {
       const errorMessage = 'getWsUrl(): Unhandled wsKey: ';
       logger.error(errorMessage, {
@@ -326,9 +349,9 @@ export function getMaxTopicsPerSubscribeEvent(
 ): number | null {
   switch (market) {
     case 'prod':
-    case 'demo':
-    case 'business':
-    case 'businessDemo': {
+    case 'EEA':
+    case 'GLOBAL':
+    case 'US': {
       return null;
     }
     default: {
@@ -373,4 +396,32 @@ export function safeTerminateWs(
   }
 
   return false;
+}
+
+/**
+ * WebSocket.ping() is not available in browsers. This is a simple check used to
+ * disable heartbeats in browers, for exchanges that use native WebSocket ping/pong frames.
+ */
+export function isWSPingFrameAvailable(): boolean {
+  return typeof (WebSocket.prototype as any)['ping'] === 'function';
+}
+
+/**
+ * WebSocket.pong() is not available in browsers. This is a simple check used to
+ * disable heartbeats in browers, for exchanges that use native WebSocket ping/pong frames.
+ */
+export function isWSPongFrameAvailable(): boolean {
+  return typeof (WebSocket.prototype as any)['pong'] === 'function';
+}
+
+/**
+ * WS API promises are stored using a primary key. This key is constructed using
+ * properties found in every request & reply.
+ */
+export function getPromiseRefForWSAPIRequest(
+  requestEvent: WSAPIRequestOKX<unknown>,
+): string {
+  // Responses don't have any other info we can use to connect them to the request. Just the "id" field...
+  const promiseRef = [requestEvent.id].join('_');
+  return promiseRef;
 }

@@ -41,15 +41,6 @@ import {
   WsKey,
 } from './util/websocket-util';
 
-export type WsClientEvent =
-  | 'open'
-  | 'update'
-  | 'close'
-  | 'error'
-  | 'reconnect'
-  | 'reconnected'
-  | 'response';
-
 type WsKeyObject = { wsKey: WsKey };
 
 interface WebsocketClientEvents {
@@ -70,7 +61,7 @@ interface WebsocketClientEvents {
 }
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
-export declare interface WebsocketClient {
+export declare interface WebsocketClientLegacy {
   on<U extends keyof WebsocketClientEvents>(
     event: U,
     listener: WebsocketClientEvents[U],
@@ -82,7 +73,10 @@ export declare interface WebsocketClient {
   ): boolean;
 }
 
-export class WebsocketClient extends EventEmitter {
+/**
+ * @deprecated Previous generation WS Client will be removed soon. Use the new WebsocketClient instead.
+ */
+export class WebsocketClientLegacy extends EventEmitter {
   private logger: typeof DefaultLogger;
 
   private options: WebsocketClientOptions;

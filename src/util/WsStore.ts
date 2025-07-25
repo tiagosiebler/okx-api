@@ -124,7 +124,7 @@ export class WsStore<WSComplexTopic> {
     wsKey: WsKey,
   ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined {
     if (this.hasExistingActiveConnection(wsKey)) {
-      this.logger.warning(
+      this.logger.info(
         'WsStore setConnection() overwriting existing open connection: ',
         this.getWs(wsKey),
       );
@@ -139,7 +139,7 @@ export class WsStore<WSComplexTopic> {
   delete(wsKey: WsKey) {
     if (this.hasExistingActiveConnection(wsKey)) {
       const ws = this.getWs(wsKey);
-      this.logger.warning(
+      this.logger.info(
         'WsStore deleting state for connection still open: ',
         ws,
       );
@@ -160,7 +160,7 @@ export class WsStore<WSComplexTopic> {
 
   setWs(wsKey: WsKey, wsConnection: WebSocket): WebSocket {
     if (this.isWsOpen(wsKey)) {
-      this.logger.warning(
+      this.logger.info(
         'WsStore setConnection() overwriting existing open connection: ',
         this.getWs(wsKey),
       );
