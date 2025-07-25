@@ -28,8 +28,6 @@ import {
   PRIVATE_WS_KEYS,
   PUBLIC_WS_KEYS,
   WS_KEY_MAP,
-  WsConnectionStateEnum,
-  WsStore,
 } from './util';
 import { signMessage } from './util/webCryptoAPI';
 import {
@@ -40,6 +38,8 @@ import {
   WS_LOGGER_CATEGORY,
   WsKey,
 } from './util/websocket-util';
+import WsStore from './util/WsStore';
+import { WsConnectionStateEnum } from './util/WsStore.types';
 
 export type WsClientEvent =
   | 'open'
@@ -87,7 +87,7 @@ export class WebsocketClient extends EventEmitter {
 
   private options: WebsocketClientOptions;
 
-  private wsStore: WsStore<WsChannelSubUnSubRequestArg>;
+  private wsStore: WsStore<WsKey, WsChannelSubUnSubRequestArg>;
 
   constructor(
     options: WSClientConfigurableOptions,
@@ -103,6 +103,12 @@ export class WebsocketClient extends EventEmitter {
       pongTimeout: 2000,
       pingInterval: 10000,
       reconnectTimeout: 500,
+
+      // Automatically send an authentication op/request after a connection opens, for private connections.
+      authPrivateConnectionsOnConnect: true,
+      // Individual requests do not require a signature, so this is disabled.
+      authPrivateRequests: false,
+
       ...options,
     };
 
@@ -135,7 +141,7 @@ export class WebsocketClient extends EventEmitter {
       );
 
       // Persist topic for reconnects
-      this.wsStore.addComplexTopic(wsKey, wsEventArg);
+      this.wsStore.addTopic(wsKey, wsEventArg);
 
       // if connected, send subscription request
       if (
@@ -178,7 +184,7 @@ export class WebsocketClient extends EventEmitter {
       );
 
       // Remove topic from persistence for reconnects
-      this.wsStore.deleteComplexTopic(wsKey, wsEventArg);
+      this.wsStore.deleteTopic(wsKey, wsEventArg);
 
       // unsubscribe request only necessary if active connection exists
       if (
@@ -190,7 +196,7 @@ export class WebsocketClient extends EventEmitter {
   }
 
   /** Get the WsStore that tracks websocket & topic state */
-  public getWsStore(): WsStore<WsChannelSubUnSubRequestArg> {
+  public getWsStore(): WsStore<WsKey, WsChannelSubUnSubRequestArg> {
     return this.wsStore;
   }
 
@@ -666,8 +672,9 @@ export class WebsocketClient extends EventEmitter {
       wsKey,
     });
 
-    const agent = this.options.requestOptions?.agent;
-    const ws = new WebSocket(url, undefined, agent ? { agent } : undefined);
+    const { protocols = [], ...wsOptions } = this.options.wsOptions || {};
+    const ws = new WebSocket(url, protocols, wsOptions);
+
     ws.onopen = (event) => this.onWsOpen(event, wsKey);
     ws.onmessage = (event) => this.onWsMessage(event, wsKey);
     ws.onerror = (event) =>

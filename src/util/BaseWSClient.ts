@@ -2,25 +2,25 @@
 import EventEmitter from 'events';
 import WebSocket from 'isomorphic-ws';
 
-import { WSOperation } from '../types/websockets/ws-api.js';
+import { WSOperation } from '../types/websockets/ws-api';
 import {
   isMessageEvent,
   MessageEventLike,
-} from '../types/websockets/ws-events.js';
+} from '../types/websockets/ws-events';
 import {
   WebsocketClientOptions,
   WSClientConfigurableOptions,
-} from '../types/websockets/ws-general.js';
-import { DefaultLogger } from './logger.js';
+} from '../types/websockets/ws-general';
+import { DefaultLogger } from './logger';
 import {
   getNormalisedTopicRequests,
   safeTerminateWs,
   WS_LOGGER_CATEGORY,
   WsTopicRequest,
   WsTopicRequestOrStringTopic,
-} from './websocket-util.js';
-import WsStore from './WsStore.js';
-import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types.js';
+} from './websocket-util';
+import WsStore from './WsStore';
+import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types';
 
 interface WSClientEventMap<WsKey extends string> {
   /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
@@ -170,11 +170,13 @@ export abstract class BaseWebsocketClient<
     this.wsStore = new WsStore(this.logger);
 
     this.options = {
+      // Defaults to global (www.okx.com) API group
+      market: 'GLOBAL',
+
       demoTrading: false,
       pongTimeout: 1000,
       pingInterval: 10000,
       reconnectTimeout: 500,
-      recvWindow: 0,
 
       // Automatically send an authentication op/request after a connection opens, for private connections.
       authPrivateConnectionsOnConnect: true,
@@ -493,7 +495,8 @@ export abstract class BaseWebsocketClient<
       this.parseWsError('Websocket onWsError', event, wsKey);
     ws.onclose = (event) => this.onWsClose(event, wsKey);
 
-    // Native ws ping/pong frames are not in use for bitget
+    // Native ws ping/pong frames are not in use for okx
+    // TODO: make this a top level configuration flag, so there's less base client adjustments per exchange?
     // if (typeof ws.on === 'function') {
     //   ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
     //   ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));

@@ -1,3 +1,4 @@
+import { RestClientOptions } from '../rest';
 import { APICredentials, APIMarket } from '../shared';
 
 export interface WSClientConfigurableOptions {
@@ -16,10 +17,24 @@ export interface WSClientConfigurableOptions {
    */
   demoTrading?: boolean;
 
-  pongTimeout?: number;
+  // Disable ping/pong ws heartbeat mechanism (not recommended) // TODO:
+  disableHeartbeat?: boolean;
+
+  /** How often to check if the connection is alive */
   pingInterval?: number;
+
+  /** How long to wait for a pong (heartbeat reply) before assuming the connection is dead */
+  pongTimeout?: number;
+
+  /** Delay in milliseconds before respawning the connection */
   reconnectTimeout?: number;
-  requestOptions?: any;
+
+  requestOptions?: RestClientOptions;
+
+  wsOptions?: {
+    protocols?: string[];
+    agent?: any;
+  };
   wsUrl?: string;
 
   /**
@@ -35,4 +50,6 @@ export interface WebsocketClientOptions extends WSClientConfigurableOptions {
   pongTimeout: number;
   pingInterval: number;
   reconnectTimeout: number;
+  authPrivateConnectionsOnConnect: boolean;
+  authPrivateRequests: boolean;
 }
