@@ -36,8 +36,11 @@ jobs:
       - name: Check Lint
         run: npm run lint
 
-      - name: Test
-        run: npm run test
+      - name: Run Public Tests
+        run: npm run test:public
+
+      - name: Run Private Tests
+        run: npm run test:private
         env:
           API_KEY_COM: ${{ secrets.API_KEY_COM }}
           API_SECRET_COM: ${{ secrets.API_SECRET_COM }}

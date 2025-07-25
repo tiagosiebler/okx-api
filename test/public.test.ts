@@ -2,7 +2,7 @@ import { RestClient } from '../src';
 import { notAuthenticatedError, successResponseList } from './response.util';
 
 describe('Public Inverse REST API Endpoints', () => {
-  const api = new RestClient(null, 'prod');
+  const api = new RestClient();
 
   const instId = 'BTC-USDT';
   const instdIdSwap = 'BTC-USDT-SWAP';

@@ -1,10 +1,8 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "baseUrl": ".",
-    "allowJs": true,
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "declaration": true,
     "removeComments": false,
@@ -14,14 +12,13 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": ["es2017","dom"],
-    "outDir": "lib"
+    "lib": ["ESNext", "DOM"],
+    "outDir": "lib",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "incremental": false,
+    "tsBuildInfoFile": ".tsbuildinfo"
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "**/node_modules/*",
-    "coverage",
-    "doc"
-  ]
+  "exclude": ["node_modules", "**/node_modules/*", "coverage", "doc"]
 }

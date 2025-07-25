@@ -1117,9 +1117,9 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // const { WebsocketClient, DefaultLogger } = require('okx-api');
 ⋮----
 // Optional: Inject a custom logger.
-// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
 ⋮----
-// silly: (...params) => console.log('silly', ...params),
+// trace: (...params) => console.log('trace', ...params),
 ⋮----
 // prod is used by default, but you can choose other markets through this parameter:
 // market: 'prod',
@@ -3404,9 +3404,9 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // const { WebsocketClient, DefaultLogger } = require('okx-api');
 ⋮----
 // Optional: Inject a custom logger.
-// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
 ⋮----
-// silly: (...params) => console.log('silly', ...params),
+// trace: (...params) => console.log('trace', ...params),
 ⋮----
 // For private events, all 3 of the following are required (per account):
 ⋮----
@@ -3919,7 +3919,7 @@ private onWsMessage(event: any, wsKey: WsKey)
 ⋮----
 // Since private topics have a dedicated WsKey, these are automatically all private topics (no filtering required before the subscribe call)
 ⋮----
-// this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
+// this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
 ⋮----
 private onWsClose(event, wsKey: WsKey)
 
@@ -4421,13 +4421,13 @@ Create API credentials at okx
   - If the response looks successful (HTTP 200 and "code" in the response body === "0"), only the `data` property is directly (without the `code`, `data` & `msg` properties).
   - If the response looks like an error (HTTP error OR the "code" property in the response does not equal "0"), the full response is thrown (including `code` and `msg` properties). See the interface for [APIResponse<T>](./src/types/rest/shared.ts).
 
-### Example 
+### Example
 
 ```ts
 import { RestClient } from 'okx-api';
 
 const client = new RestClient({
-  apiKey: 'apiKeyHere', 
+  apiKey: 'apiKeyHere',
   apiSecret: 'apiSecretHere',
   apiPass: 'apiPassHere',
 });

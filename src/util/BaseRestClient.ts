@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import https from 'https';
 
 import { APIResponse, RestClientOptions } from '../types';
-import { signMessage } from './node-support';
 import {
   getRestBaseUrl,
   programId,
@@ -10,6 +9,7 @@ import {
   serializeParams,
 } from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
+import { signMessage } from './webCryptoAPI';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -65,6 +65,7 @@ export default abstract class BaseRestClient {
     this.options = {
       // if true, we'll throw errors if any params are undefined
       strict_param_validation: false,
+      market: 'prod',
       ...options,
     };
 
@@ -93,8 +94,14 @@ export default abstract class BaseRestClient {
       this.globalRequestOptions.headers = {};
     }
 
+    if ((options.market as any) === 'demo') {
+      throw new Error(
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
+      );
+    }
+
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
-    if (options.market === 'demo') {
+    if (options.demoTrading) {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
 
@@ -278,7 +285,7 @@ export default abstract class BaseRestClient {
 
     return {
       ...res,
-      sign: await signMessage(message, this.apiSecret),
+      sign: await signMessage(message, this.apiSecret, 'base64', 'SHA-256'),
     };
   }
 

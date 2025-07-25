@@ -13,8 +13,6 @@ export type WsTradeOp =
   | 'amend-order'
   | 'batch-amend-order';
 
-export type WsRequestOp = 'login' | 'subscribe' | 'unsubscribe';
-
 export type WsPrivateChannel =
   | 'account'
   | 'positions'
@@ -171,11 +169,6 @@ export type WsBusinessChannel =
 
 export type WsChannel = WsPublicChannel | WsPrivateChannel | WsBusinessChannel;
 
-export interface WsBaseRequest {
-  op: WsRequestOp;
-  args: any[];
-}
-
 /** Used to trigger order actions over websockets (e.g. placing & cancelling orders) */
 export interface WsTradeBaseRequest {
   op: WsTradeOp;
@@ -303,24 +296,3 @@ export type WsChannelSubUnSubRequestArg =
   | WsPublicChannelArgOptionSummary
   | WsPublicChannelArgStatus
   | WsPublicChannelArgLiquidationOrders;
-
-/**
- *
- * Top level requests with args
- *
- */
-
-export interface WsSubRequest extends WsBaseRequest {
-  op: 'subscribe';
-  args: WsChannelSubUnSubRequestArg[];
-}
-
-export interface WsUnsubRequest extends WsBaseRequest {
-  op: 'unsubscribe';
-  args: WsChannelSubUnSubRequestArg[];
-}
-
-export interface WsAuthRequest extends WsBaseRequest {
-  op: 'login';
-  args: WsAuthRequestArg[];
-}

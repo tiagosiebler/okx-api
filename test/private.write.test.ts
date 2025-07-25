@@ -12,14 +12,11 @@ describe('Private REST API Endpoints (POST)', () => {
   const API_SECRET = process.env.API_SECRET_COM;
   const API_PASSPHRASE = process.env.API_PASSPHRASE_COM;
 
-  const api = new RestClient(
-    {
-      apiKey: API_KEY!,
-      apiSecret: API_SECRET!,
-      apiPass: API_PASSPHRASE!,
-    },
-    'prod',
-  );
+  const api = new RestClient({
+    apiKey: API_KEY!,
+    apiSecret: API_SECRET!,
+    apiPass: API_PASSPHRASE!,
+  });
 
   const instrumentId = 'BTC-USDT';
 

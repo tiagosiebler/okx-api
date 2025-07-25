@@ -43,9 +43,16 @@ export function getRestBaseUrl(
 
   switch (market) {
     default:
-    case 'demo':
+    // "prod" defaults to OKX Global: https://www.okx.com/docs-v5/en/#overview-production-trading-services
     case 'prod': {
       return 'https://www.okx.com';
+    }
+    // also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+    case 'EEA': {
+      return 'https://eea.okx.com';
+    }
+    case 'US': {
+      return 'https://us.okx.com';
     }
   }
 }

@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
-
 import { ASSET_BILL_TYPE } from './constants';
 import {
   AccountAssetValuation,
@@ -38,8 +36,6 @@ import {
   AmendRecurringBuyOrderRequest,
   AmendTPSLRequest,
   Announcement,
-  APICredentials,
-  APIMarket,
   APIResponse,
   AssetBillDetails,
   AutoLoanResult,
@@ -209,7 +205,6 @@ import {
   RecurringBuyOrder,
   RecurringBuyOrderResult,
   RecurringBuySubOrder,
-  RestClientOptions,
   SetCTBatchLeverageRequest,
   SetCTBatchLeverageResult,
   SetLeverageRequest,
@@ -265,34 +260,6 @@ import {
 import BaseRestClient from './util/BaseRestClient';
 
 export class RestClient extends BaseRestClient {
-  /**
-   * @public Creates an instance of the REST API client.
-   *
-   * @param credentials - Note: This parameter will be removed! Pass `null` here and use the restClientOptions parameter (3rd one) instead!
-   * @param environment - Note: This parameter will be removed! Pass `prod` here and use the restClientOptions parameter (3rd one) instead!
-   * @param restClientOptions
-   * @param requestOptions
-   * @returns
-   */
-  constructor(
-    credentials?: APICredentials | null,
-    environment: APIMarket = 'prod',
-    restClientOptions: RestClientOptions = {},
-    requestOptions: AxiosRequestConfig = {},
-  ) {
-    super(
-      {
-        apiKey: credentials?.apiKey,
-        apiSecret: credentials?.apiSecret,
-        apiPass: credentials?.apiPass,
-        market: environment,
-        ...restClientOptions,
-      },
-      requestOptions,
-    );
-    return this;
-  }
-
   /**
    *
    * Custom SDK functions

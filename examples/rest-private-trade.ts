@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RestClient } from '../src/index';
 import { OrderRequest } from '../src/types/rest';
 

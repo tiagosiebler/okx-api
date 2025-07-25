@@ -1,7 +1,7 @@
 {
   "name": "okx-api",
   "version": "2.0.7",
-  "description": "Complete & robust Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
+  "description": "Complete Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:public": "jest --testPathIgnorePatterns='.*private.*'",
+    "test:private": "jest --testPathPattern='.*private.*'",
     "test:watch": "jest --watch",
     "clean": "rm -rf lib dist",
     "build": "tsc",
@@ -24,9 +26,10 @@
   "author": "Tiago Siebler (https://github.com/tiagosiebler)",
   "contributors": [],
   "dependencies": {
-    "axios": "^1.6.7",
-    "isomorphic-ws": "^4.0.1",
-    "ws": "^7.4.0"
+    "axios": "^1.10.0",
+    "isomorphic-ws": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "ws": "^8.9.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
