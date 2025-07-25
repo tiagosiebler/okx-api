@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "baseUrl": ".",
     "allowJs": true,
     "target": "es6",
     "module": "commonjs",
