@@ -5,11 +5,16 @@ export interface WSClientConfigurableOptions {
 
   /**
    * The API group this client should connect to:
-   * market: 'prod' (default)
-   * market: 'aws'
-   * market: 'demo'
+   * - market: 'prod' (default: connects to OKX global) https://www.okx.com/docs-v5/en/#overview-production-trading-services
+   * - market: 'EEA' // also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+   * - market: 'US' // also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
    */
   market?: APIMarket;
+
+  /**
+   * Set to `true` to use OKX's demo trading functionality
+   */
+  demoTrading?: boolean;
 
   pongTimeout?: number;
   pingInterval?: number;

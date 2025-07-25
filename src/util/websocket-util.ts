@@ -4,35 +4,88 @@ import { neverGuard } from './typeGuards';
 
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
-  Record<'public' | 'private', string>
+  Record<'live' | 'demo', Record<'public' | 'private' | 'business', string>>
 > = {
   prod: {
-    public: 'wss://ws.okx.com:8443/ws/v5/public',
-    private: 'wss://ws.okx.com:8443/ws/v5/private',
+    live: {
+      public: 'wss://ws.okx.com:8443/ws/v5/public',
+      private: 'wss://ws.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://ws.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  business: {
-    public: 'wss://ws.okx.com:8443/ws/v5/business',
-    private: 'wss://ws.okx.com:8443/ws/v5/business',
+  // Exactly the same as "prod"
+  // also known as "www.okx.com", the default: https://www.okx.com/docs-v5/en/#overview-production-trading-services
+  GLOBAL: {
+    live: {
+      public: 'wss://ws.okx.com:8443/ws/v5/public',
+      private: 'wss://ws.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://ws.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  businessDemo: {
-    public: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
-    private: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+  // also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+  EEA: {
+    live: {
+      public: 'wss://wseea.okx.com:8443/ws/v5/public',
+      private: 'wss://wseea.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://wseea.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wseeapap.okx.com:8443/ws/v5/public',
+      private: 'wss://wseeapap.okx.com:8443/ws/v5/private',
+      business: 'wss://wseeapap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  demo: {
-    public: 'wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999',
-    private: 'wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999',
+  // also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
+  US: {
+    live: {
+      public: 'wss://wsus.okx.com:8443/ws/v5/public',
+      private: 'wss://wsus.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://wsus.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wsuspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wsuspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wsuspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
 };
 
 export const WS_KEY_MAP = {
+  // OKX Global: https://www.okx.com/docs-v5/en/#overview-production-trading-services
   prodPublic: 'prodPublic',
   prodPrivate: 'prodPrivate',
-  demoPublic: 'demoPublic',
-  demoPrivate: 'demoPrivate',
-  businessPrivate: 'businessPrivate',
-  businessPublic: 'businessPublic',
-  businessDemoPublic: 'businessDemoPublic',
-  businessDemoPrivate: 'businessDemoPrivate',
+  prodBusiness: 'prodBusiness',
+  prodDemoPublic: 'prodDemoPublic',
+  prodDemoPrivate: 'prodDemoPrivate',
+  prodDemoBusiness: 'prodDemoBusiness',
+  // Also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+  eeaLivePublic: 'eeaLivePublic',
+  eeaLivePrivate: 'eeaLivePrivate',
+  eeaLiveBusiness: 'eeaLiveBusiness',
+  eeaDemoPublic: 'eeaDemoPublic',
+  eeaDemoPrivate: 'eeaDemoPrivate',
+  eeaDemoBusiness: 'eeaDemoBusiness',
+  // Also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
+  usLivePublic: 'usLivePublic',
+  usLivePrivate: 'usLivePrivate',
+  usLiveBusiness: 'usLiveBusiness',
+  usDemoPublic: 'usDemoPublic',
+  usDemoPrivate: 'usDemoPrivate',
+  usDemoBusiness: 'usDemoBusiness',
 } as const;
 
 /** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
@@ -40,16 +93,26 @@ export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
-  WS_KEY_MAP.businessPrivate,
-  WS_KEY_MAP.demoPrivate,
-  WS_KEY_MAP.businessDemoPrivate,
+  WS_KEY_MAP.prodBusiness,
+  WS_KEY_MAP.prodDemoPrivate,
+  WS_KEY_MAP.prodDemoBusiness,
+  WS_KEY_MAP.eeaLivePrivate,
+  WS_KEY_MAP.eeaLiveBusiness,
+  WS_KEY_MAP.eeaDemoPrivate,
+  WS_KEY_MAP.eeaDemoBusiness,
+  WS_KEY_MAP.usLivePrivate,
+  WS_KEY_MAP.usLiveBusiness,
+  WS_KEY_MAP.usDemoPrivate,
+  WS_KEY_MAP.usDemoBusiness,
 ];
 
 export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPublic,
-  WS_KEY_MAP.businessPublic,
-  WS_KEY_MAP.demoPublic,
-  WS_KEY_MAP.businessDemoPublic,
+  WS_KEY_MAP.prodDemoPublic,
+  WS_KEY_MAP.eeaLivePublic,
+  WS_KEY_MAP.eeaDemoPublic,
+  WS_KEY_MAP.usLivePublic,
+  WS_KEY_MAP.usDemoPublic,
 ];
 
 /** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
@@ -192,32 +255,30 @@ export function getWsKeyForMarket(
   isBusinessChannel: boolean,
 ): WsKey {
   switch (market) {
-    case 'prod': {
+    case 'prod':
+    case 'GLOBAL': {
       if (isBusinessChannel) {
-        return isPrivate
-          ? WS_KEY_MAP.businessPrivate
-          : WS_KEY_MAP.businessPublic;
+        return WS_KEY_MAP.prodBusiness;
       }
       return isPrivate ? WS_KEY_MAP.prodPrivate : WS_KEY_MAP.prodPublic;
     }
-    case 'demo': {
+    case 'EEA': {
       if (isBusinessChannel) {
-        return isPrivate
-          ? WS_KEY_MAP.businessDemoPrivate
-          : WS_KEY_MAP.businessDemoPublic;
+        return WS_KEY_MAP.eeaLiveBusiness;
       }
-      return isPrivate ? WS_KEY_MAP.demoPrivate : WS_KEY_MAP.demoPublic;
+      return isPrivate ? WS_KEY_MAP.eeaLivePrivate : WS_KEY_MAP.eeaLivePublic;
     }
-    case 'business': {
-      return isPrivate ? WS_KEY_MAP.businessPrivate : WS_KEY_MAP.businessPublic;
-    }
-    case 'businessDemo': {
-      return isPrivate
-        ? WS_KEY_MAP.businessDemoPrivate
-        : WS_KEY_MAP.businessDemoPublic;
+    case 'US': {
+      if (isBusinessChannel) {
+        return WS_KEY_MAP.usLiveBusiness;
+      }
+      return isPrivate ? WS_KEY_MAP.usLivePrivate : WS_KEY_MAP.usLivePublic;
     }
     default: {
-      throw neverGuard(market, 'getWsKeyForTopic(): Unhandled market');
+      throw neverGuard(
+        market,
+        `getWsKeyForTopic(): Unhandled market "${market}"`,
+      );
     }
   }
 }

@@ -19,12 +19,11 @@ const demoRestClient = new RestClient({
   apiKey: API_KEY,
   apiSecret: API_SECRET,
   apiPass: API_PASS,
-  // the environment to connect to
-  market: 'demo',
+  demoTrading: true,
 });
 
 const demoWsClient = new WebsocketClient({
-  market: 'demo',
+  demoTrading: true,
   accounts: [
     {
       apiKey: API_KEY,

@@ -107,6 +107,12 @@ export class WebsocketClient extends EventEmitter {
       ...options,
     };
 
+    if ((this.options.market as any) === 'demo') {
+      throw new Error(
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
+      );
+    }
+
     // add default error handling so this doesn't crash node (if the user didn't set a handler)
     this.on('error', () => {});
   }

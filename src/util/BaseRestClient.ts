@@ -94,8 +94,14 @@ export default abstract class BaseRestClient {
       this.globalRequestOptions.headers = {};
     }
 
+    if ((options.market as any) === 'demo') {
+      throw new Error(
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
+      );
+    }
+
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
-    if (options.market === 'demo') {
+    if (options.demoTrading) {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
 
