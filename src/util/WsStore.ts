@@ -411,6 +411,10 @@ export default class WsStore<
     return this.get(key, true).subscribedTopics;
   }
 
+  getTopicsAsArray(key: WsKey): TWSTopicSubscribeEventArgs[] {
+    return [...this.getTopics(key).values()];
+  }
+
   getTopicsByKey(): Record<string, Set<TWSTopicSubscribeEventArgs>> {
     const result: Record<string, Set<TWSTopicSubscribeEventArgs>> = {};
 
