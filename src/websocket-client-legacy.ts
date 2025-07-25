@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { EventEmitter } from 'events';
 import WebSocket from 'isomorphic-ws';
@@ -10,7 +11,6 @@ import {
   WsChannelSubUnSubRequestArg,
   WSClientConfigurableOptions,
   WsDataEvent,
-  WsEvent,
   WsSubRequest,
   WsUnsubRequest,
 } from './types';
@@ -29,6 +29,7 @@ import {
   PUBLIC_WS_KEYS,
   WS_KEY_MAP,
 } from './util';
+import { WSClientEventMap } from './util/BaseWSClient';
 import { signMessage } from './util/webCryptoAPI';
 import {
   getWsKeyForMarket,
@@ -41,42 +42,20 @@ import {
 import WsStore from './util/WsStore';
 import { WsConnectionStateEnum } from './util/WsStore.types';
 
-type WsKeyObject = { wsKey: WsKey };
-
-interface WebsocketClientEvents {
-  /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
-  open: (evt: { event: any } & WsKeyObject) => void;
-  /** Reconnecting a dropped connection */
-  reconnect: (evt: { event: any } & WsKeyObject) => void;
-  /** Successfully reconnected a connection that dropped */
-  reconnected: (evt: { event: any } & WsKeyObject) => void;
-  /** Connection closed */
-  close: (evt: { event: any } & WsKeyObject) => void;
-  /** Received reply to websocket command (e.g. after subscribing to topics or authenticating) */
-  response: (response: WsEvent & WsKeyObject) => void;
-  /** Received data for a topic/channel */
-  update: (response: WsDataEvent & WsKeyObject) => void;
-  /** Exception from ws client OR custom listeners */
-  error: (response: any) => void;
-}
-
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
-export declare interface WebsocketClientLegacy {
-  on<U extends keyof WebsocketClientEvents>(
+export declare interface WebsocketClient {
+  on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
     event: U,
-    listener: WebsocketClientEvents[U],
+    listener: WSClientEventMap<WsKey>[U],
   ): this;
 
-  emit<U extends keyof WebsocketClientEvents>(
+  emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
     event: U,
-    ...args: Parameters<WebsocketClientEvents[U]>
+    ...args: Parameters<WSClientEventMap<WsKey>[U]>
   ): boolean;
 }
 
-/**
- * @deprecated Previous generation WS Client will be removed soon. Use the new WebsocketClient instead.
- */
-export class WebsocketClientLegacy extends EventEmitter {
+export class WebsocketClient extends EventEmitter {
   private logger: typeof DefaultLogger;
 
   private options: WebsocketClientOptions;
@@ -102,6 +81,7 @@ export class WebsocketClientLegacy extends EventEmitter {
       authPrivateConnectionsOnConnect: true,
       // Individual requests do not require a signature, so this is disabled.
       authPrivateRequests: false,
+
       ...options,
     };
 
@@ -110,9 +90,6 @@ export class WebsocketClientLegacy extends EventEmitter {
         'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
       );
     }
-
-    // add default error handling so this doesn't crash node (if the user didn't set a handler)
-    this.on('error', () => {});
   }
 
   /**
@@ -287,7 +264,7 @@ export class WebsocketClientLegacy extends EventEmitter {
   private parseWsError(context: string, error: any, wsKey: WsKey) {
     if (!error.message) {
       this.logger.error(`${context} due to unexpected error: `, error);
-      this.emit('error', error);
+      this.emit('exception', error);
       return;
     }
 
@@ -311,7 +288,7 @@ export class WebsocketClientLegacy extends EventEmitter {
         }
         break;
     }
-    this.emit('error', error);
+    this.emit('exception', error);
   }
 
   /**
@@ -668,8 +645,8 @@ export class WebsocketClientLegacy extends EventEmitter {
     const { protocols = [], ...wsOptions } = this.options.wsOptions || {};
     const ws = new WebSocket(url, protocols, wsOptions);
 
-    ws.onopen = (event) => this.onWsOpen(event, wsKey);
-    ws.onmessage = (event) => this.onWsMessage(event, wsKey);
+    ws.onopen = (event) => this.onWsOpen(event, wsKey, url, ws);
+    ws.onmessage = (event) => this.onWsMessage(event, wsKey, ws);
     ws.onerror = (event) =>
       this.parseWsError('Websocket onWsError', event, wsKey);
     ws.onclose = (event) => this.onWsClose(event, wsKey);
@@ -677,7 +654,12 @@ export class WebsocketClientLegacy extends EventEmitter {
     return ws;
   }
 
-  private async onWsOpen(event: unknown, wsKey: WsKey) {
+  private async onWsOpen(
+    event: WebSocket.Event,
+    wsKey: WsKey,
+    url: string,
+    ws: WebSocket,
+  ) {
     if (
       this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.CONNECTING)
     ) {
@@ -686,7 +668,7 @@ export class WebsocketClientLegacy extends EventEmitter {
         wsKey,
         market: this.options.market,
       });
-      this.emit('open', { wsKey, event });
+      this.emit('open', { wsKey, event, wsUrl: url, ws });
     } else if (
       this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.RECONNECTING)
     ) {
@@ -694,7 +676,7 @@ export class WebsocketClientLegacy extends EventEmitter {
         ...WS_LOGGER_CATEGORY,
         wsKey,
       });
-      this.emit('reconnected', { wsKey, event });
+      this.emit('reconnected', { wsKey, event, wsUrl: url, ws });
     }
 
     this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.CONNECTED);
@@ -721,7 +703,7 @@ export class WebsocketClientLegacy extends EventEmitter {
     this.requestSubscribeTopics(wsKey, topics);
   }
 
-  private onWsMessage(event: any, wsKey: WsKey) {
+  private onWsMessage(event: any, wsKey: WsKey, ws: WebSocket) {
     const logContext = { ...WS_LOGGER_CATEGORY, wsKey, method: 'onWsMessage' };
 
     try {
@@ -737,7 +719,7 @@ export class WebsocketClientLegacy extends EventEmitter {
 
       if (isWsErrorEvent(msg)) {
         this.logger.error('WS error event: ', { ...msg, wsKey });
-        return this.emit('error', { ...msg, wsKey });
+        return this.emit('exception', { ...msg, wsKey });
       }
 
       if (isWsDataEvent(msg)) {
@@ -768,7 +750,7 @@ export class WebsocketClientLegacy extends EventEmitter {
           ...msg,
           wsKey,
         });
-        return this.emit('error', { ...msg, wsKey });
+        return this.emit('exception', { ...msg, wsKey });
       }
 
       if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {

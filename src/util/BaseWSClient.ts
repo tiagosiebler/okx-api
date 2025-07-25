@@ -22,7 +22,10 @@ import {
 import WsStore from './WsStore';
 import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types';
 
-interface WSClientEventMap<WsKey extends string> {
+export interface WSClientEventMap<
+  WsKey extends string,
+  TUpdateEventData = any,
+> {
   /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
   open: (evt: {
     wsKey: WsKey;
@@ -52,7 +55,7 @@ interface WSClientEventMap<WsKey extends string> {
   update: (response: any & { wsKey: WsKey }) => void;
 
   /** Exception from ws client OR custom listeners (e.g. if you throw inside your event handler) */
-  exception: (response: any & { wsKey: WsKey }) => void;
+  exception: (response: TUpdateEventData & { wsKey: WsKey }) => void;
 
   /** Confirmation that a connection successfully authenticated */
   authenticated: (event: { wsKey: WsKey; event: any }) => void;
