@@ -27,3 +27,5 @@ privaterepotracker
 restClientRegex.ts
 testfile.ts
 localtest.sh
+
+repomix.sh
