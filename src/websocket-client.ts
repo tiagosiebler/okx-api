@@ -779,7 +779,7 @@ export class WebsocketClient extends EventEmitter {
       }
 
       if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
-        // this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
+        // this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
         return this.emit('response', { ...msg, wsKey });
       }
 

@@ -7,14 +7,15 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // const { WebsocketClient, DefaultLogger } = require('okx-api');
 
 // Optional: Inject a custom logger.
-// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
 const logger = {
   ...DefaultLogger,
-  // silly: (...params) => console.log('silly', ...params),
+  // trace: (...params) => console.log('trace', ...params),
 };
 
 const wsClient = new WebsocketClient(
   {
+    // TODO: update all examples to clarify global vs EEA vs US
     // prod is used by default, but you can choose other markets through this parameter:
     // market: 'prod',
     // market: 'aws',
