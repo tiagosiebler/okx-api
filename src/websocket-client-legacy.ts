@@ -16,7 +16,7 @@ import {
 } from './types';
 import {
   DefaultLogger,
-  getMaxTopicsPerSubscribeEvent,
+  getMaxTopicsPerSubscribeEventForMarket,
   getWsKeyForTopicChannel,
   isConnCountEvent,
   isWsDataEvent,
@@ -43,7 +43,7 @@ import WsStore from './util/WsStore';
 import { WsConnectionStateEnum } from './util/WsStore.types';
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
-export declare interface WebsocketClient {
+export declare interface WebsocketClientLegacy {
   on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
     event: U,
     listener: WSClientEventMap<WsKey>[U],
@@ -55,17 +55,14 @@ export declare interface WebsocketClient {
   ): boolean;
 }
 
-export class WebsocketClient extends EventEmitter {
-  private logger: typeof DefaultLogger;
+export class WebsocketClientLegacy extends EventEmitter {
+  private logger: DefaultLogger;
 
   private options: WebsocketClientOptions;
 
   private wsStore: WsStore<WsKey, WsChannelSubUnSubRequestArg>;
 
-  constructor(
-    options: WSClientConfigurableOptions,
-    logger?: typeof DefaultLogger,
-  ) {
+  constructor(options: WSClientConfigurableOptions, logger?: DefaultLogger) {
     super();
 
     this.logger = logger || DefaultLogger;
@@ -87,7 +84,7 @@ export class WebsocketClient extends EventEmitter {
 
     if ((this.options.market as any) === 'demo') {
       throw new Error(
-        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor. The "demo" market is not valid any more.',
       );
     }
   }
@@ -296,7 +293,7 @@ export class WebsocketClient extends EventEmitter {
    */
   private async getWsAuthRequest(
     wsKey: WsKey,
-  ): Promise<WsAuthRequest | undefined> {
+  ): Promise<Omit<WsAuthRequest, 'id'> | undefined> {
     const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
     const accounts = this.options.accounts;
     const hasAccountsToAuth = !!accounts?.length;
@@ -339,7 +336,7 @@ export class WebsocketClient extends EventEmitter {
         (request): request is WsAuthRequestArg => !!request,
       );
 
-      const authParams: WsAuthRequest = {
+      const authParams: Omit<WsAuthRequest, 'id'> = {
         op: 'login',
         args: authRequests,
       };
@@ -539,7 +536,7 @@ export class WebsocketClient extends EventEmitter {
       return;
     }
 
-    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
+    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEventForMarket(
       this.options.market,
     );
     if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
@@ -557,7 +554,7 @@ export class WebsocketClient extends EventEmitter {
       return;
     }
 
-    const request: WsSubRequest = {
+    const request: Omit<WsSubRequest, 'id'> = {
       op: 'subscribe',
       args: topics,
     };
@@ -578,7 +575,7 @@ export class WebsocketClient extends EventEmitter {
       return;
     }
 
-    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
+    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEventForMarket(
       this.options.market,
     );
     if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
@@ -596,7 +593,7 @@ export class WebsocketClient extends EventEmitter {
       return;
     }
 
-    const request: WsUnsubRequest = {
+    const request: Omit<WsUnsubRequest, 'id'> = {
       op: 'unsubscribe',
       args: topics,
     };

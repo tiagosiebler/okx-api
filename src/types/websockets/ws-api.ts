@@ -1,4 +1,5 @@
 import { WS_KEY_MAP, WsKey } from '../../util';
+import { WsAuthRequestArg, WsChannelSubUnSubRequestArg } from './request';
 
 export interface WSAPIRequestFlags {
   /** If true, will skip auth requirement for WS API connection */
@@ -6,6 +7,47 @@ export interface WSAPIRequestFlags {
 }
 
 export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
+
+/**
+ *
+ * Top level requests with args
+ *
+ */
+
+/**
+
+/**
+ * request looks like this:
+{
+  "id": "1512",
+  "op": "subscribe",
+  "args": [
+    {
+      "channel": "tickers",
+      "instId": "BTC-USDT"
+    }
+  ]
+}
+ */
+export interface WsRequestOperationOKX<TWSRequestArg> {
+  id: string;
+  op: WSOperation;
+  args?: TWSRequestArg[];
+}
+
+export interface WsSubRequest
+  extends WsRequestOperationOKX<WsChannelSubUnSubRequestArg> {
+  op: 'subscribe';
+}
+
+export interface WsUnsubRequest
+  extends WsRequestOperationOKX<WsChannelSubUnSubRequestArg> {
+  op: 'unsubscribe';
+}
+
+export interface WsAuthRequest extends WsRequestOperationOKX<WsAuthRequestArg> {
+  op: 'login';
+}
 
 // When new WS API operations are added, make sure to also update WS_API_Operations[] below
 export type WSAPIOperation =
@@ -21,6 +63,7 @@ export const WS_API_Operations: WSAPIOperation[] = [
   'batch-cancel',
 ];
 
+// TODO:
 export interface WSAPIRequestOKX<TSomething> {
   id: 1;
   empty: TSomething;

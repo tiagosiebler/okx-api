@@ -24,7 +24,7 @@ import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types';
 
 export interface WSClientEventMap<
   WsKey extends string,
-  TUpdateEventData = any,
+  TWSUpdateEventData = any,
 > {
   /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
   open: (evt: {
@@ -55,7 +55,7 @@ export interface WSClientEventMap<
   update: (response: any & { wsKey: WsKey }) => void;
 
   /** Exception from ws client OR custom listeners (e.g. if you throw inside your event handler) */
-  exception: (response: TUpdateEventData & { wsKey: WsKey }) => void;
+  exception: (response: TWSUpdateEventData & { wsKey: WsKey }) => void;
 
   /** Confirmation that a connection successfully authenticated */
   authenticated: (event: { wsKey: WsKey; event: any }) => void;
@@ -66,15 +66,16 @@ export interface BaseWebsocketClient<
   TWSKey extends string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TWSRequestEvent extends object,
+  TWSUpdateEventData = any,
 > {
-  on<U extends keyof WSClientEventMap<TWSKey>>(
+  on<U extends keyof WSClientEventMap<TWSKey, TWSUpdateEventData>>(
     event: U,
-    listener: WSClientEventMap<TWSKey>[U],
+    listener: WSClientEventMap<TWSKey, TWSUpdateEventData>[U],
   ): this;
 
-  emit<U extends keyof WSClientEventMap<TWSKey>>(
+  emit<U extends keyof WSClientEventMap<TWSKey, TWSUpdateEventData>>(
     event: U,
-    ...args: Parameters<WSClientEventMap<TWSKey>[U]>
+    ...args: Parameters<WSClientEventMap<TWSKey, TWSUpdateEventData>[U]>
   ): boolean;
 }
 
@@ -177,7 +178,8 @@ export abstract class BaseWebsocketClient<
       market: 'GLOBAL',
 
       demoTrading: false,
-      pongTimeout: 1000,
+
+      pongTimeout: 2000,
       pingInterval: 10000,
       reconnectTimeout: 500,
 

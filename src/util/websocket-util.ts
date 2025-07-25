@@ -344,7 +344,7 @@ export function getWsUrlForWsKey(
   }
 }
 
-export function getMaxTopicsPerSubscribeEvent(
+export function getMaxTopicsPerSubscribeEventForMarket(
   market: APIMarket,
 ): number | null {
   switch (market) {
