@@ -77,7 +77,7 @@ export class WebsocketClient extends BaseWebsocketClient<
 > {
   // private wsStore: WsStore<WsKey, WsChannelSubUnSubRequestArg>;
 
-  constructor(options: WSClientConfigurableOptions, logger?: DefaultLogger) {
+  constructor(options?: WSClientConfigurableOptions, logger?: DefaultLogger) {
     super(options, logger);
 
     if ((this.options.market as any) === 'demo') {
