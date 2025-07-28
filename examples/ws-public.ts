@@ -26,12 +26,17 @@ const wsClient = new WebsocketClient(
 
 // Raw data will arrive on the 'update' event
 wsClient.on('update', (data) => {
+  // console.log(
+  //   new Date(),
+  //   'ws update (raw data received)',
+  //   JSON.stringify(data, null, 2),
+  // );
+  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
   console.log(
     new Date(),
     'ws update (raw data received)',
-    JSON.stringify(data, null, 2),
+    JSON.stringify(data),
   );
-  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
 });
 
 wsClient.on('open', (data) => {
@@ -49,7 +54,7 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-wsClient.on('error', (data) => {
+wsClient.on('exception', (data) => {
   console.error('ws exception: ', data);
 });
 
@@ -129,7 +134,7 @@ wsClient.subscribe({
 // Price limit channel
 wsClient.subscribe({
   channel: 'price-limit',
-  instId: 'LTC-USD-190628',
+  instId: 'BTC-USDT-SWAP',
 });
 
 // Order book channel

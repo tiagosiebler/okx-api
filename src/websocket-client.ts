@@ -326,6 +326,8 @@ export class WebsocketClient extends BaseWebsocketClient<
       }),
     };
 
+    console.log('Prepared wsEVENT: ', wsEvent);
+
     const midflightWsEvent: MidflightWsRequestEvent<
       WsRequestOperationOKX<object>
     > = {
@@ -470,8 +472,194 @@ export class WebsocketClient extends BaseWebsocketClient<
     wsKey: WsKey,
     event: MessageEventLike,
   ): EmittableEvent[] {
-    // TODO:
-    return [];
+    const results: EmittableEvent[] = [];
+
+    const logContext = {
+      ...WS_LOGGER_CATEGORY,
+      wsKey,
+      method: 'resolveEmittableEvents',
+    };
+
+    try {
+      const msg = JSON.parse(event.data);
+      const emittableEvent = { ...msg, wsKey };
+
+      /**
+       * WS API response handling
+       */
+      // if (isWSAPIResponse(emittableEvent)) {
+      //   // const eg1 = {
+      //   //   event: 'error',
+      //   //   id: '1',
+      //   //   code: '43012',
+      //   //   msg: 'Insufficient balance',
+      //   // };
+
+      //   const retCode = emittableEvent.code;
+      //   const reqId = emittableEvent.id;
+      //   const isError = retCode !== '0';
+
+      //   const promiseRef = [emittableEvent.id].join('_');
+
+      //   const loggableContext = {
+      //     wsKey,
+      //     promiseRef,
+      //     parsedEvent: emittableEvent,
+      //   };
+
+      //   if (!reqId) {
+      //     this.logger.error(
+      //       'WS API response is missing reqId - promisified workflow could get stuck. If this happens, please get in touch with steps to reproduce. Trace:',
+      //       loggableContext,
+      //     );
+      //   }
+
+      //   if (isError) {
+      //     try {
+      //       this.getWsStore().rejectDeferredPromise(
+      //         wsKey,
+      //         promiseRef,
+      //         emittableEvent,
+      //         true,
+      //       );
+      //     } catch (e) {
+      //       this.logger.error('Exception trying to reject WSAPI promise', {
+      //         ...loggableContext,
+      //         error: e,
+      //       });
+      //     }
+
+      //     results.push({
+      //       eventType: 'exception',
+      //       event: emittableEvent,
+      //       isWSAPIResponse: true,
+      //     });
+      //     return results;
+      //   }
+
+      //   // WS API Success
+      //   try {
+      //     this.getWsStore().resolveDeferredPromise(
+      //       wsKey,
+      //       promiseRef,
+      //       emittableEvent,
+      //       true,
+      //     );
+      //   } catch (e) {
+      //     this.logger.error('Exception trying to resolve WSAPI promise', {
+      //       ...loggableContext,
+      //       error: e,
+      //     });
+      //   }
+
+      //   results.push({
+      //     eventType: 'response',
+      //     event: emittableEvent,
+      //     isWSAPIResponse: true,
+      //   });
+
+      //   return results;
+      // }
+
+      if (isWsErrorEvent(msg)) {
+        this.logger.error('WS error event: ', { ...msg, wsKey });
+
+        this.logger.error('WS Error received', {
+          ...logContext,
+          wsKey,
+          message: msg || 'no message',
+          // messageType: typeof msg,
+          // messageString: JSON.stringify(msg),
+          event,
+        });
+        results.push({
+          eventType: 'exception',
+          event: emittableEvent,
+        });
+        return results;
+      }
+
+      if (isWsDataEvent(msg)) {
+        results.push({
+          eventType: 'update',
+          event: emittableEvent,
+        });
+        return results;
+      }
+
+      if (isWsLoginEvent(msg)) {
+        // Successfully authenticated
+        if (msg.code === WS_EVENT_CODE_ENUM.OK) {
+          this.logger.info(
+            `Authenticated successfully on wsKey(${wsKey})`,
+            logContext,
+          );
+
+          results.push({
+            eventType: 'response',
+            event: emittableEvent,
+          });
+          results.push({
+            eventType: 'authenticated',
+            event: emittableEvent,
+          });
+          return results;
+        }
+
+        this.logger.error('Authentication failed: ', {
+          ...logContext,
+          ...msg,
+          wsKey,
+        });
+        results.push({
+          eventType: 'exception',
+          event: emittableEvent,
+        });
+        return results;
+      }
+
+      if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+        });
+        // this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
+        return results;
+      }
+
+      if (isConnCountEvent(msg)) {
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+        });
+        return results;
+      }
+
+      this.logger.info('Unhandled/unrecognised ws event message', {
+        ...WS_LOGGER_CATEGORY,
+        message: msg || 'no message',
+        // messageType: typeof msg,
+        // messageString: JSON.stringify(msg),
+        event,
+        wsKey,
+      });
+
+      // fallback emit anyway
+      results.push({
+        eventType: 'update',
+        event: emittableEvent,
+      });
+      return results;
+    } catch (e) {
+      this.logger.error('Failed to parse ws event message', {
+        ...WS_LOGGER_CATEGORY,
+        error: e,
+        event,
+        wsKey,
+      });
+    }
+
+    return results;
   }
 
   async sendWSAPIRequest(wsKey: WsKey): Promise<unknown> {
@@ -650,79 +838,6 @@ export class WebsocketClient extends BaseWebsocketClient<
   //     return this.tryWsSend(wsKey, JSON.stringify(authRequest));
   //   } catch (e) {
   //     this.logger.error(e, logContext);
-  //   }
-  // }
-
-  // private onWsMessageLegacy(event: any, wsKey: WsKey, ws: WebSocket) {
-  //   const logContext = { ...WS_LOGGER_CATEGORY, wsKey, method: 'onWsMessage' };
-
-  //   try {
-  //     // any message can clear the pong timer - wouldn't get a message if the ws dropped
-  //     this.clearPongTimer(wsKey);
-
-  //     if (isWsPong(event)) {
-  //       this.logger.trace('Received pong', logContext);
-  //       return;
-  //     }
-
-  //     const msg = JSON.parse(event?.data || event);
-
-  //     if (isWsErrorEvent(msg)) {
-  //       this.logger.error('WS error event: ', { ...msg, wsKey });
-  //       return this.emit('exception', { ...msg, wsKey });
-  //     }
-
-  //     if (isWsDataEvent(msg)) {
-  //       return this.emit('update', { ...msg, wsKey });
-  //     }
-
-  //     if (isWsLoginEvent(msg)) {
-  //       // Successfully authenticated
-  //       if (msg.code === WS_EVENT_CODE_ENUM.OK) {
-  //         this.logger.info(
-  //           `Authenticated successfully on wsKey(${wsKey})`,
-  //           logContext,
-  //         );
-  //         this.emit('response', { ...msg, wsKey });
-
-  //         const topics = [...this.getWsStore().getTopicsAsArray(wsKey)];
-
-  //         // Since private topics have a dedicated WsKey, these are automatically all private topics (no filtering required before the subscribe call)
-  //         this.requestSubscribeTopics(wsKey, topics);
-
-  //         return;
-  //       }
-
-  //       this.logger.error('Authentication failed: ', {
-  //         ...logContext,
-  //         ...msg,
-  //         wsKey,
-  //       });
-  //       return this.emit('exception', { ...msg, wsKey });
-  //     }
-
-  //     if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
-  //       // this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
-  //       return this.emit('response', { ...msg, wsKey });
-  //     }
-
-  //     if (isConnCountEvent(msg)) {
-  //       return this.emit('response', { ...msg, wsKey });
-  //     }
-
-  //     this.logger.error('Unhandled/unrecognised ws event message', {
-  //       ...logContext,
-  //       eventName: msg.event,
-  //       msg: JSON.stringify(msg, null, 2),
-  //       wsKey,
-  //     });
-  //   } catch (e) {
-  //     this.logger.error('Failed to parse ws event message', {
-  //       ...logContext,
-  //       error: e,
-  //       event,
-  //       wsKey,
-  //     });
   //   }
   // }
 }
