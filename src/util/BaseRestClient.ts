@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
-import https from 'https';
+import { Agent } from 'https';
 
 import { APIResponse, RestClientOptions } from '../types';
 import {
@@ -112,13 +112,13 @@ export default abstract class BaseRestClient {
     if (this.options.keepAlive) {
       // Extract existing https agent parameters, if provided, to prevent the keepAlive flag from overwriting an existing https agent completely
       const existingHttpsAgent = this.globalRequestOptions.httpsAgent as
-        | https.Agent
+        | Agent
         | undefined;
       const existingAgentOptions = existingHttpsAgent?.options || {};
 
       // For more advanced configuration, raise an issue on GitHub or use the "requestOptions"
       // parameter to define a custom httpsAgent with the desired properties
-      this.globalRequestOptions.httpsAgent = new https.Agent({
+      this.globalRequestOptions.httpsAgent = new Agent({
         ...existingAgentOptions,
         keepAlive: true,
         keepAliveMsecs: this.options.keepAliveMsecs,

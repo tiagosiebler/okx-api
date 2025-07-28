@@ -1,5 +1,9 @@
 import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
-import { WSAPIRequestOKX } from '../types/websockets/ws-api';
+import {
+  WS_API_TAG_OPERATIONS,
+  WSAPIOperation,
+  WSAPIRequestOKX,
+} from '../types/websockets/ws-api';
 import { DefaultLogger } from './logger';
 import { neverGuard } from './typeGuards';
 
@@ -69,22 +73,67 @@ export const WS_BASE_URL_MAP: Record<
 
 export const WS_KEY_MAP = {
   // OKX Global: https://www.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX Global (www.okx.com), does not require auth.
+   */
   prodPublic: 'prodPublic',
+  /**
+   * Private WS connection for OKX Global (www.okx.com), requires auth.
+   */
   prodPrivate: 'prodPrivate',
+  /**
+   * Business WS connection for OKX Global (www.okx.com), sometimes requires auth.
+   */
   prodBusiness: 'prodBusiness',
+  /**
+   * Public DEMO WS connection for OKX Global (www.okx.com), does not require auth.
+   */
   prodDemoPublic: 'prodDemoPublic',
+  /**
+   * Private DEMO WS connection for OKX Global (www.okx.com), requires auth.
+   */
   prodDemoPrivate: 'prodDemoPrivate',
+  /**
+   * Business DEMO WS connection for OKX Global (www.okx.com), sometimes requires auth.
+   */
   prodDemoBusiness: 'prodDemoBusiness',
   // Also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX EEA (my.okx.com), does not require auth.
+   */
   eeaLivePublic: 'eeaLivePublic',
+  /**
+   * Private WS connection for OKX EEA (my.okx.com), requires auth.
+   */
   eeaLivePrivate: 'eeaLivePrivate',
+  /**
+   * Business WS connection for OKX EEA (my.okx.com), sometimes requires auth.
+   */
   eeaLiveBusiness: 'eeaLiveBusiness',
+  /**
+   * Public DEMO WS connection for OKX EEA (my.okx.com), does not require auth.
+   */
   eeaDemoPublic: 'eeaDemoPublic',
+  /**
+   * Private DEMO WS connection for OKX EEA (my.okx.com), requires auth.
+   */
   eeaDemoPrivate: 'eeaDemoPrivate',
+  /**
+   * Business DEMO WS connection for OKX EEA (my.okx.com), sometimes requires auth.
+   */
   eeaDemoBusiness: 'eeaDemoBusiness',
   // Also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX US (app.okx.com), does not require auth.
+   */
   usLivePublic: 'usLivePublic',
+  /**
+   * Private WS connection for OKX US (app.okx.com), requires auth.
+   */
   usLivePrivate: 'usLivePrivate',
+  /**
+   * Business WS connection for OKX US (app.okx.com), sometimes requires auth.
+   */
   usLiveBusiness: 'usLiveBusiness',
   usDemoPublic: 'usDemoPublic',
   usDemoPrivate: 'usDemoPrivate',
@@ -117,6 +166,49 @@ export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.usLivePublic,
   WS_KEY_MAP.usDemoPublic,
 ];
+
+/**
+ * Returns the DEMO connection WsKey for the provided WsKey
+ */
+export function getDemoWsKey(wsKey: WsKey): WsKey {
+  switch (wsKey) {
+    case WS_KEY_MAP.prodDemoPublic:
+    case WS_KEY_MAP.prodDemoPrivate:
+    case WS_KEY_MAP.prodDemoBusiness:
+    case WS_KEY_MAP.eeaDemoPublic:
+    case WS_KEY_MAP.eeaDemoPrivate:
+    case WS_KEY_MAP.eeaDemoBusiness:
+    case WS_KEY_MAP.usDemoPublic:
+    case WS_KEY_MAP.usDemoPrivate:
+    case WS_KEY_MAP.usDemoBusiness: {
+      return wsKey;
+    }
+
+    case WS_KEY_MAP.prodPublic:
+      return WS_KEY_MAP.prodDemoPublic;
+    case WS_KEY_MAP.prodPrivate:
+      return WS_KEY_MAP.prodDemoBusiness;
+    case WS_KEY_MAP.prodBusiness:
+      return WS_KEY_MAP.prodDemoBusiness;
+
+    case WS_KEY_MAP.eeaLivePublic:
+      return WS_KEY_MAP.eeaDemoPublic;
+    case WS_KEY_MAP.eeaLivePrivate:
+      return WS_KEY_MAP.eeaDemoPrivate;
+    case WS_KEY_MAP.eeaLiveBusiness:
+      return WS_KEY_MAP.eeaDemoBusiness;
+
+    case WS_KEY_MAP.usLivePublic:
+      return WS_KEY_MAP.usDemoPublic;
+    case WS_KEY_MAP.usLivePrivate:
+      return WS_KEY_MAP.usDemoPrivate;
+    case WS_KEY_MAP.usLiveBusiness:
+      return WS_KEY_MAP.usDemoBusiness;
+
+    default:
+      throw neverGuard(wsKey, `Unhandled wsKey "${wsKey}"`);
+  }
+}
 
 /** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
 const PRIVATE_CHANNELS = [
@@ -285,6 +377,40 @@ export function getWsKeyForMarket(
         market,
         `getWsKeyForTopic(): Unhandled market "${market}"`,
       );
+    }
+  }
+}
+
+export function requiresWSAPITag(
+  operation: WSAPIOperation,
+  wsKey: WsKey,
+): boolean {
+  switch (wsKey) {
+    case WS_KEY_MAP.prodPublic:
+    case WS_KEY_MAP.prodDemoPublic:
+    case WS_KEY_MAP.eeaLivePublic:
+    case WS_KEY_MAP.eeaDemoPublic:
+    case WS_KEY_MAP.usLivePublic:
+    case WS_KEY_MAP.usDemoPublic:
+      return false;
+
+    case WS_KEY_MAP.prodDemoPrivate:
+    case WS_KEY_MAP.prodDemoBusiness:
+    case WS_KEY_MAP.eeaDemoPrivate:
+    case WS_KEY_MAP.eeaDemoBusiness:
+    case WS_KEY_MAP.usDemoPrivate:
+    case WS_KEY_MAP.usDemoBusiness:
+    case WS_KEY_MAP.prodPrivate:
+    case WS_KEY_MAP.prodBusiness:
+
+    case WS_KEY_MAP.eeaLivePrivate:
+    case WS_KEY_MAP.eeaLiveBusiness:
+    case WS_KEY_MAP.usLivePrivate:
+    case WS_KEY_MAP.usLiveBusiness:
+      return WS_API_TAG_OPERATIONS.includes(operation);
+
+    default: {
+      throw neverGuard(wsKey, `Unhandled WsKey "${wsKey}"`);
     }
   }
 }
@@ -470,7 +596,6 @@ export function isWSPongFrameAvailable(): boolean {
 export function getPromiseRefForWSAPIRequest(
   requestEvent: WSAPIRequestOKX<unknown>,
 ): string {
-  // Responses don't have any other info we can use to connect them to the request. Just the "id" field...
-  const promiseRef = [requestEvent.id].join('_');
+  const promiseRef = [requestEvent.id, requestEvent.op].join('_');
   return promiseRef;
 }

@@ -92,6 +92,12 @@ export const WS_API_Operations: WSAPIOperation[] = [
   'sprd-mass-cancel',
 ];
 
+export const WS_API_TAG_OPERATIONS: WSAPIOperation[] = [
+  'order',
+  'batch-orders',
+  'sprd-order',
+];
+
 export interface WSAPIRequestOKX<TSomething> {
   id: string;
   op: WSAPIOperation;
@@ -169,6 +175,16 @@ export interface WsAPIWsKeyTopicMap {
 export interface WsAPITopicRequestParamMap {
   // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
   order: unknown;
+  'batch-orders': unknown;
+  'cancel-order': unknown;
+  'batch-cancel-orders': unknown;
+  'amend-order': unknown;
+  'batch-amend-orders': unknown;
+  'mass-cancel': unknown;
+  'sprd-order': unknown;
+  'sprd-amend-order': unknown;
+  'sprd-cancel-order': unknown;
+  'sprd-mass-cancel': unknown;
 }
 
 /**
@@ -177,4 +193,14 @@ export interface WsAPITopicRequestParamMap {
 export interface WsAPIOperationResponseMap {
   // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
   order: WSAPIResponse<[unknown], 'order'>;
+  'batch-orders': unknown;
+  'cancel-order': unknown;
+  'batch-cancel-orders': unknown;
+  'amend-order': unknown;
+  'batch-amend-orders': unknown;
+  'mass-cancel': unknown;
+  'sprd-order': unknown;
+  'sprd-amend-order': unknown;
+  'sprd-cancel-order': unknown;
+  'sprd-mass-cancel': unknown;
 }

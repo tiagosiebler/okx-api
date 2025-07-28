@@ -17,6 +17,7 @@ import {
 import {
   WsAPIOperationResponseMap,
   WSAPIRequestFlags,
+  WSAPIRequestOKX,
   WsAPITopicRequestParamMap,
   WsAPIWsKeyTopicMap,
   WsAuthRequest,
@@ -44,15 +45,19 @@ import {
   MidflightWsRequestEvent,
   WSClientEventMap,
 } from './util/BaseWSClient';
+import { programId, programKey } from './util/requestUtils';
 import {
   SignAlgorithm,
   SignEncodeMethod,
   signMessage,
 } from './util/webCryptoAPI';
 import {
+  getDemoWsKey,
   getNormalisedTopicRequests,
+  getPromiseRefForWSAPIRequest,
   getWsKeyForMarket,
   getWsUrlForWsKey,
+  requiresWSAPITag,
   safeTerminateWs,
   WS_EVENT_CODE_ENUM,
   WS_LOGGER_CATEGORY,
@@ -670,6 +675,8 @@ export class WebsocketClient extends BaseWebsocketClient<
    *
    * For convenient promise-wrapped usage of the WS API, instance the WebsocketAPIClient class exported by this SDK.
    *
+   * For demo trading, set demoTrading:true in the WS Client config.
+   *
    * @returns a promise that resolves/rejects when a matching response arrives
    */
   async sendWSAPIRequest<
@@ -679,11 +686,101 @@ export class WebsocketClient extends BaseWebsocketClient<
     TWSAPIResponse extends
       WsAPIOperationResponseMap[TWSOperation] = WsAPIOperationResponseMap[TWSOperation],
   >(
-    wsKey: WsKey,
+    rawWsKey: WsKey,
     operation: TWSOperation,
     params: TWSParams & { signRequest?: boolean },
-    requestFlags?: WSAPIRequestFlags,
+    requestFlags?: WSAPIRequestFlags, // TODO: add expTime here?
   ): Promise<TWSAPIResponse> {
-    throw new Error('not supported yet');
+    // If demo trading, enforce demo wskey for WS API calls
+    const wsKey = this.options.demoTrading ? getDemoWsKey(rawWsKey) : rawWsKey;
+
+    this.logger.trace(`sendWSAPIRequest(): assert "${wsKey}" is connected`);
+
+    await this.assertIsConnected(wsKey);
+    this.logger.trace('sendWSAPIRequest()->assertIsConnected() ok');
+
+    if (requestFlags?.authIsOptional !== true) {
+      this.logger.trace(
+        'sendWSAPIRequest(): assertIsAuthenticated(${wsKey})...',
+      );
+      await this.assertIsAuthenticated(wsKey);
+      this.logger.trace(
+        'sendWSAPIRequest(): assertIsAuthenticated(${wsKey}) ok',
+      );
+    }
+
+    const request: WSAPIRequestOKX<TWSParams> = {
+      id: `${this.getNewRequestId()}`,
+      op: operation,
+      // Ensure "args" is always wrapped as array
+      args: Array.isArray(params)
+        ? params.map((individualParam) => ({
+            ...individualParam,
+            ...(requiresWSAPITag(operation, wsKey)
+              ? { [programKey]: programId }
+              : {}),
+          }))
+        : [
+            {
+              ...params,
+              ...(requiresWSAPITag(operation, wsKey)
+                ? { [programKey]: programId }
+                : {}),
+            },
+          ],
+    };
+
+    // Store deferred promise, resolved within the "resolveEmittableEvents" method while parsing incoming events
+    const promiseRef = getPromiseRefForWSAPIRequest(request);
+
+    const deferredPromise = this.getWsStore().createDeferredPromise<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      TWSAPIResponse & { request: any }
+    >(wsKey, promiseRef, false);
+
+    // Enrich returned promise with request context for easier debugging
+    deferredPromise.promise
+      ?.then((res) => {
+        if (!Array.isArray(res)) {
+          res.request = {
+            wsKey,
+            ...request,
+          };
+        }
+
+        return res;
+      })
+      .catch((e) => {
+        if (typeof e === 'string') {
+          this.logger.error('Unexpected string thrown without Error object:', {
+            e,
+            wsKey,
+            request,
+          });
+          return e;
+        }
+        e.request = {
+          wsKey,
+          operation,
+          params: params,
+        };
+        // throw e;
+        return e;
+      });
+
+    this.logger.trace(
+      `sendWSAPIRequest(): sending raw request: ${JSON.stringify(request, null, 2)}`,
+    );
+
+    // Send event
+    const throwExceptions = false;
+    this.tryWsSend(wsKey, JSON.stringify(request), throwExceptions);
+
+    this.logger.trace(
+      `sendWSAPIRequest(): sent "${operation}" event with promiseRef(${promiseRef})`,
+    );
+
+    // Return deferred promise, so caller can await this call
+    return deferredPromise.promise!;
   }
 }
