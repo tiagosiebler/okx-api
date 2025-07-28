@@ -126,28 +126,48 @@ export class WebsocketClient extends BaseWebsocketClient<
   public subscribe(
     wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
     isPrivateTopic?: boolean,
-  ) {
+  ): Promise<unknown>[] {
     const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
-    const topicRequests = wsEventArgs.map((wsEvent) => {
+
+    const topicRequestsByWsKey: Record<
+      WsKey | string,
+      WsTopicRequest<string, object>[]
+    > = {};
+
+    // Format and batch topic requests by WsKey (resolved dynamically)
+    wsEventArgs.forEach((wsEvent) => {
       const { channel, ...payload } = wsEvent;
+
       const normalisedEvent: WsTopicRequest<string, object> = {
         topic: channel,
         payload,
       };
 
-      return normalisedEvent;
+      const wsKey = getWsKeyForTopicChannel(
+        this.options.market,
+        channel,
+        isPrivateTopic,
+      );
+
+      // Arrange into per-wsKey sorted lists
+      if (!topicRequestsByWsKey[wsKey]) {
+        topicRequestsByWsKey[wsKey] = [];
+      }
+
+      topicRequestsByWsKey[wsKey].push(normalisedEvent);
     });
 
-    const normalisedTopicRequests = getNormalisedTopicRequests(topicRequests);
+    const subscribeRequestPromises: Promise<unknown>[] = [];
+    for (const wsKeyUntyped in topicRequestsByWsKey) {
+      subscribeRequestPromises.push(
+        this.subscribeTopicsForWsKey(
+          topicRequestsByWsKey[wsKeyUntyped],
+          wsKeyUntyped as WsKey,
+        ),
+      );
+    }
 
-    // TODO: sort topic requests into wsKeys, and then batch sub for the diff wsKeys
-    const wsKey = getWsKeyForTopicChannel(
-      this.options.market,
-      wsEventArg.channel,
-      isPrivateTopic,
-    );
-
-    return this.subscribeTopicsForWsKey(normalisedTopicRequests, wsKey);
+    return subscribeRequestPromises;
   }
 
   /**
@@ -156,30 +176,50 @@ export class WebsocketClient extends BaseWebsocketClient<
    * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
    */
   public unsubscribe(
-    wsTopics: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
     isPrivateTopic?: boolean,
   ) {
-    const wsEventArgs = Array.isArray(wsTopics) ? wsTopics : [wsTopics];
-    wsEventArgs.forEach((wsEventArg) => {
+    const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
+
+    const topicRequestsByWsKey: Record<
+      WsKey | string,
+      WsTopicRequest<string, object>[]
+    > = {};
+
+    // Format and batch topic requests by WsKey (resolved dynamically)
+    wsEventArgs.forEach((wsEvent) => {
+      const { channel, ...payload } = wsEvent;
+
+      const normalisedEvent: WsTopicRequest<string, object> = {
+        topic: channel,
+        payload,
+      };
+
       const wsKey = getWsKeyForTopicChannel(
         this.options.market,
-        wsEventArg.channel,
+        channel,
         isPrivateTopic,
       );
 
-      // Remove topic from persistence for reconnects
-      this.getWsStore().deleteTopic(wsKey, wsEventArg);
-
-      // unsubscribe request only necessary if active connection exists
-      if (
-        this.getWsStore().isConnectionState(
-          wsKey,
-          WsConnectionStateEnum.CONNECTED,
-        )
-      ) {
-        this.requestUnsubscribeTopics(wsKey, [wsEventArg]);
+      // Arrange into per-wsKey sorted lists
+      if (!topicRequestsByWsKey[wsKey]) {
+        topicRequestsByWsKey[wsKey] = [];
       }
+
+      topicRequestsByWsKey[wsKey].push(normalisedEvent);
     });
+
+    const unsubscribeRequestPromises: Promise<unknown>[] = [];
+    for (const wsKeyUntyped in topicRequestsByWsKey) {
+      unsubscribeRequestPromises.push(
+        this.unsubscribeTopicsForWsKey(
+          topicRequestsByWsKey[wsKeyUntyped],
+          wsKeyUntyped as WsKey,
+        ),
+      );
+    }
+
+    return unsubscribeRequestPromises;
   }
 
   /**
@@ -611,86 +651,6 @@ export class WebsocketClient extends BaseWebsocketClient<
   //   } catch (e) {
   //     this.logger.error(e, logContext);
   //   }
-  // }
-
-  // /**
-  //  * @private Use the `subscribe(topics)` method to subscribe to topics. Send WS message to subscribe to topics.
-  //  */
-  // private requestSubscribeTopics(
-  //   wsKey: WsKey,
-  //   topics: WsChannelSubUnSubRequestArg[],
-  // ) {
-  //   if (!topics.length) {
-  //     return;
-  //   }
-
-  //   const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-  //     this.options.market,
-  //   );
-  //   if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
-  //     this.logger.trace(
-  //       `Subscribing to topics in batches of ${maxTopicsPerEvent}`,
-  //     );
-  //     for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
-  //       const batch = topics.slice(i, i + maxTopicsPerEvent);
-  //       this.logger.trace(`Subscribing to batch of ${batch.length}`);
-  //       this.requestSubscribeTopics(wsKey, batch);
-  //     }
-  //     this.logger.trace(
-  //       `Finished batch subscribing to ${topics.length} topics`,
-  //     );
-  //     return;
-  //   }
-
-  //   const request: WsSubRequest = {
-  //     id: `${this.getNewRequestId()}`,
-  //     op: 'subscribe',
-  //     args: topics,
-  //   };
-
-  //   const wsMessage = JSON.stringify(request);
-
-  //   this.tryWsSend(wsKey, wsMessage);
-  // }
-
-  // /**
-  //  * @private Use the `unsubscribe(topics)` method to unsubscribe from topics. Send WS message to unsubscribe from topics.
-  //  */
-  // private requestUnsubscribeTopics(
-  //   wsKey: WsKey,
-  //   topics: WsChannelSubUnSubRequestArg[],
-  // ) {
-  //   if (!topics.length) {
-  //     return;
-  //   }
-
-  //   const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-  //     this.options.market,
-  //   );
-  //   if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
-  //     this.logger.trace(
-  //       `Unsubscribing to topics in batches of ${maxTopicsPerEvent}`,
-  //     );
-  //     for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
-  //       const batch = topics.slice(i, i + maxTopicsPerEvent);
-  //       this.logger.trace(`Unsubscribing to batch of ${batch.length}`);
-  //       this.requestUnsubscribeTopics(wsKey, batch);
-  //     }
-  //     this.logger.trace(
-  //       `Finished batch unsubscribing to ${topics.length} topics`,
-  //     );
-  //     return;
-  //   }
-
-  //   const request: WsUnsubRequest = {
-  //     id: `${this.getNewRequestId()}`,
-  //     op: 'unsubscribe',
-  //     args: topics,
-  //   };
-
-  //   const wsMessage = JSON.stringify(request);
-
-  //   this.tryWsSend(wsKey, wsMessage);
   // }
 
   // private onWsMessageLegacy(event: any, wsKey: WsKey, ws: WebSocket) {

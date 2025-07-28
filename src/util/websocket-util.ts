@@ -403,7 +403,6 @@ export function safeTerminateWs(
  *
  * - Topic: the topic this event is for
  * - Payload: the parameters to include, optional. E.g. auth requires key + sign. Some topics allow configurable parameters.
- * - Category: required for bybit, since different categories have different public endpoints
  */
 export interface WsTopicRequest<
   TWSTopic extends string = string,
