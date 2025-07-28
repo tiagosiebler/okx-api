@@ -49,24 +49,54 @@ export interface WsAuthRequest extends WsRequestOperationOKX<WsAuthRequestArg> {
   op: 'login';
 }
 
-// When new WS API operations are added, make sure to also update WS_API_Operations[] below
-export type WSAPIOperation =
-  | 'place-order'
-  | 'batch-place'
+export type WSAPIPrivateOperations =
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+  | 'order'
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-multiple-orders
+  | 'batch-orders'
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-order
   | 'cancel-order'
-  | 'batch-cancel';
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-multiple-orders
+  | 'batch-cancel-orders'
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-order
+  | 'amend-order'
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-multiple-orders
+  | 'batch-amend-orders'
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-mass-cancel-order
+  | 'mass-cancel';
+
+export type WSAPIBusinessOperations =
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-place-order
+  | 'sprd-order'
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-amend-order
+  | 'sprd-amend-order'
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  | 'sprd-cancel-order'
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  | 'sprd-mass-cancel';
+
+// When new WS API operations are added, make sure to also update WS_API_Operations[] below
+export type WSAPIOperation = WSAPIPrivateOperations | WSAPIBusinessOperations;
 
 export const WS_API_Operations: WSAPIOperation[] = [
-  'place-order',
-  'batch-place',
+  'order',
+  'batch-orders',
   'cancel-order',
-  'batch-cancel',
+  'batch-cancel-orders',
+  'amend-order',
+  'batch-amend-orders',
+  'mass-cancel',
+  'sprd-order',
+  'sprd-amend-order',
+  'sprd-cancel-order',
+  'sprd-mass-cancel',
 ];
 
-// TODO:
 export interface WSAPIRequestOKX<TSomething> {
-  id: 1;
-  empty: TSomething;
+  id: string;
+  op: WSAPIOperation;
+  expTime?: string; // request effective deadline
+  args: TSomething[];
 }
 
 export interface WSAPIResponse<
@@ -102,21 +132,49 @@ export type Exact<T> = {
  * List of operations supported for this WsKey (connection)
  */
 export interface WsAPIWsKeyTopicMap {
-  [WS_KEY_MAP.prodPrivate]: WSAPIOperation;
+  // Global
+  [WS_KEY_MAP.prodPrivate]: WSAPIPrivateOperations;
+  [WS_KEY_MAP.prodDemoPrivate]: WSAPIPrivateOperations;
+
+  [WS_KEY_MAP.prodBusiness]: WSAPIBusinessOperations;
+  [WS_KEY_MAP.prodDemoBusiness]: WSAPIBusinessOperations;
+
+  [WS_KEY_MAP.prodPublic]: never;
+  [WS_KEY_MAP.prodDemoPublic]: never;
+
+  // EEA
+  [WS_KEY_MAP.eeaLivePrivate]: WSAPIPrivateOperations;
+  [WS_KEY_MAP.eeaDemoPrivate]: WSAPIPrivateOperations;
+
+  [WS_KEY_MAP.eeaLiveBusiness]: never;
+  [WS_KEY_MAP.eeaDemoBusiness]: never;
+
+  [WS_KEY_MAP.eeaLivePublic]: never;
+  [WS_KEY_MAP.eeaDemoPublic]: never;
+
+  // US
+  [WS_KEY_MAP.usLivePrivate]: WSAPIPrivateOperations;
+  [WS_KEY_MAP.usDemoPrivate]: WSAPIPrivateOperations;
+
+  [WS_KEY_MAP.usLiveBusiness]: never;
+  [WS_KEY_MAP.usDemoBusiness]: never;
+
+  [WS_KEY_MAP.usLivePublic]: never;
+  [WS_KEY_MAP.usDemoPublic]: never;
 }
 
 /**
  * Request parameters expected per operation
  */
 export interface WsAPITopicRequestParamMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': unknown;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+  order: unknown;
 }
 
 /**
  * Response structure expected for each operation
  */
 export interface WsAPIOperationResponseMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': WSAPIResponse<[unknown], 'place-order'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+  order: WSAPIResponse<[unknown], 'order'>;
 }

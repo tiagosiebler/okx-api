@@ -15,6 +15,10 @@ import {
   WsUnsubRequest,
 } from './types';
 import {
+  WsAPIOperationResponseMap,
+  WSAPIRequestFlags,
+  WsAPITopicRequestParamMap,
+  WsAPIWsKeyTopicMap,
   WsAuthRequest,
   WSOperation,
   WsRequestOperationOKX,
@@ -325,8 +329,6 @@ export class WebsocketClient extends BaseWebsocketClient<
         };
       }),
     };
-
-    console.log('Prepared wsEVENT: ', wsEvent);
 
     const midflightWsEvent: MidflightWsRequestEvent<
       WsRequestOperationOKX<object>
@@ -662,182 +664,26 @@ export class WebsocketClient extends BaseWebsocketClient<
     return results;
   }
 
-  async sendWSAPIRequest(wsKey: WsKey): Promise<unknown> {
+  /**
+   * OKX supports order placement via WebSockets. This is the WS API:
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+   *
+   * For convenient promise-wrapped usage of the WS API, instance the WebsocketAPIClient class exported by this SDK.
+   *
+   * @returns a promise that resolves/rejects when a matching response arrives
+   */
+  async sendWSAPIRequest<
+    TWSKey extends keyof WsAPIWsKeyTopicMap,
+    TWSOperation extends WsAPIWsKeyTopicMap[TWSKey],
+    TWSParams extends WsAPITopicRequestParamMap[TWSOperation],
+    TWSAPIResponse extends
+      WsAPIOperationResponseMap[TWSOperation] = WsAPIOperationResponseMap[TWSOperation],
+  >(
+    wsKey: WsKey,
+    operation: TWSOperation,
+    params: TWSParams & { signRequest?: boolean },
+    requestFlags?: WSAPIRequestFlags,
+  ): Promise<TWSAPIResponse> {
     throw new Error('not supported yet');
   }
-
-  /**
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
-  // private parseWsError(context: string, error: any, wsKey: WsKey) {
-  //   if (!error.message) {
-  //     this.logger.error(`${context} due to unexpected error: `, error);
-  //     this.emit('exception', error);
-  //     return;
-  //   }
-
-  //   switch (error.message) {
-  //     default:
-  //       if (
-  //         this.getWsStore().getConnectionState(wsKey) !==
-  //         WsConnectionStateEnum.CLOSING
-  //       ) {
-  //         this.logger.error(
-  //           `${context} due to unexpected response error: "${
-  //             error?.msg || error?.message || error
-  //           }"`,
-  //           { ...WS_LOGGER_CATEGORY, wsKey, error },
-  //         );
-  //         this.executeReconnectableClose(wsKey, 'unhandled onWsError');
-  //       } else {
-  //         this.logger.info(
-  //           `${wsKey} socket forcefully closed. Will not reconnect.`,
-  //         );
-  //       }
-  //       break;
-  //   }
-  //   this.emit('exception', error);
-  // }
-
-  // /**
-  //  * Return params required to make authorized request
-  //  */
-  // private async getWsAuthRequest(
-  //   wsKey: WsKey,
-  // ): Promise<WsAuthRequest | undefined> {
-  //   const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
-  //   const accounts = this.options.accounts;
-  //   const hasAccountsToAuth = !!accounts?.length;
-  //   if (isPublicWsKey || !accounts || !hasAccountsToAuth) {
-  //     this.logger.trace('Starting public only websocket client.', {
-  //       ...WS_LOGGER_CATEGORY,
-  //       wsKey,
-  //       isPublicWsKey,
-  //       hasAccountsToAuth,
-  //     });
-  //     return;
-  //   }
-
-  //   try {
-  //     const authAccountRequests = accounts.map(async (credentials) => {
-  //       try {
-  //         const { signature, timestamp } = await this.getWsAuthSignature(
-  //           wsKey,
-  //           credentials,
-  //         );
-
-  //         return {
-  //           apiKey: credentials.apiKey,
-  //           passphrase: credentials.apiPass,
-  //           timestamp: timestamp,
-  //           sign: signature,
-  //         };
-  //       } catch (e) {
-  //         this.logger.error(
-  //           `Account with key ${credentials.apiKey} could not be authenticateD: ${e}`,
-  //         );
-  //       }
-  //       return;
-  //     });
-
-  //     const signedAuthAccountRequests = await Promise.all(authAccountRequests);
-
-  //     // Filter out failed accounts
-  //     const authRequests: WsAuthRequestArg[] = signedAuthAccountRequests.filter(
-  //       (request): request is WsAuthRequestArg => !!request,
-  //     );
-
-  //     const authParams: WsAuthRequest = {
-  //       id: `${this.getNewRequestId()}`,
-  //       op: 'login',
-  //       args: authRequests,
-  //     };
-
-  //     return authParams;
-  //   } catch (e) {
-  //     this.logger.error(e, { ...WS_LOGGER_CATEGORY, wsKey });
-  //     return;
-  //   }
-  // }
-
-  // private async sendAuthRequest(wsKey: WsKey): Promise<void> {
-  //   const logContext = {
-  //     ...WS_LOGGER_CATEGORY,
-  //     wsKey,
-  //     method: 'sendAuthRequest',
-  //   };
-  //   this.logger.info('Sending auth request...', logContext);
-  //   try {
-  //     const authRequest = await this.getWsAuthRequest(wsKey);
-  //     if (!authRequest) {
-  //       throw new Error('Cannot authenticate this connection');
-  //     }
-  //     this.logger.info(
-  //       `Sending authentication request on wsKey(${wsKey})`,
-  //       logContext,
-  //     );
-  //     this.logger.trace(
-  //       `Authenticating with event: ${JSON.stringify(
-  //         authRequest,
-  //         null,
-  //         2,
-  //       )} on wsKey(${wsKey})`,
-  //       logContext,
-  //     );
-  //     return this.tryWsSend(wsKey, JSON.stringify(authRequest));
-  //   } catch (e) {
-  //     this.logger.error(e, logContext);
-  //   }
-  // }
 }
