@@ -254,7 +254,6 @@ export abstract class BaseWebsocketClient<
   protected abstract sendWSAPIRequest(
     wsKey: TWSKey,
     operation: string,
-    category: string,
     params?: any,
   ): Promise<unknown>;
 

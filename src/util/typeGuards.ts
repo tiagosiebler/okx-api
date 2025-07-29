@@ -1,4 +1,4 @@
-import { WsDataEvent, WsEvent, WsLoginEvent } from '../types';
+import { WSAPIResponse, WsDataEvent, WsEvent, WsLoginEvent } from '../types';
 import { APIResponse } from '../types/rest';
 
 export function isRawAPIResponse(
@@ -66,4 +66,42 @@ export function isConnCountEvent(evtData: unknown): boolean {
 /** Simple typescript guard never expecting code to reach it (will throw typescript error if called) */
 export function neverGuard(x: never, msg: string): Error {
   return new Error(`Unhandled value exception "${x}", ${msg}`);
+}
+
+export function isWSAPIResponse(
+  msg: unknown,
+): msg is Omit<WSAPIResponse, 'wsKey'> {
+  if (typeof msg !== 'object' || !msg) {
+    return false;
+  }
+
+  const response = msg as WSAPIResponse;
+  /**
+   * Very simple type guard around this structure. Could also just check the "op" is a known WS API operation, but this might be slightly faster as the list of operations grows:
+    {
+      id: '2',
+      op: 'order',
+      code: '1',
+      msg: '',
+      data: [
+        {
+          tag: '159881cb7207BCDE',
+          ts: '1753783406701',
+          ordId: '',
+          clOrdId: '',
+          sCode: 'asdfasfsafdasf',
+          sMsg: 'adsfadsfasdf'
+        }
+      ],
+      inTime: '1753783406701275',
+      outTime: '1753783406702251',
+      wsKey: 'prodPrivate',
+      isWSAPIResponse: false
+    }
+   */
+  if (typeof response.id !== 'string' || typeof response.inTime !== 'string') {
+    return false;
+  }
+
+  return true;
 }

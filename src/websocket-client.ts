@@ -29,6 +29,7 @@ import {
   getMaxTopicsPerSubscribeEventForMarket,
   getWsKeyForTopicChannel,
   isConnCountEvent,
+  isWSAPIResponse,
   isWsDataEvent,
   isWsErrorEvent,
   isWsLoginEvent,
@@ -53,12 +54,11 @@ import {
 } from './util/webCryptoAPI';
 import {
   getDemoWsKey,
-  getNormalisedTopicRequests,
   getPromiseRefForWSAPIRequest,
   getWsKeyForMarket,
   getWsUrlForWsKey,
   requiresWSAPITag,
-  safeTerminateWs,
+  validateWSAPITag,
   WS_EVENT_CODE_ENUM,
   WS_LOGGER_CATEGORY,
   WsKey,
@@ -494,79 +494,93 @@ export class WebsocketClient extends BaseWebsocketClient<
       /**
        * WS API response handling
        */
-      // if (isWSAPIResponse(emittableEvent)) {
-      //   // const eg1 = {
-      //   //   event: 'error',
-      //   //   id: '1',
-      //   //   code: '43012',
-      //   //   msg: 'Insufficient balance',
-      //   // };
+      if (isWSAPIResponse(emittableEvent)) {
+        // const eg1 = {
+        //   id: '2',
+        //   op: 'order',
+        //   code: '1',
+        //   msg: '',
+        //   data: [
+        //     {
+        //       tag: '159881cb7207BCDE',
+        //       ts: '1753783406701',
+        //       ordId: '',
+        //       clOrdId: '',
+        //       sCode: '51008',
+        //       sMsg: 'Order failed. Insufficient USDT balance in account.',
+        //     },
+        //   ],
+        //   inTime: '1753783406701275',
+        //   outTime: '1753783406702251',
+        //   wsKey: 'prodPrivate',
+        // };
 
-      //   const retCode = emittableEvent.code;
-      //   const reqId = emittableEvent.id;
-      //   const isError = retCode !== '0';
+        const retCode = emittableEvent.code;
+        const reqId = emittableEvent.id;
+        const isError = retCode !== '0';
 
-      //   const promiseRef = [emittableEvent.id].join('_');
+        // check getPromiseRefForWSAPIRequest
+        const promiseRef = [emittableEvent.id, emittableEvent.op].join('_');
 
-      //   const loggableContext = {
-      //     wsKey,
-      //     promiseRef,
-      //     parsedEvent: emittableEvent,
-      //   };
+        const loggableContext = {
+          wsKey,
+          promiseRef,
+          parsedEvent: emittableEvent,
+        };
 
-      //   if (!reqId) {
-      //     this.logger.error(
-      //       'WS API response is missing reqId - promisified workflow could get stuck. If this happens, please get in touch with steps to reproduce. Trace:',
-      //       loggableContext,
-      //     );
-      //   }
+        if (!reqId) {
+          this.logger.error(
+            'WS API response is missing reqId - promisified workflow could get stuck. If this happens, please get in touch with steps to reproduce. Trace:',
+            loggableContext,
+          );
+        }
 
-      //   if (isError) {
-      //     try {
-      //       this.getWsStore().rejectDeferredPromise(
-      //         wsKey,
-      //         promiseRef,
-      //         emittableEvent,
-      //         true,
-      //       );
-      //     } catch (e) {
-      //       this.logger.error('Exception trying to reject WSAPI promise', {
-      //         ...loggableContext,
-      //         error: e,
-      //       });
-      //     }
+        if (isError) {
+          try {
+            this.getWsStore().rejectDeferredPromise(
+              wsKey,
+              promiseRef,
+              emittableEvent,
+              true,
+            );
+          } catch (e) {
+            this.logger.error('Exception trying to reject WSAPI promise', {
+              ...loggableContext,
+              error: e,
+            });
+          }
 
-      //     results.push({
-      //       eventType: 'exception',
-      //       event: emittableEvent,
-      //       isWSAPIResponse: true,
-      //     });
-      //     return results;
-      //   }
+          results.push({
+            eventType: 'exception',
+            event: emittableEvent,
+            isWSAPIResponse: true,
+          });
+          return results;
+        }
 
-      //   // WS API Success
-      //   try {
-      //     this.getWsStore().resolveDeferredPromise(
-      //       wsKey,
-      //       promiseRef,
-      //       emittableEvent,
-      //       true,
-      //     );
-      //   } catch (e) {
-      //     this.logger.error('Exception trying to resolve WSAPI promise', {
-      //       ...loggableContext,
-      //       error: e,
-      //     });
-      //   }
+        // WS API Success
+        try {
+          this.getWsStore().resolveDeferredPromise(
+            wsKey,
+            promiseRef,
+            emittableEvent,
+            true,
+          );
+        } catch (e) {
+          this.logger.error('Exception trying to resolve WSAPI promise', {
+            ...loggableContext,
+            error: e,
+          });
+        }
 
-      //   results.push({
-      //     eventType: 'response',
-      //     event: emittableEvent,
-      //     isWSAPIResponse: true,
-      //   });
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+          isWSAPIResponse: true,
+        });
 
-      //   return results;
-      // }
+        return results;
+      }
 
       if (isWsErrorEvent(msg)) {
         this.logger.error('WS error event: ', { ...msg, wsKey });
@@ -709,34 +723,31 @@ export class WebsocketClient extends BaseWebsocketClient<
       );
     }
 
-    const request: WSAPIRequestOKX<TWSParams> = {
+    const request: WSAPIRequestOKX<object> = {
       id: `${this.getNewRequestId()}`,
       op: operation,
       // Ensure "args" is always wrapped as array
-      args: Array.isArray(params)
-        ? params.map((individualParam) => ({
-            ...individualParam,
-            ...(requiresWSAPITag(operation, wsKey)
-              ? { [programKey]: programId }
-              : {}),
-          }))
-        : [
-            {
-              ...params,
-              ...(requiresWSAPITag(operation, wsKey)
-                ? { [programKey]: programId }
-                : {}),
-            },
-          ],
+      args: Array.isArray(params) ? params : [params],
     };
+
+    if (requiresWSAPITag(operation, wsKey)) {
+      validateWSAPITag(request, wsKey);
+    }
 
     // Store deferred promise, resolved within the "resolveEmittableEvents" method while parsing incoming events
     const promiseRef = getPromiseRefForWSAPIRequest(request);
 
-    const deferredPromise = this.getWsStore().createDeferredPromise<
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      TWSAPIResponse & { request: any }
-    >(wsKey, promiseRef, false);
+    // Enriched WS API response includes wsKey & the request that was connected to the response
+    type DeferredWSAPIResponse = TWSAPIResponse & {
+      request: WSAPIRequestOKX<object> & { wsKey: WsKey };
+    };
+
+    const deferredPromise =
+      this.getWsStore().createDeferredPromise<DeferredWSAPIResponse>(
+        wsKey,
+        promiseRef,
+        false,
+      );
 
     // Enrich returned promise with request context for easier debugging
     deferredPromise.promise

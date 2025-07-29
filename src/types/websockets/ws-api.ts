@@ -1,5 +1,21 @@
 import { WS_KEY_MAP, WsKey } from '../../util';
+import { numberInString, OrderIdRequest, OrderResult } from '../rest';
 import { WsAuthRequestArg, WsChannelSubUnSubRequestArg } from './request';
+import {
+  WSAPIAmendOrderRequestV5,
+  WSAPIAmendSpreadOrderRequestV5,
+  WSAPICancelSpreadOrderRequestV5,
+  WSAPIMassCancelOrdersRequestV5,
+  WSAPIPlaceOrderRequestV5,
+  WSAPIPlaceSpreadOrderRequestV5,
+  WSAPISpreadMassCancelOrdersRequestV5,
+} from './ws-api-request';
+import {
+  WSAPICancelOrderResultV5,
+  WSAPISpreadAmendOrderResultV5,
+  WSAPISpreadCancelOrderResultV5,
+  WSAPISpreadPlaceOrderResultV5,
+} from './ws-api-response';
 
 export interface WSAPIRequestFlags {
   /** If true, will skip auth requirement for WS API connection */
@@ -92,17 +108,34 @@ export const WS_API_Operations: WSAPIOperation[] = [
   'sprd-mass-cancel',
 ];
 
+export const WS_API_PRIVATE_OPERATIONS: WSAPIPrivateOperations[] = [
+  'order',
+  'batch-orders',
+  'cancel-order',
+  'batch-cancel-orders',
+  'amend-order',
+  'batch-amend-orders',
+  'mass-cancel',
+];
+
+export const WS_API_BUSINESS_OPERATIONS: WSAPIBusinessOperations[] = [
+  'sprd-order',
+  'sprd-amend-order',
+  'sprd-cancel-order',
+  'sprd-mass-cancel',
+];
+
 export const WS_API_TAG_OPERATIONS: WSAPIOperation[] = [
   'order',
   'batch-orders',
   'sprd-order',
 ];
 
-export interface WSAPIRequestOKX<TSomething> {
-  id: string;
+export interface WSAPIRequestOKX<TRequestParams> {
+  id: numberInString;
   op: WSAPIOperation;
-  expTime?: string; // request effective deadline
-  args: TSomething[];
+  expTime?: numberInString; // request effective deadline TODO: mechanism to set this, flags?
+  args: TRequestParams[];
 }
 
 export interface WSAPIResponse<
@@ -110,14 +143,13 @@ export interface WSAPIResponse<
   TOperation extends WSAPIOperation = WSAPIOperation,
 > {
   wsKey: WsKey;
-  /** Auto-generated */
-  id: string;
-  event: 'trade';
-  topic: TOperation;
-  args: TResponseData;
-  code: '0' | string;
-  msg: 'success' | string;
-  ts: string;
+  id: numberInString;
+  op: TOperation;
+  code: numberInString;
+  msg: string;
+  data: TResponseData[];
+  inTime: numberInString;
+  outTime: numberInString;
 }
 
 export interface WSOperationLoginParams {
@@ -145,28 +177,28 @@ export interface WsAPIWsKeyTopicMap {
   [WS_KEY_MAP.prodBusiness]: WSAPIBusinessOperations;
   [WS_KEY_MAP.prodDemoBusiness]: WSAPIBusinessOperations;
 
-  [WS_KEY_MAP.prodPublic]: never;
-  [WS_KEY_MAP.prodDemoPublic]: never;
+  // [WS_KEY_MAP.prodPublic]: never;
+  // [WS_KEY_MAP.prodDemoPublic]: never;
 
   // EEA
   [WS_KEY_MAP.eeaLivePrivate]: WSAPIPrivateOperations;
   [WS_KEY_MAP.eeaDemoPrivate]: WSAPIPrivateOperations;
 
-  [WS_KEY_MAP.eeaLiveBusiness]: never;
-  [WS_KEY_MAP.eeaDemoBusiness]: never;
+  // [WS_KEY_MAP.eeaLiveBusiness]: never;
+  // [WS_KEY_MAP.eeaDemoBusiness]: never;
 
-  [WS_KEY_MAP.eeaLivePublic]: never;
-  [WS_KEY_MAP.eeaDemoPublic]: never;
+  // [WS_KEY_MAP.eeaLivePublic]: never;
+  // [WS_KEY_MAP.eeaDemoPublic]: never;
 
   // US
   [WS_KEY_MAP.usLivePrivate]: WSAPIPrivateOperations;
   [WS_KEY_MAP.usDemoPrivate]: WSAPIPrivateOperations;
 
-  [WS_KEY_MAP.usLiveBusiness]: never;
-  [WS_KEY_MAP.usDemoBusiness]: never;
+  // [WS_KEY_MAP.usLiveBusiness]: never;
+  // [WS_KEY_MAP.usDemoBusiness]: never;
 
-  [WS_KEY_MAP.usLivePublic]: never;
-  [WS_KEY_MAP.usDemoPublic]: never;
+  // [WS_KEY_MAP.usLivePublic]: never;
+  // [WS_KEY_MAP.usDemoPublic]: never;
 }
 
 /**
@@ -174,17 +206,27 @@ export interface WsAPIWsKeyTopicMap {
  */
 export interface WsAPITopicRequestParamMap {
   // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
-  order: unknown;
-  'batch-orders': unknown;
-  'cancel-order': unknown;
-  'batch-cancel-orders': unknown;
-  'amend-order': unknown;
-  'batch-amend-orders': unknown;
-  'mass-cancel': unknown;
-  'sprd-order': unknown;
-  'sprd-amend-order': unknown;
-  'sprd-cancel-order': unknown;
-  'sprd-mass-cancel': unknown;
+  order: WSAPIPlaceOrderRequestV5;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-multiple-orders
+  'batch-orders': WSAPIPlaceOrderRequestV5[];
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-order
+  'cancel-order': OrderIdRequest;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-multiple-orders
+  'batch-cancel-orders': OrderIdRequest[];
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-order
+  'amend-order': WSAPIAmendOrderRequestV5;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-multiple-orders
+  'batch-amend-orders': WSAPIAmendOrderRequestV5[];
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-mass-cancel-order
+  'mass-cancel': WSAPIMassCancelOrdersRequestV5;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-place-order
+  'sprd-order': WSAPIPlaceSpreadOrderRequestV5;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-amend-order
+  'sprd-amend-order': WSAPIAmendSpreadOrderRequestV5;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  'sprd-cancel-order': WSAPICancelSpreadOrderRequestV5;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  'sprd-mass-cancel': WSAPISpreadMassCancelOrdersRequestV5;
 }
 
 /**
@@ -192,15 +234,34 @@ export interface WsAPITopicRequestParamMap {
  */
 export interface WsAPIOperationResponseMap {
   // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
-  order: WSAPIResponse<[unknown], 'order'>;
-  'batch-orders': unknown;
-  'cancel-order': unknown;
-  'batch-cancel-orders': unknown;
-  'amend-order': unknown;
-  'batch-amend-orders': unknown;
-  'mass-cancel': unknown;
-  'sprd-order': unknown;
-  'sprd-amend-order': unknown;
-  'sprd-cancel-order': unknown;
-  'sprd-mass-cancel': unknown;
+  order: WSAPIResponse<[OrderResult], 'order'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-multiple-orders
+  'batch-orders': WSAPIResponse<OrderResult[], 'batch-orders'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-order
+  'cancel-order': WSAPIResponse<[WSAPICancelOrderResultV5], 'cancel-order'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-multiple-orders
+  'batch-cancel-orders': WSAPIResponse<
+    WSAPICancelOrderResultV5[],
+    'batch-cancel-orders'
+  >;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-order
+  'amend-order': WSAPIResponse<[OrderResult], 'amend-order'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-multiple-orders
+  'batch-amend-orders': WSAPIResponse<[OrderResult], 'batch-amend-orders'>;
+  // https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-mass-cancel-order
+  'mass-cancel': WSAPIResponse<[{ result: boolean }], 'mass-cancel'>;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-place-order
+  'sprd-order': WSAPIResponse<[WSAPISpreadPlaceOrderResultV5], 'sprd-order'>;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-amend-order
+  'sprd-amend-order': WSAPIResponse<
+    [WSAPISpreadAmendOrderResultV5],
+    'sprd-amend-order'
+  >;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  'sprd-cancel-order': WSAPIResponse<
+    [WSAPISpreadCancelOrderResultV5],
+    'sprd-cancel-order'
+  >;
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  'sprd-mass-cancel': WSAPIResponse<[{ result: boolean }], 'sprd-mass-cancel'>;
 }

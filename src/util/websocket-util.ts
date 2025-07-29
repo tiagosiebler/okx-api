@@ -5,6 +5,7 @@ import {
   WSAPIRequestOKX,
 } from '../types/websockets/ws-api';
 import { DefaultLogger } from './logger';
+import { programId } from './requestUtils';
 import { neverGuard } from './typeGuards';
 
 export const WS_LOGGER_CATEGORY = { category: 'okx-ws' };
@@ -412,6 +413,19 @@ export function requiresWSAPITag(
     default: {
       throw neverGuard(wsKey, `Unhandled WsKey "${wsKey}"`);
     }
+  }
+}
+
+export function validateWSAPITag(
+  request: WSAPIRequestOKX<any>,
+  wsKey: WsKey,
+): void {
+  if (!requiresWSAPITag(request.op, wsKey)) {
+    return;
+  }
+
+  for (let i = 0; i < request.args.length; i++) {
+    request.args[i]['tag'] = programId;
   }
 }
 
