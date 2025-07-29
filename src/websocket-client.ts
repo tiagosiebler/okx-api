@@ -36,6 +36,7 @@ import {
   isWsPong,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
+  neverGuard,
   PRIVATE_WS_KEYS,
   PUBLIC_WS_KEYS,
   WS_KEY_MAP,
@@ -125,6 +126,20 @@ export class WebsocketClient extends BaseWebsocketClient<
       !!businessEndpoint,
     );
     return this.connect(WS_KEY_MAP[wsKey]);
+  }
+
+  /**
+   * Ensures the WS API connection is active and ready.
+   *
+   * You do not need to call this, but if you call this before making any WS API requests,
+   * it can accelerate the first request (by preparing the connection in advance).
+   */
+  public connectWSAPI(): Promise<unknown[]> {
+    /** This call automatically ensures the connection is active AND authenticated before resolving */
+    return Promise.allSettled([
+      this.assertIsAuthenticated(this.getMarketWsKey('private')),
+      this.assertIsAuthenticated(this.getMarketWsKey('business')),
+    ]);
   }
 
   /**
@@ -238,6 +253,48 @@ export class WebsocketClient extends BaseWebsocketClient<
    *
    *
    */
+
+  public getMarketWsKey(type: 'private' | 'business'): WsKey {
+    // returns private or business ws key for the active api market
+    // defaults to global
+    // automatically resolves to demo trading wsKeys under the hood (WSClient)
+
+    const isPrivateType = type === 'private';
+    const isBusinessType = type === 'business';
+
+    switch (this.options.market) {
+      case 'EEA': {
+        return isPrivateType
+          ? WS_KEY_MAP.eeaLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.eeaLiveBusiness
+            : WS_KEY_MAP.eeaLivePublic;
+      }
+      case undefined:
+      case 'prod':
+      case 'GLOBAL': {
+        return isPrivateType
+          ? WS_KEY_MAP.eeaLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.eeaLiveBusiness
+            : WS_KEY_MAP.eeaLivePublic;
+      }
+      case 'US': {
+        return isPrivateType
+          ? WS_KEY_MAP.usLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.usLiveBusiness
+            : WS_KEY_MAP.usLivePublic;
+      }
+
+      default: {
+        throw neverGuard(
+          this.options.market,
+          `Unhandled market type "${this.options.market}"`,
+        );
+      }
+    }
+  }
 
   protected sendPingEvent(wsKey: WsKey): void {
     this.tryWsSend(wsKey, 'ping');

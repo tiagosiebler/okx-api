@@ -4,7 +4,7 @@ import {
   WSClientConfigurableOptions,
 } from './types';
 import { WSAPIPlaceOrderRequestV5 } from './types/websockets/ws-api-request';
-import { DefaultLogger, neverGuard, WS_KEY_MAP, WsKey } from './util';
+import { DefaultLogger } from './util';
 import { WebsocketClient } from './websocket-client';
 
 /**
@@ -60,48 +60,6 @@ export class WebsocketAPIClient {
     return this.getWSClient().setTimeOffsetMs(newOffset);
   }
 
-  private getMarketWsKey(type: 'private' | 'business'): WsKey {
-    // returns private or business ws key for the active api market
-    // defaults to global
-    // automatically resolves to demo trading wsKeys under the hood (WSClient)
-
-    const isPrivateType = type === 'private';
-    const isBusinessType = type === 'business';
-
-    switch (this.options.market) {
-      case 'EEA': {
-        return isPrivateType
-          ? WS_KEY_MAP.eeaLivePrivate
-          : isBusinessType
-            ? WS_KEY_MAP.eeaLiveBusiness
-            : WS_KEY_MAP.eeaLivePublic;
-      }
-      case undefined:
-      case 'prod':
-      case 'GLOBAL': {
-        return isPrivateType
-          ? WS_KEY_MAP.eeaLivePrivate
-          : isBusinessType
-            ? WS_KEY_MAP.eeaLiveBusiness
-            : WS_KEY_MAP.eeaLivePublic;
-      }
-      case 'US': {
-        return isPrivateType
-          ? WS_KEY_MAP.usLivePrivate
-          : isBusinessType
-            ? WS_KEY_MAP.usLiveBusiness
-            : WS_KEY_MAP.usLivePublic;
-      }
-
-      default: {
-        throw neverGuard(
-          this.options.market,
-          `Unhandled market type "${this.options.market}"`,
-        );
-      }
-    }
-  }
-
   /**
    *
    *
@@ -119,7 +77,7 @@ export class WebsocketAPIClient {
     params: WSAPIPlaceOrderRequestV5,
   ): Promise<WSAPIResponse<[OrderResult], 'order'>> {
     return this.wsClient.sendWSAPIRequest(
-      this.getMarketWsKey('private'),
+      this.getWSClient().getMarketWsKey('private'),
       'order',
       params,
     );
