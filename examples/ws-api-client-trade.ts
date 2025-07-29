@@ -130,5 +130,35 @@ import { DefaultLogger, WebsocketAPIClient } from '../src';
     console.error(new Date(), 'Exception with WS API "submitNewOrder()": ', e);
   }
 
+  /**
+   * Submit multiple orders in a batch
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-multiple-orders
+   */
+  try {
+    const res = await wsClient.submitMultipleOrders([
+      {
+        instId: 'BTC-USDT',
+        tdMode: 'cash',
+        side: 'buy',
+        ordType: 'market',
+        sz: '100',
+      },
+      {
+        instId: 'BTC-USDT',
+        tdMode: 'cash',
+        side: 'buy',
+        ordType: 'market',
+        sz: '50',
+      },
+    ]);
+    console.log(new Date(), 'WS API "submitMultipleOrders()" result: ', res);
+  } catch (e) {
+    console.error(
+      new Date(),
+      'Exception with WS API "submitMultipleOrders()": ',
+      e,
+    );
+  }
+
   console.log(new Date(), 'Reached end of example.');
 })();

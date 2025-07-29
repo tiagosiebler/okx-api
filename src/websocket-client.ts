@@ -6,13 +6,10 @@ import WebSocket from 'isomorphic-ws';
 import {
   APICredentials,
   MessageEventLike,
-  WebsocketClientOptions,
   WsAuthRequestArg,
   WsChannelSubUnSubRequestArg,
   WSClientConfigurableOptions,
   WsDataEvent,
-  WsSubRequest,
-  WsUnsubRequest,
 } from './types';
 import {
   WsAPIOperationResponseMap,
@@ -26,7 +23,6 @@ import {
 } from './types/websockets/ws-api';
 import {
   DefaultLogger,
-  getMaxTopicsPerSubscribeEventForMarket,
   getWsKeyForTopicChannel,
   isConnCountEvent,
   isWSAPIResponse,
@@ -47,7 +43,6 @@ import {
   MidflightWsRequestEvent,
   WSClientEventMap,
 } from './util/BaseWSClient';
-import { programId, programKey } from './util/requestUtils';
 import {
   SignAlgorithm,
   SignEncodeMethod,
@@ -65,8 +60,7 @@ import {
   WsKey,
   WsTopicRequest,
 } from './util/websocket-util';
-import WsStore from './util/WsStore';
-import { WSConnectedResult, WsConnectionStateEnum } from './util/WsStore.types';
+import { WSConnectedResult } from './util/WsStore.types';
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
 export declare interface WebsocketClient {

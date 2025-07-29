@@ -84,6 +84,21 @@ export class WebsocketAPIClient {
   }
 
   /**
+   * Submit multiple orders in a batch
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-multiple-orders
+   */
+  submitMultipleOrders(
+    params: WSAPIPlaceOrderRequestV5[],
+  ): Promise<WSAPIResponse<OrderResult[], 'batch-orders'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'batch-orders',
+      params,
+    );
+  }
+
+  /**
    *
    *
    *
