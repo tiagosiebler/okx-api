@@ -1,9 +1,24 @@
 import {
+  OrderIdRequest,
   OrderResult,
   WSAPIResponse,
   WSClientConfigurableOptions,
 } from './types';
-import { WSAPIPlaceOrderRequestV5 } from './types/websockets/ws-api-request';
+import {
+  WSAPIAmendOrderRequestV5,
+  WSAPIAmendSpreadOrderRequestV5,
+  WSAPICancelSpreadOrderRequestV5,
+  WSAPIMassCancelOrdersRequestV5,
+  WSAPIPlaceOrderRequestV5,
+  WSAPIPlaceSpreadOrderRequestV5,
+  WSAPISpreadMassCancelOrdersRequestV5,
+} from './types/websockets/ws-api-request';
+import {
+  WSAPICancelOrderResultV5,
+  WSAPISpreadAmendOrderResultV5,
+  WSAPISpreadCancelOrderResultV5,
+  WSAPISpreadPlaceOrderResultV5,
+} from './types/websockets/ws-api-response';
 import { DefaultLogger } from './util';
 import { WebsocketClient } from './websocket-client';
 
@@ -94,6 +109,145 @@ export class WebsocketAPIClient {
     return this.wsClient.sendWSAPIRequest(
       this.getWSClient().getMarketWsKey('private'),
       'batch-orders',
+      params,
+    );
+  }
+
+  /**
+   * Cancel a single order
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-order
+   */
+  cancelOrder(
+    params: OrderIdRequest,
+  ): Promise<WSAPIResponse<[WSAPICancelOrderResultV5], 'cancel-order'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'cancel-order',
+      params,
+    );
+  }
+
+  /**
+   * Cancel multiple orders
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-cancel-multiple-orders
+   */
+  cancelMultipleOrders(
+    params: OrderIdRequest[],
+  ): Promise<WSAPIResponse<WSAPICancelOrderResultV5[], 'batch-cancel-orders'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'batch-cancel-orders',
+      params,
+    );
+  }
+
+  /**
+   * Amend a single order
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-order
+   */
+  amendOrder(
+    params: WSAPIAmendOrderRequestV5,
+  ): Promise<WSAPIResponse<[OrderResult], 'amend-order'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'amend-order',
+      params,
+    );
+  }
+
+  /**
+   * Amend multiple orders
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-amend-multiple-orders
+   */
+  amendMultipleOrders(
+    params: WSAPIAmendOrderRequestV5[],
+  ): Promise<WSAPIResponse<[OrderResult], 'batch-amend-orders'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'batch-amend-orders',
+      params,
+    );
+  }
+
+  /**
+   * Mass cancel orders
+   *
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-mass-cancel-order
+   */
+  massCancelOrders(
+    params: WSAPIMassCancelOrdersRequestV5,
+  ): Promise<WSAPIResponse<[{ result: boolean }], 'mass-cancel'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('private'),
+      'mass-cancel',
+      params,
+    );
+  }
+
+  /**
+   * Submit a new spread order
+   *
+   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-place-order
+   */
+  submitSpreadOrder(
+    params: WSAPIPlaceSpreadOrderRequestV5,
+  ): Promise<WSAPIResponse<[WSAPISpreadPlaceOrderResultV5], 'sprd-order'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('business'),
+      'sprd-order',
+      params,
+    );
+  }
+
+  /**
+   * Amend a spread order
+   *
+   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-amend-order
+   */
+  amendSpreadOrder(
+    params: WSAPIAmendSpreadOrderRequestV5,
+  ): Promise<
+    WSAPIResponse<[WSAPISpreadAmendOrderResultV5], 'sprd-amend-order'>
+  > {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('business'),
+      'sprd-amend-order',
+      params,
+    );
+  }
+
+  /**
+   * Cancel a spread order
+   *
+   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+   */
+  cancelSpreadOrder(
+    params: WSAPICancelSpreadOrderRequestV5,
+  ): Promise<
+    WSAPIResponse<[WSAPISpreadCancelOrderResultV5], 'sprd-cancel-order'>
+  > {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('business'),
+      'sprd-cancel-order',
+      params,
+    );
+  }
+
+  /**
+   * Mass cancel spread orders
+   *
+   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+   */
+  massCancelSpreadOrders(
+    params: WSAPISpreadMassCancelOrdersRequestV5,
+  ): Promise<WSAPIResponse<[{ result: boolean }], 'sprd-mass-cancel'>> {
+    return this.wsClient.sendWSAPIRequest(
+      this.getWSClient().getMarketWsKey('business'),
+      'sprd-mass-cancel',
       params,
     );
   }
