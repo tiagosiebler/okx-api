@@ -225,7 +225,7 @@ export interface WsAPITopicRequestParamMap {
   'sprd-amend-order': WSAPIAmendSpreadOrderRequestV5;
   // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
   'sprd-cancel-order': WSAPICancelSpreadOrderRequestV5;
-  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-all-orders
   'sprd-mass-cancel': WSAPISpreadMassCancelOrdersRequestV5;
 }
 
@@ -262,6 +262,6 @@ export interface WsAPIOperationResponseMap {
     [WSAPISpreadCancelOrderResultV5],
     'sprd-cancel-order'
   >;
-  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+  // https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-all-orders
   'sprd-mass-cancel': WSAPIResponse<[{ result: boolean }], 'sprd-mass-cancel'>;
 }

@@ -240,7 +240,7 @@ export class WebsocketAPIClient {
   /**
    * Mass cancel spread orders
    *
-   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-order
+   * https://www.okx.com/docs-v5/en/#spread-trading-websocket-trade-api-ws-cancel-all-orders
    */
   massCancelSpreadOrders(
     params: WSAPISpreadMassCancelOrdersRequestV5,
