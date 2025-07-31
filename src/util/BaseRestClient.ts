@@ -9,7 +9,7 @@ import {
   serializeParams,
 } from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
-import { signMessage } from './webCryptoAPI';
+import { checkWebCryptoAPISupported, signMessage } from './webCryptoAPI';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -81,6 +81,12 @@ export default abstract class BaseRestClient {
       throw new Error(
         'API Key, Secret AND Passphrase are ALL required for private enpoints',
       );
+    }
+
+    if (hasAllCredentials && !this.options.customSignMessageFn) {
+      // Provide a user friendly error message if the user is using an outdated Node.js version (where Web Crypto API is not available).
+      // A few users have been caught out by using the end-of-life Node.js v18 release.
+      checkWebCryptoAPISupported();
     }
 
     this.globalRequestOptions = {

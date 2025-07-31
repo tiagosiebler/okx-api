@@ -456,9 +456,10 @@ export class WebsocketClient extends BaseWebsocketClient<
             timestamp: timestamp,
             sign: signature,
           };
-        } catch (e) {
+        } catch (e: any) {
           this.logger.error(
-            `Account with key ${credentials.apiKey} could not be authenticateD: ${e}`,
+            `Account with key ${credentials.apiKey} could not be authenticated: ${e}`,
+            e?.stack,
           );
         }
         return;
@@ -634,8 +635,6 @@ export class WebsocketClient extends BaseWebsocketClient<
       }
 
       if (isWsErrorEvent(msg)) {
-        this.logger.error('WS error event: ', { ...msg, wsKey });
-
         this.logger.error('WS Error received', {
           ...logContext,
           wsKey,
