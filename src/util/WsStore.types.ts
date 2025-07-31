@@ -42,7 +42,6 @@ export interface WsStoredState<TWSTopicSubscribeEvent extends object> {
    *
    * This promise will resolve once connected (and will then get removed);
    */
-  // connectionInProgressPromise?: DeferredPromise | undefined;
   deferredPromiseStore: Record<string, DeferredPromise>;
 
   /**
