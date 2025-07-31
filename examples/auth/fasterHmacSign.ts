@@ -4,13 +4,13 @@ import { DefaultLogger, RestClient, WebsocketClient } from '../../src/';
 
 // or
 // import { createHmac } from 'crypto';
-// import { DefaultLogger, RestClientV3, WebsocketClientV3 } from 'bitget-api';
+// import { DefaultLogger, RestClient, WebsocketClient } from 'okx-api';
 
 /**
  * Injecting a custom signMessage function.
  *
- * As of version 3.0.0 of the bitget-api Node.js/TypeScript/JavaScript
- * SDK for Bitget, the SDK uses the Web Crypto API for signing requests.
+ * As of version 3.0.0 of the okx-api Node.js/TypeScript/JavaScript
+ * SDK for OKX, the SDK uses the Web Crypto API for signing requests.
  * While it is compatible with Node and Browser environments, it is
  * slightly slower than using Node's native crypto module (only
  * available in backend Node environments).

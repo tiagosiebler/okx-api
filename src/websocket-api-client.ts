@@ -270,6 +270,10 @@ export class WebsocketAPIClient {
    *
    */
 
+  public connectWSAPI() {
+    return this.getWSClient().connectWSAPI();
+  }
+
   private setupDefaultEventListeners() {
     if (this.options.attachEventListeners) {
       /**

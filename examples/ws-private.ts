@@ -38,10 +38,15 @@ if (!API_PASSPHRASE) {
 
 const wsClient = new WebsocketClient(
   {
-    // The market defaults to "prod" for the live environment, but you can also ask to use the aws or demo environments:
-    // market: 'prod',
-    // market: 'aws',
-    // market: 'demo',
+    // For Global users (www.okx.com), you don't need to set the market.
+    // It will use global by default.
+    // Not needed: market: 'GLOBAL',
+
+    // For EEA users (my.okx.com), set market to "EEA":
+    // market: 'EEA',
+
+    // For US users (app.okx.com), set market to "US":
+    // market: 'US',
 
     accounts: [
       // For private topics, include one or more accounts in an array. Otherwise only public topics will work

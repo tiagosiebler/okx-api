@@ -15,11 +15,13 @@ const logger = {
 
 const wsClient = new WebsocketClient(
   {
-    // TODO: update all examples to clarify global vs EEA vs US
-    // prod is used by default, but you can choose other markets through this parameter:
-    // market: 'prod',
-    // market: 'aws',
-    // market: 'demo',
+    // For Global users (www.okx.com), you don't need to set the market.
+    // It will use global by default.
+    // Not needed: market: 'GLOBAL',
+    // For EEA users (my.okx.com), set market to "EEA":
+    // market: 'EEA',
+    // For US users (app.okx.com), set market to "US":
+    // market: 'US',
   },
   logger, // Optional: inject the custom logger here
 );

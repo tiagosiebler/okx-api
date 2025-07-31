@@ -42,6 +42,16 @@ import { DefaultLogger, WebsocketAPIClient } from '../src';
 
   const wsClient = new WebsocketAPIClient(
     {
+      // For Global users (www.okx.com), you don't need to set the market.
+      // It will use global by default.
+      // Not needed: market: 'GLOBAL',
+
+      // For EEA users (my.okx.com), set market to "EEA":
+      // market: 'EEA',
+
+      // For US users (app.okx.com), set market to "US":
+      // market: 'US',
+
       accounts: [
         // For private topics, include one or more accounts in an array. Otherwise only public topics will work
         {
@@ -59,7 +69,7 @@ import { DefaultLogger, WebsocketAPIClient } from '../src';
 
   // Optional: prepare the WebSocket API connection in advance.
   // This happens automatically but you can do this early before making any API calls, to prevent delays from a cold start.
-  await wsClient.getWSClient().connectWSAPI();
+  // await wsClient.connectWSAPI();
 
   /**
    * OKX's WebSocket API be used like a REST API, through this SDK's WebsocketAPIClient. The WebsocketAPIClient is a utility class wrapped around WebsocketClient's sendWSAPIRequest() capabilities.

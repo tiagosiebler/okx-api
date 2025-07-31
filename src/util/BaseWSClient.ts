@@ -187,6 +187,8 @@ export abstract class BaseWebsocketClient<
       authPrivateConnectionsOnConnect: true,
       // Individual requests do not require a signature, so this is disabled.
       authPrivateRequests: false,
+      // TODO:
+      useNativeHeartbeats: false,
 
       ...options,
     };
@@ -501,14 +503,16 @@ export abstract class BaseWebsocketClient<
 
     // Native ws ping/pong frames are not in use for okx
     // TODO: make this a top level configuration flag, so there's less base client adjustments per exchange?
-    // if (typeof ws.on === 'function') {
-    //   ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
-    //   ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));
-    // }
+    // if (this.options.useNativeHeartbeats) {
+    //   if (typeof ws.on === 'function') {
+    //     ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
+    //     ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));
+    //   }
 
-    // // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
-    // ws.onping = (event) => this.onWsPing(event, wsKey, ws, 'function');
-    // ws.onpong = (event) => this.onWsPong(event, wsKey, 'function');
+    //   // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
+    //   ws.onping = (event) => this.onWsPing(event, wsKey, ws, 'function');
+    //   ws.onpong = (event) => this.onWsPong(event, wsKey, 'function');
+    // }
 
     (ws as any).wsKey = wsKey;
 
@@ -778,11 +782,6 @@ export abstract class BaseWebsocketClient<
     this.logger.trace(
       `Finished unsubscribing to ${wsTopicRequests.length} "${wsKey}" topics in ${subscribeWsMessages.length} batches.`,
     );
-
-    // const wsMessage = JSON.stringify({
-    //   op: 'unsubscribe',
-    //   args: wsTopicRequests,
-    // });
   }
 
   getCachedMidFlightRequest(
@@ -795,7 +794,7 @@ export abstract class BaseWebsocketClient<
     return this.midflightRequestCache[wsKey][requestKey];
   }
 
-  // Not in use for Bitget. If desired, call from resolveEmittableEvents() for WS API responses.
+  // Not in use for OKX. If desired, call from resolveEmittableEvents() for WS API responses.
   // See binance SDK for reference
   removeCachedMidFlightRequest(wsKey: TWSKey, requestKey: string) {
     if (this.getCachedMidFlightRequest(wsKey, requestKey)) {

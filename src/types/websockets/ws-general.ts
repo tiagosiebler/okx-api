@@ -52,4 +52,9 @@ export interface WebsocketClientOptions extends WSClientConfigurableOptions {
   reconnectTimeout: number;
   authPrivateConnectionsOnConnect: boolean;
   authPrivateRequests: boolean;
+
+  /**
+   * Whether to use native WebSocket ping/pong frames for heartbeats
+   */
+  useNativeHeartbeats: boolean;
 }

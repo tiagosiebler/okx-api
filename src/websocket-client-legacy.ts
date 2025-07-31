@@ -78,6 +78,7 @@ export class WebsocketClientLegacy extends EventEmitter {
       authPrivateConnectionsOnConnect: true,
       // Individual requests do not require a signature, so this is disabled.
       authPrivateRequests: false,
+      useNativeHeartbeats: false,
 
       ...options,
     };
