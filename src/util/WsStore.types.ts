@@ -56,8 +56,7 @@ export interface WsStoredState<TWSTopicSubscribeEvent extends object> {
   isAuthenticated?: boolean;
 
   /**
-   * Whether this connection has completed authentication before for the Websocket API, so it k
-   * nows to automatically reauth if reconnected
+   * Whether this connection has completed authentication before for the Websocket API, so it knows to automatically reauth if reconnected
    */
   didAuthWSAPI?: boolean;
 
