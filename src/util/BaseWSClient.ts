@@ -10,6 +10,7 @@ import {
 import {
   WebsocketClientOptions,
   WSClientConfigurableOptions,
+  WsEventInternalSrc,
 } from '../types/websockets/ws-general';
 import { DefaultLogger } from './logger';
 import { checkWebCryptoAPISupported } from './webCryptoAPI';
@@ -188,7 +189,7 @@ export abstract class BaseWebsocketClient<
       authPrivateConnectionsOnConnect: true,
       // Individual requests do not require a signature, so this is disabled.
       authPrivateRequests: false,
-      // TODO:
+      // Whether to use native heartbeats (depends on the exchange)
       useNativeHeartbeats: false,
 
       ...options,
@@ -509,17 +510,16 @@ export abstract class BaseWebsocketClient<
     ws.onclose = (event) => this.onWsClose(event, wsKey);
 
     // Native ws ping/pong frames are not in use for okx
-    // TODO: make this a top level configuration flag, so there's less base client adjustments per exchange?
-    // if (this.options.useNativeHeartbeats) {
-    //   if (typeof ws.on === 'function') {
-    //     ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
-    //     ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));
-    //   }
+    if (this.options.useNativeHeartbeats) {
+      if (typeof ws.on === 'function') {
+        ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
+        ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));
+      }
 
-    //   // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
-    //   ws.onping = (event) => this.onWsPing(event, wsKey, ws, 'function');
-    //   ws.onpong = (event) => this.onWsPong(event, wsKey, 'function');
-    // }
+      // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
+      ws.onping = (event) => this.onWsPing(event, wsKey, ws, 'function');
+      ws.onpong = (event) => this.onWsPong(event, wsKey, 'function');
+    }
 
     (ws as any).wsKey = wsKey;
 
@@ -970,6 +970,31 @@ export abstract class BaseWebsocketClient<
     }
   }
 
+  private onWsPing(
+    event: any,
+    wsKey: TWSKey,
+    ws: WebSocket,
+    source: WsEventInternalSrc,
+  ) {
+    this.logger.trace('Received ping', {
+      ...WS_LOGGER_CATEGORY,
+      wsKey,
+      event,
+      source,
+    });
+    this.sendPongEvent(wsKey, ws);
+  }
+
+  private onWsPong(event: any, wsKey: TWSKey, source: WsEventInternalSrc) {
+    this.logger.trace('Received pong', {
+      ...WS_LOGGER_CATEGORY,
+      wsKey,
+      event: (event as any)?.data,
+      source,
+    });
+    return;
+  }
+
   /**
    * Raw incoming event handler. Parsing happens in integration layer via resolveEmittableEvents().
    */
@@ -980,22 +1005,11 @@ export abstract class BaseWebsocketClient<
       this.clearPongTimer(wsKey);
 
       if (this.isWsPong(event)) {
-        this.logger.trace('Received pong', {
-          ...WS_LOGGER_CATEGORY,
-          wsKey,
-          event: (event as any)?.data,
-        });
-        return;
+        return this.onWsPong(event, wsKey, 'event');
       }
 
       if (this.isWsPing(event)) {
-        this.logger.trace('Received ping', {
-          ...WS_LOGGER_CATEGORY,
-          wsKey,
-          event,
-        });
-        this.sendPongEvent(wsKey, ws);
-        return;
+        return this.onWsPing(event, wsKey, ws, 'event');
       }
 
       if (isMessageEvent(event)) {

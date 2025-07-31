@@ -753,7 +753,7 @@ export class WebsocketClient extends BaseWebsocketClient<
     rawWsKey: WsKey,
     operation: TWSOperation,
     params: TWSParams & { signRequest?: boolean },
-    requestFlags?: WSAPIRequestFlags, // TODO: add expTime here?
+    requestFlags?: WSAPIRequestFlags,
   ): Promise<TWSAPIResponse> {
     // If demo trading, enforce demo wskey for WS API calls
     const wsKey = this.options.demoTrading ? getDemoWsKey(rawWsKey) : rawWsKey;
@@ -779,6 +779,10 @@ export class WebsocketClient extends BaseWebsocketClient<
       // Ensure "args" is always wrapped as array
       args: Array.isArray(params) ? params : [params],
     };
+
+    if (requestFlags?.expTime) {
+      request.expTime = requestFlags.expTime;
+    }
 
     if (requiresWSAPITag(operation, wsKey)) {
       validateWSAPITag(request, wsKey);

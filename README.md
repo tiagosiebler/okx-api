@@ -4,7 +4,6 @@
 [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1]
 [![npm version](https://img.shields.io/npm/v/okx-api)][1]
 [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1]
-[![public project count](https://dependents.info/tiagosiebler/okx-api/badge?label=users)](https://github.com/tiagosiebler/okx-api/network/dependents)
 [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1]
 [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 

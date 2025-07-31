@@ -17,7 +17,8 @@ export interface WSClientConfigurableOptions {
    */
   demoTrading?: boolean;
 
-  // Disable ping/pong ws heartbeat mechanism (not recommended) // TODO:
+  // Disable ping/pong ws heartbeat mechanism (not recommended).
+  // Not supported for OKX
   disableHeartbeat?: boolean;
 
   /** How often to check if the connection is alive */
@@ -58,3 +59,5 @@ export interface WebsocketClientOptions extends WSClientConfigurableOptions {
    */
   useNativeHeartbeats: boolean;
 }
+
+export type WsEventInternalSrc = 'event' | 'function';

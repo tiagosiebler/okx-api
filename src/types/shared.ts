@@ -19,8 +19,3 @@ export type APIMarket =
   | 'EEA'
   // also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
   | 'US';
-
-// Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
-// TODO: automatic routing to business suffix? this shouldn't be here as a "market"
-// | 'business'
-// | 'businessDemo'

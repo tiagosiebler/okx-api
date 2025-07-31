@@ -20,6 +20,12 @@ import {
 export interface WSAPIRequestFlags {
   /** If true, will skip auth requirement for WS API connection */
   authIsOptional?: boolean | undefined;
+  /**
+   * Request effective deadline. Unix timestamp format in milliseconds, e.g. 1597026383085
+   *
+   * Only applies for order placement and order amend (batch commands included)
+   */
+  expTime?: numberInString;
 }
 
 export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
@@ -134,7 +140,7 @@ export const WS_API_TAG_OPERATIONS: WSAPIOperation[] = [
 export interface WSAPIRequestOKX<TRequestParams> {
   id: numberInString;
   op: WSAPIOperation;
-  expTime?: numberInString; // request effective deadline TODO: mechanism to set this, flags?
+  expTime?: numberInString;
   args: TRequestParams[];
 }
 
