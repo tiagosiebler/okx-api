@@ -1,6 +1,12 @@
 # Node.js & Typescript OKX (OKEX) API & WebSocket SDK
 
-[![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml) [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1] [![npm version](https://img.shields.io/npm/v/okx-api)][1] [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1] [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1] [![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
+[![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml)
+[![npm downloads](https://img.shields.io/npm/dt/okx-api)][1]
+[![npm version](https://img.shields.io/npm/v/okx-api)][1]
+[![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1]
+[![public project count](https://dependents.info/tiagosiebler/okx-api/badge?label=users)](https://github.com/tiagosiebler/okx-api/network/dependents)
+[![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1]
+[![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
 
 <p align="center">
   <a href="https://www.npmjs.com/package/okx-api">
@@ -546,6 +552,12 @@ old ones:
 ### Contributions & Pull Requests
 
 Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
+
+## Used By
+
+The following represents some of the known public projects that use this SDK on GitHub:
+
+[![Repository Users Preview Image](https://dependents.info/tiagosiebler/okx-api/image)](https://github.com/tiagosiebler/okx-api/network/dependents)
 
 <!-- template_star_history -->
 
