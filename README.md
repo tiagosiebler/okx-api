@@ -197,7 +197,13 @@ This connector includes a high-performance Node.js, TypeScript & JavaScript WebS
 
 OKX supports some order management capabilities via a persisted WebSocket connection. This SDK supports this with two convenient approaches.
 
-The recommended route is to use the dedicated WebsocketAPIClient class, included with this SDK. It provides individual methods for every available WebSocket API operation, fully typed requests and responses, with an asynchronous promisified wrapper around WS API commands. It looks & feels like a REST API client, but uses WebSockets, via the WebsocketClient's sendWSAPIRequest method (which you can use directly if you prefer).
+The recommended route is to use the dedicated WebsocketAPIClient class, included with this SDK:
+
+- Dedicated functions for every available WebSocket API operation
+- Fully typed requests and responses
+- Asynchronous promisified wrapper around WS API commands.
+
+It looks & feels like a REST API client, but uses WebSockets, via the WebsocketClient's sendWSAPIRequest method (which you can use directly if you prefer).
 
 A simple example is below but for a more thorough example, check the example here: [./examples/ws-api-client.ts](./examples/ws-api-client.ts).
 
@@ -394,7 +400,6 @@ const wsClient = new WebsocketClient({
 
 // Raw data will arrive on the 'update' event
 wsClient.on('update', (data) => {
-  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
   console.log('ws update (raw data received)', JSON.stringify(data));
 });
 
