@@ -476,7 +476,11 @@ export class WebsocketClient extends BaseWebsocketClient<
 
       return authParams;
     } catch (e) {
-      this.logger.error(e, { ...WS_LOGGER_CATEGORY, wsKey });
+      this.logger.error({
+        ...WS_LOGGER_CATEGORY,
+        wsKey,
+        error: e,
+      });
       throw e;
     }
   }
