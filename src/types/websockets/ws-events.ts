@@ -1,4 +1,4 @@
-import { WsChannel } from './request';
+import { WsChannel } from './ws-request.js';
 
 export interface MessageEventLike {
   target: WebSocket;

@@ -1,4 +1,4 @@
-import { numberInString } from '../shared';
+import { numberInString } from '../shared.js';
 
 export interface PaginatedSymbolRequest {
   ccy?: string;

@@ -1,5 +1,10 @@
-import { WSAPIResponse, WsDataEvent, WsEvent, WsLoginEvent } from '../types';
-import { APIResponse } from '../types/rest';
+import { APIResponse } from '../types/rest/shared.js';
+import { WSAPIResponse } from '../types/websockets/ws-api.js';
+import {
+  WsDataEvent,
+  WsEvent,
+  WsLoginEvent,
+} from '../types/websockets/ws-events.js';
 
 export function isRawAPIResponse(
   response: unknown,

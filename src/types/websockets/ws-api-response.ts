@@ -1,4 +1,4 @@
-import { numberInString } from '../rest';
+import { numberInString } from '../rest/shared.js';
 
 export interface WSAPICancelOrderResultV5 {
   clOrdId: string;

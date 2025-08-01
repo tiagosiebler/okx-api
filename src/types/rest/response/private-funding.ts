@@ -1,4 +1,4 @@
-import { ASSET_BILL_TYPE } from '../../../constants';
+import { ASSET_BILL_TYPE } from '../../../constants/funding.js';
 
 export interface FundingCurrency {
   ccy: string; // Currency code (e.g., "BTC")

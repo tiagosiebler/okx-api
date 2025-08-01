@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import WebSocket from 'isomorphic-ws';
 
-import {
-  APICredentials,
-  MessageEventLike,
-  WsAuthRequestArg,
-  WsChannelSubUnSubRequestArg,
-  WSClientConfigurableOptions,
-  WsDataEvent,
-} from './types';
+import { APICredentials } from './types/shared.js';
 import {
   WsAPIOperationResponseMap,
   WSAPIRequestFlags,
@@ -18,47 +10,53 @@ import {
   WsAuthRequest,
   WSOperation,
   WsRequestOperationOKX,
-} from './types/websockets/ws-api';
+} from './types/websockets/ws-api.js';
+import { MessageEventLike, WsDataEvent } from './types/websockets/ws-events.js';
+import { WSClientConfigurableOptions } from './types/websockets/ws-general.js';
 import {
-  DefaultLogger,
-  getWsKeyForTopicChannel,
-  isConnCountEvent,
-  isWSAPIResponse,
-  isWsDataEvent,
-  isWsErrorEvent,
-  isWsLoginEvent,
-  isWsPong,
-  isWsSubscribeEvent,
-  isWsUnsubscribeEvent,
-  neverGuard,
-  PRIVATE_WS_KEYS,
-  PUBLIC_WS_KEYS,
-  WS_KEY_MAP,
-} from './util';
+  WsAuthRequestArg,
+  WsChannelSubUnSubRequestArg,
+} from './types/websockets/ws-request.js';
 import {
   BaseWebsocketClient,
   EmittableEvent,
   MidflightWsRequestEvent,
   WSClientEventMap,
-} from './util/BaseWSClient';
+} from './util/BaseWSClient.js';
+import { DefaultLogger } from './util/logger.js';
+import {
+  isConnCountEvent,
+  isWSAPIResponse,
+  isWsDataEvent,
+  isWsErrorEvent,
+  isWsLoginEvent,
+  isWsSubscribeEvent,
+  isWsUnsubscribeEvent,
+  neverGuard,
+} from './util/typeGuards.js';
 import {
   SignAlgorithm,
   SignEncodeMethod,
   signMessage,
-} from './util/webCryptoAPI';
+} from './util/webCryptoAPI.js';
 import {
   getDemoWsKey,
   getPromiseRefForWSAPIRequest,
   getWsKeyForMarket,
+  getWsKeyForTopicChannel,
   getWsUrlForWsKey,
+  isWsPong,
+  PRIVATE_WS_KEYS,
+  PUBLIC_WS_KEYS,
   requiresWSAPITag,
   validateWSAPITag,
   WS_EVENT_CODE_ENUM,
+  WS_KEY_MAP,
   WS_LOGGER_CATEGORY,
   WsKey,
   WsTopicRequest,
-} from './util/websocket-util';
-import { WSConnectedResult } from './util/WsStore.types';
+} from './util/websocket-util.js';
+import { WSConnectedResult } from './util/WsStore.types.js';
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
 export declare interface WebsocketClient {
@@ -96,7 +94,7 @@ export class WebsocketClient extends BaseWebsocketClient<
 
   public connectPublic(
     businessEndpoint?: boolean,
-  ): Promise<WebSocket | undefined> {
+  ): Promise<WSConnectedResult | undefined> {
     const isPrivate = false;
     const wsKey = getWsKeyForMarket(
       this.options.market,
@@ -108,7 +106,7 @@ export class WebsocketClient extends BaseWebsocketClient<
 
   public connectPrivate(
     businessEndpoint?: boolean,
-  ): Promise<WebSocket | undefined> {
+  ): Promise<WSConnectedResult | undefined> {
     const isPrivate = true;
     const wsKey = getWsKeyForMarket(
       this.options.market,

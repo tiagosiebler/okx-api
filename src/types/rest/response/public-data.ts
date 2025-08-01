@@ -1,4 +1,4 @@
-import { InstrumentType, numberInString } from '../shared';
+import { InstrumentType, numberInString } from '../shared.js';
 
 export interface Ticker {
   instType: InstrumentType;

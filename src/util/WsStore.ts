@@ -1,12 +1,12 @@
 import WebSocket from 'isomorphic-ws';
 
-import { DefaultLogger } from './logger';
+import { DefaultLogger } from './logger.js';
 import {
   DeferredPromise,
   WSConnectedResult,
   WsConnectionStateEnum,
   WsStoredState,
-} from './WsStore.types';
+} from './WsStore.types.js';
 
 /**
  * TODO: this seems more thorough than the one for Bitget. Make tests and evaluate which one to keep.

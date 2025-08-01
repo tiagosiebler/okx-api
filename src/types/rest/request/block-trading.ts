@@ -1,4 +1,4 @@
-import { OrderSide, RFQLeg } from '../shared';
+import { OrderSide, RFQLeg } from '../shared.js';
 
 export interface CreateBlockRFQRequest {
   counterparties: string[];

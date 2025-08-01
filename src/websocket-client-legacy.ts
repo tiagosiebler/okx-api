@@ -3,44 +3,48 @@
 import { EventEmitter } from 'events';
 import WebSocket from 'isomorphic-ws';
 
+import { APICredentials } from './types/shared.js';
 import {
-  APICredentials,
-  WebsocketClientOptions,
   WsAuthRequest,
-  WsAuthRequestArg,
-  WsChannelSubUnSubRequestArg,
-  WSClientConfigurableOptions,
-  WsDataEvent,
   WsSubRequest,
   WsUnsubRequest,
-} from './types';
+} from './types/websockets/ws-api.js';
+import { WsDataEvent } from './types/websockets/ws-events.js';
 import {
-  DefaultLogger,
-  getMaxTopicsPerSubscribeEventForMarket,
-  getWsKeyForTopicChannel,
+  WebsocketClientOptions,
+  WSClientConfigurableOptions,
+} from './types/websockets/ws-general.js';
+import {
+  WsAuthRequestArg,
+  WsChannelSubUnSubRequestArg,
+} from './types/websockets/ws-request.js';
+import { WSClientEventMap } from './util/BaseWSClient.js';
+import { DefaultLogger } from './util/logger.js';
+import {
   isConnCountEvent,
   isWsDataEvent,
   isWsErrorEvent,
   isWsLoginEvent,
-  isWsPong,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
+} from './util/typeGuards.js';
+import { signMessage } from './util/webCryptoAPI.js';
+import {
+  getMaxTopicsPerSubscribeEventForMarket,
+  getWsKeyForMarket,
+  getWsKeyForTopicChannel,
+  getWsUrlForWsKey,
+  isWsPong,
   PRIVATE_WS_KEYS,
   PUBLIC_WS_KEYS,
-  WS_KEY_MAP,
-} from './util';
-import { WSClientEventMap } from './util/BaseWSClient';
-import { signMessage } from './util/webCryptoAPI';
-import {
-  getWsKeyForMarket,
-  getWsUrlForWsKey,
   safeTerminateWs,
   WS_EVENT_CODE_ENUM,
+  WS_KEY_MAP,
   WS_LOGGER_CATEGORY,
   WsKey,
-} from './util/websocket-util';
-import WsStore from './util/WsStore';
-import { WsConnectionStateEnum } from './util/WsStore.types';
+} from './util/websocket-util.js';
+import WsStore from './util/WsStore.js';
+import { WsConnectionStateEnum } from './util/WsStore.types.js';
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
 export declare interface WebsocketClientLegacy {
@@ -646,11 +650,11 @@ export class WebsocketClientLegacy extends EventEmitter {
     const { protocols = [], ...wsOptions } = this.options.wsOptions || {};
     const ws = new WebSocket(url, protocols, wsOptions);
 
-    ws.onopen = (event) => this.onWsOpen(event, wsKey, url, ws);
-    ws.onmessage = (event) => this.onWsMessage(event, wsKey, ws);
-    ws.onerror = (event) =>
+    ws.onopen = (event: any) => this.onWsOpen(event, wsKey, url, ws);
+    ws.onmessage = (event: any) => this.onWsMessage(event, wsKey, ws);
+    ws.onerror = (event: any) =>
       this.parseWsError('Websocket onWsError', event, wsKey);
-    ws.onclose = (event) => this.onWsClose(event, wsKey);
+    ws.onclose = (event: any) => this.onWsClose(event, wsKey);
 
     return ws;
   }
@@ -704,7 +708,7 @@ export class WebsocketClientLegacy extends EventEmitter {
     this.requestSubscribeTopics(wsKey, topics);
   }
 
-  private onWsMessage(event: any, wsKey: WsKey, ws: WebSocket) {
+  private onWsMessage(event: any, wsKey: WsKey, _ws: WebSocket) {
     const logContext = { ...WS_LOGGER_CATEGORY, wsKey, method: 'onWsMessage' };
 
     try {
@@ -779,7 +783,7 @@ export class WebsocketClientLegacy extends EventEmitter {
     }
   }
 
-  private onWsClose(event, wsKey: WsKey) {
+  private onWsClose(event: any, wsKey: WsKey) {
     this.logger.info('Websocket connection closed', {
       ...WS_LOGGER_CATEGORY,
       wsKey,

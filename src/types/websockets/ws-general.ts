@@ -1,5 +1,5 @@
-import { RestClientOptions } from '../rest';
-import { APICredentials, APIMarket } from '../shared';
+import { RestClientOptions } from '../rest/client.js';
+import { APICredentials, APIMarket } from '../shared.js';
 
 export interface WSClientConfigurableOptions {
   accounts?: APICredentials[];

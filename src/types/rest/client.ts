@@ -1,4 +1,4 @@
-import { APIMarket } from '../shared';
+import { APIMarket } from '../shared.js';
 
 export interface RestClientOptions {
   apiKey?: string;

@@ -4,7 +4,7 @@ import {
   OrderType,
   PositionSide,
   TradeMode,
-} from '../rest';
+} from '../rest/shared.js';
 
 export interface WSAPIPlaceOrderRequestV5 {
   instId: string;

@@ -1,15 +1,16 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import { Agent } from 'https';
 
-import { APIResponse, RestClientOptions } from '../types';
+import { RestClientOptions } from '../types/rest/client.js';
+import { APIResponse } from '../types/rest/shared.js';
 import {
   getRestBaseUrl,
   programId,
   programKey,
   serializeParams,
-} from './requestUtils';
-import { isRawAPIResponse } from './typeGuards';
-import { checkWebCryptoAPISupported, signMessage } from './webCryptoAPI';
+} from './requestUtils.js';
+import { isRawAPIResponse } from './typeGuards.js';
+import { checkWebCryptoAPISupported, signMessage } from './webCryptoAPI.js';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -180,9 +181,11 @@ export default abstract class BaseRestClient {
     };
 
     // Delete any params without value
-    for (const key in params) {
-      if (typeof params[key] === 'undefined') {
-        delete params[key];
+    if (params) {
+      for (const key in params) {
+        if (typeof (params as any)[key] === 'undefined') {
+          delete (params as any)[key];
+        }
       }
     }
 
