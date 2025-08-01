@@ -73,19 +73,6 @@ async function importKey(
   switch (type) {
     case 'Ed25519':
     case 'RSASSA-PKCS1-v1_5': {
-      // const prefixRSA = /-----BEGIN RSA PRIVATE KEY-----/;
-      // const prefixEd25519 = /-----BEGIN PRIVATE KEY-----/;
-
-      // const suffixRSA = /-----END RSA PRIVATE KEY-----/;
-      // const suffixEd25519 = /-----END PRIVATE KEY-----/;
-
-      // const base64Key = pem
-      //   .replace(prefixEd25519, '')
-      //   .replace(prefixRSA, '')
-      //   .replace(suffixEd25519, '')
-      //   .replace(suffixRSA, '')
-      //   .replace(/\s+/g, ''); // Remove spaces and newlines
-
       const base64Key = pem.replace(
         /(?:-----BEGIN RSA PRIVATE KEY-----|-----BEGIN PRIVATE KEY-----|-----END RSA PRIVATE KEY-----|-----END PRIVATE KEY-----|\s+)/g,
         '',
