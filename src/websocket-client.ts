@@ -77,8 +77,6 @@ export class WebsocketClient extends BaseWebsocketClient<
   WsKey,
   WsRequestOperationOKX<object>
 > {
-  // private wsStore: WsStore<WsKey, WsChannelSubUnSubRequestArg>;
-
   constructor(options?: WSClientConfigurableOptions, logger?: DefaultLogger) {
     super(options, logger);
 
