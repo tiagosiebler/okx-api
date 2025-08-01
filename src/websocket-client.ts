@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { EventEmitter } from 'events';
 import WebSocket from 'isomorphic-ws';
 
 import {
@@ -328,7 +326,7 @@ export class WebsocketClient extends BaseWebsocketClient<
     return getWsUrlForWsKey(wsKey, this.options, this.logger);
   }
 
-  protected getMaxTopicsPerSubscribeEvent(wsKey: WsKey): number | null {
+  protected getMaxTopicsPerSubscribeEvent(): number | null {
     return null;
   }
 

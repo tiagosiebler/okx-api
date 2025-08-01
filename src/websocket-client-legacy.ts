@@ -55,6 +55,9 @@ export declare interface WebsocketClientLegacy {
   ): boolean;
 }
 
+/**
+ * @deprecated This is the old WebsocketClient that was part of the SDK prior to the V3 release. This legacy WebsocketClient is temporarily included but will be removed with the next major release.
+ */
 export class WebsocketClientLegacy extends EventEmitter {
   private logger: DefaultLogger;
 
