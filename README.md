@@ -41,6 +41,31 @@ Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets
     - See [examples/ws-api-client.ts](./examples/ws-api-client.ts) for a demonstration.
 - Browser support (via webpack bundle - see "Browser Usage" below).
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Issues & Discussion](#issues--discussion)
+- [Related Projects](#related-projects)
+- [Documentation](#documentation)
+- [Contributions & Thanks](#contributions--thanks)
+- [Structure](#structure)
+- [Usage](#usage)
+  - [REST Client](#rest-client)
+    - [Requests & Responses](#requests--responses)
+    - [Example](#example)
+  - [WebSockets](#websockets)
+    - [Sending Orders via WebSockets](#sending-orders-via-websockets)
+    - [Receiving Realtime Data](#receiving-realtime-data)
+    - [Public Events](#public-events)
+    - [Private Events](#private-events)
+- [Browser/Frontend Usage](#browserfrontend-usage)
+  - [Import](#import)
+  - [Webpack](#webpack)
+- [Use with LLMs & AI](#use-with-llms--ai)
+- [Contributions & Pull Requests](#contributions--pull-requests)
+- [Used By](#used-by)
+- [Star History](#star-history)
+
 ## Installation
 
 ```bash
@@ -55,7 +80,7 @@ npm install okx-api
 
 <!-- template_related_projects -->
 
-## Related projects
+## Related Projects
 
 Check out my related JavaScript/TypeScript/Node.js projects:
 
@@ -104,7 +129,7 @@ This project uses typescript. Resources are stored in 3 key structures:
 
 ---
 
-# Usage
+## Usage
 
 Create API credentials at okx
 
@@ -548,7 +573,7 @@ old ones:
 -->
 <!-- template_contributions_end -->
 
-### Contributions & Pull Requests
+## Contributions & Pull Requests
 
 Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
 
