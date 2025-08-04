@@ -62,7 +62,7 @@ Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets
   - [Import](#import)
   - [Webpack](#webpack)
 - [Use with LLMs & AI](#use-with-llms--ai)
-- [Development & Pull Requests](#development--pull-requests)
+- [Contributions & Pull Requests](#contributions--pull-requests)
 - [Used By](#used-by)
 - [Star History](#star-history)
 
@@ -573,7 +573,7 @@ old ones:
 -->
 <!-- template_contributions_end -->
 
-## Development & Pull Requests
+## Contributions & Pull Requests
 
 Contributions are encouraged, I will review any incoming pull requests. See the issues tab for todo items.
 
