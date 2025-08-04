@@ -408,7 +408,7 @@ This client provides WebSocket API endpoints which allow for faster interactions
 | [amendOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L151) | :closed_lock_with_key:  | WS | `amend-order` |
 | [amendMultipleOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L166) | :closed_lock_with_key:  | WS | `batch-amend-orders` |
 | [massCancelOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L181) | :closed_lock_with_key:  | WS | `mass-cancel` |
-| [submitSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L196) |  | WS | `sprd-order` |
-| [amendSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L211) |  | WS | `sprd-amend-order` |
-| [cancelSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L228) |  | WS | `sprd-cancel-order` |
-| [massCancelSpreadOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L245) |  | WS | `sprd-mass-cancel` |
+| [submitSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L196) | :closed_lock_with_key:  | WS | `sprd-order` |
+| [amendSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L211) | :closed_lock_with_key:  | WS | `sprd-amend-order` |
+| [cancelSpreadOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L228) | :closed_lock_with_key:  | WS | `sprd-cancel-order` |
+| [massCancelSpreadOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/websocket-api-client.ts#L245) | :closed_lock_with_key:  | WS | `sprd-mass-cancel` |
