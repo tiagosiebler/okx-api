@@ -9,7 +9,12 @@ import {
   serializeParams,
 } from './requestUtils';
 import { isRawAPIResponse } from './typeGuards';
-import { checkWebCryptoAPISupported, signMessage } from './webCryptoAPI';
+import {
+  checkWebCryptoAPISupported,
+  SignAlgorithm,
+  SignEncodeMethod,
+  signMessage,
+} from './webCryptoAPI';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -252,6 +257,18 @@ export default abstract class BaseRestClient {
       .catch((e) => this.parseException(e));
   }
 
+  private async signMessage(
+    paramsStr: string,
+    secret: string,
+    method: SignEncodeMethod,
+    algorithm: SignAlgorithm,
+  ): Promise<string> {
+    if (typeof this.options.customSignMessageFn === 'function') {
+      return this.options.customSignMessageFn(paramsStr, secret);
+    }
+    return await signMessage(paramsStr, secret, method, algorithm);
+  }
+
   /**
    * Sign request
    */
@@ -291,7 +308,12 @@ export default abstract class BaseRestClient {
 
     return {
       ...res,
-      sign: await signMessage(message, this.apiSecret, 'base64', 'SHA-256'),
+      sign: await this.signMessage(
+        message,
+        this.apiSecret,
+        'base64',
+        'SHA-256',
+      ),
     };
   }
 
