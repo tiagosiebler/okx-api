@@ -9,6 +9,7 @@ import {
   programKey,
   serializeParams,
 } from './requestUtils.js';
+import { isRawAPIResponse } from './typeGuards.js';
 import {
   checkWebCryptoAPISupported,
   SignAlgorithm,
