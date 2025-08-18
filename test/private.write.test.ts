@@ -1,10 +1,9 @@
-import { RestClient } from '../src';
-import { RFQLeg } from '../src/types/rest';
+import { RestClient, RFQLeg } from '../src/index.js';
 import {
   errorResponseObject,
   permissionErrorResponse,
   successResponseList,
-} from './response.util';
+} from './response.util.js';
 
 // These tests primarily check auth is working by expecting permission, balance or order not found style errors
 describe('Private REST API Endpoints (POST)', () => {

@@ -1,4 +1,4 @@
-import { isWsSubscribeEvent } from '../src';
+import { isWsSubscribeEvent } from '../src/index.js';
 
 describe('type guards', () => {
   it('isWsSubscribeEvent()', () => {

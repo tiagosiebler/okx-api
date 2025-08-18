@@ -10,7 +10,7 @@ import {
   PositionSide,
   PriceTriggerType,
   TradeMode,
-} from '../shared';
+} from '../shared.js';
 
 export interface AlgoRecentHistoryRequest {
   ordType: AlgoOrderType;

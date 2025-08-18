@@ -1,4 +1,4 @@
-import { MISSING_CREDENTIALS_ERROR } from '../src/util/BaseRestClient';
+import { MISSING_CREDENTIALS_ERROR } from '../src/util/BaseRestClient.js';
 
 export function successResponseList() {
   return expect.any(Array);

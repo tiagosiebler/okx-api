@@ -2,27 +2,27 @@
 import EventEmitter from 'events';
 import WebSocket from 'isomorphic-ws';
 
-import { WSOperation } from '../types/websockets/ws-api';
+import { WSOperation } from '../types/websockets/ws-api.js';
 import {
   isMessageEvent,
   MessageEventLike,
-} from '../types/websockets/ws-events';
+} from '../types/websockets/ws-events.js';
 import {
   WebsocketClientOptions,
   WSClientConfigurableOptions,
   WsEventInternalSrc,
-} from '../types/websockets/ws-general';
-import { DefaultLogger } from './logger';
-import { checkWebCryptoAPISupported } from './webCryptoAPI';
+} from '../types/websockets/ws-general.js';
+import { DefaultLogger } from './logger.js';
+import { checkWebCryptoAPISupported } from './webCryptoAPI.js';
 import {
   getNormalisedTopicRequests,
   safeTerminateWs,
   WS_LOGGER_CATEGORY,
   WsTopicRequest,
   WsTopicRequestOrStringTopic,
-} from './websocket-util';
-import WsStore from './WsStore';
-import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types';
+} from './websocket-util.js';
+import WsStore from './WsStore.js';
+import { WSConnectedResult, WsConnectionStateEnum } from './WsStore.types.js';
 
 export interface WSClientEventMap<
   WsKey extends string,
@@ -503,22 +503,18 @@ export abstract class BaseWebsocketClient<
     const { protocols = [], ...wsOptions } = this.options.wsOptions || {};
     const ws = new WebSocket(url, protocols, wsOptions);
 
-    ws.onopen = (event) => this.onWsOpen(event, wsKey, url, ws);
-    ws.onmessage = (event) => this.onWsMessage(event, wsKey, ws);
-    ws.onerror = (event) =>
+    ws.onopen = (event: any) => this.onWsOpen(event, wsKey, url, ws);
+    ws.onmessage = (event: unknown) => this.onWsMessage(event, wsKey, ws);
+    ws.onerror = (event: any) =>
       this.parseWsError('Websocket onWsError', event, wsKey);
-    ws.onclose = (event) => this.onWsClose(event, wsKey);
+    ws.onclose = (event: unknown) => this.onWsClose(event, wsKey);
 
     // Native ws ping/pong frames are not in use for okx
     if (this.options.useNativeHeartbeats) {
       if (typeof ws.on === 'function') {
-        ws.on('ping', (event) => this.onWsPing(event, wsKey, ws, 'event'));
-        ws.on('pong', (event) => this.onWsPong(event, wsKey, 'event'));
+        ws.on('ping', (event: any) => this.onWsPing(event, wsKey, ws, 'event'));
+        ws.on('pong', (event: any) => this.onWsPong(event, wsKey, 'event'));
       }
-
-      // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
-      ws.onping = (event) => this.onWsPing(event, wsKey, ws, 'function');
-      ws.onpong = (event) => this.onWsPong(event, wsKey, 'function');
     }
 
     (ws as any).wsKey = wsKey;

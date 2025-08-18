@@ -1,6 +1,7 @@
-import { WS_KEY_MAP, WsKey } from '../../util';
-import { numberInString, OrderIdRequest, OrderResult } from '../rest';
-import { WsAuthRequestArg, WsChannelSubUnSubRequestArg } from './request';
+import { WS_KEY_MAP, WsKey } from '../../util/websocket-util.js';
+import { OrderIdRequest } from '../rest/request/trade.js';
+import { OrderResult } from '../rest/response/private-trade.js';
+import { numberInString } from '../rest/shared.js';
 import {
   WSAPIAmendOrderRequestV5,
   WSAPIAmendSpreadOrderRequestV5,
@@ -9,13 +10,14 @@ import {
   WSAPIPlaceOrderRequestV5,
   WSAPIPlaceSpreadOrderRequestV5,
   WSAPISpreadMassCancelOrdersRequestV5,
-} from './ws-api-request';
+} from './ws-api-request.js';
 import {
   WSAPICancelOrderResultV5,
   WSAPISpreadAmendOrderResultV5,
   WSAPISpreadCancelOrderResultV5,
   WSAPISpreadPlaceOrderResultV5,
-} from './ws-api-response';
+} from './ws-api-response.js';
+import { WsAuthRequestArg, WsChannelSubUnSubRequestArg } from './ws-request.js';
 
 export interface WSAPIRequestFlags {
   /** If true, will skip auth requirement for WS API connection */

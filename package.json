@@ -1,21 +1,14 @@
 {
   "name": "okx-api",
-  "version": "3.0.0",
+  "version": "3.0.0-beta.1",
   "description": "Complete Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "lib/*",
-    "index.js",
-    "llms.txt"
-  ],
   "scripts": {
     "test": "jest",
     "test:public": "jest --testPathIgnorePatterns='.*private.*'",
     "test:private": "jest --testPathPattern='.*private.*'",
     "test:watch": "jest --watch",
     "clean": "rm -rf lib dist",
-    "build": "tsc",
+    "build": "npm run clean && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && bash ./postBuild.sh",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run clean && tsc --watch",
     "pack": "webpack --config webpack/webpack.config.js",
@@ -23,16 +16,32 @@
     "prepublish": "npm run build:clean",
     "betapublish": "npm publish --tag beta"
   },
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/mjs/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/*",
+    "llms.txt"
+  ],
+  "type": "module",
   "author": "Tiago Siebler (https://github.com/tiagosiebler)",
   "contributors": [],
   "dependencies": {
     "axios": "^1.10.0",
     "isomorphic-ws": "^5.0.0",
-    "ws": "^8.9.0"
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^22.10.2",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^8.24.0",
@@ -59,6 +68,9 @@
     "okex api",
     "api",
     "websocket",
+    "okx websocket api",
+    "okx websocket api javascript",
+    "okx ws api",
     "rest",
     "rest api",
     "usdt",

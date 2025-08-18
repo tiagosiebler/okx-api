@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { neverGuard } from './typeGuards';
+import { neverGuard } from './typeGuards.js';
 
 function bufferToB64(buffer: ArrayBuffer): string {
   let binary = '';

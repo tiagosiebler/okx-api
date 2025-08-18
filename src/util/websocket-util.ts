@@ -1,12 +1,14 @@
-import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
+import { APIMarket } from '../types/shared.js';
 import {
   WS_API_TAG_OPERATIONS,
   WSAPIOperation,
   WSAPIRequestOKX,
-} from '../types/websockets/ws-api';
-import { DefaultLogger } from './logger';
-import { programId } from './requestUtils';
-import { neverGuard } from './typeGuards';
+} from '../types/websockets/ws-api.js';
+import { WebsocketClientOptions } from '../types/websockets/ws-general.js';
+import { WsChannel } from '../types/websockets/ws-request.js';
+import { DefaultLogger } from './logger.js';
+import { programId } from './requestUtils.js';
+import { neverGuard } from './typeGuards.js';
 
 export const WS_LOGGER_CATEGORY = { category: 'okx-ws' };
 

@@ -3,8 +3,8 @@ import {
   isDeepObjectMatch,
   WsChannelSubUnSubRequestArg,
   WsKey,
-} from '../src';
-import WsStore from '../src/util/WsStore';
+} from '../src/index.js';
+import WsStore from '../src/util/WsStore.js';
 
 const COMPLEX_TOPIC_GREEKS_1: WsChannelSubUnSubRequestArg = {
   channel: 'account-greeks',
