@@ -8,10 +8,10 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // const { WebsocketClient, DefaultLogger } = require('okx-api');
 
 // Optional: Inject a custom logger.
-// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
 const logger = {
   ...DefaultLogger,
-  // silly: (...params) => console.log('silly', ...params),
+  // trace: (...params) => console.log('trace', ...params),
 };
 
 // For private events, all 3 of the following are required (per account):
@@ -38,10 +38,15 @@ if (!API_PASSPHRASE) {
 
 const wsClient = new WebsocketClient(
   {
-    // The market defaults to "prod" for the live environment, but you can also ask to use the aws or demo environments:
-    // market: 'prod',
-    // market: 'aws',
-    // market: 'demo',
+    // For Global users (www.okx.com), you don't need to set the market.
+    // It will use global by default.
+    // Not needed: market: 'GLOBAL',
+
+    // For EEA users (my.okx.com), set market to "EEA":
+    // market: 'EEA',
+
+    // For US users (app.okx.com), set market to "US":
+    // market: 'US',
 
     accounts: [
       // For private topics, include one or more accounts in an array. Otherwise only public topics will work
@@ -87,7 +92,7 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-wsClient.on('error', (data) => {
+wsClient.on('exception', (data) => {
   console.error('ws exception: ', data);
 });
 

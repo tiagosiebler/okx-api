@@ -1,23 +1,20 @@
-import { RestClient } from '../src';
+import { RestClient } from '../src/index.js';
 import {
   algoIdParamError,
   errorResponseObject,
   successResponseList,
-} from './response.util';
+} from './response.util.js';
 
 describe('Private REST API Trade Endpoints (GET only)', () => {
   const API_KEY = process.env.API_KEY_COM;
   const API_SECRET = process.env.API_SECRET_COM;
   const API_PASSPHRASE = process.env.API_PASSPHRASE_COM;
 
-  const api = new RestClient(
-    {
-      apiKey: API_KEY!,
-      apiSecret: API_SECRET!,
-      apiPass: API_PASSPHRASE!,
-    },
-    'prod',
-  );
+  const api = new RestClient({
+    apiKey: API_KEY!,
+    apiSecret: API_SECRET!,
+    apiPass: API_PASSPHRASE!,
+  });
 
   const instrumentId = 'BTC-USDT';
 

@@ -3,8 +3,8 @@ import {
   isDeepObjectMatch,
   WsChannelSubUnSubRequestArg,
   WsKey,
-  WsStore,
-} from '../src';
+} from '../src/index.js';
+import WsStore from '../src/util/WsStore.js';
 
 const COMPLEX_TOPIC_GREEKS_1: WsChannelSubUnSubRequestArg = {
   channel: 'account-greeks',
@@ -121,7 +121,7 @@ describe('isDeepObjectMatch()', () => {
 });
 
 describe('WsStore', () => {
-  let wsStore: WsStore<WsChannelSubUnSubRequestArg> = new WsStore(
+  let wsStore: WsStore<WsKey, WsChannelSubUnSubRequestArg> = new WsStore(
     DefaultLogger,
   );
 
@@ -134,16 +134,17 @@ describe('WsStore', () => {
   it('should not have topics by default', () => {
     expect(wsStore.getKeys().length).toBe(0);
     expect(wsStore.isWsOpen(wsKey)).toBeFalsy();
-    const sortedTopics = [...wsStore.getTopics(wsKey).values()].sort();
+
+    const sortedTopics = wsStore.getTopicsAsArray(wsKey).sort();
     expect(sortedTopics).toStrictEqual([]);
   });
 
   it('should track added topics', () => {
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_ACCOUNT);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_ACCOUNT);
 
-    const sortedTopics = [...wsStore.getTopics(wsKey).values()].sort();
+    const sortedTopics = wsStore.getTopicsAsArray(wsKey).sort();
     expect(sortedTopics).toEqual(
       [
         COMPLEX_TOPIC_GREEKS_1,
@@ -155,19 +156,19 @@ describe('WsStore', () => {
 
   it('should not add duplicate topics', () => {
     // duplicate
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
 
     // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
 
-    const sortedTopics = [...wsStore.getTopics(wsKey)].sort();
+    const sortedTopics = wsStore.getTopicsAsArray(wsKey).sort();
     expect(sortedTopics).toEqual(
       [
         COMPLEX_TOPIC_GREEKS_1,
@@ -180,23 +181,23 @@ describe('WsStore', () => {
 
   it('should remove topics correctly', () => {
     // duplicate
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
 
     // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
 
     // remove two complex topics from store
-    wsStore.deleteComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
-    wsStore.deleteComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
+    wsStore.deleteTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.deleteTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
 
-    const sortedTopics = [...wsStore.getTopics(wsKey)].sort();
+    const sortedTopics = wsStore.getTopicsAsArray(wsKey).sort();
     expect(sortedTopics).toEqual(
       [
         // COMPLEX_TOPIC_GREEKS_1,// removed
@@ -209,23 +210,23 @@ describe('WsStore', () => {
 
   it('should remove topics with differently ordered keys', () => {
     // duplicate
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_1);
 
     // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_GREEKS_3);
 
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
-    wsStore.addComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_1);
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2); // same as 1, just differently ordered
+    wsStore.addTopic(wsKey, COMPLEX_TOPIC_POSITIONS_3); // has 1 more property than 1
 
     // remove two complex topics from store
-    wsStore.deleteComplexTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
-    wsStore.deleteComplexTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2);
+    wsStore.deleteTopic(wsKey, COMPLEX_TOPIC_GREEKS_2);
+    wsStore.deleteTopic(wsKey, COMPLEX_TOPIC_POSITIONS_2);
 
-    const sortedTopics = [...wsStore.getTopics(wsKey)].sort();
+    const sortedTopics = wsStore.getTopicsAsArray(wsKey).sort();
     expect(sortedTopics).toEqual(
       [
         // COMPLEX_TOPIC_GREEKS_1,// removed

@@ -42,7 +42,9 @@ export type OrderType =
   | 'post_only'
   | 'fok'
   | 'ioc'
-  | 'optimal_limit_ioc';
+  | 'optimal_limit_ioc'
+  | 'mmp'
+  | 'mmp_and_post_only';
 
 export type OrderState =
   | 'canceled'
@@ -72,7 +74,7 @@ export interface RFQQuoteLegExtended {
   tradeId: string;
 }
 
-export type TradeMode = 'cross' | 'isolated' | 'cash';
+export type TradeMode = 'cross' | 'isolated' | 'cash' | 'spot_isolated';
 
 export interface TimestampObject {
   ts: numberInString;

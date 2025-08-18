@@ -6,7 +6,7 @@ import {
   OrderState,
   OrderType,
   PositionSide,
-} from '../shared';
+} from '../shared.js';
 
 export interface OrderResult {
   clOrdId: string;

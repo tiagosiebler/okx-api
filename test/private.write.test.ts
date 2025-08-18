@@ -1,10 +1,9 @@
-import { RestClient } from '../src';
-import { RFQLeg } from '../src/types/rest';
+import { RestClient, RFQLeg } from '../src/index.js';
 import {
   errorResponseObject,
   permissionErrorResponse,
   successResponseList,
-} from './response.util';
+} from './response.util.js';
 
 // These tests primarily check auth is working by expecting permission, balance or order not found style errors
 describe('Private REST API Endpoints (POST)', () => {
@@ -12,14 +11,11 @@ describe('Private REST API Endpoints (POST)', () => {
   const API_SECRET = process.env.API_SECRET_COM;
   const API_PASSPHRASE = process.env.API_PASSPHRASE_COM;
 
-  const api = new RestClient(
-    {
-      apiKey: API_KEY!,
-      apiSecret: API_SECRET!,
-      apiPass: API_PASSPHRASE!,
-    },
-    'prod',
-  );
+  const api = new RestClient({
+    apiKey: API_KEY!,
+    apiSecret: API_SECRET!,
+    apiPass: API_PASSPHRASE!,
+  });
 
   const instrumentId = 'BTC-USDT';
 

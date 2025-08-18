@@ -7,30 +7,38 @@ import { DefaultLogger, WebsocketClient } from '../src';
 // const { WebsocketClient, DefaultLogger } = require('okx-api');
 
 // Optional: Inject a custom logger.
-// This example overrides the default logger to also log "silly" (super verbose) messages, which are disabled by default
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
 const logger = {
   ...DefaultLogger,
-  // silly: (...params) => console.log('silly', ...params),
+  // trace: (...params) => console.log('trace', ...params),
 };
 
 const wsClient = new WebsocketClient(
   {
-    // prod is used by default, but you can choose other markets through this parameter:
-    // market: 'prod',
-    // market: 'aws',
-    // market: 'demo',
+    // For Global users (www.okx.com), you don't need to set the market.
+    // It will use global by default.
+    // Not needed: market: 'GLOBAL',
+    // For EEA users (my.okx.com), set market to "EEA":
+    // market: 'EEA',
+    // For US users (app.okx.com), set market to "US":
+    // market: 'US',
   },
   logger, // Optional: inject the custom logger here
 );
 
 // Raw data will arrive on the 'update' event
 wsClient.on('update', (data) => {
+  // console.log(
+  //   new Date(),
+  //   'ws update (raw data received)',
+  //   JSON.stringify(data, null, 2),
+  // );
+  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
   console.log(
     new Date(),
     'ws update (raw data received)',
-    JSON.stringify(data, null, 2),
+    JSON.stringify(data),
   );
-  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
 });
 
 wsClient.on('open', (data) => {
@@ -48,7 +56,7 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-wsClient.on('error', (data) => {
+wsClient.on('exception', (data) => {
   console.error('ws exception: ', data);
 });
 
@@ -128,7 +136,7 @@ wsClient.subscribe({
 // Price limit channel
 wsClient.subscribe({
   channel: 'price-limit',
-  instId: 'LTC-USD-190628',
+  instId: 'BTC-USDT-SWAP',
 });
 
 // Order book channel

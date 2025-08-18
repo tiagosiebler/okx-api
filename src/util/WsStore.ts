@@ -1,44 +1,16 @@
 import WebSocket from 'isomorphic-ws';
 
-import { DefaultLogger } from './logger';
-import { WsKey } from './websocket-util';
-
-export enum WsConnectionStateEnum {
-  INITIAL = 0,
-  CONNECTING = 1,
-  CONNECTED = 2,
-  CLOSING = 3,
-  RECONNECTING = 4,
-  // ERROR = 5,
-}
-/** A "topic" is always a string */
-type WsTopic = string;
+import { DefaultLogger } from './logger.js';
+import {
+  DeferredPromise,
+  WSConnectedResult,
+  WsConnectionStateEnum,
+  WsStoredState,
+} from './WsStore.types.js';
 
 /**
- * A "Set" is used to ensure we only subscribe to a topic once (tracking a list of unique topics we're expected to be connected to)
- * Note: Accurate duplicate tracking only works for plaintext topics. E.g. JSON objects may not be seen as duplicates if keys are in different orders. If that's needed, check the FTX implementation.
+ * TODO: this seems more thorough than the one for Bitget. Make tests and evaluate which one to keep.
  */
-interface WsStoredState<WSTopic> {
-  /** The currently active websocket connection */
-  ws?: WebSocket;
-  /** The current lifecycle state of the connection (enum) */
-  connectionState?: WsConnectionStateEnum;
-  /** A timer that will send an upstream heartbeat (ping) when it expires */
-  activePingTimer?: ReturnType<typeof setTimeout> | undefined;
-  /** A timer tracking that an upstream heartbeat was sent, expecting a reply before it expires */
-  activePongTimer?: ReturnType<typeof setTimeout> | undefined;
-  /** If a reconnection is in progress, this will have the timer for the delayed reconnect */
-  activeReconnectTimer?: ReturnType<typeof setTimeout> | undefined;
-  /**
-   * All the topics we are expected to be subscribed to (and we automatically resubscribed to if the connection drops)
-   * A "Set" is used to ensure we only subscribe to a topic once (tracking a list of unique topics we're expected to be connected to)
-   *
-   * Note: Accurate duplicate tracking using a Set only works for plaintext topics. E.g. JSON objects may not be seen as duplicates if keys are in different orders.
-   * More complex topics (objects) are matched using the isDeepObjectMatch function
-   */
-  subscribedTopics: Set<WSTopic>;
-}
-
 export function isDeepObjectMatch(object1: any, object2: any): boolean {
   if (typeof object2 !== typeof object1) {
     return false;
@@ -77,42 +49,48 @@ export function isDeepObjectMatch(object1: any, object2: any): boolean {
   return true;
 }
 
-type WSSimpleTopic = string;
+export const DEFERRED_PROMISE_REF = {
+  CONNECTION_IN_PROGRESS: 'CONNECTION_IN_PROGRESS',
+  AUTHENTICATION_IN_PROGRESS: 'AUTHENTICATION_IN_PROGRESS',
+} as const;
 
-export class WsStore<WSComplexTopic> {
-  private wsState: Record<
-    WsKey | string,
-    WsStoredState<WSComplexTopic | WSSimpleTopic>
-  > = {};
+type DeferredPromiseRef =
+  (typeof DEFERRED_PROMISE_REF)[keyof typeof DEFERRED_PROMISE_REF];
 
-  private logger: typeof DefaultLogger;
+export default class WsStore<
+  WsKey extends string,
+  TWSTopicSubscribeEventArgs extends object,
+> {
+  private wsState: Record<string, WsStoredState<TWSTopicSubscribeEventArgs>> =
+    {};
 
-  constructor(logger: typeof DefaultLogger) {
+  private logger: DefaultLogger;
+
+  constructor(logger: DefaultLogger) {
     this.logger = logger || DefaultLogger;
-    this.wsState = {};
   }
 
   /** Get WS stored state for key, optionally create if missing */
   get(
-    wsKey: WsKey,
+    key: WsKey,
     createIfMissing?: true,
-  ): WsStoredState<WSComplexTopic | WSSimpleTopic>;
+  ): WsStoredState<TWSTopicSubscribeEventArgs>;
 
   get(
-    wsKey: WsKey,
+    key: WsKey,
     createIfMissing?: false,
-  ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined;
+  ): WsStoredState<TWSTopicSubscribeEventArgs> | undefined;
 
   get(
-    wsKey: WsKey,
+    key: WsKey,
     createIfMissing?: boolean,
-  ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined {
-    if (this.wsState[wsKey]) {
-      return this.wsState[wsKey];
+  ): WsStoredState<TWSTopicSubscribeEventArgs> | undefined {
+    if (this.wsState[key]) {
+      return this.wsState[key];
     }
 
     if (createIfMissing) {
-      return this.create(wsKey);
+      return this.create(key);
     }
   }
 
@@ -120,141 +98,365 @@ export class WsStore<WSComplexTopic> {
     return Object.keys(this.wsState) as WsKey[];
   }
 
-  create(
-    wsKey: WsKey,
-  ): WsStoredState<WSComplexTopic | WSSimpleTopic> | undefined {
-    if (this.hasExistingActiveConnection(wsKey)) {
-      this.logger.warning(
+  create(key: WsKey): WsStoredState<TWSTopicSubscribeEventArgs> | undefined {
+    if (this.hasExistingActiveConnection(key)) {
+      this.logger.info(
         'WsStore setConnection() overwriting existing open connection: ',
-        this.getWs(wsKey),
+        this.getWs(key),
       );
     }
-    this.wsState[wsKey] = {
-      subscribedTopics: new Set(),
+    this.wsState[key] = {
+      subscribedTopics: new Set<TWSTopicSubscribeEventArgs>(),
       connectionState: WsConnectionStateEnum.INITIAL,
+      deferredPromiseStore: {},
     };
-    return this.get(wsKey);
+    return this.get(key);
   }
 
-  delete(wsKey: WsKey) {
-    if (this.hasExistingActiveConnection(wsKey)) {
-      const ws = this.getWs(wsKey);
-      this.logger.warning(
+  delete(key: WsKey): void {
+    // TODO: should we allow this at all? Perhaps block this from happening...
+    if (this.hasExistingActiveConnection(key)) {
+      const ws = this.getWs(key);
+      this.logger.info(
         'WsStore deleting state for connection still open: ',
         ws,
       );
       ws?.close();
     }
-    delete this.wsState[wsKey];
+    delete this.wsState[key];
   }
 
   /* connection websocket */
 
-  hasExistingActiveConnection(wsKey: WsKey) {
-    return this.get(wsKey) && this.isWsOpen(wsKey);
+  hasExistingActiveConnection(key: WsKey): boolean {
+    return this.get(key) && this.isWsOpen(key);
   }
 
-  getWs(wsKey: WsKey): WebSocket | undefined {
-    return this.get(wsKey)?.ws;
+  getWs(key: WsKey): WebSocket | undefined {
+    return this.get(key)?.ws;
   }
 
-  setWs(wsKey: WsKey, wsConnection: WebSocket): WebSocket {
-    if (this.isWsOpen(wsKey)) {
-      this.logger.warning(
+  setWs(key: WsKey, wsConnection: WebSocket): WebSocket {
+    if (this.isWsOpen(key)) {
+      this.logger.info(
         'WsStore setConnection() overwriting existing open connection: ',
-        this.getWs(wsKey),
+        this.getWs(key),
       );
     }
-    this.get(wsKey, true)!.ws = wsConnection;
+
+    this.get(key, true).ws = wsConnection;
     return wsConnection;
+  }
+
+  /**
+   * deferred promises
+   */
+
+  getDeferredPromise<TSuccessResult = any>(
+    wsKey: WsKey,
+    promiseRef: string | DeferredPromiseRef,
+  ): DeferredPromise<TSuccessResult> | undefined {
+    const storeForKey = this.get(wsKey);
+    if (!storeForKey) {
+      return;
+    }
+
+    const deferredPromiseStore = storeForKey.deferredPromiseStore;
+    return deferredPromiseStore[promiseRef];
+  }
+
+  createDeferredPromise<TSuccessResult = any>(
+    wsKey: WsKey,
+    promiseRef: string | DeferredPromiseRef,
+    throwIfExists: boolean,
+  ): DeferredPromise<TSuccessResult> {
+    const existingPromise = this.getDeferredPromise<TSuccessResult>(
+      wsKey,
+      promiseRef,
+    );
+    if (existingPromise) {
+      if (throwIfExists) {
+        throw new Error(`Promise exists for "${wsKey}"`);
+      } else {
+        // console.log('existing promise');
+        return existingPromise;
+      }
+    }
+
+    // console.log('create promise');
+    const createIfMissing = true;
+    const storeForKey = this.get(wsKey, createIfMissing);
+
+    // TODO: Once stable, use Promise.withResolvers in future
+    const deferredPromise: DeferredPromise = {};
+
+    deferredPromise.promise = new Promise((resolve, reject) => {
+      deferredPromise.resolve = resolve;
+      deferredPromise.reject = reject;
+    });
+
+    const deferredPromiseStore = storeForKey.deferredPromiseStore;
+
+    deferredPromiseStore[promiseRef] = deferredPromise;
+
+    return deferredPromise;
+  }
+
+  resolveDeferredPromise(
+    wsKey: WsKey,
+    promiseRef: string | DeferredPromiseRef,
+    value: unknown,
+    removeAfter: boolean,
+  ): void {
+    const promise = this.getDeferredPromise(wsKey, promiseRef);
+    if (promise?.resolve) {
+      promise.resolve(value);
+    }
+    if (removeAfter) {
+      this.removeDeferredPromise(wsKey, promiseRef);
+    }
+  }
+
+  rejectDeferredPromise(
+    wsKey: WsKey,
+    promiseRef: string | DeferredPromiseRef,
+    value: unknown,
+    removeAfter: boolean,
+  ): void {
+    const promise = this.getDeferredPromise(wsKey, promiseRef);
+
+    if (promise?.reject) {
+      this.logger.trace(
+        `rejectDeferredPromise(): rejecting ${wsKey}/${promiseRef}`,
+        value,
+      );
+
+      if (typeof value === 'string') {
+        promise.reject(new Error(value));
+      } else {
+        promise.reject(value);
+      }
+    }
+
+    if (removeAfter) {
+      this.removeDeferredPromise(wsKey, promiseRef);
+    }
+  }
+
+  removeDeferredPromise(
+    wsKey: WsKey,
+    promiseRef: string | DeferredPromiseRef,
+  ): void {
+    const storeForKey = this.get(wsKey);
+    if (!storeForKey) {
+      return;
+    }
+
+    const deferredPromise = storeForKey.deferredPromiseStore[promiseRef];
+    if (deferredPromise) {
+      // Just in case it's pending
+      if (deferredPromise.resolve) {
+        deferredPromise.resolve('promiseRemoved');
+      }
+
+      delete storeForKey.deferredPromiseStore[promiseRef];
+    }
+  }
+
+  rejectAllDeferredPromises(wsKey: WsKey, reason: string): void {
+    const storeForKey = this.get(wsKey);
+    const deferredPromiseStore = storeForKey.deferredPromiseStore;
+    if (!storeForKey || !deferredPromiseStore) {
+      return;
+    }
+
+    const reservedKeys = Object.values(DEFERRED_PROMISE_REF) as string[];
+
+    for (const promiseRef in deferredPromiseStore) {
+      // Skip reserved keys, such as the connection promise
+      if (reservedKeys.includes(promiseRef)) {
+        continue;
+      }
+
+      try {
+        this.logger.trace(
+          `rejectAllDeferredPromises(): rejecting ${wsKey}/${promiseRef}/${reason}`,
+        );
+        this.rejectDeferredPromise(wsKey, promiseRef, reason, true);
+      } catch (e) {
+        this.logger.error(
+          'rejectAllDeferredPromises(): Exception rejecting deferred promise',
+          { wsKey: wsKey, reason, promiseRef, exception: e },
+        );
+      }
+    }
+  }
+
+  /** Get promise designed to track a connection attempt in progress. Resolves once connected. */
+  getConnectionInProgressPromise(
+    wsKey: WsKey,
+  ): DeferredPromise<WSConnectedResult> | undefined {
+    return this.getDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.CONNECTION_IN_PROGRESS,
+    );
+  }
+
+  getAuthenticationInProgressPromise(
+    wsKey: WsKey,
+  ): DeferredPromise<WSConnectedResult & { event: any }> | undefined {
+    return this.getDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.AUTHENTICATION_IN_PROGRESS,
+    );
+  }
+
+  /**
+   * Create a deferred promise designed to track a connection attempt in progress.
+   *
+   * Will throw if existing promise is found.
+   */
+  createConnectionInProgressPromise(
+    wsKey: WsKey,
+    throwIfExists: boolean,
+  ): DeferredPromise<WSConnectedResult> {
+    return this.createDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.CONNECTION_IN_PROGRESS,
+      throwIfExists,
+    );
+  }
+
+  createAuthenticationInProgressPromise(
+    wsKey: WsKey,
+    throwIfExists: boolean,
+  ): DeferredPromise<WSConnectedResult & { event: any }> {
+    return this.createDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.AUTHENTICATION_IN_PROGRESS,
+      throwIfExists,
+    );
+  }
+
+  /** Remove promise designed to track a connection attempt in progress */
+  removeConnectingInProgressPromise(wsKey: WsKey): void {
+    return this.removeDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.CONNECTION_IN_PROGRESS,
+    );
+  }
+
+  removeAuthenticationInProgressPromise(wsKey: WsKey): void {
+    return this.removeDeferredPromise(
+      wsKey,
+      DEFERRED_PROMISE_REF.AUTHENTICATION_IN_PROGRESS,
+    );
   }
 
   /* connection state */
 
-  isWsOpen(wsKey: WsKey): boolean {
-    const existingConnection = this.getWs(wsKey);
+  isWsOpen(key: WsKey): boolean {
+    const existingConnection = this.getWs(key);
     return (
       !!existingConnection &&
       existingConnection.readyState === existingConnection.OPEN
     );
   }
 
-  getConnectionState(wsKey: WsKey): WsConnectionStateEnum {
-    return this.get(wsKey, true)!.connectionState!;
+  getConnectionState(key: WsKey): WsConnectionStateEnum {
+    return this.get(key, true).connectionState!;
   }
 
-  setConnectionState(wsKey: WsKey, state: WsConnectionStateEnum) {
-    this.get(wsKey, true)!.connectionState = state;
+  setConnectionState(key: WsKey, state: WsConnectionStateEnum) {
+    this.get(key, true).connectionState = state;
+    this.get(key, true).connectionStateChangedAt = new Date();
   }
 
-  isConnectionState(wsKey: WsKey, state: WsConnectionStateEnum): boolean {
-    return this.getConnectionState(wsKey) === state;
+  isConnectionState(key: WsKey, state: WsConnectionStateEnum): boolean {
+    return this.getConnectionState(key) === state;
+  }
+
+  /**
+   * Check if we're currently in the process of opening a connection for any reason. Safer than only checking "CONNECTING" as the state
+   * @param key
+   * @returns
+   */
+  isConnectionAttemptInProgress(key: WsKey): boolean {
+    const isConnectionInProgress =
+      this.isConnectionState(key, WsConnectionStateEnum.CONNECTING) ||
+      this.isConnectionState(key, WsConnectionStateEnum.RECONNECTING);
+
+    if (isConnectionInProgress) {
+      const wsState = this.get(key, true);
+      const stateLastChangedAt = wsState?.connectionStateChangedAt;
+      const stateChangedAtTimestamp = stateLastChangedAt?.getTime();
+      if (stateChangedAtTimestamp) {
+        const timestampNow = new Date().getTime();
+        const stateChangedTimeAgo = timestampNow - stateChangedAtTimestamp;
+        const stateChangeTimeout = 15000; // allow a max 15 second timeout since the last state change before assuming stuck;
+        if (stateChangedTimeAgo >= stateChangeTimeout) {
+          const msg = 'State change timed out, reconnect workflow stuck?';
+          this.logger.error(msg, { key, wsState });
+          this.setConnectionState(key, WsConnectionStateEnum.ERROR);
+        }
+      }
+    }
+
+    return isConnectionInProgress;
   }
 
   /* subscribed topics */
 
-  getTopics(wsKey: WsKey): Set<WSComplexTopic | WSSimpleTopic> {
-    return this.get(wsKey, true).subscribedTopics;
+  getTopics(key: WsKey): Set<TWSTopicSubscribeEventArgs> {
+    return this.get(key, true).subscribedTopics;
   }
 
-  getTopicsByKey(): Record<string, Set<WSComplexTopic | WSSimpleTopic>> {
-    const result = {};
+  getTopicsAsArray(key: WsKey): TWSTopicSubscribeEventArgs[] {
+    return [...this.getTopics(key).values()];
+  }
+
+  getTopicsByKey(): Record<string, Set<TWSTopicSubscribeEventArgs>> {
+    const result: Record<string, Set<TWSTopicSubscribeEventArgs>> = {};
+
     for (const refKey in this.wsState) {
       result[refKey] = this.getTopics(refKey as WsKey);
     }
+
     return result;
   }
 
-  addTopic(wsKey: WsKey, topic: WsTopic) {
-    return this.getTopics(wsKey).add(topic);
-  }
-
-  /** Add subscribed topic to store, only if not already subscribed */
-  addComplexTopic(wsKey: WsKey, topic: WSComplexTopic) {
-    if (this.getMatchingTopic(wsKey, topic)) {
-      return this.getTopics(wsKey);
-    }
-    // console.log('add complex topic: ', topic);
-    return this.getTopics(wsKey).add(topic);
-  }
-
-  deleteTopic(wsKey: WsKey, topic: WsTopic) {
-    return this.getTopics(wsKey).delete(topic);
-  }
-
-  /** Remove subscribed topic from store */
-  deleteComplexTopic(wsKey: WsKey, topic: WSComplexTopic) {
-    const storedTopic = this.getMatchingTopic(wsKey, topic);
-    if (storedTopic) {
-      this.getTopics(wsKey).delete(storedTopic);
-    }
-
-    return this.getTopics(wsKey);
-  }
-
-  // Since topics are objects we can't rely on the set to detect duplicates
-  getMatchingTopic(
-    key: WsKey,
-    topic: WsTopic | WSComplexTopic,
-  ): WSComplexTopic | WSSimpleTopic | undefined {
-    if (typeof topic === 'string') {
-      if (this.getTopics(key).has(topic)) {
-        return topic;
-      } else {
-        return undefined;
-      }
-    }
-
+  /**
+   * Find matching "topic" request from the store
+   * @param key
+   * @param topic
+   * @returns
+   */
+  getMatchingTopic(key: WsKey, topic: TWSTopicSubscribeEventArgs) {
     const allTopics = this.getTopics(key).values();
     for (const storedTopic of allTopics) {
-      // console.log('?: ', {
-      //   isMatch: isDeepObjectMatch(topic, storedTopic),
-      //   newTopic: topic,
-      //   storedTopic: storedTopic,
-      // });
-      if (isDeepObjectMatch(topic, storedTopic)) {
+      const matchesStoredTopic = isDeepObjectMatch(topic, storedTopic);
+      if (matchesStoredTopic) {
         return storedTopic;
       }
     }
+  }
+
+  addTopic(key: WsKey, topic: TWSTopicSubscribeEventArgs) {
+    // Check for duplicate topic. If already tracked, don't store this one
+    const existingTopic = this.getMatchingTopic(key, topic);
+    if (existingTopic) {
+      return this.getTopics(key);
+    }
+    return this.getTopics(key).add(topic);
+  }
+
+  deleteTopic(key: WsKey, topic: TWSTopicSubscribeEventArgs) {
+    // Check if we're subscribed to a topic like this
+    const storedTopic = this.getMatchingTopic(key, topic);
+    if (storedTopic) {
+      this.getTopics(key).delete(storedTopic);
+    }
+
+    return this.getTopics(key);
   }
 }

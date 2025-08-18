@@ -1,38 +1,146 @@
-import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
-import { DefaultLogger } from './logger';
-import { neverGuard } from './typeGuards';
+import { APIMarket } from '../types/shared.js';
+import {
+  WS_API_TAG_OPERATIONS,
+  WSAPIOperation,
+  WSAPIRequestOKX,
+} from '../types/websockets/ws-api.js';
+import { WebsocketClientOptions } from '../types/websockets/ws-general.js';
+import { WsChannel } from '../types/websockets/ws-request.js';
+import { DefaultLogger } from './logger.js';
+import { programId } from './requestUtils.js';
+import { neverGuard } from './typeGuards.js';
+
+export const WS_LOGGER_CATEGORY = { category: 'okx-ws' };
 
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
-  Record<'public' | 'private', string>
+  Record<'live' | 'demo', Record<'public' | 'private' | 'business', string>>
 > = {
   prod: {
-    public: 'wss://ws.okx.com:8443/ws/v5/public',
-    private: 'wss://ws.okx.com:8443/ws/v5/private',
+    live: {
+      public: 'wss://ws.okx.com:8443/ws/v5/public',
+      private: 'wss://ws.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://ws.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  business: {
-    public: 'wss://ws.okx.com:8443/ws/v5/business',
-    private: 'wss://ws.okx.com:8443/ws/v5/business',
+  // Exactly the same as "prod"
+  // also known as "www.okx.com", the default: https://www.okx.com/docs-v5/en/#overview-production-trading-services
+  GLOBAL: {
+    live: {
+      public: 'wss://ws.okx.com:8443/ws/v5/public',
+      private: 'wss://ws.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://ws.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  businessDemo: {
-    public: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
-    private: 'wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999',
+  // also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+  EEA: {
+    live: {
+      public: 'wss://wseea.okx.com:8443/ws/v5/public',
+      private: 'wss://wseea.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://wseea.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wseeapap.okx.com:8443/ws/v5/public',
+      private: 'wss://wseeapap.okx.com:8443/ws/v5/private',
+      business: 'wss://wseeapap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
-  demo: {
-    public: 'wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999',
-    private: 'wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999',
+  // also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
+  US: {
+    live: {
+      public: 'wss://wsus.okx.com:8443/ws/v5/public',
+      private: 'wss://wsus.okx.com:8443/ws/v5/private',
+      // Some channels require business suffix: https://www.okx.com/help/changes-to-v5-api-websocket-subscription-parameter-and-url
+      business: 'wss://wsus.okx.com:8443/ws/v5/business',
+    },
+    demo: {
+      public: 'wss://wsuspap.okx.com:8443/ws/v5/public',
+      private: 'wss://wsuspap.okx.com:8443/ws/v5/private',
+      business: 'wss://wsuspap.okx.com:8443/ws/v5/business?brokerId=9999',
+    },
   },
 };
 
 export const WS_KEY_MAP = {
+  // OKX Global: https://www.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX Global (www.okx.com), does not require auth.
+   */
   prodPublic: 'prodPublic',
+  /**
+   * Private WS connection for OKX Global (www.okx.com), requires auth.
+   */
   prodPrivate: 'prodPrivate',
-  demoPublic: 'demoPublic',
-  demoPrivate: 'demoPrivate',
-  businessPrivate: 'businessPrivate',
-  businessPublic: 'businessPublic',
-  businessDemoPublic: 'businessDemoPublic',
-  businessDemoPrivate: 'businessDemoPrivate',
+  /**
+   * Business WS connection for OKX Global (www.okx.com), sometimes requires auth.
+   */
+  prodBusiness: 'prodBusiness',
+  /**
+   * Public DEMO WS connection for OKX Global (www.okx.com), does not require auth.
+   */
+  prodDemoPublic: 'prodDemoPublic',
+  /**
+   * Private DEMO WS connection for OKX Global (www.okx.com), requires auth.
+   */
+  prodDemoPrivate: 'prodDemoPrivate',
+  /**
+   * Business DEMO WS connection for OKX Global (www.okx.com), sometimes requires auth.
+   */
+  prodDemoBusiness: 'prodDemoBusiness',
+  // Also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX EEA (my.okx.com), does not require auth.
+   */
+  eeaLivePublic: 'eeaLivePublic',
+  /**
+   * Private WS connection for OKX EEA (my.okx.com), requires auth.
+   */
+  eeaLivePrivate: 'eeaLivePrivate',
+  /**
+   * Business WS connection for OKX EEA (my.okx.com), sometimes requires auth.
+   */
+  eeaLiveBusiness: 'eeaLiveBusiness',
+  /**
+   * Public DEMO WS connection for OKX EEA (my.okx.com), does not require auth.
+   */
+  eeaDemoPublic: 'eeaDemoPublic',
+  /**
+   * Private DEMO WS connection for OKX EEA (my.okx.com), requires auth.
+   */
+  eeaDemoPrivate: 'eeaDemoPrivate',
+  /**
+   * Business DEMO WS connection for OKX EEA (my.okx.com), sometimes requires auth.
+   */
+  eeaDemoBusiness: 'eeaDemoBusiness',
+  // Also known as "app.okx.com" https://app.okx.com/docs-v5/en/#overview-production-trading-services
+  /**
+   * Public WS connection for OKX US (app.okx.com), does not require auth.
+   */
+  usLivePublic: 'usLivePublic',
+  /**
+   * Private WS connection for OKX US (app.okx.com), requires auth.
+   */
+  usLivePrivate: 'usLivePrivate',
+  /**
+   * Business WS connection for OKX US (app.okx.com), sometimes requires auth.
+   */
+  usLiveBusiness: 'usLiveBusiness',
+  usDemoPublic: 'usDemoPublic',
+  usDemoPrivate: 'usDemoPrivate',
+  usDemoBusiness: 'usDemoBusiness',
 } as const;
 
 /** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
@@ -40,17 +148,70 @@ export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
-  WS_KEY_MAP.businessPrivate,
-  WS_KEY_MAP.demoPrivate,
-  WS_KEY_MAP.businessDemoPrivate,
+  WS_KEY_MAP.prodBusiness,
+  WS_KEY_MAP.prodDemoPrivate,
+  WS_KEY_MAP.prodDemoBusiness,
+  WS_KEY_MAP.eeaLivePrivate,
+  WS_KEY_MAP.eeaLiveBusiness,
+  WS_KEY_MAP.eeaDemoPrivate,
+  WS_KEY_MAP.eeaDemoBusiness,
+  WS_KEY_MAP.usLivePrivate,
+  WS_KEY_MAP.usLiveBusiness,
+  WS_KEY_MAP.usDemoPrivate,
+  WS_KEY_MAP.usDemoBusiness,
 ];
 
 export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPublic,
-  WS_KEY_MAP.businessPublic,
-  WS_KEY_MAP.demoPublic,
-  WS_KEY_MAP.businessDemoPublic,
+  WS_KEY_MAP.prodDemoPublic,
+  WS_KEY_MAP.eeaLivePublic,
+  WS_KEY_MAP.eeaDemoPublic,
+  WS_KEY_MAP.usLivePublic,
+  WS_KEY_MAP.usDemoPublic,
 ];
+
+/**
+ * Returns the DEMO connection WsKey for the provided WsKey
+ */
+export function getDemoWsKey(wsKey: WsKey): WsKey {
+  switch (wsKey) {
+    case WS_KEY_MAP.prodDemoPublic:
+    case WS_KEY_MAP.prodDemoPrivate:
+    case WS_KEY_MAP.prodDemoBusiness:
+    case WS_KEY_MAP.eeaDemoPublic:
+    case WS_KEY_MAP.eeaDemoPrivate:
+    case WS_KEY_MAP.eeaDemoBusiness:
+    case WS_KEY_MAP.usDemoPublic:
+    case WS_KEY_MAP.usDemoPrivate:
+    case WS_KEY_MAP.usDemoBusiness: {
+      return wsKey;
+    }
+
+    case WS_KEY_MAP.prodPublic:
+      return WS_KEY_MAP.prodDemoPublic;
+    case WS_KEY_MAP.prodPrivate:
+      return WS_KEY_MAP.prodDemoBusiness;
+    case WS_KEY_MAP.prodBusiness:
+      return WS_KEY_MAP.prodDemoBusiness;
+
+    case WS_KEY_MAP.eeaLivePublic:
+      return WS_KEY_MAP.eeaDemoPublic;
+    case WS_KEY_MAP.eeaLivePrivate:
+      return WS_KEY_MAP.eeaDemoPrivate;
+    case WS_KEY_MAP.eeaLiveBusiness:
+      return WS_KEY_MAP.eeaDemoBusiness;
+
+    case WS_KEY_MAP.usLivePublic:
+      return WS_KEY_MAP.usDemoPublic;
+    case WS_KEY_MAP.usLivePrivate:
+      return WS_KEY_MAP.usDemoPrivate;
+    case WS_KEY_MAP.usLiveBusiness:
+      return WS_KEY_MAP.usDemoBusiness;
+
+    default:
+      throw neverGuard(wsKey, `Unhandled wsKey "${wsKey}"`);
+  }
+}
 
 /** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
 const PRIVATE_CHANNELS = [
@@ -186,43 +347,93 @@ export function getWsKeyForTopicChannel(
   return getWsKeyForMarket(market, isPrivateTopic, isBusinessChannel);
 }
 
+/**
+ * Returns wsKey for product group. Demo resolution is handled in URL lookup function, separately.
+ */
 export function getWsKeyForMarket(
   market: APIMarket,
   isPrivate: boolean,
   isBusinessChannel: boolean,
 ): WsKey {
   switch (market) {
-    case 'prod': {
+    case 'prod':
+    case 'GLOBAL': {
       if (isBusinessChannel) {
-        return isPrivate
-          ? WS_KEY_MAP.businessPrivate
-          : WS_KEY_MAP.businessPublic;
+        return WS_KEY_MAP.prodBusiness;
       }
       return isPrivate ? WS_KEY_MAP.prodPrivate : WS_KEY_MAP.prodPublic;
     }
-    case 'demo': {
+    case 'EEA': {
       if (isBusinessChannel) {
-        return isPrivate
-          ? WS_KEY_MAP.businessDemoPrivate
-          : WS_KEY_MAP.businessDemoPublic;
+        return WS_KEY_MAP.eeaLiveBusiness;
       }
-      return isPrivate ? WS_KEY_MAP.demoPrivate : WS_KEY_MAP.demoPublic;
+      return isPrivate ? WS_KEY_MAP.eeaLivePrivate : WS_KEY_MAP.eeaLivePublic;
     }
-    case 'business': {
-      return isPrivate ? WS_KEY_MAP.businessPrivate : WS_KEY_MAP.businessPublic;
-    }
-    case 'businessDemo': {
-      return isPrivate
-        ? WS_KEY_MAP.businessDemoPrivate
-        : WS_KEY_MAP.businessDemoPublic;
+    case 'US': {
+      if (isBusinessChannel) {
+        return WS_KEY_MAP.usLiveBusiness;
+      }
+      return isPrivate ? WS_KEY_MAP.usLivePrivate : WS_KEY_MAP.usLivePublic;
     }
     default: {
-      throw neverGuard(market, 'getWsKeyForTopic(): Unhandled market');
+      throw neverGuard(
+        market,
+        `getWsKeyForTopic(): Unhandled market "${market}"`,
+      );
     }
   }
 }
 
-/** Maps a WS key back to a WS URL */
+export function requiresWSAPITag(
+  operation: WSAPIOperation,
+  wsKey: WsKey,
+): boolean {
+  switch (wsKey) {
+    case WS_KEY_MAP.prodPublic:
+    case WS_KEY_MAP.prodDemoPublic:
+    case WS_KEY_MAP.eeaLivePublic:
+    case WS_KEY_MAP.eeaDemoPublic:
+    case WS_KEY_MAP.usLivePublic:
+    case WS_KEY_MAP.usDemoPublic:
+      return false;
+
+    case WS_KEY_MAP.prodDemoPrivate:
+    case WS_KEY_MAP.prodDemoBusiness:
+    case WS_KEY_MAP.eeaDemoPrivate:
+    case WS_KEY_MAP.eeaDemoBusiness:
+    case WS_KEY_MAP.usDemoPrivate:
+    case WS_KEY_MAP.usDemoBusiness:
+    case WS_KEY_MAP.prodPrivate:
+    case WS_KEY_MAP.prodBusiness:
+
+    case WS_KEY_MAP.eeaLivePrivate:
+    case WS_KEY_MAP.eeaLiveBusiness:
+    case WS_KEY_MAP.usLivePrivate:
+    case WS_KEY_MAP.usLiveBusiness:
+      return WS_API_TAG_OPERATIONS.includes(operation);
+
+    default: {
+      throw neverGuard(wsKey, `Unhandled WsKey "${wsKey}"`);
+    }
+  }
+}
+
+export function validateWSAPITag(
+  request: WSAPIRequestOKX<any>,
+  wsKey: WsKey,
+): void {
+  if (!requiresWSAPITag(request.op, wsKey)) {
+    return;
+  }
+
+  for (let i = 0; i < request.args.length; i++) {
+    request.args[i]['tag'] = programId;
+  }
+}
+
+/**
+ * Maps a WS key back to a WS URL. Resolves to demo wsKey automatically, if configured.
+ */
 export function getWsUrlForWsKey(
   wsKey: WsKey,
   wsClientOptions: WebsocketClientOptions,
@@ -231,24 +442,39 @@ export function getWsUrlForWsKey(
   if (wsClientOptions.wsUrl) {
     return wsClientOptions.wsUrl;
   }
-
+  const isDemoTrading = !!wsClientOptions?.demoTrading;
+  const LIVE_OR_DEMO: 'live' | 'demo' = isDemoTrading ? 'demo' : 'live';
   switch (wsKey) {
+    // Global (www.okx.com)
     case 'prodPublic':
-      return WS_BASE_URL_MAP.prod.public;
+    case 'prodDemoPublic':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].public;
     case 'prodPrivate':
-      return WS_BASE_URL_MAP.prod.private;
-    case 'demoPublic':
-      return WS_BASE_URL_MAP.demo.public;
-    case 'demoPrivate':
-      return WS_BASE_URL_MAP.demo.private;
-    case 'businessPublic':
-      return WS_BASE_URL_MAP.business.public;
-    case 'businessPrivate':
-      return WS_BASE_URL_MAP.business.private;
-    case 'businessDemoPublic':
-      return WS_BASE_URL_MAP.businessDemo.public;
-    case 'businessDemoPrivate':
-      return WS_BASE_URL_MAP.businessDemo.private;
+    case 'prodDemoPrivate':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].private;
+    case 'prodBusiness':
+    case 'prodDemoBusiness':
+      return WS_BASE_URL_MAP.GLOBAL[LIVE_OR_DEMO].business;
+    // EEA (my.okx.com)
+    case 'eeaLivePublic':
+    case 'eeaDemoPublic':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].public;
+    case 'eeaLivePrivate':
+    case 'eeaDemoPrivate':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].private;
+    case 'eeaLiveBusiness':
+    case 'eeaDemoBusiness':
+      return WS_BASE_URL_MAP.EEA[LIVE_OR_DEMO].business;
+    // US (app.okx.com)
+    case 'usLivePublic':
+    case 'usDemoPublic':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].public;
+    case 'usLivePrivate':
+    case 'usDemoPrivate':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].private;
+    case 'usLiveBusiness':
+    case 'usDemoBusiness':
+      return WS_BASE_URL_MAP.US[LIVE_OR_DEMO].business;
     default: {
       const errorMessage = 'getWsUrl(): Unhandled wsKey: ';
       logger.error(errorMessage, {
@@ -260,14 +486,14 @@ export function getWsUrlForWsKey(
   }
 }
 
-export function getMaxTopicsPerSubscribeEvent(
+export function getMaxTopicsPerSubscribeEventForMarket(
   market: APIMarket,
 ): number | null {
   switch (market) {
     case 'prod':
-    case 'demo':
-    case 'business':
-    case 'businessDemo': {
+    case 'EEA':
+    case 'GLOBAL':
+    case 'US': {
       return null;
     }
     default: {
@@ -312,4 +538,80 @@ export function safeTerminateWs(
   }
 
   return false;
+}
+
+/**
+ * Normalised internal format for a request (subscribe/unsubscribe/etc) on a topic, with optional parameters.
+ *
+ * - Topic: the topic this event is for
+ * - Payload: the parameters to include, optional. E.g. auth requires key + sign. Some topics allow configurable parameters.
+ */
+export interface WsTopicRequest<
+  TWSTopic extends string = string,
+  TWSPayload = unknown,
+> {
+  topic: TWSTopic;
+  payload?: TWSPayload;
+}
+
+/**
+ * Conveniently allow users to request a topic either as string topics or objects (containing string topic + params)
+ */
+export type WsTopicRequestOrStringTopic<
+  TWSTopic extends string,
+  TWSPayload = unknown,
+> = WsTopicRequest<TWSTopic, TWSPayload> | string;
+
+/**
+ * Users can conveniently pass topics as strings or objects (object has topic name + optional params).
+ *
+ * This method normalises topics into objects (object has topic name + optional params).
+ */
+export function getNormalisedTopicRequests(
+  wsTopicRequests: WsTopicRequestOrStringTopic<string>[],
+): WsTopicRequest<string>[] {
+  const normalisedTopicRequests: WsTopicRequest<string>[] = [];
+
+  for (const wsTopicRequest of wsTopicRequests) {
+    // passed as string, convert to object
+    if (typeof wsTopicRequest === 'string') {
+      const topicRequest: WsTopicRequest<string> = {
+        topic: wsTopicRequest,
+        payload: undefined,
+      };
+      normalisedTopicRequests.push(topicRequest);
+      continue;
+    }
+
+    // already a normalised object, thanks to user
+    normalisedTopicRequests.push(wsTopicRequest);
+  }
+  return normalisedTopicRequests;
+}
+
+/**
+ * WebSocket.ping() is not available in browsers. This is a simple check used to
+ * disable heartbeats in browers, for exchanges that use native WebSocket ping/pong frames.
+ */
+export function isWSPingFrameAvailable(): boolean {
+  return typeof (WebSocket.prototype as any)['ping'] === 'function';
+}
+
+/**
+ * WebSocket.pong() is not available in browsers. This is a simple check used to
+ * disable heartbeats in browers, for exchanges that use native WebSocket ping/pong frames.
+ */
+export function isWSPongFrameAvailable(): boolean {
+  return typeof (WebSocket.prototype as any)['pong'] === 'function';
+}
+
+/**
+ * WS API promises are stored using a primary key. This key is constructed using
+ * properties found in every request & reply.
+ */
+export function getPromiseRefForWSAPIRequest(
+  requestEvent: WSAPIRequestOKX<unknown>,
+): string {
+  const promiseRef = [requestEvent.id, requestEvent.op].join('_');
+  return promiseRef;
 }

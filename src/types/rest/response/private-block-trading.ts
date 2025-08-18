@@ -1,4 +1,4 @@
-import { RFQLeg, RFQQuoteLegExtended } from '../shared';
+import { RFQLeg, RFQQuoteLegExtended } from '../shared.js';
 
 export interface BlockCounterParty {
   traderName: string;

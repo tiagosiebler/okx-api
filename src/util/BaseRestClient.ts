@@ -1,15 +1,21 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
-import https from 'https';
+import { Agent } from 'https';
 
-import { APIResponse, RestClientOptions } from '../types';
-import { signMessage } from './node-support';
+import { RestClientOptions } from '../types/rest/client.js';
+import { APIResponse } from '../types/rest/shared.js';
 import {
   getRestBaseUrl,
   programId,
   programKey,
   serializeParams,
-} from './requestUtils';
-import { isRawAPIResponse } from './typeGuards';
+} from './requestUtils.js';
+import { isRawAPIResponse } from './typeGuards.js';
+import {
+  checkWebCryptoAPISupported,
+  SignAlgorithm,
+  SignEncodeMethod,
+  signMessage,
+} from './webCryptoAPI.js';
 
 // axios.interceptors.request.use((request) => {
 //   console.log(new Date(), 'Starting Request', JSON.stringify(request, null, 2));
@@ -65,6 +71,7 @@ export default abstract class BaseRestClient {
     this.options = {
       // if true, we'll throw errors if any params are undefined
       strict_param_validation: false,
+      market: 'prod',
       ...options,
     };
 
@@ -82,6 +89,12 @@ export default abstract class BaseRestClient {
       );
     }
 
+    if (hasAllCredentials && !this.options.customSignMessageFn) {
+      // Provide a user friendly error message if the user is using an outdated Node.js version (where Web Crypto API is not available).
+      // A few users have been caught out by using the end-of-life Node.js v18 release.
+      checkWebCryptoAPISupported();
+    }
+
     this.globalRequestOptions = {
       // in ms == 5 minutes by default
       timeout: 1000 * 60 * 5,
@@ -93,8 +106,14 @@ export default abstract class BaseRestClient {
       this.globalRequestOptions.headers = {};
     }
 
+    if ((options.market as any) === 'demo') {
+      throw new Error(
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor',
+      );
+    }
+
     //  Note: `x-simulated-trading: 1` needs to be added to the header of the Demo Trading request.
-    if (options.market === 'demo') {
+    if (options.demoTrading) {
       this.globalRequestOptions.headers['x-simulated-trading'] = 1;
     }
 
@@ -105,13 +124,13 @@ export default abstract class BaseRestClient {
     if (this.options.keepAlive) {
       // Extract existing https agent parameters, if provided, to prevent the keepAlive flag from overwriting an existing https agent completely
       const existingHttpsAgent = this.globalRequestOptions.httpsAgent as
-        | https.Agent
+        | Agent
         | undefined;
       const existingAgentOptions = existingHttpsAgent?.options || {};
 
       // For more advanced configuration, raise an issue on GitHub or use the "requestOptions"
       // parameter to define a custom httpsAgent with the desired properties
-      this.globalRequestOptions.httpsAgent = new https.Agent({
+      this.globalRequestOptions.httpsAgent = new Agent({
         ...existingAgentOptions,
         keepAlive: true,
         keepAliveMsecs: this.options.keepAliveMsecs,
@@ -167,9 +186,11 @@ export default abstract class BaseRestClient {
     };
 
     // Delete any params without value
-    for (const key in params) {
-      if (typeof params[key] === 'undefined') {
-        delete params[key];
+    if (params) {
+      for (const key in params) {
+        if (typeof (params as any)[key] === 'undefined') {
+          delete (params as any)[key];
+        }
       }
     }
 
@@ -239,6 +260,18 @@ export default abstract class BaseRestClient {
       .catch((e) => this.parseException(e));
   }
 
+  private async signMessage(
+    paramsStr: string,
+    secret: string,
+    method: SignEncodeMethod,
+    algorithm: SignAlgorithm,
+  ): Promise<string> {
+    if (typeof this.options.customSignMessageFn === 'function') {
+      return this.options.customSignMessageFn(paramsStr, secret);
+    }
+    return await signMessage(paramsStr, secret, method, algorithm);
+  }
+
   /**
    * Sign request
    */
@@ -278,7 +311,12 @@ export default abstract class BaseRestClient {
 
     return {
       ...res,
-      sign: await signMessage(message, this.apiSecret),
+      sign: await this.signMessage(
+        message,
+        this.apiSecret,
+        'base64',
+        'SHA-256',
+      ),
     };
   }
 

@@ -45,7 +45,7 @@ wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
 
-wsClient.on('error', (data) => {
+wsClient.on('exception', (data) => {
   console.error('ws exception: ', data);
 
   const INVALID_API_KEY_ERROR = '60005';

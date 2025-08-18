@@ -3,7 +3,7 @@ import {
   MarginMode,
   PositionSide,
   WithdrawState,
-} from '../shared';
+} from '../shared.js';
 
 export interface SetLeverageRequest {
   instId?: string;

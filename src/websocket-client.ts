@@ -1,224 +1,100 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { EventEmitter } from 'events';
-import WebSocket from 'isomorphic-ws';
 
+import { APICredentials } from './types/shared.js';
 import {
-  APICredentials,
-  WebsocketClientOptions,
+  WsAPIOperationResponseMap,
+  WSAPIRequestFlags,
+  WSAPIRequestOKX,
+  WsAPITopicRequestParamMap,
+  WsAPIWsKeyTopicMap,
   WsAuthRequest,
+  WSOperation,
+  WsRequestOperationOKX,
+} from './types/websockets/ws-api.js';
+import { MessageEventLike, WsDataEvent } from './types/websockets/ws-events.js';
+import { WSClientConfigurableOptions } from './types/websockets/ws-general.js';
+import {
   WsAuthRequestArg,
   WsChannelSubUnSubRequestArg,
-  WSClientConfigurableOptions,
-  WsDataEvent,
-  WsEvent,
-  WsSubRequest,
-  WsUnsubRequest,
-} from './types';
+} from './types/websockets/ws-request.js';
 import {
-  DefaultLogger,
-  getMaxTopicsPerSubscribeEvent,
-  getWsKeyForTopicChannel,
+  BaseWebsocketClient,
+  EmittableEvent,
+  MidflightWsRequestEvent,
+  WSClientEventMap,
+} from './util/BaseWSClient.js';
+import { DefaultLogger } from './util/logger.js';
+import {
   isConnCountEvent,
+  isWSAPIResponse,
   isWsDataEvent,
   isWsErrorEvent,
   isWsLoginEvent,
-  isWsPong,
   isWsSubscribeEvent,
   isWsUnsubscribeEvent,
+  neverGuard,
+} from './util/typeGuards.js';
+import {
+  SignAlgorithm,
+  SignEncodeMethod,
+  signMessage,
+} from './util/webCryptoAPI.js';
+import {
+  getDemoWsKey,
+  getPromiseRefForWSAPIRequest,
+  getWsKeyForMarket,
+  getWsKeyForTopicChannel,
+  getWsUrlForWsKey,
+  isWsPong,
   PRIVATE_WS_KEYS,
   PUBLIC_WS_KEYS,
-  WS_KEY_MAP,
-  WsConnectionStateEnum,
-  WsStore,
-} from './util';
-import { signMessage } from './util/node-support';
-import {
-  getWsKeyForMarket,
-  getWsUrlForWsKey,
-  safeTerminateWs,
+  requiresWSAPITag,
+  validateWSAPITag,
   WS_EVENT_CODE_ENUM,
+  WS_KEY_MAP,
+  WS_LOGGER_CATEGORY,
   WsKey,
-} from './util/websocket-util';
-
-const loggerCategory = { category: 'okx-ws' };
-
-export type WsClientEvent =
-  | 'open'
-  | 'update'
-  | 'close'
-  | 'error'
-  | 'reconnect'
-  | 'reconnected'
-  | 'response';
-
-type WsKeyObject = { wsKey: WsKey };
-
-interface WebsocketClientEvents {
-  /** Connection opened. If this connection was previously opened and reconnected, expect the reconnected event instead */
-  open: (evt: { event: any } & WsKeyObject) => void;
-  /** Reconnecting a dropped connection */
-  reconnect: (evt: { event: any } & WsKeyObject) => void;
-  /** Successfully reconnected a connection that dropped */
-  reconnected: (evt: { event: any } & WsKeyObject) => void;
-  /** Connection closed */
-  close: (evt: { event: any } & WsKeyObject) => void;
-  /** Received reply to websocket command (e.g. after subscribing to topics or authenticating) */
-  response: (response: WsEvent & WsKeyObject) => void;
-  /** Received data for a topic/channel */
-  update: (response: WsDataEvent & WsKeyObject) => void;
-  /** Exception from ws client OR custom listeners */
-  error: (response: any) => void;
-}
+  WsTopicRequest,
+} from './util/websocket-util.js';
+import { WSConnectedResult } from './util/WsStore.types.js';
 
 // Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
 export declare interface WebsocketClient {
-  on<U extends keyof WebsocketClientEvents>(
+  on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
     event: U,
-    listener: WebsocketClientEvents[U],
+    listener: WSClientEventMap<WsKey>[U],
   ): this;
 
-  emit<U extends keyof WebsocketClientEvents>(
+  emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
     event: U,
-    ...args: Parameters<WebsocketClientEvents[U]>
+    ...args: Parameters<WSClientEventMap<WsKey>[U]>
   ): boolean;
 }
 
-export class WebsocketClient extends EventEmitter {
-  private logger: typeof DefaultLogger;
+export class WebsocketClient extends BaseWebsocketClient<
+  WsKey,
+  WsRequestOperationOKX<object>
+> {
+  constructor(options?: WSClientConfigurableOptions, logger?: DefaultLogger) {
+    super(options, logger);
 
-  private options: WebsocketClientOptions;
-
-  private wsStore: WsStore<WsChannelSubUnSubRequestArg>;
-
-  constructor(
-    options: WSClientConfigurableOptions,
-    logger?: typeof DefaultLogger,
-  ) {
-    super();
-
-    this.logger = logger || DefaultLogger;
-    this.wsStore = new WsStore(this.logger);
-
-    this.options = {
-      market: 'prod',
-      pongTimeout: 2000,
-      pingInterval: 10000,
-      reconnectTimeout: 500,
-      ...options,
-    };
-
-    // add default error handling so this doesn't crash node (if the user didn't set a handler)
-    this.on('error', () => {});
-  }
-
-  /**
-   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
-   * @param wsEvents topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
-   */
-  public subscribe(
-    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean,
-  ) {
-    const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
-
-    wsEventArgs.forEach((wsEventArg) => {
-      const wsKey = getWsKeyForTopicChannel(
-        this.options.market,
-        wsEventArg.channel,
-        isPrivateTopic,
+    if ((this.options.market as any) === 'demo') {
+      throw new Error(
+        'ERROR: to use demo trading, set the "demoTrading: true" flag in the constructor. The "demo" market is not valid any more.',
       );
-
-      // Persist topic for reconnects
-      this.wsStore.addComplexTopic(wsKey, wsEventArg);
-
-      // if connected, send subscription request
-      if (
-        this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.CONNECTED)
-      ) {
-        return this.requestSubscribeTopics(wsKey, [wsEventArg]);
-      }
-
-      // start connection process if it hasn't yet begun. Topics are automatically subscribed to on-connect
-      if (
-        !this.wsStore.isConnectionState(
-          wsKey,
-          WsConnectionStateEnum.CONNECTING,
-        ) &&
-        !this.wsStore.isConnectionState(
-          wsKey,
-          WsConnectionStateEnum.RECONNECTING,
-        )
-      ) {
-        return this.connect(wsKey);
-      }
-    });
-  }
-
-  /**
-   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
-   * @param wsTopics topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
-   */
-  public unsubscribe(
-    wsTopics: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean,
-  ) {
-    const wsEventArgs = Array.isArray(wsTopics) ? wsTopics : [wsTopics];
-    wsEventArgs.forEach((wsEventArg) => {
-      const wsKey = getWsKeyForTopicChannel(
-        this.options.market,
-        wsEventArg.channel,
-        isPrivateTopic,
-      );
-
-      // Remove topic from persistence for reconnects
-      this.wsStore.deleteComplexTopic(wsKey, wsEventArg);
-
-      // unsubscribe request only necessary if active connection exists
-      if (
-        this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.CONNECTED)
-      ) {
-        this.requestUnsubscribeTopics(wsKey, [wsEventArg]);
-      }
-    });
-  }
-
-  /** Get the WsStore that tracks websocket & topic state */
-  public getWsStore(): WsStore<WsChannelSubUnSubRequestArg> {
-    return this.wsStore;
-  }
-
-  public close(wsKey: WsKey, force?: boolean) {
-    this.logger.info('Closing connection', { ...loggerCategory, wsKey });
-    this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.CLOSING);
-    this.clearTimers(wsKey);
-
-    const ws = this.wsStore.getWs(wsKey);
-    ws?.close();
-    if (force) {
-      safeTerminateWs(ws);
     }
-  }
-
-  public closeAll(force?: boolean) {
-    const keys = this.wsStore.getKeys();
-    this.logger.info(`Closing all ws connections: ${keys}`);
-    keys.forEach((key) => {
-      this.close(key, force);
-    });
   }
 
   /**
    * Request connection of all dependent (public & private) websockets, instead of waiting for automatic connection by library
    */
-  public connectAll(): Promise<WebSocket | undefined>[] {
+  public connectAll(): Promise<WSConnectedResult | undefined>[] {
     return [this.connectPublic(), this.connectPrivate()];
   }
 
   public connectPublic(
     businessEndpoint?: boolean,
-  ): Promise<WebSocket | undefined> {
+  ): Promise<WSConnectedResult | undefined> {
     const isPrivate = false;
     const wsKey = getWsKeyForMarket(
       this.options.market,
@@ -230,7 +106,7 @@ export class WebsocketClient extends EventEmitter {
 
   public connectPrivate(
     businessEndpoint?: boolean,
-  ): Promise<WebSocket | undefined> {
+  ): Promise<WSConnectedResult | undefined> {
     const isPrivate = true;
     const wsKey = getWsKeyForMarket(
       this.options.market,
@@ -240,93 +116,324 @@ export class WebsocketClient extends EventEmitter {
     return this.connect(WS_KEY_MAP[wsKey]);
   }
 
-  private async connect(wsKey: WsKey): Promise<WebSocket | undefined> {
-    try {
-      if (this.wsStore.isWsOpen(wsKey)) {
-        this.logger.error(
-          'Refused to connect to ws with existing active connection',
-          { ...loggerCategory, wsKey },
-        );
-        return this.wsStore.getWs(wsKey);
-      }
-
-      if (
-        this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.CONNECTING)
-      ) {
-        this.logger.error(
-          'Refused to connect to ws, connection attempt already active',
-          { ...loggerCategory, wsKey },
-        );
-        return;
-      }
-
-      if (
-        !this.wsStore.getConnectionState(wsKey) ||
-        this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.INITIAL)
-      ) {
-        this.wsStore.setConnectionState(
-          wsKey,
-          WsConnectionStateEnum.CONNECTING,
-        );
-      }
-
-      const url = getWsUrlForWsKey(wsKey, this.options, this.logger);
-      const ws = this.connectToWsUrl(url, wsKey);
-
-      return this.wsStore.setWs(wsKey, ws);
-    } catch (err) {
-      this.parseWsError('Connection failed', err, wsKey);
-      this.reconnectWithDelay(wsKey, this.options.reconnectTimeout);
-    }
-  }
-
-  private parseWsError(context: string, error: any, wsKey: WsKey) {
-    if (!error.message) {
-      this.logger.error(`${context} due to unexpected error: `, error);
-      this.emit('error', error);
-      return;
-    }
-
-    switch (error.message) {
-      default:
-        if (
-          this.wsStore.getConnectionState(wsKey) !==
-          WsConnectionStateEnum.CLOSING
-        ) {
-          this.logger.error(
-            `${context} due to unexpected response error: "${
-              error?.msg || error?.message || error
-            }"`,
-            { ...loggerCategory, wsKey, error },
-          );
-          this.executeReconnectableClose(wsKey, 'unhandled onWsError');
-        } else {
-          this.logger.info(
-            `${wsKey} socket forcefully closed. Will not reconnect.`,
-          );
-        }
-        break;
-    }
-    this.emit('error', error);
+  /**
+   * Ensures the WS API connection is active and ready.
+   *
+   * You do not need to call this, but if you call this before making any WS API requests,
+   * it can accelerate the first request (by preparing the connection in advance).
+   */
+  public connectWSAPI(): Promise<unknown[]> {
+    /** This call automatically ensures the connection is active AND authenticated before resolving */
+    return Promise.allSettled([
+      this.assertIsAuthenticated(this.getMarketWsKey('private')),
+      this.assertIsAuthenticated(this.getMarketWsKey('business')),
+    ]);
   }
 
   /**
-   * Return params required to make authorized request
+   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
+   * @param wsEvents topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
    */
-  private async getWsAuthRequest(
+  public subscribe(
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+  ): Promise<unknown>[] {
+    const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
+
+    const topicRequestsByWsKey: Record<
+      WsKey | string,
+      WsTopicRequest<string, object>[]
+    > = {};
+
+    // Format and batch topic requests by WsKey (resolved dynamically)
+    wsEventArgs.forEach((wsEvent) => {
+      const { channel, ...payload } = wsEvent;
+
+      const normalisedEvent: WsTopicRequest<string, object> = {
+        topic: channel,
+        payload,
+      };
+
+      const wsKey = getWsKeyForTopicChannel(
+        this.options.market,
+        channel,
+        isPrivateTopic,
+      );
+
+      // Arrange into per-wsKey sorted lists
+      if (!topicRequestsByWsKey[wsKey]) {
+        topicRequestsByWsKey[wsKey] = [];
+      }
+
+      topicRequestsByWsKey[wsKey].push(normalisedEvent);
+    });
+
+    const subscribeRequestPromises: Promise<unknown>[] = [];
+    for (const wsKeyUntyped in topicRequestsByWsKey) {
+      subscribeRequestPromises.push(
+        this.subscribeTopicsForWsKey(
+          topicRequestsByWsKey[wsKeyUntyped],
+          wsKeyUntyped as WsKey,
+        ),
+      );
+    }
+
+    return subscribeRequestPromises;
+  }
+
+  /**
+   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
+   * @param wsTopics topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   */
+  public unsubscribe(
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+  ) {
+    const wsEventArgs = Array.isArray(wsEvents) ? wsEvents : [wsEvents];
+
+    const topicRequestsByWsKey: Record<
+      WsKey | string,
+      WsTopicRequest<string, object>[]
+    > = {};
+
+    // Format and batch topic requests by WsKey (resolved dynamically)
+    wsEventArgs.forEach((wsEvent) => {
+      const { channel, ...payload } = wsEvent;
+
+      const normalisedEvent: WsTopicRequest<string, object> = {
+        topic: channel,
+        payload,
+      };
+
+      const wsKey = getWsKeyForTopicChannel(
+        this.options.market,
+        channel,
+        isPrivateTopic,
+      );
+
+      // Arrange into per-wsKey sorted lists
+      if (!topicRequestsByWsKey[wsKey]) {
+        topicRequestsByWsKey[wsKey] = [];
+      }
+
+      topicRequestsByWsKey[wsKey].push(normalisedEvent);
+    });
+
+    const unsubscribeRequestPromises: Promise<unknown>[] = [];
+    for (const wsKeyUntyped in topicRequestsByWsKey) {
+      unsubscribeRequestPromises.push(
+        this.unsubscribeTopicsForWsKey(
+          topicRequestsByWsKey[wsKeyUntyped],
+          wsKeyUntyped as WsKey,
+        ),
+      );
+    }
+
+    return unsubscribeRequestPromises;
+  }
+
+  /**
+   *
+   *
+   * Internal methods required to integrate with the BaseWSClient
+   *
+   *
+   */
+
+  public getMarketWsKey(type: 'private' | 'business'): WsKey {
+    // returns private or business ws key for the active api market
+    // defaults to global
+    // automatically resolves to demo trading wsKeys under the hood (WSClient)
+
+    const isPrivateType = type === 'private';
+    const isBusinessType = type === 'business';
+
+    switch (this.options.market) {
+      case 'EEA': {
+        return isPrivateType
+          ? WS_KEY_MAP.eeaLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.eeaLiveBusiness
+            : WS_KEY_MAP.eeaLivePublic;
+      }
+      case undefined:
+      case 'prod':
+      case 'GLOBAL': {
+        return isPrivateType
+          ? WS_KEY_MAP.eeaLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.eeaLiveBusiness
+            : WS_KEY_MAP.eeaLivePublic;
+      }
+      case 'US': {
+        return isPrivateType
+          ? WS_KEY_MAP.usLivePrivate
+          : isBusinessType
+            ? WS_KEY_MAP.usLiveBusiness
+            : WS_KEY_MAP.usLivePublic;
+      }
+
+      default: {
+        throw neverGuard(
+          this.options.market,
+          `Unhandled market type "${this.options.market}"`,
+        );
+      }
+    }
+  }
+
+  protected sendPingEvent(wsKey: WsKey): void {
+    this.tryWsSend(wsKey, 'ping');
+  }
+
+  protected sendPongEvent(wsKey: WsKey): void {
+    this.tryWsSend(wsKey, 'pong');
+  }
+
+  protected isWsPing(data: any): boolean {
+    if (data?.data === 'ping') {
+      return true;
+    }
+    return false;
+  }
+
+  protected isWsPong(data: any): boolean {
+    return isWsPong(data);
+  }
+
+  protected isPrivateTopicRequest(
+    _request: WsTopicRequest<string>,
     wsKey: WsKey,
-  ): Promise<WsAuthRequest | undefined> {
+  ): boolean {
+    return PRIVATE_WS_KEYS.includes(wsKey);
+  }
+
+  protected getPrivateWSKeys(): WsKey[] {
+    return PRIVATE_WS_KEYS;
+  }
+
+  protected isAuthOnConnectWsKey(wsKey: WsKey): boolean {
+    return PRIVATE_WS_KEYS.includes(wsKey);
+  }
+
+  protected async getWsUrl(wsKey: WsKey): Promise<string> {
+    return getWsUrlForWsKey(wsKey, this.options, this.logger);
+  }
+
+  protected getMaxTopicsPerSubscribeEvent(): number | null {
+    return null;
+  }
+
+  /**
+   * @returns one or more correctly structured request events for performing a operations over WS. This can vary per exchange spec.
+   */
+  protected async getWsRequestEvents(
+    operation: WSOperation,
+    requests: WsTopicRequest<string, object>[],
+  ): Promise<MidflightWsRequestEvent<WsRequestOperationOKX<object>>[]> {
+    const wsRequestBuildingErrors: unknown[] = [];
+
+    const topics = requests.map(
+      (r) => r.topic + ',' + Object.values(r.payload || {}).join(','),
+    );
+
+    // Previously used to track topics in a request. Keeping this for subscribe/unsubscribe requests, no need for incremental values
+    const req_id =
+      ['subscribe', 'unsubscribe'].includes(operation) && topics.length
+        ? topics.join(',')
+        : this.getNewRequestId().toFixed();
+
+    /**
+      {
+        "op":"subscribe",
+        "args":[
+            {
+              "channel": "tickers",
+              "instId": "BTC-USDT"
+            },
+            {
+              "channel": "tickers",
+              "instId": "BTC-USDT"
+            }
+        ]
+      }
+    */
+    const wsEvent: WsRequestOperationOKX<object> = {
+      id: `${this.getNewRequestId()}`,
+      op: operation,
+      args: requests.map((request) => {
+        // const request = {
+        //   topic: 'tickers',
+        //   payload: { instId: 'BTC-USDT' },
+        // };
+        // becomes:
+        // const request = {
+        //   channel: 'ticker',
+        //   instId: 'BTC-USDT',
+        // };
+        return {
+          channel: request.topic,
+          ...request.payload,
+        };
+      }),
+    };
+
+    const midflightWsEvent: MidflightWsRequestEvent<
+      WsRequestOperationOKX<object>
+    > = {
+      requestKey: req_id,
+      requestEvent: wsEvent,
+    };
+
+    if (wsRequestBuildingErrors.length) {
+      const label =
+        wsRequestBuildingErrors.length === requests.length ? 'all' : 'some';
+
+      this.logger.error(
+        `Failed to build/send ${wsRequestBuildingErrors.length} event(s) for ${label} WS requests due to exceptions`,
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsRequestBuildingErrors,
+          wsRequestBuildingErrorsStringified: JSON.stringify(
+            wsRequestBuildingErrors,
+            null,
+            2,
+          ),
+        },
+      );
+    }
+
+    return [midflightWsEvent];
+  }
+
+  private async signMessage(
+    paramsStr: string,
+    secret: string,
+    method: SignEncodeMethod,
+    algorithm: SignAlgorithm,
+  ): Promise<string> {
+    if (typeof this.options.customSignMessageFn === 'function') {
+      return this.options.customSignMessageFn(paramsStr, secret);
+    }
+    return await signMessage(paramsStr, secret, method, algorithm);
+  }
+
+  protected async getWsAuthRequestEvent(
+    wsKey: WsKey,
+  ): Promise<WsRequestOperationOKX<WsAuthRequestArg>> {
     const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
     const accounts = this.options.accounts;
     const hasAccountsToAuth = !!accounts?.length;
     if (isPublicWsKey || !accounts || !hasAccountsToAuth) {
-      this.logger.debug('Starting public only websocket client.', {
-        ...loggerCategory,
+      this.logger.trace('Starting public only websocket client.', {
+        ...WS_LOGGER_CATEGORY,
         wsKey,
         isPublicWsKey,
         hasAccountsToAuth,
       });
-      return;
+      throw new Error('Cannot auth - missing api or secret or pass in config');
     }
 
     try {
@@ -343,9 +450,10 @@ export class WebsocketClient extends EventEmitter {
             timestamp: timestamp,
             sign: signature,
           };
-        } catch (e) {
+        } catch (e: any) {
           this.logger.error(
-            `Account with key ${credentials.apiKey} could not be authenticateD: ${e}`,
+            `Account with key ${credentials.apiKey} could not be authenticated: ${e}`,
+            e?.stack,
           );
         }
         return;
@@ -359,14 +467,19 @@ export class WebsocketClient extends EventEmitter {
       );
 
       const authParams: WsAuthRequest = {
+        id: `${this.getNewRequestId()}`,
         op: 'login',
         args: authRequests,
       };
 
       return authParams;
     } catch (e) {
-      this.logger.error(e, { ...loggerCategory, wsKey });
-      return;
+      this.logger.error({
+        ...WS_LOGGER_CATEGORY,
+        wsKey,
+        error: e,
+      });
+      throw e;
     }
   }
 
@@ -377,17 +490,17 @@ export class WebsocketClient extends EventEmitter {
     const { apiKey, apiSecret } = credentials;
 
     if (!apiKey || !apiSecret) {
-      this.logger.warning(
+      this.logger.info(
         'Cannot authenticate websocket, either api or secret missing.',
-        { ...loggerCategory, wsKey },
+        { ...WS_LOGGER_CATEGORY, wsKey },
       );
       throw new Error(
         `Cannot auth - missing api or secret in config (key: ${apiKey})`,
       );
     }
 
-    this.logger.debug("Getting auth'd request params", {
-      ...loggerCategory,
+    this.logger.trace("Getting auth'd request params", {
+      ...WS_LOGGER_CATEGORY,
       wsKey,
     });
 
@@ -396,7 +509,12 @@ export class WebsocketClient extends EventEmitter {
 
     const signatureRequest = timestamp + 'GET' + '/users/self/verify';
 
-    const signature = await signMessage(signatureRequest, apiSecret);
+    const signature = await this.signMessage(
+      signatureRequest,
+      apiSecret,
+      'base64',
+      'SHA-256',
+    );
 
     return {
       signature,
@@ -404,327 +522,138 @@ export class WebsocketClient extends EventEmitter {
     };
   }
 
-  private async sendAuthRequest(wsKey: WsKey): Promise<void> {
-    const logContext = { ...loggerCategory, wsKey, method: 'sendAuthRequest' };
-    this.logger.info('Sending auth request...', logContext);
-    try {
-      const authRequest = await this.getWsAuthRequest(wsKey);
-      if (!authRequest) {
-        throw new Error('Cannot authenticate this connection');
-      }
-      this.logger.info(
-        `Sending authentication request on wsKey(${wsKey})`,
-        logContext,
-      );
-      this.logger.silly(
-        `Authenticating with event: ${JSON.stringify(
-          authRequest,
-          null,
-          2,
-        )} on wsKey(${wsKey})`,
-        logContext,
-      );
-      return this.tryWsSend(wsKey, JSON.stringify(authRequest));
-    } catch (e) {
-      this.logger.error(e, logContext);
-    }
-  }
-
-  private reconnectWithDelay(wsKey: WsKey, connectionDelayMs: number) {
-    this.clearTimers(wsKey);
-
-    if (
-      this.wsStore.getConnectionState(wsKey) !==
-      WsConnectionStateEnum.CONNECTING
-    ) {
-      this.wsStore.setConnectionState(
-        wsKey,
-        WsConnectionStateEnum.RECONNECTING,
-      );
-    }
-
-    if (this.wsStore.get(wsKey)?.activeReconnectTimer) {
-      this.clearReconnectTimer(wsKey);
-    }
-
-    this.wsStore.get(wsKey, true).activeReconnectTimer = setTimeout(() => {
-      this.logger.info('Reconnecting to websocket', {
-        ...loggerCategory,
-        wsKey,
-      });
-      this.clearReconnectTimer(wsKey);
-      this.connect(wsKey);
-    }, connectionDelayMs);
-  }
-
-  private ping(wsKey: WsKey) {
-    if (this.wsStore.get(wsKey, true).activePongTimer) {
-      return;
-    }
-
-    this.clearPongTimer(wsKey);
-
-    this.logger.silly('Sending ping', { ...loggerCategory, wsKey });
-    this.tryWsSend(wsKey, 'ping');
-
-    this.wsStore.get(wsKey, true).activePongTimer = setTimeout(
-      () => this.executeReconnectableClose(wsKey, 'Pong timeout'),
-      this.options.pongTimeout,
-    );
-  }
-
   /**
-   * Closes a connection, if it's even open. If open, this will trigger a reconnect asynchronously.
-   * If closed, trigger a reconnect immediately
+   * Abstraction called to sort ws events into emittable event types (response to a request, data update, etc)
    */
-  private executeReconnectableClose(wsKey: WsKey, reason: string) {
-    this.logger.info(`${reason} - closing socket to reconnect`, {
-      ...loggerCategory,
+  protected resolveEmittableEvents(
+    wsKey: WsKey,
+    event: MessageEventLike,
+  ): EmittableEvent[] {
+    const results: EmittableEvent[] = [];
+
+    const logContext = {
+      ...WS_LOGGER_CATEGORY,
       wsKey,
-      reason,
-    });
+      method: 'resolveEmittableEvents',
+    };
 
-    const wasOpen = this.wsStore.isWsOpen(wsKey);
-    if (wasOpen) {
-      safeTerminateWs(this.wsStore.getWs(wsKey), true);
-    }
+    try {
+      const msg = JSON.parse(event.data);
+      const emittableEvent = { ...msg, wsKey };
 
-    delete this.wsStore.get(wsKey, true).activePongTimer;
-    this.clearPingTimer(wsKey);
-    this.clearPongTimer(wsKey);
+      /**
+       * WS API response handling
+       */
+      if (isWSAPIResponse(emittableEvent)) {
+        // const eg1 = {
+        //   id: '2',
+        //   op: 'order',
+        //   code: '1',
+        //   msg: '',
+        //   data: [
+        //     {
+        //       tag: '159881cb7207BCDE',
+        //       ts: '1753783406701',
+        //       ordId: '',
+        //       clOrdId: '',
+        //       sCode: '51008',
+        //       sMsg: 'Order failed. Insufficient USDT balance in account.',
+        //     },
+        //   ],
+        //   inTime: '1753783406701275',
+        //   outTime: '1753783406702251',
+        //   wsKey: 'prodPrivate',
+        // };
 
-    if (!wasOpen) {
-      this.logger.info(
-        `${reason} - socket already closed - trigger immediate reconnect`,
-        {
-          ...loggerCategory,
+        const retCode = emittableEvent.code;
+        const reqId = emittableEvent.id;
+        const isError = retCode !== '0';
+
+        // check getPromiseRefForWSAPIRequest
+        const promiseRef = [emittableEvent.id, emittableEvent.op].join('_');
+
+        const loggableContext = {
           wsKey,
-          reason,
-        },
-      );
-      this.reconnectWithDelay(wsKey, this.options.reconnectTimeout);
-    }
-  }
+          promiseRef,
+          parsedEvent: emittableEvent,
+        };
 
-  private clearTimers(wsKey: WsKey) {
-    this.clearPingTimer(wsKey);
-    this.clearPongTimer(wsKey);
-    this.clearReconnectTimer(wsKey);
-  }
+        if (!reqId) {
+          this.logger.error(
+            'WS API response is missing reqId - promisified workflow could get stuck. If this happens, please get in touch with steps to reproduce. Trace:',
+            loggableContext,
+          );
+        }
 
-  // Send a ping at intervals
-  private clearPingTimer(wsKey: WsKey) {
-    const wsState = this.wsStore.get(wsKey);
-    if (wsState?.activePingTimer) {
-      clearInterval(wsState.activePingTimer);
-      wsState.activePingTimer = undefined;
-    }
-  }
+        if (isError) {
+          try {
+            this.getWsStore().rejectDeferredPromise(
+              wsKey,
+              promiseRef,
+              emittableEvent,
+              true,
+            );
+          } catch (e) {
+            this.logger.error('Exception trying to reject WSAPI promise', {
+              ...loggableContext,
+              error: e,
+            });
+          }
 
-  // Expect a pong within a time limit
-  private clearPongTimer(wsKey: WsKey) {
-    const wsState = this.wsStore.get(wsKey);
-    if (wsState?.activePongTimer) {
-      clearTimeout(wsState.activePongTimer);
-      wsState.activePongTimer = undefined;
-    }
-  }
+          results.push({
+            eventType: 'exception',
+            event: emittableEvent,
+            isWSAPIResponse: true,
+          });
+          return results;
+        }
 
-  private clearReconnectTimer(wsKey: WsKey) {
-    const wsState = this.wsStore.get(wsKey);
-    if (wsState?.activeReconnectTimer) {
-      clearTimeout(wsState.activeReconnectTimer);
-      wsState.activeReconnectTimer = undefined;
-    }
-  }
+        // WS API Success
+        try {
+          this.getWsStore().resolveDeferredPromise(
+            wsKey,
+            promiseRef,
+            emittableEvent,
+            true,
+          );
+        } catch (e) {
+          this.logger.error('Exception trying to resolve WSAPI promise', {
+            ...loggableContext,
+            error: e,
+          });
+        }
 
-  /**
-   * @private Use the `subscribe(topics)` method to subscribe to topics. Send WS message to subscribe to topics.
-   */
-  private requestSubscribeTopics(
-    wsKey: WsKey,
-    topics: WsChannelSubUnSubRequestArg[],
-  ) {
-    if (!topics.length) {
-      return;
-    }
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+          isWSAPIResponse: true,
+        });
 
-    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-      this.options.market,
-    );
-    if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
-      this.logger.silly(
-        `Subscribing to topics in batches of ${maxTopicsPerEvent}`,
-      );
-      for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
-        const batch = topics.slice(i, i + maxTopicsPerEvent);
-        this.logger.silly(`Subscribing to batch of ${batch.length}`);
-        this.requestSubscribeTopics(wsKey, batch);
+        return results;
       }
-      this.logger.silly(
-        `Finished batch subscribing to ${topics.length} topics`,
-      );
-      return;
-    }
-
-    const request: WsSubRequest = {
-      op: 'subscribe',
-      args: topics,
-    };
-
-    const wsMessage = JSON.stringify(request);
-
-    this.tryWsSend(wsKey, wsMessage);
-  }
-
-  /**
-   * @private Use the `unsubscribe(topics)` method to unsubscribe from topics. Send WS message to unsubscribe from topics.
-   */
-  private requestUnsubscribeTopics(
-    wsKey: WsKey,
-    topics: WsChannelSubUnSubRequestArg[],
-  ) {
-    if (!topics.length) {
-      return;
-    }
-
-    const maxTopicsPerEvent = getMaxTopicsPerSubscribeEvent(
-      this.options.market,
-    );
-    if (maxTopicsPerEvent && topics.length > maxTopicsPerEvent) {
-      this.logger.silly(
-        `Unsubscribing to topics in batches of ${maxTopicsPerEvent}`,
-      );
-      for (let i = 0; i < topics.length; i += maxTopicsPerEvent) {
-        const batch = topics.slice(i, i + maxTopicsPerEvent);
-        this.logger.silly(`Unsubscribing to batch of ${batch.length}`);
-        this.requestUnsubscribeTopics(wsKey, batch);
-      }
-      this.logger.silly(
-        `Finished batch unsubscribing to ${topics.length} topics`,
-      );
-      return;
-    }
-
-    const request: WsUnsubRequest = {
-      op: 'unsubscribe',
-      args: topics,
-    };
-
-    const wsMessage = JSON.stringify(request);
-
-    this.tryWsSend(wsKey, wsMessage);
-  }
-
-  public tryWsSend(wsKey: WsKey, wsMessage: string): void {
-    try {
-      this.logger.silly('Sending upstream ws message: ', {
-        ...loggerCategory,
-        wsMessage,
-        wsKey,
-      });
-      if (!wsKey) {
-        throw new Error(
-          `Cannot send message (wsKey not provided: wsKey(${wsKey}))`,
-        );
-      }
-
-      const ws = this.wsStore.getWs(wsKey);
-      if (!ws) {
-        throw new Error(
-          `${wsKey} socket not connected yet, call "connect(${wsKey}) first then try again when the "open" event arrives`,
-        );
-      }
-      ws.send(wsMessage);
-    } catch (e) {
-      this.logger.error('Failed to send WS message', {
-        ...loggerCategory,
-        wsMessage,
-        wsKey,
-        exception: e,
-      });
-    }
-  }
-
-  private connectToWsUrl(url: string, wsKey: WsKey): WebSocket {
-    this.logger.silly(`Opening WS connection to URL: ${url}`, {
-      ...loggerCategory,
-      wsKey,
-    });
-
-    const agent = this.options.requestOptions?.agent;
-    const ws = new WebSocket(url, undefined, agent ? { agent } : undefined);
-    ws.onopen = (event) => this.onWsOpen(event, wsKey);
-    ws.onmessage = (event) => this.onWsMessage(event, wsKey);
-    ws.onerror = (event) =>
-      this.parseWsError('Websocket onWsError', event, wsKey);
-    ws.onclose = (event) => this.onWsClose(event, wsKey);
-
-    return ws;
-  }
-
-  private async onWsOpen(event: unknown, wsKey: WsKey) {
-    if (
-      this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.CONNECTING)
-    ) {
-      this.logger.info('Websocket connected', {
-        ...loggerCategory,
-        wsKey,
-        market: this.options.market,
-      });
-      this.emit('open', { wsKey, event });
-    } else if (
-      this.wsStore.isConnectionState(wsKey, WsConnectionStateEnum.RECONNECTING)
-    ) {
-      this.logger.info('Websocket reconnected', { ...loggerCategory, wsKey });
-      this.emit('reconnected', { wsKey, event });
-    }
-
-    this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.CONNECTED);
-    this.wsStore.get(wsKey, true)!.activePingTimer = setInterval(
-      () => this.ping(wsKey),
-      this.options.pingInterval,
-    );
-
-    // Private websockets require an auth packet to be sent after opening the connection
-    if (PRIVATE_WS_KEYS.includes(wsKey)) {
-      // Any requested private topics will be subscribed to once authentication succeeds (in onWsMessage handler)
-      await this.sendAuthRequest(wsKey);
-
-      // Private topics will be subscribed to once authentication is confirmed as successful
-      return;
-    }
-
-    // Public topics can be subscribed to immediately
-    const topics = [
-      ...this.wsStore.getTopics(wsKey),
-    ] as WsChannelSubUnSubRequestArg[];
-
-    // Since public channels have their own ws key, these topics must be public ones already
-    this.requestSubscribeTopics(wsKey, topics);
-  }
-
-  private onWsMessage(event: any, wsKey: WsKey) {
-    const logContext = { ...loggerCategory, wsKey, method: 'onWsMessage' };
-
-    try {
-      // any message can clear the pong timer - wouldn't get a message if the ws dropped
-      this.clearPongTimer(wsKey);
-
-      if (isWsPong(event)) {
-        this.logger.silly('Received pong', logContext);
-        return;
-      }
-
-      const msg = JSON.parse(event?.data || event);
 
       if (isWsErrorEvent(msg)) {
-        this.logger.error('WS error event: ', { ...msg, wsKey });
-        return this.emit('error', { ...msg, wsKey });
+        this.logger.error('WS Error received', {
+          ...logContext,
+          wsKey,
+          message: msg || 'no message',
+          // messageType: typeof msg,
+          // messageString: JSON.stringify(msg),
+          event,
+        });
+        results.push({
+          eventType: 'exception',
+          event: emittableEvent,
+        });
+        return results;
       }
 
       if (isWsDataEvent(msg)) {
-        return this.emit('update', { ...msg, wsKey });
+        results.push({
+          eventType: 'update',
+          event: emittableEvent,
+        });
+        return results;
       }
 
       if (isWsLoginEvent(msg)) {
@@ -734,16 +663,16 @@ export class WebsocketClient extends EventEmitter {
             `Authenticated successfully on wsKey(${wsKey})`,
             logContext,
           );
-          this.emit('response', { ...msg, wsKey });
 
-          const topics = [
-            ...this.wsStore.getTopics(wsKey),
-          ] as WsChannelSubUnSubRequestArg[];
-
-          // Since private topics have a dedicated WsKey, these are automatically all private topics (no filtering required before the subscribe call)
-          this.requestSubscribeTopics(wsKey, topics);
-
-          return;
+          results.push({
+            eventType: 'response',
+            event: emittableEvent,
+          });
+          results.push({
+            eventType: 'authenticated',
+            event: emittableEvent,
+          });
+          return results;
         }
 
         this.logger.error('Authentication failed: ', {
@@ -751,48 +680,170 @@ export class WebsocketClient extends EventEmitter {
           ...msg,
           wsKey,
         });
-        return this.emit('error', { ...msg, wsKey });
+        results.push({
+          eventType: 'exception',
+          event: emittableEvent,
+        });
+        return results;
       }
 
       if (isWsSubscribeEvent(msg) || isWsUnsubscribeEvent(msg)) {
-        // this.logger.silly(`Ws subscribe reply:`, { ...msg, wsKey });
-        return this.emit('response', { ...msg, wsKey });
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+        });
+        // this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
+        return results;
       }
 
       if (isConnCountEvent(msg)) {
-        return this.emit('response', { ...msg, wsKey });
+        results.push({
+          eventType: 'response',
+          event: emittableEvent,
+        });
+        return results;
       }
 
-      this.logger.error('Unhandled/unrecognised ws event message', {
-        ...logContext,
-        eventName: msg.event,
-        msg: JSON.stringify(msg, null, 2),
+      this.logger.info('Unhandled/unrecognised ws event message', {
+        ...WS_LOGGER_CATEGORY,
+        message: msg || 'no message',
+        // messageType: typeof msg,
+        // messageString: JSON.stringify(msg),
+        event,
         wsKey,
       });
+
+      // fallback emit anyway
+      results.push({
+        eventType: 'update',
+        event: emittableEvent,
+      });
+      return results;
     } catch (e) {
       this.logger.error('Failed to parse ws event message', {
-        ...logContext,
+        ...WS_LOGGER_CATEGORY,
         error: e,
         event,
         wsKey,
       });
     }
+
+    return results;
   }
 
-  private onWsClose(event, wsKey: WsKey) {
-    this.logger.info('Websocket connection closed', {
-      ...loggerCategory,
-      wsKey,
-    });
+  /**
+   * OKX supports order placement via WebSockets. This is the WS API:
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+   *
+   * For convenient promise-wrapped usage of the WS API, instance the WebsocketAPIClient class exported by this SDK.
+   *
+   * For demo trading, set demoTrading:true in the WS Client config.
+   *
+   * @returns a promise that resolves/rejects when a matching response arrives
+   */
+  async sendWSAPIRequest<
+    TWSKey extends keyof WsAPIWsKeyTopicMap,
+    TWSOperation extends WsAPIWsKeyTopicMap[TWSKey],
+    TWSParams extends WsAPITopicRequestParamMap[TWSOperation],
+    TWSAPIResponse extends
+      WsAPIOperationResponseMap[TWSOperation] = WsAPIOperationResponseMap[TWSOperation],
+  >(
+    rawWsKey: WsKey,
+    operation: TWSOperation,
+    params: TWSParams & { signRequest?: boolean },
+    requestFlags?: WSAPIRequestFlags,
+  ): Promise<TWSAPIResponse> {
+    // If demo trading, enforce demo wskey for WS API calls
+    const wsKey = this.options.demoTrading ? getDemoWsKey(rawWsKey) : rawWsKey;
 
-    if (
-      this.wsStore.getConnectionState(wsKey) !== WsConnectionStateEnum.CLOSING
-    ) {
-      this.reconnectWithDelay(wsKey, this.options.reconnectTimeout);
-      this.emit('reconnect', { wsKey, event });
-    } else {
-      this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.INITIAL);
-      this.emit('close', { wsKey, event });
+    this.logger.trace(`sendWSAPIRequest(): assert "${wsKey}" is connected`);
+
+    await this.assertIsConnected(wsKey);
+    this.logger.trace('sendWSAPIRequest()->assertIsConnected() ok');
+
+    if (requestFlags?.authIsOptional !== true) {
+      this.logger.trace(
+        'sendWSAPIRequest(): assertIsAuthenticated(${wsKey})...',
+      );
+      await this.assertIsAuthenticated(wsKey);
+      this.logger.trace(
+        'sendWSAPIRequest(): assertIsAuthenticated(${wsKey}) ok',
+      );
     }
+
+    const request: WSAPIRequestOKX<object> = {
+      id: `${this.getNewRequestId()}`,
+      op: operation,
+      // Ensure "args" is always wrapped as array
+      args: Array.isArray(params) ? params : [params],
+    };
+
+    if (requestFlags?.expTime) {
+      request.expTime = requestFlags.expTime;
+    }
+
+    if (requiresWSAPITag(operation, wsKey)) {
+      validateWSAPITag(request, wsKey);
+    }
+
+    // Store deferred promise, resolved within the "resolveEmittableEvents" method while parsing incoming events
+    const promiseRef = getPromiseRefForWSAPIRequest(request);
+
+    // Enriched WS API response includes wsKey & the request that was connected to the response
+    type DeferredWSAPIResponse = TWSAPIResponse & {
+      request: WSAPIRequestOKX<object> & { wsKey: WsKey };
+    };
+
+    const deferredPromise =
+      this.getWsStore().createDeferredPromise<DeferredWSAPIResponse>(
+        wsKey,
+        promiseRef,
+        false,
+      );
+
+    // Enrich returned promise with request context for easier debugging
+    deferredPromise.promise
+      ?.then((res) => {
+        if (!Array.isArray(res)) {
+          res.request = {
+            wsKey,
+            ...request,
+          };
+        }
+
+        return res;
+      })
+      .catch((e) => {
+        if (typeof e === 'string') {
+          this.logger.error('Unexpected string thrown without Error object:', {
+            e,
+            wsKey,
+            request,
+          });
+          return e;
+        }
+        e.request = {
+          wsKey,
+          operation,
+          params: params,
+        };
+        // throw e;
+        return e;
+      });
+
+    this.logger.trace(
+      `sendWSAPIRequest(): sending raw request: ${JSON.stringify(request, null, 2)}`,
+    );
+
+    // Send event
+    const throwExceptions = false;
+    this.tryWsSend(wsKey, JSON.stringify(request), throwExceptions);
+
+    this.logger.trace(
+      `sendWSAPIRequest(): sent "${operation}" event with promiseRef(${promiseRef})`,
+    );
+
+    // Return deferred promise, so caller can await this call
+    return deferredPromise.promise!;
   }
 }

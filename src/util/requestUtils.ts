@@ -1,6 +1,7 @@
 import { Method } from 'axios';
 
-import { APIMarket, RestClientOptions } from '../types';
+import { RestClientOptions } from '../types/rest/client.js';
+import { APIMarket } from '../types/shared.js';
 
 export function serializeParams(
   params: object | undefined,
@@ -17,7 +18,7 @@ export function serializeParams(
 
   const queryString = Object.keys(params)
     .map((key) => {
-      const value = params[key];
+      const value = (params as any)[key];
       if (strict_validation === true && typeof value === 'undefined') {
         throw new Error(
           'Failed to sign API request due to undefined parameter',
@@ -43,9 +44,17 @@ export function getRestBaseUrl(
 
   switch (market) {
     default:
-    case 'demo':
+    // "prod" defaults to OKX Global: https://www.okx.com/docs-v5/en/#overview-production-trading-services
+    case 'GLOBAL':
     case 'prod': {
       return 'https://www.okx.com';
+    }
+    // also known as "my.okx.com" https://my.okx.com/docs-v5/en/#overview-production-trading-services
+    case 'EEA': {
+      return 'https://eea.okx.com';
+    }
+    case 'US': {
+      return 'https://us.okx.com';
     }
   }
 }

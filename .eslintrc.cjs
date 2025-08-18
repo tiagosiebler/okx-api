@@ -8,12 +8,12 @@ module.exports = {
   plugins: [
     '@typescript-eslint/eslint-plugin',
     'simple-import-sort',
-    // 'require-extensions', // only once moved to ESM
+    'require-extensions', // only once moved to ESM
   ],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
-    // 'plugin:require-extensions/recommended', // only once moved to ESM
+    'plugin:require-extensions/recommended', // only once moved to ESM
   ],
   root: true,
   env: {

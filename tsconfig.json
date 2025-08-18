@@ -1,27 +1,32 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "allowJs": true,
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "declaration": true,
-    "removeComments": false,
     "noEmitOnError": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
+    "declaration": true,
     "esModuleInterop": true,
-    "lib": ["es2017","dom"],
-    "outDir": "lib"
+    "forceConsistentCasingInFileNames": false,
+    "inlineSourceMap": false,
+    "lib": ["esnext", "DOM"],
+    "listEmittedFiles": false,
+    "listFiles": false,
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": false,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "types": ["node", "jest"],
+    "module": "CommonJS",
+    "outDir": "dist/cjs",
+    "target": "ESNext"
   },
-  "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "**/node_modules/*",
-    "coverage",
-    "doc"
-  ]
+  "compileOnSave": true,
+  "include": ["src/**/*.*", "test/**/*.*", ".eslintrc.cjs"],
+  "exclude": ["node_modules", "**/node_modules/*", "coverage", "doc", "dist"]
 }
