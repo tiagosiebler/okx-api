@@ -190,7 +190,7 @@ export function getDemoWsKey(wsKey: WsKey): WsKey {
     case WS_KEY_MAP.prodPublic:
       return WS_KEY_MAP.prodDemoPublic;
     case WS_KEY_MAP.prodPrivate:
-      return WS_KEY_MAP.prodDemoBusiness;
+      return WS_KEY_MAP.prodDemoPrivate;
     case WS_KEY_MAP.prodBusiness:
       return WS_KEY_MAP.prodDemoBusiness;
 
