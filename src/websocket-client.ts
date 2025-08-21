@@ -251,16 +251,16 @@ export class WebsocketClient extends BaseWebsocketClient<
     const isBusinessType = type === 'business';
 
     switch (this.options.market) {
-      case 'EEA': {
-        return isPrivateType
-          ? WS_KEY_MAP.eeaLivePrivate
-          : isBusinessType
-            ? WS_KEY_MAP.eeaLiveBusiness
-            : WS_KEY_MAP.eeaLivePublic;
-      }
       case undefined:
       case 'prod':
       case 'GLOBAL': {
+        return isPrivateType
+          ? WS_KEY_MAP.prodPrivate
+          : isBusinessType
+            ? WS_KEY_MAP.prodBusiness
+            : WS_KEY_MAP.prodPublic;
+      }
+      case 'EEA': {
         return isPrivateType
           ? WS_KEY_MAP.eeaLivePrivate
           : isBusinessType
