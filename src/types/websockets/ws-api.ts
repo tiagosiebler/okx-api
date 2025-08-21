@@ -155,7 +155,7 @@ export interface WSAPIResponse<
   op: TOperation;
   code: numberInString;
   msg: string;
-  data: TResponseData[];
+  data: TResponseData;
   inTime: numberInString;
   outTime: numberInString;
 }
