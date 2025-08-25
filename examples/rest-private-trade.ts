@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { RestClient } from '../src/index';
-import { OrderRequest } from '../src/types/rest';
+import { RestClient } from '../src/index.js';
+import { OrderRequest } from '../src/types/rest/request/trade.js';
 
 // or
 // import { SpotClient } from 'okx-api';
@@ -110,32 +110,33 @@ function roundDown(value, decimals) {
 
     console.log('result: ', buyResult);
     return;
-    // const symbol = 'BTCUSDT_SPBL';
+    // example to find minimum allowed size for a symbol and place an order with it
+    /*  const symbol = 'BTC-USDT-SWAP';
 
-    // const symbolsResult = await client.getSymbols();
-    // const btcRules = symbolsResult.data.find((rule) => rule.symbol === symbol);
-    // console.log('btc trading rules: ', btcRules);
-    // if (!btcRules) {
-    //   return console.log('no rules found for trading ' + symbol);
-    // }
+    const symbolsResult = await client.getInstruments({
+      instType: 'SWAP',
+    });
+    const btcRules = symbolsResult.find((rule) => rule.instId === symbol);
+    console.log('btc trading rules: ', btcRules);
+    if (!btcRules) {
+      return console.log('no rules found for trading ' + symbol);
+    }
 
-    // const quantityScale = Number(btcRules.quantityScale);
-    // // const quantityRoundedDown = btcAmount - btcAmount % 0.01
-    // const quantity = roundDown(btcAmount, quantityScale);
+    const minSize = Number(btcRules.minSz);
 
-    // const order = {
-    //   symbol: symbol,
-    //   side: 'sell',
-    //   force: 'normal',
-    //   orderType: 'market',
-    //   quantity: String(quantity),
-    // } as const;
+    const order = {
+      instId: symbol,
+      tdMode: 'cross',
+      ordType: 'market',
+      side: 'sell',
+      sz: String(minSize),
+    } as const;
 
-    // console.log('submitting order: ', order);
+    console.log('submitting order: ', order);
 
-    // const sellResult = await client.submitOrder(order);
+    const sellResult = await client.submitOrder(order);
 
-    // console.log('sell result: ', sellResult);
+    console.log('sell result: ', sellResult); */
   } catch (e) {
     console.error('request failed: ', e);
   }
