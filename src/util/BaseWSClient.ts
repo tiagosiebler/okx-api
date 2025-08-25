@@ -16,6 +16,7 @@ import { DefaultLogger } from './logger.js';
 import { checkWebCryptoAPISupported } from './webCryptoAPI.js';
 import {
   getNormalisedTopicRequests,
+  PRIVATE_CHANNELS,
   safeTerminateWs,
   WS_LOGGER_CATEGORY,
   WsTopicRequest,
@@ -330,8 +331,22 @@ export abstract class BaseWebsocketClient<
 
     // We're connected. Check if auth is needed and if already authenticated
     const isPrivateConnection = this.isPrivateWsKey(wsKey);
-    const isAuthenticated = this.wsStore.get(wsKey)?.isAuthenticated;
-    if (isPrivateConnection && !isAuthenticated) {
+    const isAuthenticatedBeforeTopicCheck =
+      this.wsStore.get(wsKey)?.isAuthenticated;
+
+    if (!isAuthenticatedBeforeTopicCheck && !isPrivateConnection) {
+      // Connection hasn't been authenticated yet, do a quick check if any topics we're about to subscribe to require auth
+      // Queue immediate auth if so
+      for (const topicRequest of normalisedTopicRequests) {
+        if (PRIVATE_CHANNELS.includes(topicRequest.topic)) {
+          await this.assertIsAuthenticated(wsKey);
+          break;
+        }
+      }
+    }
+
+    const isFinallyAuthenticated = this.wsStore.get(wsKey)?.isAuthenticated;
+    if (isPrivateConnection && !isFinallyAuthenticated) {
       /**
        * If not authenticated yet and auth is required, don't request topics yet.
        *

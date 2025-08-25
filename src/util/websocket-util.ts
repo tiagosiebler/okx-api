@@ -148,16 +148,20 @@ export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
-  WS_KEY_MAP.prodBusiness,
   WS_KEY_MAP.prodDemoPrivate,
-  WS_KEY_MAP.prodDemoBusiness,
   WS_KEY_MAP.eeaLivePrivate,
-  WS_KEY_MAP.eeaLiveBusiness,
   WS_KEY_MAP.eeaDemoPrivate,
-  WS_KEY_MAP.eeaDemoBusiness,
   WS_KEY_MAP.usLivePrivate,
-  WS_KEY_MAP.usLiveBusiness,
   WS_KEY_MAP.usDemoPrivate,
+];
+
+// These sometimes need auth, depending on the topic
+export const MIXED_WS_KEYS: WsKey[] = [
+  WS_KEY_MAP.prodBusiness,
+  WS_KEY_MAP.prodDemoBusiness,
+  WS_KEY_MAP.eeaLiveBusiness,
+  WS_KEY_MAP.eeaDemoBusiness,
+  WS_KEY_MAP.usLiveBusiness,
   WS_KEY_MAP.usDemoBusiness,
 ];
 
@@ -214,7 +218,7 @@ export function getDemoWsKey(wsKey: WsKey): WsKey {
 }
 
 /** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
-const PRIVATE_CHANNELS = [
+export const PRIVATE_CHANNELS = [
   'account',
   'positions',
   'balance_and_position',
