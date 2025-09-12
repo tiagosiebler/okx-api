@@ -20,6 +20,7 @@ node_modules/
 .env.test
 .cache
 lib
+dist
 bundleReport.html
 .history/
 .idea
