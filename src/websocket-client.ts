@@ -704,6 +704,31 @@ export class WebsocketClient extends BaseWebsocketClient<
         return results;
       }
 
+      if (msg.event === 'notice') {
+        const WSNOTICE = {
+          CLOSING_FOR_UPGRADE_RECOMMEND_RECONNECT: '64008',
+        };
+        if (msg?.code === WSNOTICE.CLOSING_FOR_UPGRADE_RECOMMEND_RECONNECT) {
+          const closeReason = `Received notice (${msg.code} - "${msg?.msg}") - closing socket to reconnect`;
+          this.logger.info(closeReason, {
+            ...WS_LOGGER_CATEGORY,
+            ...msg,
+            wsKey,
+          });
+
+          // Queue immediate reconnection workflow
+          this.executeReconnectableClose(wsKey, closeReason);
+
+          // Emit notice to client for visibility
+          results.push({
+            eventType: 'update',
+            event: emittableEvent,
+          });
+
+          return results;
+        }
+      }
+
       this.logger.info('Unhandled/unrecognised ws event message', {
         ...WS_LOGGER_CATEGORY,
         message: msg || 'no message',

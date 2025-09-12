@@ -449,6 +449,37 @@ export abstract class BaseWebsocketClient<
     });
   }
 
+  /**
+   * Closes a connection, if it's even open. If open, this will trigger a reconnect asynchronously.
+   * If closed, trigger a reconnect immediately
+   */
+  public executeReconnectableClose(wsKey: TWSKey, reason: string) {
+    this.logger.info(`${reason} - closing socket to reconnect`, {
+      ...WS_LOGGER_CATEGORY,
+      wsKey,
+      reason,
+    });
+
+    this.clearTimers(wsKey);
+
+    const wasOpen = this.wsStore.isWsOpen(wsKey);
+    if (wasOpen) {
+      safeTerminateWs(this.wsStore.getWs(wsKey), true);
+    }
+
+    if (!wasOpen) {
+      this.logger.info(
+        `${reason} - socket already closed - trigger immediate reconnect`,
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsKey,
+          reason,
+        },
+      );
+      this.reconnectWithDelay(wsKey, this.options.reconnectTimeout);
+    }
+  }
+
   public isConnected(wsKey: TWSKey): boolean {
     return this.wsStore.isConnectionState(
       wsKey,
