@@ -17,6 +17,7 @@ import { checkWebCryptoAPISupported } from './webCryptoAPI.js';
 import {
   getNormalisedTopicRequests,
   PRIVATE_CHANNELS,
+  PUBLIC_CHANNELS_WITH_AUTH,
   safeTerminateWs,
   WS_LOGGER_CATEGORY,
   WsTopicRequest,
@@ -216,7 +217,10 @@ export abstract class BaseWebsocketClient<
 
   protected abstract isWsPong(data: any): boolean;
 
-  protected abstract getWsAuthRequestEvent(wsKey: TWSKey): Promise<object>;
+  protected abstract getWsAuthRequestEvent(
+    wsKey: TWSKey,
+    skipPublicWsKeyCheck: boolean,
+  ): Promise<object | null>;
 
   protected abstract isPrivateTopicRequest(
     request: WsTopicRequest<string>,
@@ -339,7 +343,11 @@ export abstract class BaseWebsocketClient<
       // Queue immediate auth if so
       for (const topicRequest of normalisedTopicRequests) {
         if (PRIVATE_CHANNELS.includes(topicRequest.topic)) {
-          await this.assertIsAuthenticated(wsKey);
+          await this.assertIsAuthenticated(wsKey, false);
+          break;
+        }
+        if (PUBLIC_CHANNELS_WITH_AUTH.includes(topicRequest.topic)) {
+          await this.assertIsAuthenticated(wsKey, true);
           break;
         }
       }
@@ -599,7 +607,10 @@ export abstract class BaseWebsocketClient<
   }
 
   /** Get a signature, build the auth request and send it */
-  private async sendAuthRequest(wsKey: TWSKey): Promise<unknown> {
+  private async sendAuthRequest(
+    wsKey: TWSKey,
+    skipPublicWsKeyCheck: boolean,
+  ): Promise<unknown> {
     try {
       this.logger.trace('Sending auth request...', {
         ...WS_LOGGER_CATEGORY,
@@ -608,11 +619,14 @@ export abstract class BaseWebsocketClient<
 
       await this.assertIsConnected(wsKey);
 
+      const request = await this.getWsAuthRequestEvent(
+        wsKey,
+        skipPublicWsKeyCheck,
+      );
+
       if (!this.wsStore.getAuthenticationInProgressPromise(wsKey)) {
         this.wsStore.createAuthenticationInProgressPromise(wsKey, false);
       }
-
-      const request = await this.getWsAuthRequestEvent(wsKey);
 
       // console.log('ws auth req', request);
 
@@ -620,7 +634,7 @@ export abstract class BaseWebsocketClient<
 
       return this.wsStore.getAuthenticationInProgressPromise(wsKey)?.promise;
     } catch (e) {
-      this.logger.trace(e, { ...WS_LOGGER_CATEGORY, wsKey });
+      this.logger.error(e, { ...WS_LOGGER_CATEGORY, wsKey });
     }
   }
 
@@ -950,12 +964,22 @@ export abstract class BaseWebsocketClient<
       this.isAuthOnConnectWsKey(wsKey) &&
       this.options.authPrivateConnectionsOnConnect
     ) {
-      await this.assertIsAuthenticated(wsKey);
+      await this.assertIsAuthenticated(wsKey, false);
+    }
+
+    const topicsForWsKey = [...this.wsStore.getTopics(wsKey)];
+
+    // Guard to assert auth for some of the public topics that require it
+    for (const topicRequest of topicsForWsKey) {
+      if (PUBLIC_CHANNELS_WITH_AUTH.includes(topicRequest.topic)) {
+        await this.assertIsAuthenticated(wsKey, true);
+        break;
+      }
     }
 
     // Reconnect to topics known before it connected
     const { privateReqs, publicReqs } = this.sortTopicRequestsIntoPublicPrivate(
-      [...this.wsStore.getTopics(wsKey)],
+      topicsForWsKey,
       wsKey,
     );
 
@@ -1237,7 +1261,10 @@ export abstract class BaseWebsocketClient<
   /**
    * Promise-driven method to assert that a ws has been successfully authenticated (will await until auth is confirmed)
    */
-  public async assertIsAuthenticated(wsKey: TWSKey): Promise<unknown> {
+  public async assertIsAuthenticated(
+    wsKey: TWSKey,
+    skipPublicWsKeyCheck: boolean,
+  ): Promise<unknown> {
     const isConnected = this.getWsStore().isConnectionState(
       wsKey,
       WsConnectionStateEnum.CONNECTED,
@@ -1268,7 +1295,7 @@ export abstract class BaseWebsocketClient<
     // Start authentication, it should automatically store/return a promise.
     this.logger.trace('assertIsAuthenticated(): authenticating...');
 
-    await this.sendAuthRequest(wsKey);
+    await this.sendAuthRequest(wsKey, skipPublicWsKeyCheck);
 
     this.logger.trace('assertIsAuthenticated(): newly authenticated!');
   }

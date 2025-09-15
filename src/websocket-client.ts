@@ -125,8 +125,8 @@ export class WebsocketClient extends BaseWebsocketClient<
   public connectWSAPI(): Promise<unknown[]> {
     /** This call automatically ensures the connection is active AND authenticated before resolving */
     return Promise.allSettled([
-      this.assertIsAuthenticated(this.getMarketWsKey('private')),
-      this.assertIsAuthenticated(this.getMarketWsKey('business')),
+      this.assertIsAuthenticated(this.getMarketWsKey('private'), false),
+      this.assertIsAuthenticated(this.getMarketWsKey('business'), false),
     ]);
   }
 
@@ -422,17 +422,36 @@ export class WebsocketClient extends BaseWebsocketClient<
 
   protected async getWsAuthRequestEvent(
     wsKey: WsKey,
-  ): Promise<WsRequestOperationOKX<WsAuthRequestArg>> {
+    skipIsPublicWsKeyCheck: boolean,
+  ): Promise<WsRequestOperationOKX<WsAuthRequestArg> | null> {
     const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
     const accounts = this.options.accounts;
     const hasAccountsToAuth = !!accounts?.length;
-    if (isPublicWsKey || !accounts || !hasAccountsToAuth) {
-      this.logger.trace('Starting public only websocket client.', {
-        ...WS_LOGGER_CATEGORY,
-        wsKey,
-        isPublicWsKey,
-        hasAccountsToAuth,
-      });
+    if (isPublicWsKey && !skipIsPublicWsKeyCheck) {
+      this.logger.trace(
+        'Starting public only websocket client. No auth needed.',
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsKey,
+          isPublicWsKey,
+          hasAccountsToAuth,
+          skipIsPublicWsKeyCheck,
+        },
+      );
+      return null;
+    }
+
+    if (!accounts || !hasAccountsToAuth) {
+      this.logger.trace(
+        'Starting public only websocket client - missing keys.',
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsKey,
+          isPublicWsKey,
+          hasAccountsToAuth,
+          skipIsPublicWsKeyCheck,
+        },
+      );
       throw new Error('Cannot auth - missing api or secret or pass in config');
     }
 
@@ -790,7 +809,7 @@ export class WebsocketClient extends BaseWebsocketClient<
       this.logger.trace(
         'sendWSAPIRequest(): assertIsAuthenticated(${wsKey})...',
       );
-      await this.assertIsAuthenticated(wsKey);
+      await this.assertIsAuthenticated(wsKey, false);
       this.logger.trace(
         'sendWSAPIRequest(): assertIsAuthenticated(${wsKey}) ok',
       );

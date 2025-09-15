@@ -234,6 +234,12 @@ export const PRIVATE_CHANNELS = [
   'grid-sub-orders',
 ];
 
+export const PUBLIC_CHANNELS_WITH_AUTH = [
+  // While these are market data topics on the PUBLIC channel, they do require the public connection to be authenticated to subscribe to these. See #140.
+  'books-l2-tbt',
+  'books50-l2-tpt',
+];
+
 /**
  * The following channels only support the new business wss endpoint:
  * https://www.okx.com/help-center/changes-to-v5-api-websocket-subscription-parameter-and-url
