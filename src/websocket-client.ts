@@ -125,8 +125,8 @@ export class WebsocketClient extends BaseWebsocketClient<
   public connectWSAPI(): Promise<unknown[]> {
     /** This call automatically ensures the connection is active AND authenticated before resolving */
     return Promise.allSettled([
-      this.assertIsAuthenticated(this.getMarketWsKey('private')),
-      this.assertIsAuthenticated(this.getMarketWsKey('business')),
+      this.assertIsAuthenticated(this.getMarketWsKey('private'), false),
+      this.assertIsAuthenticated(this.getMarketWsKey('business'), false),
     ]);
   }
 
@@ -422,17 +422,36 @@ export class WebsocketClient extends BaseWebsocketClient<
 
   protected async getWsAuthRequestEvent(
     wsKey: WsKey,
-  ): Promise<WsRequestOperationOKX<WsAuthRequestArg>> {
+    skipIsPublicWsKeyCheck: boolean,
+  ): Promise<WsRequestOperationOKX<WsAuthRequestArg> | null> {
     const isPublicWsKey = PUBLIC_WS_KEYS.includes(wsKey);
     const accounts = this.options.accounts;
     const hasAccountsToAuth = !!accounts?.length;
-    if (isPublicWsKey || !accounts || !hasAccountsToAuth) {
-      this.logger.trace('Starting public only websocket client.', {
-        ...WS_LOGGER_CATEGORY,
-        wsKey,
-        isPublicWsKey,
-        hasAccountsToAuth,
-      });
+    if (isPublicWsKey && !skipIsPublicWsKeyCheck) {
+      this.logger.trace(
+        'Starting public only websocket client. No auth needed.',
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsKey,
+          isPublicWsKey,
+          hasAccountsToAuth,
+          skipIsPublicWsKeyCheck,
+        },
+      );
+      return null;
+    }
+
+    if (!accounts || !hasAccountsToAuth) {
+      this.logger.trace(
+        'Starting public only websocket client - missing keys.',
+        {
+          ...WS_LOGGER_CATEGORY,
+          wsKey,
+          isPublicWsKey,
+          hasAccountsToAuth,
+          skipIsPublicWsKeyCheck,
+        },
+      );
       throw new Error('Cannot auth - missing api or secret or pass in config');
     }
 
@@ -704,6 +723,31 @@ export class WebsocketClient extends BaseWebsocketClient<
         return results;
       }
 
+      if (msg.event === 'notice') {
+        const WSNOTICE = {
+          CLOSING_FOR_UPGRADE_RECOMMEND_RECONNECT: '64008',
+        };
+        if (msg?.code === WSNOTICE.CLOSING_FOR_UPGRADE_RECOMMEND_RECONNECT) {
+          const closeReason = `Received notice (${msg.code} - "${msg?.msg}") - closing socket to reconnect`;
+          this.logger.info(closeReason, {
+            ...WS_LOGGER_CATEGORY,
+            ...msg,
+            wsKey,
+          });
+
+          // Queue immediate reconnection workflow
+          this.executeReconnectableClose(wsKey, closeReason);
+
+          // Emit notice to client for visibility
+          results.push({
+            eventType: 'update',
+            event: emittableEvent,
+          });
+
+          return results;
+        }
+      }
+
       this.logger.info('Unhandled/unrecognised ws event message', {
         ...WS_LOGGER_CATEGORY,
         message: msg || 'no message',
@@ -765,7 +809,7 @@ export class WebsocketClient extends BaseWebsocketClient<
       this.logger.trace(
         'sendWSAPIRequest(): assertIsAuthenticated(${wsKey})...',
       );
-      await this.assertIsAuthenticated(wsKey);
+      await this.assertIsAuthenticated(wsKey, false);
       this.logger.trace(
         'sendWSAPIRequest(): assertIsAuthenticated(${wsKey}) ok',
       );

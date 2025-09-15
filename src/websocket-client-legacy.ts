@@ -470,7 +470,7 @@ export class WebsocketClientLegacy extends EventEmitter {
 
   /**
    * Closes a connection, if it's even open. If open, this will trigger a reconnect asynchronously.
-   * If closed, trigger a reconnect immediately
+   * If closed, trigger a reconnect immediately.
    */
   private executeReconnectableClose(wsKey: WsKey, reason: string) {
     this.logger.info(`${reason} - closing socket to reconnect`, {
