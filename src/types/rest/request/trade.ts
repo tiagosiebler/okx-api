@@ -120,8 +120,9 @@ export interface AmendAlgoOrderRequest {
 }
 
 export interface CancelAlgoOrderRequest {
-  algoId: string;
   instId: string;
+  algoId?: string;
+  algoClOrdId?: string;
 }
 
 export interface ClosePositionRequest {

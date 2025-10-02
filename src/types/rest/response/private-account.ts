@@ -55,6 +55,7 @@ export interface AccountBalance {
   uTime: string;
   spotCopyTradingEq: string;
   upl: string;
+  frpType?: string;
 }
 
 export interface AccountPosition {
@@ -169,6 +170,8 @@ export interface AccountBill {
   to: string;
   ts: string;
   type: string;
+  earnAmt?: string;
+  earnApr?: string;
 }
 
 export interface AccountHistoryBill {
@@ -201,6 +204,9 @@ export interface AccountConfiguration {
   discountType: '0' | '1';
   enableSpotBorrow: boolean;
   spotBorrowAutoRepay: boolean;
+  feeType: string;
+  settleCcy: string;
+  settleCcyList: string[];
 }
 
 export interface AccountPositionModeResult {
@@ -492,4 +498,12 @@ export interface SetCollateralAssetsResult {
 export interface GetCollateralAssetsResult {
   ccy: string;
   collateralEnabled: boolean;
+}
+
+export interface SetSettleCurrencyResult {
+  settleCcy: string;
+}
+
+export interface SetFeeTypeResult {
+  feeType: string;
 }
