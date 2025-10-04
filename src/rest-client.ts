@@ -13,8 +13,10 @@ import {
   GetVIPLoanOrderListRequest,
   PositionBuilderRequest,
   QuickMarginBorrowRepayRequest,
+  SetFeeTypeRequest,
   SetLeverageRequest,
   SetMMPConfigRequest,
+  SetSettleCurrencyRequest,
   SubmitFixedLoanBorrowingOrderRequest,
   UpdateFixedLoanBorrowingOrderRequest,
   WithdrawalHistoryRequest,
@@ -165,7 +167,9 @@ import {
   MMPConfig,
   QuickMarginBorrowRepayRecord,
   QuickMarginBorrowRepayResult,
+  SetFeeTypeResult,
   SetMMPConfigResult,
+  SetSettleCurrencyResult,
   VIPInterest,
   VIPLoanOrder,
   VIPLoanOrderDetail,
@@ -175,6 +179,7 @@ import {
   BlockMakerInstrumentSettings,
   BlockMMPConfig,
   BlockRFQResult,
+  BlockTradeResult,
   CancelBlockQuoteResult,
   CancelBlockRFQResult,
   CreateBlockQuoteResult,
@@ -465,6 +470,16 @@ export class RestClient extends BaseRestClient {
     posMode: PosMode;
   }): Promise<AccountPositionModeResult[]> {
     return this.postPrivate('/api/v5/account/set-position-mode', params);
+  }
+
+  setSettleCurrency(
+    params: SetSettleCurrencyRequest,
+  ): Promise<SetSettleCurrencyResult[]> {
+    return this.postPrivate('/api/v5/account/set-settle-currency', params);
+  }
+
+  setFeeType(params: SetFeeTypeRequest): Promise<SetFeeTypeResult[]> {
+    return this.postPrivate('/api/v5/account/set-fee-type', params);
   }
 
   setLeverage(params: SetLeverageRequest): Promise<AccountLeverageResult[]> {
@@ -1920,11 +1935,11 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/rfq/quotes', params);
   }
 
-  getBlockTrades(params?: any): Promise<any[]> {
+  getBlockTrades(params?: any): Promise<BlockTradeResult[]> {
     return this.getPrivate('/api/v5/rfq/trades', params);
   }
 
-  getPublicRFQBlockTrades(params?: any): Promise<any[]> {
+  getPublicRFQBlockTrades(params?: any): Promise<PublicBlockTrade[]> {
     return this.get('/api/v5/rfq/public-trades', params);
   }
 

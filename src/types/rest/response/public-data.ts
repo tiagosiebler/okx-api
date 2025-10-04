@@ -78,6 +78,7 @@ export interface Trade {
   px: string;
   tradeId: string;
   ts: string;
+  source?: string;
 }
 
 export interface Instrument {

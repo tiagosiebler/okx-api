@@ -165,3 +165,11 @@ export interface SetMMPConfigRequest {
   frozenInterval: string;
   qtyLimit: string;
 }
+
+export interface SetSettleCurrencyRequest {
+  settleCcy: string;
+}
+
+export interface SetFeeTypeRequest {
+  feeType: '0' | '1';
+}

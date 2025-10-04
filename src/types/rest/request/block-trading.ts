@@ -1,10 +1,25 @@
 import { OrderSide, RFQLeg } from '../shared.js';
+export interface AccountAllocationLeg {
+  sz: string;
+  instId: string;
+  tdMode?: string;
+  ccy?: string;
+  posSide?: string;
+}
+
+export interface AccountAllocation {
+  acct: string;
+  legs: AccountAllocationLeg[];
+}
 
 export interface CreateBlockRFQRequest {
   counterparties: string[];
   anonymous?: boolean;
   clRfqId?: string;
+  tag?: string;
+  allowPartialExecution?: boolean;
   legs: RFQLeg[];
+  acctAlloc?: AccountAllocation[];
 }
 
 export interface CancelBlockRFQRequest {
