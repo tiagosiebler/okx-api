@@ -508,8 +508,8 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
             mgnMode: 'cross',
             mgnCcy: 'BTC',
           }),
-        ).toContain(
-          expect.objectContaining([
+        ).toMatchObject(
+          expect.arrayContaining([
             {
               ccy: expect.any(String),
               instId: expect.any(String),
