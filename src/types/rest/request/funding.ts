@@ -15,6 +15,12 @@ export interface WithdrawRequest {
   amt: string;
   dest: '3' | '4';
   toAddr: string;
+  /**
+   * Address type:
+   * - 1: wallet address, email, phone, or login account name
+   * - 2: UID (only for whitelisted users; applicable only when dest=3)
+   */
+  toAddrType?: '1' | '2';
   chain?: string;
   areaCode?: string;
   clientId?: string;
