@@ -503,8 +503,23 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
     it('getMaxLoan()', async () => {
       try {
         expect(
-          await api.getMaxLoan({ instId: instrumentId, mgnMode: 'cross' }),
-        ).toBeFalsy();
+          await api.getMaxLoan({
+            instId: instrumentId,
+            mgnMode: 'cross',
+            mgnCcy: 'BTC',
+          }),
+        ).toMatchObject(
+          expect.arrayContaining([
+            {
+              ccy: expect.any(String),
+              instId: expect.any(String),
+              maxLoan: expect.any(String),
+              mgnCcy: expect.any(String),
+              mgnMode: expect.any(String),
+              side: expect.any(String),
+            },
+          ]),
+        );
       } catch (e) {
         expect(e).toMatchObject(
           errorResponseObject(
@@ -592,7 +607,7 @@ describe('Private REST API Trade Endpoints (GET only)', () => {
 
     it('getGreeks()', async () => {
       try {
-        expect(await api.getGreeks()).toBeFalsy();
+        expect(await api.getGreeks()).toMatchObject([]);
       } catch (e) {
         // The error message could be improved (OKX is aware). This is likely related to account state (account mode).
         // Adjust account mode to single currency / multiple currency or portfolio margin.
