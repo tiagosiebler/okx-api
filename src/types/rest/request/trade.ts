@@ -79,7 +79,15 @@ export interface AlgoOrderRequest {
   timeInterval?: string;
   quickMgnType?: string;
   closeFraction?: numberInString;
-  attachAlgoOrds?: AlgoTriggerOrder[];
+  attachAlgoOrds?: {
+    attachAlgoClOrdId?: string;
+    tpTriggerPx?: string;
+    tpOrdPx?: string;
+    slTriggerPx?: string;
+    slOrdPx?: string;
+    tpTriggerPxType?: string;
+    slTriggerPxType?: string;
+  }[];
 }
 
 export interface AmendOrderRequest {
