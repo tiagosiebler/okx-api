@@ -1,21 +1,21 @@
 import { OrderIdRequest } from './types/rest/request/trade.js';
 import { OrderResult } from './types/rest/response/private-trade.js';
+import { WSAPIResponse } from './types/websockets/ws-api.js';
 import {
-    WSAPIAmendOrderRequestV5,
-    WSAPIAmendSpreadOrderRequestV5,
-    WSAPICancelSpreadOrderRequestV5,
-    WSAPIMassCancelOrdersRequestV5,
-    WSAPIPlaceOrderRequestV5,
-    WSAPIPlaceSpreadOrderRequestV5,
-    WSAPISpreadMassCancelOrdersRequestV5,
+  WSAPIAmendOrderRequestV5,
+  WSAPIAmendSpreadOrderRequestV5,
+  WSAPICancelSpreadOrderRequestV5,
+  WSAPIMassCancelOrdersRequestV5,
+  WSAPIPlaceOrderRequestV5,
+  WSAPIPlaceSpreadOrderRequestV5,
+  WSAPISpreadMassCancelOrdersRequestV5,
 } from './types/websockets/ws-api-request.js';
 import {
-    WSAPICancelOrderResultV5,
-    WSAPISpreadAmendOrderResultV5,
-    WSAPISpreadCancelOrderResultV5,
-    WSAPISpreadPlaceOrderResultV5,
+  WSAPICancelOrderResultV5,
+  WSAPISpreadAmendOrderResultV5,
+  WSAPISpreadCancelOrderResultV5,
+  WSAPISpreadPlaceOrderResultV5,
 } from './types/websockets/ws-api-response.js';
-import { WSAPIResponse } from './types/websockets/ws-api.js';
 import { WSClientConfigurableOptions } from './types/websockets/ws-general.js';
 import { DefaultLogger } from './util/logger.js';
 import { WebsocketClient } from './websocket-client.js';
