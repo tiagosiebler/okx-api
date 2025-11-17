@@ -56,6 +56,10 @@ export interface AccountBalance {
   spotCopyTradingEq: string;
   upl: string;
   frpType?: string;
+  // Delta neutral strategy fields
+  delta: string; // Delta (USD)
+  deltaLever: string; // Delta neutral strategy account level delta leverage (deltaLever = delta / totalEq)
+  deltaNeutralStatus: string; // Delta risk status: 0=normal, 1=transfer restricted, 2=delta reducing
 }
 
 export interface AccountPosition {
@@ -87,6 +91,7 @@ export interface AccountPosition {
   optVal: string;
   pTime: string;
   pos: string;
+  hedgedPos: string; // Hedged position size. Only returned for accounts in delta neutral strategy (stgyType:1). Returns "" for accounts in general strategy.
   posCcy: string;
   posId: string;
   posSide: PositionSide;
@@ -190,6 +195,7 @@ export interface AccountConfiguration {
   mgnIsoMode: string;
   posMode: string;
   spotOffsetType: string;
+  stgyType: string; // Strategy type: 0=general strategy, 1=delta neutral strategy
   uid: string;
   label: string;
   roleType: string;
@@ -366,6 +372,8 @@ export interface AccountInstrument {
   instType: string;
   lever: string;
   listTime: string;
+  contTdSwTime: string; // Continuous trading switch time. The switch time from call auction/prequote to continuous trading. Unix timestamp format in milliseconds.
+  preMktSwTime: string; // The time premarket swap switched to normal swap. Unix timestamp format in milliseconds. Only applicable to premarket SWAP.
   lotSz: string;
   maxIcebergSz: string;
   maxLmtAmt: string;
@@ -377,13 +385,20 @@ export interface AccountInstrument {
   maxTwapSz: string;
   minSz: string;
   optType: string;
+  openType: string; // Open type: fix_price (fix price opening), pre_quote (pre-quote), call_auction (call auction). Only applicable to SPOT/MARGIN.
   quoteCcy: string;
+  tradeQuoteCcyList: string[]; // List of quote currencies available for trading, e.g. ["USD", "USDC"]
   settleCcy: string;
   state: string;
   stk: string;
   tickSz: string;
   ruleType: string;
   auctionEndTime: string;
+  futureSettlement: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
+  instIdCode: number; // Instrument ID code. For simple binary encoding, must use instIdCode instead of instId.
+  posLmtAmt: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
+  posLmtPct: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
+  maxPlatOILmt: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
 }
 
 export interface QuickMarginBorrowRepayResult {
@@ -506,4 +521,20 @@ export interface SetSettleCurrencyResult {
 
 export interface SetFeeTypeResult {
   feeType: string;
+}
+
+export interface SetTradingConfigResult {
+  type: string; // Trading config type
+  stgyType: string; // Strategy type
+}
+
+export interface UnmatchedInfo {
+  type: string; // Unmatched information type: spot_mode, futures_mode, isolated_margin, isolated_contract, positions_options, isolated_pending_orders, pending_orders_options, trading_bot, repay_borrowings, loan, delta_risk, collateral_all
+  deltaLever?: string; // Delta leverage. Applicable when type is delta_risk
+  ordList?: string[]; // Unmatched order list, order ID. Applicable when type is isolated_pending_orders/pending_orders_options
+  posList?: string[]; // Unmatched position list, position ID. Applicable when type is isolated_margin/isolated_contract/positions_options
+}
+
+export interface PrecheckSetDeltaNeutralResult {
+  unmatchedInfoCheck: UnmatchedInfo[];
 }

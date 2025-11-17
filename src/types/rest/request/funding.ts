@@ -59,3 +59,15 @@ export interface GetDepositWithdrawStatusRequest {
   to?: string;
   chain?: string;
 }
+
+export interface GetDepositHistoryRequest {
+  ccy?: string; // Currency, e.g. BTC
+  depId?: string; // Deposit ID
+  fromWdId?: string; // Internal transfer initiator's withdrawal ID
+  txId?: string; // Hash record of the deposit
+  type?: '3' | '4'; // Deposit Type: 3=internal transfer, 4=deposit from chain
+  state?: '0' | '1' | '2' | '8' | '11' | '12' | '13' | '14' | '17'; // Status of deposit
+  after?: string; // Pagination of data to return records earlier than the requested ts (Unix timestamp in milliseconds)
+  before?: string; // Pagination of data to return records newer than the requested ts (Unix timestamp in milliseconds)
+  limit?: string; // Number of results per request. Max is 100; default is 100
+}

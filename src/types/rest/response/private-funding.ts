@@ -107,3 +107,18 @@ export interface NonTradableAsset {
   burningFeeRate: string;
   feeCcy: string;
 }
+
+export interface DepositHistory {
+  ccy: string; // Currency, e.g. BTC
+  chain: string; // Chain name
+  amt: string; // Deposit amount
+  from: string; // Deposit account. If the deposit comes from internal transfer, displays account info (phone/email, masked). Returns "" otherwise.
+  areaCodeFrom: string; // If from is a phone number, this parameter returns area code of the phone number
+  to: string; // Deposit address. If the deposit comes from on-chain, displays the on-chain address. Returns "" otherwise.
+  txId: string; // Hash record of the deposit
+  ts: string; // Timestamp that the deposit record is created, Unix timestamp format in milliseconds, e.g. 1655251200000
+  state: string; // Status of deposit: 0=waiting for confirmation, 1=deposit credited, 2=deposit successful, 8=pending due to temp suspension, 11=match blacklist, 12=account/deposit frozen, 13=sub-account deposit interception, 14=KYC limit
+  depId: string; // Deposit ID
+  fromWdId: string; // Internal transfer initiator's withdrawal ID. If deposit comes from internal transfer, displays the withdrawal ID, returns "" otherwise
+  actualDepBlkConfirm: string; // The actual amount of blockchain confirmed in a single deposit
+}
