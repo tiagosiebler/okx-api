@@ -163,9 +163,9 @@ describe('Public Inverse REST API Endpoints', () => {
   });
 
   it('getInterestRateAndLoanQuota()', async () => {
-    expect(
-      await api.getInterestRateAndLoanQuota({ instId: 'BTC-USD' }),
-    ).toMatchObject(successResponseList());
+    expect(await api.getInterestRateAndLoanQuota()).toMatchObject(
+      successResponseList(),
+    );
   });
 
   it('getVIPInterestRateAndLoanQuota()', async () => {
