@@ -971,8 +971,12 @@ export abstract class BaseWebsocketClient<
 
     // Guard to assert auth for some of the public topics that require it
     for (const topicRequest of topicsForWsKey) {
-      if (PUBLIC_CHANNELS_WITH_AUTH.includes(topicRequest.topic)) {
-        await this.assertIsAuthenticated(wsKey, true);
+      if (
+        PUBLIC_CHANNELS_WITH_AUTH.includes(topicRequest.topic) ||
+        PRIVATE_CHANNELS.includes(topicRequest.topic)
+      ) {
+        const skipPublicWsKeyCheck = true;
+        await this.assertIsAuthenticated(wsKey, skipPublicWsKeyCheck);
         break;
       }
     }
