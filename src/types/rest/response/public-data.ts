@@ -96,6 +96,8 @@ export interface Instrument {
   optType: string;
   stk: string;
   listTime: string;
+  contTdSwTime?: string; // Continuous trading switch time. The switch time from call auction/prequote to continuous trading. Unix timestamp format in milliseconds.
+  preMktSwTime?: string; // The time premarket swap switched to normal swap. Unix timestamp format in milliseconds. Only applicable to premarket SWAP.
   expTime: string;
   lever: string;
   tickSz: string;
@@ -104,14 +106,23 @@ export interface Instrument {
   ctType: string;
   alias: string;
   state: string;
+  openType?: string; // Open type: fix_price (fix price opening), pre_quote (pre-quote), call_auction (call auction). Only applicable to SPOT/MARGIN.
   maxLmtSz: string;
+  maxLmtAmt?: string; // Max USD amount for a single limit order
   maxMktSz: string;
+  maxMktAmt?: string; // Max USD amount for a single market order. Only applicable to SPOT/MARGIN.
   maxTwapSz: string;
   maxIcebergSz: string;
   maxTriggerSz: string;
   maxStopSz: string;
   ruleType: string;
   auctionEndTime: string;
+  futureSettlement?: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
+  tradeQuoteCcyList?: string[]; // List of quote currencies available for trading, e.g. ["USD", "USDC"]
+  instIdCode?: number; // Instrument ID code. For simple binary encoding, must use instIdCode instead of instId.
+  posLmtAmt?: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
+  posLmtPct?: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
+  maxPlatOILmt?: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
 }
 
 export interface EconomicCalendarData {
@@ -185,7 +196,46 @@ export interface OptionTrades {
 
 export interface Announcement {
   annType: string;
-  pTime: string;
+  pTime: string; // The actual time the announcement was first published. Unix timestamp format in milliseconds, e.g. 1597026383085
+  businessPTime: string; // The time displayed on the announcement page for user reference. Unix timestamp format in milliseconds, e.g. 1597026383085
   title: string;
   url: string;
+}
+
+export interface BasicInterestRate {
+  ccy: string; // Currency
+  rate: string; // Daily borrowing rate
+  quota: string; // Max borrow
+}
+
+export interface VIPInterestInfo {
+  level: string; // VIP Level, e.g. VIP1
+  loanQuotaCoef: string; // Loan quota coefficient. Loan quota = quota * level
+  irDiscount: string; // Interest rate discount (Deprecated)
+}
+
+export interface RegularUserInterestInfo {
+  level: string; // Regular user Level, e.g. Lv1
+  loanQuotaCoef: string; // Loan quota coefficient. Loan quota = quota * level
+  irDiscount: string; // Interest rate discount (Deprecated)
+}
+
+export interface ConfigCcyItem {
+  ccy: string; // Currency
+  rate: string; // Daily rate
+}
+
+export interface LoanQuotaConfig {
+  ccy: string; // Currency
+  stgyType: string; // Strategy type: 0=general strategy, 1=delta neutral strategy. If only 0 is returned, loan quota is shared between strategies
+  quota: string; // Loan quota in absolute value
+  level: string; // VIP level
+}
+
+export interface InterestRateAndLoanQuota {
+  basic: BasicInterestRate[];
+  vip: VIPInterestInfo[];
+  regular: RegularUserInterestInfo[];
+  configCcyList: ConfigCcyItem[]; // Currencies that have loan quota configured using customized absolute value
+  config: LoanQuotaConfig[]; // The currency details of loan quota configured using customized absolute value
 }

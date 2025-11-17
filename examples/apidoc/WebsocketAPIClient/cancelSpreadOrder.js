@@ -4,13 +4,13 @@ const { WebsocketAPIClient } = require('okx-api');
 // This OKX API SDK is available on npm via "npm install okx-api"
 // WS API ENDPOINT: sprd-cancel-order
 // METHOD: WebSocket API
-// PUBLIC: 'NO'
+// PUBLIC: NO
 
 // Create a WebSocket API client instance
 const client = new WebsocketAPIClient({
-  apiKey: 'apiKeyHere',
-  apiSecret: 'apiSecretHere',
-  apiPass: 'apiPassHere',
+    apiKey: 'apiKeyHere',
+    apiSecret: 'apiSecretHere',
+    apiPass: 'apiPassHere',
 });
 
 // The WebSocket connection is established automatically when needed

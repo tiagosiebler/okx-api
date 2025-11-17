@@ -12,11 +12,13 @@ import {
   GetVIPLoanOrderDetailRequest,
   GetVIPLoanOrderListRequest,
   PositionBuilderRequest,
+  PrecheckSetDeltaNeutralRequest,
   QuickMarginBorrowRepayRequest,
   SetFeeTypeRequest,
   SetLeverageRequest,
   SetMMPConfigRequest,
   SetSettleCurrencyRequest,
+  SetTradingConfigRequest,
   SubmitFixedLoanBorrowingOrderRequest,
   UpdateFixedLoanBorrowingOrderRequest,
   WithdrawalHistoryRequest,
@@ -57,6 +59,7 @@ import {
 import {
   FundingRateRequest,
   FundsTransferRequest,
+  GetDepositHistoryRequest,
   GetDepositWithdrawStatusRequest,
   WithdrawRequest,
 } from './types/rest/request/funding.js';
@@ -165,11 +168,13 @@ import {
   InterestRate,
   MaxWithdrawal,
   MMPConfig,
+  PrecheckSetDeltaNeutralResult,
   QuickMarginBorrowRepayRecord,
   QuickMarginBorrowRepayResult,
   SetFeeTypeResult,
   SetMMPConfigResult,
   SetSettleCurrencyResult,
+  SetTradingConfigResult,
   VIPInterest,
   VIPLoanOrder,
   VIPLoanOrderDetail,
@@ -226,6 +231,7 @@ import {
 import {
   AccountAssetValuation,
   AssetBillDetails,
+  DepositHistory,
   FundingBalance,
   FundingCurrency,
   FundTransferResult,
@@ -287,6 +293,7 @@ import {
   EconomicCalendarData,
   IndexTicker,
   Instrument,
+  InterestRateAndLoanQuota,
   OptionTrade,
   OptionTrades,
   OrderBook,
@@ -900,6 +907,21 @@ export class RestClient extends BaseRestClient {
 
   getMMPConfig(params?: { instFamily?: string }): Promise<MMPConfig[]> {
     return this.getPrivate('/api/v5/account/mmp-config', params);
+  }
+
+  setTradingConfig(
+    params: SetTradingConfigRequest,
+  ): Promise<SetTradingConfigResult[]> {
+    return this.postPrivate('/api/v5/account/set-trading-config', params);
+  }
+
+  precheckSetDeltaNeutral(
+    params: PrecheckSetDeltaNeutralRequest,
+  ): Promise<PrecheckSetDeltaNeutralResult[]> {
+    return this.getPrivate(
+      '/api/v5/account/precheck-set-delta-neutral',
+      params,
+    );
   }
 
   /**
@@ -2121,8 +2143,8 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/position-tiers', params);
   }
 
-  getInterestRateAndLoanQuota(params: any): Promise<any[]> {
-    return this.get('/api/v5/public/interest-rate-loan-quota', params);
+  getInterestRateAndLoanQuota(): Promise<InterestRateAndLoanQuota[]> {
+    return this.get('/api/v5/public/interest-rate-loan-quota');
   }
 
   getVIPInterestRateAndLoanQuota(params: any): Promise<any[]> {
@@ -2396,7 +2418,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/deposit-address', params);
   }
 
-  getDepositHistory(params?: any): Promise<any[]> {
+  getDepositHistory(
+    params?: GetDepositHistoryRequest,
+  ): Promise<DepositHistory[]> {
     return this.getPrivate('/api/v5/asset/deposit-history', params);
   }
 

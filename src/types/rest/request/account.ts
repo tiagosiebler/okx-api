@@ -173,3 +173,12 @@ export interface SetSettleCurrencyRequest {
 export interface SetFeeTypeRequest {
   feeType: '0' | '1';
 }
+
+export interface SetTradingConfigRequest {
+  type: 'stgyType'; // Trading config type
+  stgyType?: '0' | '1'; // Strategy type: 0=general strategy, 1=delta neutral strategy. Only applicable when type is stgyType
+}
+
+export interface PrecheckSetDeltaNeutralRequest {
+  stgyType: '0' | '1'; // Strategy type: 0=general strategy, 1=delta neutral strategy
+}
