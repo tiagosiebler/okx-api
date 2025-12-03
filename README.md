@@ -80,7 +80,7 @@ npm install okx-api
 
 <!-- template_related_projects -->
 
-## Related projects
+## Related Projects
 
 Check out my related JavaScript/TypeScript/Node.js projects:
 
