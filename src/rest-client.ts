@@ -2395,6 +2395,9 @@ export class RestClient extends BaseRestClient {
     return this.getPrivate('/api/v5/asset/transfer-state', params);
   }
 
+  /**
+   * Query the billing record in the past month.
+   */
   getAssetBillsDetails(params?: {
     ccy?: string;
     type?: `${ASSET_BILL_TYPE}`;
@@ -2404,6 +2407,27 @@ export class RestClient extends BaseRestClient {
     limit?: numberInString;
   }): Promise<AssetBillDetails[]> {
     return this.getPrivate('/api/v5/asset/bills', params);
+  }
+
+  /**
+   * Query the billing records of all time since 1 February, 2021.
+   *
+   *  ⚠️ IMPORTANT: Data updates occur every 30 seconds. Update frequency may vary based on data volume - please be aware of potential delays during high-traffic periods.
+   *
+   * Rate Limit: 1 Requests per second
+   * @param params
+   * @returns
+   */
+  getAssetBillsHistoric(params?: {
+    ccy?: string;
+    type?: `${ASSET_BILL_TYPE}`;
+    clientId?: string;
+    after?: numberInString;
+    before?: numberInString;
+    limit?: numberInString;
+    pagingType?: '0' | '1';
+  }): Promise<AssetBillDetails[]> {
+    return this.getPrivate('/api/v5/asset/bills-history', params);
   }
 
   getLightningDeposits(params: {

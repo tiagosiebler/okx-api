@@ -80,6 +80,7 @@ export interface AssetBillDetails {
   balChg: string;
   bal: string;
   type: `${ASSET_BILL_TYPE}`;
+  notes: string;
   ts: string;
 }
 
