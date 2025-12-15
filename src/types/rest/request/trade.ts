@@ -79,6 +79,7 @@ export interface AlgoOrderRequest {
   timeInterval?: string;
   quickMgnType?: string;
   closeFraction?: numberInString;
+  advanceOrdType?: 'fok' | 'ioc' | '';
   attachAlgoOrds?: {
     attachAlgoClOrdId?: string;
     tpTriggerPx?: string;

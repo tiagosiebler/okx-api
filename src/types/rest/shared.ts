@@ -44,7 +44,8 @@ export type OrderType =
   | 'ioc'
   | 'optimal_limit_ioc'
   | 'mmp'
-  | 'mmp_and_post_only';
+  | 'mmp_and_post_only'
+  | 'elp';
 
 export type OrderState =
   | 'canceled'

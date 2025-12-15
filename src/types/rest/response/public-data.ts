@@ -123,6 +123,7 @@ export interface Instrument {
   posLmtAmt?: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
   posLmtPct?: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
   maxPlatOILmt?: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
+  groupId?: string; // Instrument trading fee group ID
 }
 
 export interface EconomicCalendarData {

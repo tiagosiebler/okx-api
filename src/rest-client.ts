@@ -2711,14 +2711,25 @@ export class RestClient extends BaseRestClient {
   }
 
   getETHStakingHistory(params: {
-    type: 'purchase' | 'redeem';
-    status?: 'pending' | 'success' | 'failed';
+    type?: 'purchase' | 'redeem';
+    status?: 'pending' | 'success' | 'failed' | 'cancelled';
     after?: string;
     before?: string;
     limit?: string;
   }): Promise<any[]> {
     return this.getPrivate(
       '/api/v5/finance/staking-defi/eth/purchase-redeem-history',
+      params,
+    );
+  }
+
+  cancelRedeemETHStaking(params: { ordId: string }): Promise<
+    {
+      ordId: string;
+    }[]
+  > {
+    return this.postPrivate(
+      '/api/v5/finance/staking-defi/eth/cancel-redeem',
       params,
     );
   }
