@@ -327,75 +327,77 @@ This table includes all endpoints from the official Exchange API docs and corres
 | [getAccountAssetValuation()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2379) | :closed_lock_with_key:  | GET | `/api/v5/asset/asset-valuation` |
 | [fundsTransfer()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2385) | :closed_lock_with_key:  | POST | `/api/v5/asset/transfer` |
 | [getFundsTransferState()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2390) | :closed_lock_with_key:  | GET | `/api/v5/asset/transfer-state` |
-| [getAssetBillsDetails()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2398) | :closed_lock_with_key:  | GET | `/api/v5/asset/bills` |
-| [getLightningDeposits()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2409) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-lightning` |
-| [getDepositAddress()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2417) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-address` |
-| [getDepositHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2421) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-history` |
-| [submitWithdraw()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2427) | :closed_lock_with_key:  | POST | `/api/v5/asset/withdrawal` |
-| [submitWithdrawLightning()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2431) | :closed_lock_with_key:  | POST | `/api/v5/asset/withdrawal-lightning` |
-| [cancelWithdrawal()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2439) | :closed_lock_with_key:  | POST | `/api/v5/asset/cancel-withdrawal` |
-| [getWithdrawalHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2443) | :closed_lock_with_key:  | GET | `/api/v5/asset/withdrawal-history` |
-| [getDepositWithdrawStatus()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2447) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-withdraw-status` |
-| [getExchanges()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2453) |  | GET | `/api/v5/asset/exchange-list` |
-| [applyForMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2457) | :closed_lock_with_key:  | POST | `/api/v5/asset/monthly-statement` |
-| [getMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2461) | :closed_lock_with_key:  | GET | `/api/v5/asset/monthly-statement` |
-| [getConvertCurrencies()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2465) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currencies` |
-| [getConvertCurrencyPair()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2469) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currency-pair` |
-| [estimateConvertQuote()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2476) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/estimate-quote` |
-| [convertTrade()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2480) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/trade` |
-| [getConvertHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2484) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/history` |
-| [getSubAccountList()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2495) | :closed_lock_with_key:  | GET | `/api/v5/users/subaccount/list` |
-| [resetSubAccountAPIKey()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2499) | :closed_lock_with_key:  | POST | `/api/v5/users/subaccount/modify-apikey` |
-| [getSubAccountBalances()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2509) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/balances` |
-| [getSubAccountFundingBalances()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2515) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/balances` |
-| [getSubAccountMaxWithdrawal()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2522) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/max-withdrawal` |
-| [getSubAccountTransferHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2529) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/bills` |
-| [getManagedSubAccountTransferHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2540) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/managed-subaccount-bills` |
-| [transferSubAccountBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2550) | :closed_lock_with_key:  | POST | `/api/v5/asset/subaccount/transfer` |
-| [setSubAccountTransferOutPermission()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2556) | :closed_lock_with_key:  | POST | `/api/v5/users/subaccount/set-transfer-out` |
-| [getSubAccountCustodyTradingList()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2566) | :closed_lock_with_key:  | GET | `/api/v5/users/entrust-subaccount-list` |
-| [setSubAccountLoanAllocation()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2572) | :closed_lock_with_key:  | POST | `/api/v5/account/subaccount/set-loan-allocation` |
-| [getSubAccountBorrowInterestAndLimit()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2585) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/interest-limits` |
-| [getStakingOffers()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2602) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/offers` |
-| [submitStake()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2610) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/purchase` |
-| [redeemStake()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2621) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/redeem` |
-| [cancelStakingRequest()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2629) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/cancel` |
-| [getActiveStakingOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2637) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/orders-active` |
-| [getStakingOrderHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2650) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/orders-history` |
-| [getETHStakingProductInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2670) |  | GET | `/api/v5/finance/staking-defi/eth/product-info` |
-| [purchaseETHStaking()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2674) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/eth/purchase` |
-| [redeemETHStaking()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2681) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/eth/redeem` |
-| [getETHStakingBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2685) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/eth/balance` |
-| [getETHStakingHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2689) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/eth/purchase-redeem-history` |
-| [getAPYHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2702) |  | GET | `/api/v5/finance/staking-defi/eth/apy-history` |
-| [getSavingBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2712) | :closed_lock_with_key:  | GET | `/api/v5/finance/savings/balance` |
-| [savingsPurchaseRedemption()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2716) | :closed_lock_with_key:  | POST | `/api/v5/finance/savings/purchase-redempt` |
-| [setLendingRate()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2725) | :closed_lock_with_key:  | POST | `/api/v5/finance/savings/set-lending-rate` |
-| [getLendingHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2732) | :closed_lock_with_key:  | GET | `/api/v5/finance/savings/lending-history` |
-| [getPublicBorrowInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2736) |  | GET | `/api/v5/finance/savings/lending-rate-summary` |
-| [getPublicBorrowHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2740) |  | GET | `/api/v5/finance/savings/lending-rate-history` |
-| [getLendingOffers()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2750) |  | GET | `/api/v5/finance/fixed-loan/lending-offers` |
-| [getLendingAPYHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2754) |  | GET | `/api/v5/finance/fixed-loan/lending-apy-history` |
-| [getLendingVolume()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2758) |  | GET | `/api/v5/finance/fixed-loan/pending-lending-volume` |
-| [placeLendingOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2765) | :closed_lock_with_key:  | POST | `/api/v5/finance/fixed-loan/lending-order` |
-| [amendLendingOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2769) | :closed_lock_with_key:  | POST | `/api/v5/finance/fixed-loan/amend-lending-order` |
-| [getLendingOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2776) | :closed_lock_with_key:  | GET | `/api/v5/finance/fixed-loan/lending-orders-list` |
-| [getLendingSubOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2783) | :closed_lock_with_key:  | GET | `/api/v5/finance/fixed-loan/lending-sub-orders` |
-| [getBorrowableCurrencies()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2796) |  | GET | `/api/v5/finance/flexible-loan/borrow-currencies` |
-| [getCollateralAssets()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2804) |  | GET | `/api/v5/finance/flexible-loan/collateral-assets` |
-| [getMaxLoanAmount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2810) | :closed_lock_with_key:  | POST | `/api/v5/finance/flexible-loan/max-loan` |
-| [adjustCollateral()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2814) | :closed_lock_with_key:  | POST | `/api/v5/finance/flexible-loan/adjust-collateral` |
-| [getLoanInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2821) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/loan-info` |
-| [getLoanHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2825) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/loan-history` |
-| [getAccruedInterest()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2832) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/interest-accrued` |
-| [getInviteeDetail()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2847) | :closed_lock_with_key:  | GET | `/api/v5/affiliate/invitee/detail` |
-| [getAffiliateRebateInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2851) | :closed_lock_with_key:  | GET | `/api/v5/users/partner/if-rebate` |
-| [getSystemStatus()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2861) |  | GET | `/api/v5/system/status` |
-| [getAnnouncements()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2873) |  | GET | `/api/v5/support/announcements` |
-| [getAnnouncementTypes()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2882) |  | GET | `/api/v5/support/announcement-types` |
-| [createSubAccount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2897) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/create-subaccount` |
-| [deleteSubAccount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2906) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/delete-subaccount` |
-| [createSubAccountAPIKey()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2910) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/subaccount/apikey` |
+| [getAssetBillsDetails()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2401) | :closed_lock_with_key:  | GET | `/api/v5/asset/bills` |
+| [getAssetBillsHistoric()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2421) | :closed_lock_with_key:  | GET | `/api/v5/asset/bills-history` |
+| [getLightningDeposits()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2433) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-lightning` |
+| [getDepositAddress()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2441) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-address` |
+| [getDepositHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2445) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-history` |
+| [submitWithdraw()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2451) | :closed_lock_with_key:  | POST | `/api/v5/asset/withdrawal` |
+| [submitWithdrawLightning()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2455) | :closed_lock_with_key:  | POST | `/api/v5/asset/withdrawal-lightning` |
+| [cancelWithdrawal()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2463) | :closed_lock_with_key:  | POST | `/api/v5/asset/cancel-withdrawal` |
+| [getWithdrawalHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2467) | :closed_lock_with_key:  | GET | `/api/v5/asset/withdrawal-history` |
+| [getDepositWithdrawStatus()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2471) | :closed_lock_with_key:  | GET | `/api/v5/asset/deposit-withdraw-status` |
+| [getExchanges()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2477) |  | GET | `/api/v5/asset/exchange-list` |
+| [applyForMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2481) | :closed_lock_with_key:  | POST | `/api/v5/asset/monthly-statement` |
+| [getMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2485) | :closed_lock_with_key:  | GET | `/api/v5/asset/monthly-statement` |
+| [getConvertCurrencies()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2489) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currencies` |
+| [getConvertCurrencyPair()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2493) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currency-pair` |
+| [estimateConvertQuote()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2500) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/estimate-quote` |
+| [convertTrade()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2504) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/trade` |
+| [getConvertHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2508) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/history` |
+| [getSubAccountList()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2519) | :closed_lock_with_key:  | GET | `/api/v5/users/subaccount/list` |
+| [resetSubAccountAPIKey()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2523) | :closed_lock_with_key:  | POST | `/api/v5/users/subaccount/modify-apikey` |
+| [getSubAccountBalances()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2533) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/balances` |
+| [getSubAccountFundingBalances()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2539) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/balances` |
+| [getSubAccountMaxWithdrawal()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2546) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/max-withdrawal` |
+| [getSubAccountTransferHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2553) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/bills` |
+| [getManagedSubAccountTransferHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2564) | :closed_lock_with_key:  | GET | `/api/v5/asset/subaccount/managed-subaccount-bills` |
+| [transferSubAccountBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2574) | :closed_lock_with_key:  | POST | `/api/v5/asset/subaccount/transfer` |
+| [setSubAccountTransferOutPermission()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2580) | :closed_lock_with_key:  | POST | `/api/v5/users/subaccount/set-transfer-out` |
+| [getSubAccountCustodyTradingList()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2590) | :closed_lock_with_key:  | GET | `/api/v5/users/entrust-subaccount-list` |
+| [setSubAccountLoanAllocation()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2596) | :closed_lock_with_key:  | POST | `/api/v5/account/subaccount/set-loan-allocation` |
+| [getSubAccountBorrowInterestAndLimit()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2609) | :closed_lock_with_key:  | GET | `/api/v5/account/subaccount/interest-limits` |
+| [getStakingOffers()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2626) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/offers` |
+| [submitStake()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2634) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/purchase` |
+| [redeemStake()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2645) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/redeem` |
+| [cancelStakingRequest()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2653) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/cancel` |
+| [getActiveStakingOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2661) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/orders-active` |
+| [getStakingOrderHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2674) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/orders-history` |
+| [getETHStakingProductInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2694) |  | GET | `/api/v5/finance/staking-defi/eth/product-info` |
+| [purchaseETHStaking()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2698) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/eth/purchase` |
+| [redeemETHStaking()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2705) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/eth/redeem` |
+| [getETHStakingBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2709) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/eth/balance` |
+| [getETHStakingHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2713) | :closed_lock_with_key:  | GET | `/api/v5/finance/staking-defi/eth/purchase-redeem-history` |
+| [cancelRedeemETHStaking()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2726) | :closed_lock_with_key:  | POST | `/api/v5/finance/staking-defi/eth/cancel-redeem` |
+| [getAPYHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2737) |  | GET | `/api/v5/finance/staking-defi/eth/apy-history` |
+| [getSavingBalance()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2747) | :closed_lock_with_key:  | GET | `/api/v5/finance/savings/balance` |
+| [savingsPurchaseRedemption()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2751) | :closed_lock_with_key:  | POST | `/api/v5/finance/savings/purchase-redempt` |
+| [setLendingRate()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2760) | :closed_lock_with_key:  | POST | `/api/v5/finance/savings/set-lending-rate` |
+| [getLendingHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2767) | :closed_lock_with_key:  | GET | `/api/v5/finance/savings/lending-history` |
+| [getPublicBorrowInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2771) |  | GET | `/api/v5/finance/savings/lending-rate-summary` |
+| [getPublicBorrowHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2775) |  | GET | `/api/v5/finance/savings/lending-rate-history` |
+| [getLendingOffers()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2785) |  | GET | `/api/v5/finance/fixed-loan/lending-offers` |
+| [getLendingAPYHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2789) |  | GET | `/api/v5/finance/fixed-loan/lending-apy-history` |
+| [getLendingVolume()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2793) |  | GET | `/api/v5/finance/fixed-loan/pending-lending-volume` |
+| [placeLendingOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2800) | :closed_lock_with_key:  | POST | `/api/v5/finance/fixed-loan/lending-order` |
+| [amendLendingOrder()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2804) | :closed_lock_with_key:  | POST | `/api/v5/finance/fixed-loan/amend-lending-order` |
+| [getLendingOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2811) | :closed_lock_with_key:  | GET | `/api/v5/finance/fixed-loan/lending-orders-list` |
+| [getLendingSubOrders()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2818) | :closed_lock_with_key:  | GET | `/api/v5/finance/fixed-loan/lending-sub-orders` |
+| [getBorrowableCurrencies()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2831) |  | GET | `/api/v5/finance/flexible-loan/borrow-currencies` |
+| [getCollateralAssets()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2839) |  | GET | `/api/v5/finance/flexible-loan/collateral-assets` |
+| [getMaxLoanAmount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2845) | :closed_lock_with_key:  | POST | `/api/v5/finance/flexible-loan/max-loan` |
+| [adjustCollateral()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2849) | :closed_lock_with_key:  | POST | `/api/v5/finance/flexible-loan/adjust-collateral` |
+| [getLoanInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2856) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/loan-info` |
+| [getLoanHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2860) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/loan-history` |
+| [getAccruedInterest()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2867) | :closed_lock_with_key:  | GET | `/api/v5/finance/flexible-loan/interest-accrued` |
+| [getInviteeDetail()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2882) | :closed_lock_with_key:  | GET | `/api/v5/affiliate/invitee/detail` |
+| [getAffiliateRebateInfo()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2886) | :closed_lock_with_key:  | GET | `/api/v5/users/partner/if-rebate` |
+| [getSystemStatus()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2896) |  | GET | `/api/v5/system/status` |
+| [getAnnouncements()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2908) |  | GET | `/api/v5/support/announcements` |
+| [getAnnouncementTypes()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2917) |  | GET | `/api/v5/support/announcement-types` |
+| [createSubAccount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2932) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/create-subaccount` |
+| [deleteSubAccount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2941) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/delete-subaccount` |
+| [createSubAccountAPIKey()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2945) | :closed_lock_with_key:  | POST | `/api/v5/broker/nd/subaccount/apikey` |
 
 # websocket-api-client.ts
 

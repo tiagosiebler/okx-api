@@ -272,6 +272,12 @@ export interface AccountMaxLoan {
   side: string;
 }
 
+export interface FeeGroup {
+  taker: string;
+  maker: string;
+  groupId: string;
+}
+
 export interface AccountFeeRate {
   category: never;
   delivery: string;
@@ -284,6 +290,7 @@ export interface AccountFeeRate {
   takerU: string;
   ts: string;
   ruleType: string;
+  feeGroup?: FeeGroup[]; // Fee groups. Applicable to SPOT/MARGIN/SWAP/FUTURES/OPTION
 }
 
 export interface AccountIsolatedMode {
@@ -399,6 +406,7 @@ export interface AccountInstrument {
   posLmtAmt: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
   posLmtPct: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
   maxPlatOILmt: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
+  groupId?: string; // Instrument trading fee group ID
 }
 
 export interface QuickMarginBorrowRepayResult {
