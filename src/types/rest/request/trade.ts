@@ -188,10 +188,20 @@ export interface OrderRequest {
   /** Quantity to buy or sell */
   sz: numberInString;
   px?: string;
+  /** Place options orders in USD. Only applicable to options. One of px/pxUsd/pxVol must be filled for option orders */
+  pxUsd?: string;
+  /** Place options orders based on implied volatility, where 1 represents 100%. Only applicable to options */
+  pxVol?: string;
   reduceOnly?: boolean;
   /** A spot buy on BTC-USDT with "base_ccy" would mean the QTY (sz) is in USDT */
   tgtCcy?: 'base_ccy' | 'quote_ccy';
   banAmend?: boolean;
+  /** Price amendment type: "0" = do not allow amendment, "1" = allow amendment within price limit. Default is "0" */
+  pxAmendType?: '0' | '1';
+  /** Quote currency used for trading. Only applicable to SPOT. Default is quote currency of instId */
+  tradeQuoteCcy?: string;
+  /** Self trade prevention mode: cancel_maker, cancel_taker, cancel_both. Default is cancel_maker */
+  stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
   /** Take Profit & Stop Loss params */
   tpTriggerPx?: string;
   tpOrdPx?: string;
@@ -199,6 +209,33 @@ export interface OrderRequest {
   slOrdPx?: string;
   tpTriggerPxType?: PriceTriggerType;
   slTriggerPxType?: PriceTriggerType;
+  /** TP/SL information attached when placing order (supports split TPs and advanced TP/SL configurations) */
+  attachAlgoOrds?: {
+    /** Client-supplied Algo ID when placing order attaching TP/SL */
+    attachAlgoClOrdId?: string;
+    /** Take-profit trigger price */
+    tpTriggerPx?: string;
+    /** Take profit trigger ratio, 0.3 represents 30%. Only one of tpTriggerPx and tpTriggerRatio can be passed */
+    tpTriggerRatio?: string;
+    /** Take-profit order price. -1 means market price */
+    tpOrdPx?: string;
+    /** TP order kind: "condition" or "limit". Default is "condition" */
+    tpOrdKind?: 'condition' | 'limit';
+    /** Stop-loss trigger price */
+    slTriggerPx?: string;
+    /** Stop loss trigger ratio, 0.3 represents 30%. Only one of slTriggerPx and slTriggerRatio can be passed */
+    slTriggerRatio?: string;
+    /** Stop-loss order price. -1 means market price */
+    slOrdPx?: string;
+    /** Take-profit trigger price type: last, index, or mark. Default is last */
+    tpTriggerPxType?: 'last' | 'index' | 'mark';
+    /** Stop-loss trigger price type: last, index, or mark. Default is last */
+    slTriggerPxType?: 'last' | 'index' | 'mark';
+    /** Size. Only applicable to TP order of split TPs, and it is required for TP order of split TPs */
+    sz?: string;
+    /** Whether to enable Cost-price SL. "0" = disable (default), "1" = Enable. Only applicable to SL order of split TPs */
+    amendPxOnTriggerType?: '0' | '1';
+  }[];
   /** Quick margin type */
   quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
 }
