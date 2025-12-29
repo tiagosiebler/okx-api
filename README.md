@@ -86,12 +86,12 @@ Check out my related JavaScript/TypeScript/Node.js projects:
 
 - Try our REST API & WebSocket SDKs published on npmjs:
   - [Bybit Node.js SDK: bybit-api](https://www.npmjs.com/package/bybit-api)
-  - [OKX/OKEX Node.js SDK: okx-api](https://www.npmjs.com/package/okx-api)
+  - [Kraken Node.js SDK: @siebly/kraken-api](https://www.npmjs.com/package/coinbase-api)
+  - [OKX Node.js SDK: okx-api](https://www.npmjs.com/package/okx-api)
   - [Binance Node.js SDK: binance](https://www.npmjs.com/package/binance)
   - [Gate (gate.com) Node.js SDK: gateio-api](https://www.npmjs.com/package/gateio-api)
   - [Bitget Node.js SDK: bitget-api](https://www.npmjs.com/package/bitget-api)
   - [Kucoin Node.js SDK: kucoin-api](https://www.npmjs.com/package/kucoin-api)
-  - [Kraken Node.js SDK: @siebly/kraken-api](https://www.npmjs.com/package/coinbase-api)
   - [Coinbase Node.js SDK: coinbase-api](https://www.npmjs.com/package/coinbase-api)
   - [Bitmart Node.js SDK: bitmart-api](https://www.npmjs.com/package/bitmart-api)
 - Try my misc utilities:
