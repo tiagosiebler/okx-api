@@ -1,4 +1,4 @@
-import { ClientRequestArgs } from 'http';
+import type { ClientRequestArgs } from 'http';
 import WebSocket from 'isomorphic-ws';
 
 import { RestClientOptions } from '../rest/client.js';
