@@ -11,7 +11,7 @@
     "build": "npm run clean && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && bash ./postBuild.sh",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run clean && tsc --watch",
-    "pack": "webpack --config webpack/webpack.config.js",
+    "pack": "webpack --config webpack/webpack.config.cjs",
     "lint": "eslint src",
     "prepublish": "npm run build:clean",
     "betapublish": "npm publish --tag beta"

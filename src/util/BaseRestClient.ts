@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+// NOTE: https.Agent is Node.js-only and not available in browser environments
+// Browser builds (via webpack) exclude this module - see webpack.config.js fallback settings
 import { Agent } from 'https';
 
 import { RestClientOptions } from '../types/rest/client.js';
@@ -121,6 +123,9 @@ export default abstract class BaseRestClient {
     this.globalRequestOptions.headers['Accept'] = 'application/json';
 
     // If enabled, configure a https agent with keepAlive enabled
+    // NOTE: This is Node.js-only functionality. In browser environments, this code is skipped
+    // as the 'https' module is excluded via webpack fallback configuration.
+    // Browser connection pooling is handled automatically by the browser itself.
     if (this.options.keepAlive) {
       // Extract existing https agent parameters, if provided, to prevent the keepAlive flag from overwriting an existing https agent completely
       const existingHttpsAgent = this.globalRequestOptions.httpsAgent as
