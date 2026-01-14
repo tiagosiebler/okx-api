@@ -82,11 +82,12 @@ npm install okx-api
 
 ## Related Projects
 
-Check out my related JavaScript/TypeScript/Node.js projects:
+Check out our JavaScript/TypeScript/Node.js SDKs & Projects:
 
+- Visit our website: [https://Siebly.io](https://siebly.io/?ref=gh)
 - Try our REST API & WebSocket SDKs published on npmjs:
   - [Bybit Node.js SDK: bybit-api](https://www.npmjs.com/package/bybit-api)
-  - [Kraken Node.js SDK: @siebly/kraken-api](https://www.npmjs.com/package/coinbase-api)
+  - [Kraken Node.js SDK: @siebly/kraken-api](https://www.npmjs.com/package/@siebly/kraken-api)
   - [OKX Node.js SDK: okx-api](https://www.npmjs.com/package/okx-api)
   - [Binance Node.js SDK: binance](https://www.npmjs.com/package/binance)
   - [Gate (gate.com) Node.js SDK: gateio-api](https://www.npmjs.com/package/gateio-api)
