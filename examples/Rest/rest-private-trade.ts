@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { RestClient } from '../src/index.js';
-import { OrderRequest } from '../src/types/rest/request/trade.js';
+import { RestClient } from '../../src/index.js';
+import { OrderRequest } from '../../src/types/rest/request/trade.js';
 
 // or
 // import { SpotClient } from 'okx-api';

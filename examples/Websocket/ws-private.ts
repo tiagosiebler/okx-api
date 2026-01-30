@@ -1,5 +1,5 @@
 // If you cloned the repo and are using typescript, you can import from src directly:
-import { DefaultLogger, WebsocketClient } from '../src';
+import { DefaultLogger, WebsocketClient } from '../../src/index.js';
 
 // or use the module installed via `npm install okx-api`:
 // import { WebsocketClient, DefaultLogger } from 'okx-api';

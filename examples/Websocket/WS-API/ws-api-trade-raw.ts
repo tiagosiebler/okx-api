@@ -1,5 +1,9 @@
 // If you cloned the repo and are using typescript, you can import from src directly:
-import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from '../src';
+import {
+  DefaultLogger,
+  WebsocketClient,
+  WS_KEY_MAP,
+} from '../../../src/index.js';
 
 // or use the module installed via `npm install okx-api`:
 // import { WebsocketClient, DefaultLogger } from 'okx-api';
@@ -26,9 +30,9 @@ import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from '../src';
       accounts: [
         // For private topics, include one or more accounts in an array. Otherwise only public topics will work
         {
-          apiKey: API_KEY,
-          apiSecret: API_SECRET,
-          apiPass: API_PASSPHRASE,
+          apiKey: API_KEY || '',
+          apiSecret: API_SECRET || '',
+          apiPass: API_PASSPHRASE || '',
         },
       ],
     },

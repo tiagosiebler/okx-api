@@ -1,4 +1,4 @@
-import { DefaultLogger, WebsocketAPIClient } from '../src';
+import { DefaultLogger, WebsocketAPIClient } from '../../../src/index.js';
 
 // or use the module installed via `npm install okx-api`:
 // import { WebsocketClient, DefaultLogger } from 'okx-api';
@@ -55,9 +55,9 @@ import { DefaultLogger, WebsocketAPIClient } from '../src';
       accounts: [
         // For private topics, include one or more accounts in an array. Otherwise only public topics will work
         {
-          apiKey: API_KEY,
-          apiSecret: API_SECRET,
-          apiPass: API_PASSPHRASE,
+          apiKey: API_KEY || '',
+          apiSecret: API_SECRET || '',
+          apiPass: API_PASSPHRASE || '',
         },
       ],
     },

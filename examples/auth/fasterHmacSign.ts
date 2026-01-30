@@ -1,6 +1,10 @@
 import { createHmac } from 'crypto';
 
-import { DefaultLogger, RestClient, WebsocketClient } from '../../src/';
+import {
+  DefaultLogger,
+  RestClient,
+  WebsocketClient,
+} from '../../src//index.js';
 
 // or
 // import { createHmac } from 'crypto';
@@ -62,9 +66,9 @@ const wsClient = new WebsocketClient(
     accounts: [
       // For private topics, include one or more accounts in an array. Otherwise only public topics will work
       {
-        apiKey: API_KEY,
-        apiSecret: API_SECRET,
-        apiPass: API_PASS,
+        apiKey: API_KEY || '',
+        apiSecret: API_SECRET || '',
+        apiPass: API_PASS || '',
       },
     ],
     /**
