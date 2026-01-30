@@ -1,4 +1,4 @@
-import { RestClient } from '../src/index';
+import { RestClient } from '../../src/index.js';
 
 // or
 // import { RestClient } from 'okx-api';

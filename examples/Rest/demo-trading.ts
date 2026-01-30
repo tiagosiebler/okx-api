@@ -1,4 +1,4 @@
-import { RestClient, WebsocketClient } from '../src/index';
+import { RestClient, WebsocketClient } from '../../src/index.js';
 
 // or
 // import { RestClient} from 'okx-api';
@@ -55,7 +55,7 @@ demoWsClient.on('reconnect', ({ wsKey }) => {
 demoWsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-demoWsClient.on('error', (data) => {
+demoWsClient.on('exception', (data) => {
   console.error('ws exception: ', data);
 });
 

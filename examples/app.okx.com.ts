@@ -1,4 +1,4 @@
-import { RestClient, WebsocketClient } from '../src/index';
+import { RestClient, WebsocketClient } from '../src/index.js';
 
 // or
 // import { RestClient } from 'okx-api';
