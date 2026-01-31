@@ -36,7 +36,7 @@
   "dependencies": {
     "axios": "^1.13.2",
     "isomorphic-ws": "^5.0.0",
-    "ws": "^8.18.3"
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
