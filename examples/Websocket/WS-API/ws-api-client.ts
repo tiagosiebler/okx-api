@@ -29,7 +29,7 @@ import { DefaultLogger, WebsocketAPIClient } from '../../../src/index.js';
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params) => console.log('trace', ...params),
+    trace: (...params: any[]) => console.log('trace', ...params),
   };
 
   // For private events, all 3 of the following are required (per account):
