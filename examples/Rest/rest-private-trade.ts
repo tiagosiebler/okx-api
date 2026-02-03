@@ -42,17 +42,17 @@ const client = new RestClient({
 //   apiPass: API_PASS,
 // });
 
-function logWSEvent(type, data) {
+function logWSEvent(type: string, data: any) {
   console.log(new Date(), `WS ${type} event: `, data);
 }
 
 // simple sleep function
-function promiseSleep(milliseconds) {
+function promiseSleep(milliseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 // WARNING: for sensitive math you should be using a library such as decimal.js!
-function roundDown(value, decimals) {
+function roundDown(value: any, decimals: number) {
   return Number(
     Math.floor(parseFloat(value + 'e' + decimals)) + 'e-' + decimals,
   );
