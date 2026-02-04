@@ -9,7 +9,7 @@ import {
 } from './WsStore.types.js';
 
 /**
- * TODO: this seems more thorough than the one for Bitget. Make tests and evaluate which one to keep.
+ * Simple comparison of two objects, recursive for nested objects
  */
 export function isDeepObjectMatch(object1: any, object2: any): boolean {
   if (typeof object2 !== typeof object1) {
@@ -36,13 +36,16 @@ export function isDeepObjectMatch(object1: any, object2: any): boolean {
     const value1 = object1[key];
     const value2 = object2[key];
 
-    if (typeof value1 === 'object' && typeof value2 === 'object') {
+    if (
+      typeof value1 === 'object' &&
+      typeof value2 === 'object' &&
+      value1 !== null &&
+      value2 !== null
+    ) {
       if (!isDeepObjectMatch(value1, value2)) {
         return false;
       }
-    }
-
-    if (value1 !== value2) {
+    } else if (value1 !== value2) {
       return false;
     }
   }

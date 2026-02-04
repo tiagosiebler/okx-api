@@ -28,5 +28,6 @@ privaterepotracker
 restClientRegex.ts
 testfile.ts
 localtest.sh
+coverage/
 
 repomix.sh

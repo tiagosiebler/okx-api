@@ -117,6 +117,19 @@ describe('isDeepObjectMatch()', () => {
         isDeepObjectMatch(COMPLEX_TOPIC_GREEKS_3, COMPLEX_TOPIC_GREEKS_1),
       ).toStrictEqual(false);
     });
+
+    it('should match nested objects recursively', () => {
+      const topic1 = {
+        topic: 'account',
+        payload: { instType: 'USDT-FUTURES', coin: 'default' },
+      };
+      const topic2 = {
+        topic: 'account',
+        payload: { instType: 'USDT-FUTURES', coin: 'default' },
+      };
+
+      expect(isDeepObjectMatch(topic1, topic2)).toStrictEqual(true);
+    });
   });
 });
 
