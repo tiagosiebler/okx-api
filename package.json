@@ -57,7 +57,7 @@
   "optionalDependencies": {
     "source-map-loader": "^4.0.0",
     "ts-loader": "^9.5.4",
-    "webpack": "^5.74.0",
+    "webpack": "^5.104.1",
     "webpack-bundle-analyzer": "^4.6.1",
     "webpack-cli": "^4.10.0"
   },
