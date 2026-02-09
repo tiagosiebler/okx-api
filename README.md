@@ -18,6 +18,9 @@
 
 [1]: https://www.npmjs.com/package/okx-api
 
+> [!TIP]
+> Upcoming change: As part of the [Siebly.io](https://siebly.io/?ref=ghokx) brand, this SDK will soon be hosted under the [Siebly.io GitHub organisation](https://github.com/sieblyio). The migration is seamless and requires no user changes.
+
 Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets:
 
 - Complete integration with OKX REST APIs, WebSockets & WebSocket APIs.

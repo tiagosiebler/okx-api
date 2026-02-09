@@ -1,6 +1,6 @@
 {
   "name": "okx-api",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Complete Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
   "scripts": {
     "test": "jest",
@@ -31,7 +31,7 @@
     "llms.txt"
   ],
   "type": "module",
-  "author": "Tiago Siebler (https://github.com/tiagosiebler)",
+  "author": "Tiago Siebler (https://siebly.io)",
   "contributors": [],
   "dependencies": {
     "axios": "^1.13.2",
