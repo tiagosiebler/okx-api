@@ -297,6 +297,7 @@ import {
   OptionTrade,
   OptionTrades,
   OrderBook,
+  PublicBorrowHistoryRecord,
   SystemTime,
   Ticker,
   Trade,
@@ -566,6 +567,7 @@ export class RestClient extends BaseRestClient {
     instId?: string;
     uly?: string;
     instFamily?: string;
+    groupId?: string;
     ruleType?: string;
   }): Promise<AccountFeeRate[]> {
     return this.getPrivate('/api/v5/account/trade-fee', params);
@@ -2493,6 +2495,8 @@ export class RestClient extends BaseRestClient {
   getConvertCurrencyPair(params: {
     fromCcy: string;
     toCcy: string;
+    /** 0: standard convert (default), 1: large order convert for VIP */
+    convertMode?: '0' | '1';
   }): Promise<any[]> {
     return this.getPrivate('/api/v5/asset/convert/currency-pair', params);
   }
@@ -2772,7 +2776,9 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/finance/savings/lending-rate-summary', params);
   }
 
-  getPublicBorrowHistory(params?: PaginatedSymbolRequest): Promise<any[]> {
+  getPublicBorrowHistory(
+    params?: PaginatedSymbolRequest,
+  ): Promise<PublicBorrowHistoryRecord[]> {
     return this.get('/api/v5/finance/savings/lending-rate-history', params);
   }
 

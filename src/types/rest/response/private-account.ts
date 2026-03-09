@@ -396,17 +396,27 @@ export interface AccountInstrument {
   quoteCcy: string;
   tradeQuoteCcyList: string[]; // List of quote currencies available for trading, e.g. ["USD", "USDC"]
   settleCcy: string;
+  /** Instrument status: live, suspend, rebase (SWAP only), preopen, test */
   state: string;
   stk: string;
   tickSz: string;
+  /** Trading rule types: normal, pre_market, rebase_contract */
   ruleType: string;
   auctionEndTime: string;
   futureSettlement: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
   instIdCode: number; // Instrument ID code. For simple binary encoding, must use instIdCode instead of instId.
+  /** Category of instrument's base currency. "1" = Crypto, "3" = Stocks */
+  instCategory?: string;
   posLmtAmt: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
   posLmtPct: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
   maxPlatOILmt: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
+  /** Remaining long position value (USD) the user is permitted to open. Applicable to SWAP/FUTURES. */
+  longPosRemainingQuota?: string;
+  /** Remaining short position value (USD) the user is permitted to open. Applicable to SWAP/FUTURES. */
+  shortPosRemainingQuota?: string;
   groupId?: string; // Instrument trading fee group ID
+  /** ELP maker permission. "0" = not enabled, "1" = enabled but no permission, "2" = enabled with permission */
+  elp?: string;
 }
 
 export interface QuickMarginBorrowRepayResult {
