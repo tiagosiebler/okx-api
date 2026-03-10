@@ -7,7 +7,10 @@ import {
 } from '../rest/shared.js';
 
 export interface WSAPIPlaceOrderRequestV5 {
-  instId: string;
+  /** Instrument ID. Deprecated March 2026; use instIdCode for lower latency. */
+  instId?: string;
+  /** Instrument ID code. Takes precedence over instId if both provided. Use Get instruments to map. */
+  instIdCode?: number;
   tdMode: TradeMode;
   ccy?: string;
   clOrdId?: string;
@@ -26,10 +29,15 @@ export interface WSAPIPlaceOrderRequestV5 {
   banAmend?: boolean;
   tradeQuoteCcy?: string;
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
+  /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
+  isElpTakerAccess?: boolean;
 }
 
 export interface WSAPIAmendOrderRequestV5 {
-  instId: string;
+  /** Instrument ID. Deprecated March 2026; use instIdCode for lower latency. */
+  instId?: string;
+  /** Instrument ID code. Takes precedence over instId if both provided. Use Get instruments to map. */
+  instIdCode?: number;
   cxlOnFail?: boolean;
   ordId?: string;
   clOrdId?: string;

@@ -6,6 +6,8 @@ export interface ConvertQuoteEstimateRequest {
   rfqSzCcy: string;
   clTReqId?: string;
   tag?: string;
+  /** 0: standard convert (default), 1: large order convert for VIP */
+  convertMode?: '0' | '1';
 }
 export interface ConvertTradeRequest {
   quoteId: string;
@@ -16,4 +18,6 @@ export interface ConvertTradeRequest {
   szCcy: string;
   clTReqId?: string;
   tag?: string;
+  /** 0: standard convert (default), 1: large order convert for VIP */
+  convertMode?: '0' | '1';
 }

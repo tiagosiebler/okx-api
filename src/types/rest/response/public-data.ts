@@ -105,6 +105,7 @@ export interface Instrument {
   minSz: string;
   ctType: string;
   alias: string;
+  /** Instrument status: live, suspend, rebase (SWAP only), preopen, test */
   state: string;
   openType?: string; // Open type: fix_price (fix price opening), pre_quote (pre-quote), call_auction (call auction). Only applicable to SPOT/MARGIN.
   maxLmtSz: string;
@@ -115,11 +116,14 @@ export interface Instrument {
   maxIcebergSz: string;
   maxTriggerSz: string;
   maxStopSz: string;
+  /** Trading rule types: normal, pre_market, rebase_contract */
   ruleType: string;
   auctionEndTime: string;
   futureSettlement?: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
   tradeQuoteCcyList?: string[]; // List of quote currencies available for trading, e.g. ["USD", "USDC"]
   instIdCode?: number; // Instrument ID code. For simple binary encoding, must use instIdCode instead of instId.
+  /** Category of instrument's base currency. "1" = Crypto, "3" = Stocks */
+  instCategory?: string;
   posLmtAmt?: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
   posLmtPct?: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
   maxPlatOILmt?: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
@@ -201,6 +205,15 @@ export interface Announcement {
   businessPTime: string; // The time displayed on the announcement page for user reference. Unix timestamp format in milliseconds, e.g. 1597026383085
   title: string;
   url: string;
+}
+
+/** Public borrow history record (GET /api/v5/finance/savings/lending-rate-history) */
+export interface PublicBorrowHistoryRecord {
+  ccy: string; // Currency, e.g. BTC
+  amt: string; // Lending amount (deprecated)
+  rate: string; // Annual borrowing interest rate
+  lendingRate: string; // Annual lending interest rate
+  ts: string; // Unix timestamp format in milliseconds
 }
 
 export interface BasicInterestRate {

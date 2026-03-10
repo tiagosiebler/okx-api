@@ -157,7 +157,10 @@ export interface FillsHistoryRequest {
 }
 
 export interface OrderIdRequest {
-  instId: string;
+  /** Instrument ID. Deprecated March 2026 for WS; use instIdCode for lower latency. */
+  instId?: string;
+  /** Instrument ID code. Takes precedence over instId if both provided. Use Get instruments to map. WS only. */
+  instIdCode?: number;
   ordId?: string;
   clOrdId?: string;
 }
@@ -202,6 +205,8 @@ export interface OrderRequest {
   tradeQuoteCcy?: string;
   /** Self trade prevention mode: cancel_maker, cancel_taker, cancel_both. Default is cancel_maker */
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
+  /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
+  isElpTakerAccess?: boolean;
   /** Take Profit & Stop Loss params */
   tpTriggerPx?: string;
   tpOrdPx?: string;
