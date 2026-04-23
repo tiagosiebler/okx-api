@@ -1,6 +1,8 @@
 import { ASSET_BILL_TYPE } from './constants/funding.js';
 import {
+  BillsHistoryArchiveRequest,
   ChangePositionMarginRequest,
+  GetAccountBillSubtypesRequest,
   GetBorrowRepayHistoryRequest,
   GetFixedLoanBorrowingOrdersListRequest,
   GetFixedLoanBorrowQuoteRequest,
@@ -57,10 +59,20 @@ import {
   SetCTBatchLeverageRequest,
 } from './types/rest/request/copy-trading.js';
 import {
+  GetDcdOrderHistoryRequest,
+  GetDcdOrderStatusRequest,
+  GetDcdProductsRequest,
+  RequestDcdQuoteRequest,
+  RequestDcdRedeemQuoteRequest,
+  SubmitDcdRedeemRequest,
+  SubmitDcdTradeRequest,
+} from './types/rest/request/dual-investment.js';
+import {
   FundingRateRequest,
   FundsTransferRequest,
   GetDepositHistoryRequest,
   GetDepositWithdrawStatusRequest,
+  GetFundingRateRequest,
   WithdrawRequest,
 } from './types/rest/request/funding.js';
 import {
@@ -77,6 +89,10 @@ import {
   EconomicCalendarRequest,
   GetContractOpenInterestHistoryRequest,
   GetContractTakerVolumeRequest,
+  GetEventContractEventsRequest,
+  GetEventContractMarketsRequest,
+  GetEventContractSeriesRequest,
+  GetHistoricalMarketDataRequest,
   GetOptionTradesRequest,
   GetPremiumHistoryRequest,
   GetTopTradersContractLongShortRatioRequest,
@@ -141,6 +157,7 @@ import {
 import {
   AccountBalance,
   AccountBill,
+  AccountBillTypeDefinition,
   AccountChangeMarginResult,
   AccountConfiguration,
   AccountFeeRate,
@@ -218,10 +235,22 @@ import {
   SubpositionsHistory,
 } from './types/rest/response/private-copy-trading.js';
 import {
+  DcdCurrencyPair,
+  DcdOrderHistoryItem,
+  DcdOrderStatus,
+  DcdProduct,
+  DcdQuote,
+  DcdRedeemQuote,
+  DcdRedeemResult,
+  DcdTradeResult,
+} from './types/rest/response/private-dual-investment.js';
+import {
   AccruedInterestItem,
   AccruedInterestRequest,
   AdjustCollateralRequest,
   CollateralAssetsResponse,
+  GetFlexibleLoanCollateralAssetsRequest,
+  GetLoanInfoRequest,
   LoanHistoryItem,
   LoanHistoryRequest,
   LoanInfo,
@@ -291,13 +320,22 @@ import {
   Candle,
   CandleNoVolume,
   EconomicCalendarData,
+  EstimatedDeliveryExercisePrice,
+  EthStakingProductInfo,
+  EventContractEvent,
+  EventContractMarket,
+  EventContractSeries,
+  FundingRateHistory,
   IndexTicker,
   Instrument,
   InterestRateAndLoanQuota,
+  MarketDataHistoryResult,
   OptionTrade,
   OptionTrades,
   OrderBook,
   PublicBorrowHistoryRecord,
+  PublicFundingRate,
+  SolStakingProductInfo,
   SystemTime,
   Ticker,
   Trade,
@@ -445,28 +483,35 @@ export class RestClient extends BaseRestClient {
   }
 
   /**
+   * Bill type ids and subTypes (unified account bill CSV columns reference `type` / `subType`).
+   * @see GET /api/v5/account/subtypes
+   */
+  getAccountBillSubtypes(
+    params?: GetAccountBillSubtypesRequest,
+  ): Promise<AccountBillTypeDefinition[]> {
+    return this.getPrivate('/api/v5/account/subtypes', params);
+  }
+
+  /**
    * Apply for bill data since 1 February, 2021 except for the current quarter.
-   * Check the file link from the "Get bills details (since 2021)" endpoint in 30 hours to allow for data generation.
-   * During peak demand, data generation may take longer. If the file link is still unavailable after 48 hours, reach out to customer support for assistance.
+   * Check the "Get bills details (since 2021)" endpoint in about 2 hours for the download link; in peak load it may take longer, and if still missing after 3 hours contact support.
    * It is only applicable to the data from the unified account.
    *
    * This endpoint submits a request for bill data. You can then use getRequestedBillsHistoryLink to get the link to the bill data.
    * It may take some time to generate the data.
    */
-  requestBillsHistoryDownloadLink(params: {
-    year: string;
-    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
-  }): Promise<AccountHistoryBill[]> {
+  requestBillsHistoryDownloadLink(
+    params: BillsHistoryArchiveRequest,
+  ): Promise<AccountHistoryBill[]> {
     return this.postPrivate('/api/v5/account/bills-history-archive', params);
   }
 
   /**
    * This endpoint returns the link to the bill data which you can request using requestBillsHistoryDownloadLink.
    */
-  getRequestedBillsHistoryLink(params: {
-    year: string;
-    quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
-  }): Promise<AccountHistoryBill[]> {
+  getRequestedBillsHistoryLink(
+    params: BillsHistoryArchiveRequest,
+  ): Promise<AccountHistoryBill[]> {
     return this.getPrivate('/api/v5/account/bills-history-archive', params);
   }
 
@@ -502,6 +547,8 @@ export class RestClient extends BaseRestClient {
     px?: string;
     leverage?: string;
     unSpotOffset?: boolean;
+    /** EVENTS: `yes` / `no` (required for max size when applicable). */
+    outcome?: string;
   }): Promise<AccountMaxOrderAmount[]> {
     return this.getPrivate('/api/v5/account/max-size', params);
   }
@@ -2092,13 +2139,38 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getInstruments(params: {
-    instType: InstrumentType;
-    uly?: string;
-    instFamily?: string;
-    instId?: string;
-  }): Promise<Instrument[]> {
+  getInstruments(params: GetInstrumentsRequest): Promise<Instrument[]> {
     return this.get('/api/v5/public/instruments', params);
+  }
+
+  /**
+   * Prediction / event contract series. Auth required (read).
+   * @see GET /api/v5/public/event-contract/series
+   */
+  getEventContractSeries(
+    params?: GetEventContractSeriesRequest,
+  ): Promise<EventContractSeries[]> {
+    return this.getPrivate('/api/v5/public/event-contract/series', params);
+  }
+
+  /**
+   * Events for a series. Auth required (read).
+   * @see GET /api/v5/public/event-contract/events
+   */
+  getEventContractEvents(
+    params: GetEventContractEventsRequest,
+  ): Promise<EventContractEvent[]> {
+    return this.getPrivate('/api/v5/public/event-contract/events', params);
+  }
+
+  /**
+   * Markets for events. Auth required (read).
+   * @see GET /api/v5/public/event-contract/markets
+   */
+  getEventContractMarkets(
+    params: GetEventContractMarketsRequest,
+  ): Promise<EventContractMarket[]> {
+    return this.getPrivate('/api/v5/public/event-contract/markets', params);
   }
 
   getDeliveryExerciseHistory(params: any): Promise<any[]> {
@@ -2109,11 +2181,13 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/open-interest', params);
   }
 
-  getFundingRate(params: any): Promise<any[]> {
+  getFundingRate(params: GetFundingRateRequest): Promise<PublicFundingRate[]> {
     return this.get('/api/v5/public/funding-rate', params);
   }
 
-  getFundingRateHistory(params: FundingRateRequest): Promise<any[]> {
+  getFundingRateHistory(
+    params: FundingRateRequest,
+  ): Promise<FundingRateHistory[]> {
     return this.get('/api/v5/public/funding-rate-history', params);
   }
 
@@ -2125,7 +2199,13 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/public/opt-summary', params);
   }
 
-  getEstimatedDeliveryExercisePrice(params: any): Promise<any[]> {
+  /**
+   * Estimated delivery or exercise price (FUTURES / OPTION / EVENTS; REST returns one row with `settlePx`).
+   * The value is only meaningful shortly before delivery/exercise. The window used for the index mean is 30 minutes (since 2026-03-18; 200ms sampling).
+   */
+  getEstimatedDeliveryExercisePrice(params: {
+    instId: string;
+  }): Promise<EstimatedDeliveryExercisePrice[]> {
     return this.get('/api/v5/public/estimated-price', params);
   }
 
@@ -2135,6 +2215,12 @@ export class RestClient extends BaseRestClient {
 
   getSystemTime(params: any): Promise<SystemTime[]> {
     return this.get('/api/v5/public/time', params);
+  }
+
+  getHistoricalMarketData(
+    params: GetHistoricalMarketDataRequest,
+  ): Promise<MarketDataHistoryResult[]> {
+    return this.get('/api/v5/public/market-data-history', params);
   }
 
   getMarkPrice(params: any): Promise<any[]> {
@@ -2695,8 +2781,12 @@ export class RestClient extends BaseRestClient {
    *
    */
 
-  getETHStakingProductInfo(): Promise<any[]> {
+  getETHStakingProductInfo(): Promise<EthStakingProductInfo[]> {
     return this.get('/api/v5/finance/staking-defi/eth/product-info');
+  }
+
+  getSOLStakingProductInfo(): Promise<SolStakingProductInfo> {
+    return this.get('/api/v5/finance/staking-defi/sol/product-info');
   }
 
   purchaseETHStaking(params: { amt: string }): Promise<any[]> {
@@ -2842,9 +2932,9 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/finance/flexible-loan/borrow-currencies');
   }
 
-  getCollateralAssets(params?: {
-    ccy?: string;
-  }): Promise<CollateralAssetsResponse[]> {
+  getCollateralAssets(
+    params?: GetFlexibleLoanCollateralAssetsRequest,
+  ): Promise<CollateralAssetsResponse[]> {
     return this.get('/api/v5/finance/flexible-loan/collateral-assets', params);
   }
 
@@ -2859,8 +2949,8 @@ export class RestClient extends BaseRestClient {
     );
   }
 
-  getLoanInfo(): Promise<LoanInfo[]> {
-    return this.getPrivate('/api/v5/finance/flexible-loan/loan-info');
+  getLoanInfo(params?: GetLoanInfoRequest): Promise<LoanInfo[]> {
+    return this.getPrivate('/api/v5/finance/flexible-loan/loan-info', params);
   }
 
   getLoanHistory(params?: LoanHistoryRequest): Promise<LoanHistoryItem[]> {
@@ -2877,6 +2967,51 @@ export class RestClient extends BaseRestClient {
       '/api/v5/finance/flexible-loan/interest-accrued',
       params,
     );
+  }
+
+  /**
+   *
+   * Financial product — dual investment (DCD) endpoints
+   * @see https://www.okx.com/docs-v5/en/ (2026-03-13 release)
+   *
+   */
+
+  getDcdCurrencyPairs(): Promise<DcdCurrencyPair[]> {
+    return this.getPrivate('/api/v5/finance/sfp/dcd/currency-pair');
+  }
+
+  getDcdProducts(params: GetDcdProductsRequest): Promise<DcdProduct[]> {
+    return this.getPrivate('/api/v5/finance/sfp/dcd/products', params);
+  }
+
+  requestDcdQuote(params: RequestDcdQuoteRequest): Promise<DcdQuote[]> {
+    return this.postPrivate('/api/v5/finance/sfp/dcd/quote', params);
+  }
+
+  submitDcdTrade(params: SubmitDcdTradeRequest): Promise<DcdTradeResult[]> {
+    return this.postPrivate('/api/v5/finance/sfp/dcd/trade', params);
+  }
+
+  requestDcdRedeemQuote(
+    params: RequestDcdRedeemQuoteRequest,
+  ): Promise<DcdRedeemQuote[]> {
+    return this.postPrivate('/api/v5/finance/sfp/dcd/redeem-quote', params);
+  }
+
+  submitDcdRedeem(params: SubmitDcdRedeemRequest): Promise<DcdRedeemResult[]> {
+    return this.postPrivate('/api/v5/finance/sfp/dcd/redeem', params);
+  }
+
+  getDcdOrderStatus(
+    params: GetDcdOrderStatusRequest,
+  ): Promise<DcdOrderStatus[]> {
+    return this.getPrivate('/api/v5/finance/sfp/dcd/order-status', params);
+  }
+
+  getDcdOrderHistory(
+    params?: GetDcdOrderHistoryRequest,
+  ): Promise<DcdOrderHistoryItem[]> {
+    return this.getPrivate('/api/v5/finance/sfp/dcd/order-history', params);
   }
 
   /**

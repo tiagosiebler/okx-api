@@ -1,3 +1,7 @@
+import type {
+  AmendAttachedTrailingStop,
+  AttachAlgoOrdRequest,
+} from '../rest/request/trade.js';
 import {
   numberInString,
   OrderSide,
@@ -31,12 +35,20 @@ export interface WSAPIPlaceOrderRequestV5 {
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
   /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
   isElpTakerAccess?: boolean;
+  /** EVENTS: `"1"` for non-`post_only` orders when required (error 54086 if missing). */
+  speedBump?: string;
+  /** EVENTS: `yes` or `no`. */
+  outcome?: string;
+  attachAlgoOrds?: AttachAlgoOrdRequest[];
 }
 
 export interface WSAPIAmendOrderRequestV5 {
-  /** Instrument ID. Deprecated March 2026; use instIdCode for lower latency. */
+  /**
+   * If set, ignored  for `amend-order` / `batch-amend-orders` — use `ordId`/`clOrdId` to identify the order.
+   * Map codes via Get instruments as needed.
+   */
   instId?: string;
-  /** Instrument ID code. Takes precedence over instId if both provided. Use Get instruments to map. */
+  /** Use Get instruments to map. */
   instIdCode?: number;
   cxlOnFail?: boolean;
   ordId?: string;
@@ -46,6 +58,8 @@ export interface WSAPIAmendOrderRequestV5 {
   newPx?: string;
   newPxUsd?: string;
   newPxVol?: string;
+  speedBump?: string;
+  attachAlgoOrds?: AmendAttachedTrailingStop[];
 }
 
 export interface WSAPIMassCancelOrdersRequestV5 {

@@ -8,6 +8,27 @@ import {
   PositionSide,
 } from '../shared.js';
 
+/**
+ * Nested rows in `attachAlgoOrds` on orders / history (incl. trailing stop fields)
+ */
+export interface AttachAlgoOrderDetail {
+  attachAlgoClOrdId?: string;
+  tpTriggerPx?: string;
+  tpTriggerRatio?: string;
+  tpOrdPx?: string;
+  tpOrdKind?: string;
+  slTriggerPx?: string;
+  slTriggerRatio?: string;
+  slOrdPx?: string;
+  tpTriggerPxType?: string;
+  slTriggerPxType?: string;
+  sz?: string;
+  amendPxOnTriggerType?: string;
+  callbackRatio?: string;
+  callbackSpread?: string;
+  activePx?: string;
+}
+
 export interface OrderResult {
   clOrdId: string;
   ordId: string;
@@ -64,12 +85,14 @@ export interface OrderDetails {
   slTriggerPx: string;
   slTriggerPxType: string;
   slOrdPx: string;
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
   feeCcy: string;
   fee: string;
   rebateCcy: string;
   rebate: string;
   tgtCcy: string;
   category: string;
+  outcome?: string;
   uTime: string;
   cTime: string;
 }
@@ -104,7 +127,6 @@ export interface OrderListItem {
   slOrdPx: string;
   slTriggerPx: string;
   slTriggerPxType: string;
-  attachAlgoOrds: any[];
   state: OrderState;
   stpId: string;
   stpMode: string;
@@ -122,6 +144,8 @@ export interface OrderListItem {
   algoClOrdId: string;
   algoId: string;
   uTime: string;
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
+  outcome?: string;
 }
 
 export interface HistoricOrder {
@@ -155,7 +179,7 @@ export interface HistoricOrder {
   slTriggerPx: string;
   slTriggerPxType: string;
   slOrdPx: string;
-  attachAlgoOrds: any[];
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
   stpId: string;
   stpMode: string;
   feeCcy: string;
@@ -171,6 +195,7 @@ export interface HistoricOrder {
   cancelSourceReason: string;
   algoClOrdId: string;
   algoId: string;
+  outcome?: string;
   uTime: string;
   cTime: string;
 }
@@ -212,7 +237,7 @@ export interface AlgoOrderDetailsResult {
   ccy: string;
   clOrdId: string;
   algoId: string;
-  attachAlgoOrds: any[];
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
   sz: string;
   closeFraction: string;
   ordType: AlgoOrderType;
@@ -265,7 +290,7 @@ export interface AlgoOrderListItem {
   actualSide: string;
   actualSz: string;
   algoId: string;
-  attachAlgoOrds: any[];
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
   cTime: string;
   callbackRatio: string;
   callbackSpread: string;
@@ -276,7 +301,7 @@ export interface AlgoOrderListItem {
   lever: string;
   moveTriggerPx: string;
   ordId: string;
-  ordIdList: any[];
+  ordIdList: string[];
   ordPx: string;
   ordType: AlgoOrderType;
   posSide: AlgoPositionSide;
@@ -321,7 +346,7 @@ export interface HistoricAlgoOrder {
   actualSz: string;
   algoClOrdId: string;
   algoId: string;
-  attachAlgoOrds: any[];
+  attachAlgoOrds?: AttachAlgoOrderDetail[];
   cTime: string;
   callbackRatio: string;
   callbackSpread: string;

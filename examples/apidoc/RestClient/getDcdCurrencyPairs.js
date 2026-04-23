@@ -2,7 +2,7 @@ const { RestClient } = require('okx-api');
 
   // This example shows how to call this OKX API endpoint with either node.js, javascript (js) or typescript (ts) with the npm module "okx-api" for OKX exchange
   // This OKX API SDK is available on npm via "npm install okx-api"
-  // ENDPOINT: /api/v5/account/max-size
+  // ENDPOINT: /api/v5/finance/sfp/dcd/currency-pair
   // METHOD: GET
   // PUBLIC: NO
 
@@ -12,7 +12,7 @@ const client = new RestClient({
     apiPass: 'apiPassHere',
 });
 
-client.getMaxBuySellAmount(params)
+client.getDcdCurrencyPairs(params)
   .then((response) => {
     console.log(response);
   })

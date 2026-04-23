@@ -30,7 +30,13 @@ export type ContractGridDirection = 'long' | 'short' | 'neutral';
 
 export type GridAlgoSubOrderType = 'live' | 'filled';
 
-export type InstrumentType = 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION';
+export type InstrumentType =
+  | 'SPOT'
+  | 'MARGIN'
+  | 'SWAP'
+  | 'FUTURES'
+  | 'OPTION'
+  | 'EVENTS';
 
 export type MarginMode = 'cross' | 'isolated';
 
