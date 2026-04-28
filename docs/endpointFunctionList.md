@@ -64,6 +64,7 @@ This table includes all endpoints from the official Exchange API docs and corres
 | [setSettleCurrency()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L528) | :closed_lock_with_key:  | POST | `/api/v5/account/set-settle-currency` |
 | [setFeeType()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L534) | :closed_lock_with_key:  | POST | `/api/v5/account/set-fee-type` |
 | [setLeverage()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L538) | :closed_lock_with_key:  | POST | `/api/v5/account/set-leverage` |
+| [getMaxBuySellAmount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L543) | :closed_lock_with_key:  | GET | `/api/v5/account/max-size` |
 | [getMaxAvailableTradableAmount()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L556) | :closed_lock_with_key:  | GET | `/api/v5/account/max-avail-size` |
 | [changePositionMargin()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L566) | :closed_lock_with_key:  | POST | `/api/v5/account/position/margin-balance` |
 | [getLeverage()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L572) | :closed_lock_with_key:  | GET | `/api/v5/account/leverage-info` |
@@ -345,6 +346,7 @@ This table includes all endpoints from the official Exchange API docs and corres
 | [applyForMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2569) | :closed_lock_with_key:  | POST | `/api/v5/asset/monthly-statement` |
 | [getMonthlyStatement()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2573) | :closed_lock_with_key:  | GET | `/api/v5/asset/monthly-statement` |
 | [getConvertCurrencies()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2577) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currencies` |
+| [getConvertCurrencyPair()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2581) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/currency-pair` |
 | [estimateConvertQuote()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2590) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/estimate-quote` |
 | [convertTrade()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2594) | :closed_lock_with_key:  | POST | `/api/v5/asset/convert/trade` |
 | [getConvertHistory()](https://github.com/tiagosiebler/okx-api/blob/master/src/rest-client.ts#L2598) | :closed_lock_with_key:  | GET | `/api/v5/asset/convert/history` |
