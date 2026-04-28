@@ -43,6 +43,7 @@ Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets
     - End to end types.
     - See [examples/ws-api-client.ts](./examples/ws-api-client.ts) for a demonstration.
 - Browser support (via webpack bundle - see "Browser Usage" below).
+- QuickStart Guide: https://siebly.io/sdk/okx/javascript
 
 ## Table of Contents
 
