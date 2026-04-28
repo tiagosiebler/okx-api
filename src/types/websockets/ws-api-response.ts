@@ -30,3 +30,16 @@ export interface WSAPISpreadCancelOrderResultV5 {
   sCode: string;
   sMsg: string;
 }
+
+/**
+ * @see Ws public channel: estimated-price
+ */
+export type WsEstimatedPriceSettleType = 'settlement' | 'delivery' | 'exercise';
+
+export interface WsEstimatedPriceData {
+  instId: string;
+  instType: string;
+  settlePx: string;
+  settleType: WsEstimatedPriceSettleType;
+  ts: string;
+}

@@ -45,7 +45,16 @@ export interface WithdrawRequest {
   };
 }
 
+/**
+ * @see GET /api/v5/public/funding-rate
+ * `instId` may be a specific instrument, or the literal `ANY` for all perpetuals and X-Perp (FUTURES) contracts.
+ */
+export interface GetFundingRateRequest {
+  instId: string;
+}
+
 export interface FundingRateRequest {
+  /** Perpetual or X-Perp FUTURES instrument id (not `ANY` on this route). */
   instId: string;
   before?: string;
   after?: string;

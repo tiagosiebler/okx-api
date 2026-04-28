@@ -1,3 +1,5 @@
+import type { InstrumentType } from '../rest/shared.js';
+
 export interface WsAuthRequestArg {
   apiKey: string;
   passphrase: string;
@@ -144,7 +146,8 @@ export type WsPublicChannel =
   | 'funding-rate'
   | 'index-tickers'
   | 'status'
-  | 'liquidation-orders';
+  | 'liquidation-orders'
+  | 'event-contract-markets';
 
 export type WsBusinessPrivateChannel =
   | 'orders-algo'
@@ -196,13 +199,8 @@ export interface WsPrivateChannelArgWithCcy extends WsBaseRequestArg {
   ccy?: string;
 }
 
-export type WsChannelArgInstType =
-  | 'SPOT'
-  | 'MARGIN'
-  | 'SWAP'
-  | 'FUTURES'
-  | 'OPTION'
-  | 'ANY';
+/** `ANY` is used by some private subscription args; instruments channel uses `EVENTS` for event contracts. */
+export type WsChannelArgInstType = InstrumentType | 'ANY';
 
 export interface WsPrivateChannelArgWithInstFamily extends WsBaseRequestArg {
   channel: 'positions' | 'orders' | 'orders-algo' | 'liquidation-warning';
@@ -258,7 +256,7 @@ export interface WsPublicChannelArgInstId extends WsBaseRequestArg {
 
 export type WsPublicChannelArgInstIdOrFamily = {
   channel: 'estimated-price';
-  instType: 'OPTION' | 'FUTURES';
+  instType: 'OPTION' | 'FUTURES' | 'SWAP' | 'EVENTS';
 } & (
   | {
       instId: string;
@@ -282,6 +280,13 @@ export interface WsPublicChannelArgLiquidationOrders extends WsBaseRequestArg {
   instType: 'SWAP' | 'FUTURES';
 }
 
+/** Event contract market status & floor strikes. @see public WS `event-contract-markets` */
+export interface WsPublicChannelArgEventContractMarkets
+  extends WsBaseRequestArg {
+  channel: 'event-contract-markets';
+  instType: 'EVENTS';
+}
+
 export type WsChannelSubUnSubRequestArg =
   | WsPrivateChannelArgTickers
   | WsPrivateChannelArgWithCcy
@@ -295,4 +300,5 @@ export type WsChannelSubUnSubRequestArg =
   | WsPublicChannelArgInstIdOrFamily
   | WsPublicChannelArgOptionSummary
   | WsPublicChannelArgStatus
-  | WsPublicChannelArgLiquidationOrders;
+  | WsPublicChannelArgLiquidationOrders
+  | WsPublicChannelArgEventContractMarkets;

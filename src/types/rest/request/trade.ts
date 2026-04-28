@@ -33,6 +33,16 @@ export interface AlgoLongHistoryRequest {
   limit?: string;
 }
 
+/**
+ * When amending an attached trailing stop via amend algo / attach block (2026-04-13).
+ * Only one of newCallbackRatio or newCallbackSpread.
+ */
+export interface AmendAttachedTrailingStop {
+  newCallbackRatio?: string;
+  newCallbackSpread?: string;
+  newActivePx?: string;
+}
+
 interface AlgoTriggerOrder {
   newTpTriggerPx?: string;
   newTpTriggerPxType?: 'last' | 'index' | 'mark';
@@ -40,6 +50,37 @@ interface AlgoTriggerOrder {
   newSlTriggerPx?: string;
   newSlTriggerPxType?: 'last' | 'index' | 'mark';
   newSlOrdPx?: string;
+  newCallbackRatio?: string;
+  newCallbackSpread?: string;
+  newActivePx?: string;
+}
+
+/**
+ * TP/SL and trailing (move_order_stop) attached to a parent `order` (2026-04-13: callbackRatio | callbackSpread, activePx).
+ */
+export interface AttachAlgoOrdRequest {
+  attachAlgoClOrdId?: string;
+  tpTriggerPx?: string;
+  /** Only one of tpTriggerPx and tpTriggerRatio (FUTURES/SWAP). */
+  tpTriggerRatio?: string;
+  tpOrdPx?: string;
+  tpOrdKind?: 'condition' | 'limit';
+  slTriggerPx?: string;
+  slTriggerRatio?: string;
+  slOrdPx?: string;
+  tpTriggerPxType?: 'last' | 'index' | 'mark';
+  slTriggerPxType?: 'last' | 'index' | 'mark';
+  sz?: string;
+  amendPxOnTriggerType?: '0' | '1';
+  /**
+   * Trailing stop: one of `callbackRatio` or `callbackSpread` when attached ordType is `move_order_stop`.
+   * e.g. 0.05 = 5%
+   */
+  callbackRatio?: string;
+  /** Trailing: price distance (alternative to callbackRatio). */
+  callbackSpread?: string;
+  /** Trailing: activation; omit = activate immediately. */
+  activePx?: string;
 }
 
 export interface AlgoOrderRequest {
@@ -80,15 +121,7 @@ export interface AlgoOrderRequest {
   quickMgnType?: string;
   closeFraction?: numberInString;
   advanceOrdType?: 'fok' | 'ioc' | '';
-  attachAlgoOrds?: {
-    attachAlgoClOrdId?: string;
-    tpTriggerPx?: string;
-    tpOrdPx?: string;
-    slTriggerPx?: string;
-    slOrdPx?: string;
-    tpTriggerPxType?: string;
-    slTriggerPxType?: string;
-  }[];
+  attachAlgoOrds?: AttachAlgoOrdRequest[];
 }
 
 export interface AmendOrderRequest {
@@ -99,6 +132,12 @@ export interface AmendOrderRequest {
   reqId?: string;
   newSz?: string;
   newPx?: string;
+  /** EVENTS: `"1"` for non-`post_only` amends when applicable. */
+  speedBump?: string;
+  /**
+   * Amend attached trailing stop (or related attach algo) — only one of newCallbackRatio / newCallbackSpread per item (2026-04-13).
+   */
+  attachAlgoOrds?: AmendAttachedTrailingStop[];
 }
 
 export type AlgoOrderDetailsRequest =
@@ -157,9 +196,14 @@ export interface FillsHistoryRequest {
 }
 
 export interface OrderIdRequest {
-  /** Instrument ID. Deprecated March 2026 for WS; use instIdCode for lower latency. */
+  /**
+   * REST: use as in trade docs. WebSocket `cancel-order` / `batch-cancel-orders`: deprecated (2026-04-07) — if sent, ignored; use
+   * `ordId` or `clOrdId`. Optional `instIdCode` may still be used to map the instrument.
+   */
   instId?: string;
-  /** Instrument ID code. Takes precedence over instId if both provided. Use Get instruments to map. WS only. */
+  /**
+   * Where supported, may take precedence over `instId` if both are present. Get instruments to map.
+   */
   instIdCode?: number;
   ordId?: string;
   clOrdId?: string;
@@ -207,6 +251,12 @@ export interface OrderRequest {
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
   /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
   isElpTakerAccess?: boolean;
+  /**
+   * EVENTS: set to `"1"` for non-`post_only` orders. Error 54086 if missing when required.
+   */
+  speedBump?: string;
+  /** EVENTS: `yes` or `no`. */
+  outcome?: string;
   /** Take Profit & Stop Loss params */
   tpTriggerPx?: string;
   tpOrdPx?: string;
@@ -214,33 +264,8 @@ export interface OrderRequest {
   slOrdPx?: string;
   tpTriggerPxType?: PriceTriggerType;
   slTriggerPxType?: PriceTriggerType;
-  /** TP/SL information attached when placing order (supports split TPs and advanced TP/SL configurations) */
-  attachAlgoOrds?: {
-    /** Client-supplied Algo ID when placing order attaching TP/SL */
-    attachAlgoClOrdId?: string;
-    /** Take-profit trigger price */
-    tpTriggerPx?: string;
-    /** Take profit trigger ratio, 0.3 represents 30%. Only one of tpTriggerPx and tpTriggerRatio can be passed */
-    tpTriggerRatio?: string;
-    /** Take-profit order price. -1 means market price */
-    tpOrdPx?: string;
-    /** TP order kind: "condition" or "limit". Default is "condition" */
-    tpOrdKind?: 'condition' | 'limit';
-    /** Stop-loss trigger price */
-    slTriggerPx?: string;
-    /** Stop loss trigger ratio, 0.3 represents 30%. Only one of slTriggerPx and slTriggerRatio can be passed */
-    slTriggerRatio?: string;
-    /** Stop-loss order price. -1 means market price */
-    slOrdPx?: string;
-    /** Take-profit trigger price type: last, index, or mark. Default is last */
-    tpTriggerPxType?: 'last' | 'index' | 'mark';
-    /** Stop-loss trigger price type: last, index, or mark. Default is last */
-    slTriggerPxType?: 'last' | 'index' | 'mark';
-    /** Size. Only applicable to TP order of split TPs, and it is required for TP order of split TPs */
-    sz?: string;
-    /** Whether to enable Cost-price SL. "0" = disable (default), "1" = Enable. Only applicable to SL order of split TPs */
-    amendPxOnTriggerType?: '0' | '1';
-  }[];
+  /** TP/SL / trailing (attach) when placing the parent order */
+  attachAlgoOrds?: AttachAlgoOrdRequest[];
   /** Quick margin type */
   quickMgnType?: 'manual' | 'auto_borrow' | 'auto_repay';
 }
@@ -260,15 +285,7 @@ export interface OrderPrecheckRequest {
   px?: string;
   reduceOnly?: boolean;
   tgtCcy?: string;
-  attachAlgoOrds?: {
-    attachAlgoClOrdId?: string;
-    tpTriggerPx?: string;
-    tpOrdPx?: string;
-    tpOrdKind?: string;
-    slTriggerPx?: string;
-    slOrdPx?: string;
-    tpTriggerPxType?: string;
-    slTriggerPxType?: string;
-    sz?: string;
-  }[];
+  /** EVENTS: `yes` / `no`. */
+  outcome?: string;
+  attachAlgoOrds?: AttachAlgoOrdRequest[];
 }

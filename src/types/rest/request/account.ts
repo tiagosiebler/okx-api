@@ -53,7 +53,9 @@ export interface WithdrawalHistoryRequest {
 }
 
 export interface GetInstrumentsRequest {
-  instType: 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION';
+  instType: 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION' | 'EVENTS';
+  /** Required when `instType` is EVENTS, e.g. BTC-ABOVE-DAILY. */
+  seriesId?: string;
   uly?: string;
   instFamily?: string;
   instId?: string;
@@ -181,4 +183,16 @@ export interface SetTradingConfigRequest {
 
 export interface PrecheckSetDeltaNeutralRequest {
   stgyType: '0' | '1'; // Strategy type: 0=general strategy, 1=delta neutral strategy
+}
+
+export interface GetAccountBillSubtypesRequest {
+  /** Comma-separated bill type ids, e.g. 1,2,3. If omitted, all types. */
+  type?: string;
+}
+
+export interface BillsHistoryArchiveRequest {
+  year: string;
+  quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  /** Comma-separated bill type ids, e.g. 1,2,3. If omitted, all types. */
+  type?: string;
 }

@@ -60,3 +60,52 @@ export interface GetOptionTradesRequest {
   instFamily?: string;
   optType?: 'C' | 'P';
 }
+
+/**
+ * @see GET /api/v5/public/market-data-history
+ * Module 11: borrowing rate (T+2 typical, UTC+8 for timestamp parsing).
+ */
+export interface GetHistoricalMarketDataRequest {
+  /**
+   * 1: trades, 2: 1m candles, 3: funding rate, 4: 400-level book, 5: 5000-level, 6: 50-level (use 4/5), 11: borrowing rate
+   */
+  module: string;
+  instType: 'SPOT' | 'FUTURES' | 'SWAP' | 'OPTION';
+  instIdList?: string;
+  instFamilyList?: string;
+  dateAggrType: 'daily' | 'monthly';
+  begin: string;
+  end: string;
+}
+
+/**
+ * @see GET /api/v5/public/event-contract/series
+ */
+export interface GetEventContractSeriesRequest {
+  seriesId?: string;
+}
+
+/**
+ * @see GET /api/v5/public/event-contract/events
+ */
+export interface GetEventContractEventsRequest {
+  seriesId: string;
+  eventId?: string;
+  state?: 'preopen' | 'live' | 'settling' | 'expired' | string;
+  limit?: string;
+  before?: string;
+  after?: string;
+}
+
+/**
+ * @see GET /api/v5/public/event-contract/markets
+ */
+export interface GetEventContractMarketsRequest {
+  seriesId: string;
+  eventId?: string;
+  instId?: string;
+  state?: 'preopen' | 'live' | 'settling' | 'expired' | string;
+  limit?: string;
+  before?: string;
+  after?: string;
+}

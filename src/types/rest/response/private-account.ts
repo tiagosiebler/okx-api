@@ -4,6 +4,7 @@ import {
   PositionSide,
   WithdrawState,
 } from '../shared.js';
+import type { InstrumentUpcomingParamChange } from './public-data.js';
 
 export interface AccountBalanceDetail {
   availBal: string;
@@ -179,9 +180,27 @@ export interface AccountBill {
   earnApr?: string;
 }
 
+export interface BillSubTypeDetail {
+  subType: string;
+  subTypeDesc: string;
+}
+
+/**
+ * @see GET /api/v5/account/subtypes
+ */
+export interface AccountBillTypeDefinition {
+  type: string;
+  typeDesc: string;
+  subTypeDetails: BillSubTypeDetail[];
+}
+
+/**
+ * Apply (POST) may return { result, ts }; get link (GET) may return { fileHref, state, ts }.
+ */
 export interface AccountHistoryBill {
-  fileHref: string;
-  result: string;
+  fileHref?: string;
+  result?: string;
+  state?: 'finished' | 'ongoing' | 'failed' | string;
   ts: string;
 }
 
@@ -288,6 +307,7 @@ export interface AccountFeeRate {
   makerU: string;
   taker: string;
   takerU: string;
+  settle?: string;
   ts: string;
   ruleType: string;
   feeGroup?: FeeGroup[]; // Fee groups. Applicable to SPOT/MARGIN/SWAP/FUTURES/OPTION
@@ -377,6 +397,14 @@ export interface AccountInstrument {
   instFamily: string;
   instId: string;
   instType: string;
+  seriesId?: string;
+  uly?: string;
+  /**
+   * FUTURES label (deprecated — prefer `expTime`; may include this_five_years, next_five_years, …).
+   */
+  alias?: string;
+  /** Deprecated; see `instCategory` on public `Instrument` where used. */
+  category?: string;
   lever: string;
   listTime: string;
   contTdSwTime: string; // Continuous trading switch time. The switch time from call auction/prequote to continuous trading. Unix timestamp format in milliseconds.
@@ -405,7 +433,10 @@ export interface AccountInstrument {
   auctionEndTime: string;
   futureSettlement: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
   instIdCode: number; // Instrument ID code. For simple binary encoding, must use instIdCode instead of instId.
-  /** Category of instrument's base currency. "1" = Crypto, "3" = Stocks */
+  /**
+   * Asset category of the instrument's base asset (see public `Instrument.instCategory` for values).
+   * 1: Crypto, 3: Stocks, 4: Commodities, 5: Forex, 6: Bonds, "": not available
+   */
   instCategory?: string;
   posLmtAmt: string; // Maximum position value (USD) for this instrument at the user level. Applicable to SWAP/FUTURES.
   posLmtPct: string; // Maximum position ratio (e.g., 30 for 30%) a user may hold relative to platform's current total position value. Applicable to SWAP/FUTURES.
@@ -417,6 +448,7 @@ export interface AccountInstrument {
   groupId?: string; // Instrument trading fee group ID
   /** ELP maker permission. "0" = not enabled, "1" = enabled but no permission, "2" = enabled with permission */
   elp?: string;
+  upcChg?: InstrumentUpcomingParamChange[];
 }
 
 export interface QuickMarginBorrowRepayResult {

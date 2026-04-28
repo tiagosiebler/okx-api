@@ -29,6 +29,7 @@ export interface WsDataEvent<T = any> {
     uid?: string;
     instId?: string;
     instFamily?: string;
+    instType?: string;
   };
   data: T;
 }
