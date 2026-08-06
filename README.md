@@ -1,18 +1,18 @@
 # Node.js & Typescript OKX (OKEX) API & WebSocket SDK
 
-[![E2E Tests](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/tiagosiebler/okx-api/actions/workflows/e2etest.yml)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tiagosiebler/okx-api)
+[![E2E Tests](https://github.com/sieblyio/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/sieblyio/okx-api/actions/workflows/e2etest.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sieblyio/okx-api)
 [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1]
 [![npm version](https://img.shields.io/npm/v/okx-api)][1]
 [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1]
-[![last commit](https://img.shields.io/github/last-commit/tiagosiebler/okx-api)][1]
-[![CodeFactor](https://www.codefactor.io/repository/github/tiagosiebler/okx-api/badge)](https://www.codefactor.io/repository/github/tiagosiebler/okx-api)
+[![last commit](https://img.shields.io/github/last-commit/sieblyio/okx-api)][1]
+[![CodeFactor](https://www.codefactor.io/repository/github/sieblyio/okx-api/badge)](https://www.codefactor.io/repository/github/sieblyio/okx-api)
 
 <p align="center">
   <a href="https://www.npmjs.com/package/okx-api">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoDarkMode2.svg?raw=true#gh-dark-mode-only">
-      <img alt="SDK Logo" src="https://github.com/tiagosiebler/okx-api/blob/master/docs/images/logoBrightMode2.svg?raw=true#gh-light-mode-only">
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/sieblyio/okx-api/blob/master/docs/images/logoDarkMode2.svg?raw=true#gh-dark-mode-only">
+      <img alt="SDK Logo" src="https://github.com/sieblyio/okx-api/blob/master/docs/images/logoBrightMode2.svg?raw=true#gh-light-mode-only">
     </picture>
   </a>
 </p>
@@ -20,7 +20,7 @@
 [1]: https://www.npmjs.com/package/okx-api
 
 > [!TIP]
-> Upcoming change: As part of the [Siebly.io](https://siebly.io/?ref=ghokx) brand, this SDK will soon be hosted under the [Siebly.io GitHub organisation](https://github.com/sieblyio). The migration is seamless and requires no user changes.
+> Upcoming change: As part of the [Siebly.io](https://siebly.io/?ref=ghokx) brand, this SDK is now hosted under our [Siebly.io GitHub organisation](https://github.com/sieblyio). The migration is seamless and requires no user changes.
 
 Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets:
 
@@ -79,7 +79,7 @@ npm install okx-api
 
 ## Issues & Discussion
 
-- Issues? Check the [issues tab](https://github.com/tiagosiebler/okx-api/issues).
+- Issues? Check the [issues tab](https://github.com/sieblyio/okx-api/issues).
 - Discuss & collaborate with other node devs? Join our [Node.js Algo Traders](https://t.me/nodetraders) engineering community on telegram.
 - Follow our announcement channel for real-time updates on [X/Twitter](https://x.com/sieblyio)
 
@@ -595,12 +595,12 @@ Contributions are encouraged, I will review any incoming pull requests. See the 
 
 The following represents some of the known public projects that use this SDK on GitHub:
 
-[![Repository Users Preview Image](https://dependents.info/tiagosiebler/okx-api/image)](https://github.com/tiagosiebler/okx-api/network/dependents)
+[![Repository Users Preview Image](https://dependents.info/sieblyio/okx-api/image)](https://github.com/sieblyio/okx-api/network/dependents)
 
 <!-- template_star_history -->
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bybit-api,tiagosiebler/okx-api,tiagosiebler/binance,tiagosiebler/bitget-api,tiagosiebler/bitmart-api,tiagosiebler/gateio-api,tiagosiebler/kucoin-api,tiagosiebler/coinbase-api,tiagosiebler/orderbooks,tiagosiebler/accountstate,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&tiagosiebler/okx-api&tiagosiebler/binance&tiagosiebler/bitget-api&tiagosiebler/bitmart-api&tiagosiebler/gateio-api&tiagosiebler/kucoin-api&tiagosiebler/coinbase-api&tiagosiebler/orderbooks&tiagosiebler/accountstate&tiagosiebler/awesome-crypto-examples&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bybit-api,sieblyio/okx-api,tiagosiebler/binance,tiagosiebler/bitget-api,tiagosiebler/bitmart-api,tiagosiebler/gateio-api,tiagosiebler/kucoin-api,tiagosiebler/coinbase-api,tiagosiebler/orderbooks,tiagosiebler/accountstate,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&sieblyio/okx-api&tiagosiebler/binance&tiagosiebler/bitget-api&tiagosiebler/bitmart-api&tiagosiebler/gateio-api&tiagosiebler/kucoin-api&tiagosiebler/coinbase-api&tiagosiebler/orderbooks&tiagosiebler/accountstate&tiagosiebler/awesome-crypto-examples&Date)
 
 <!-- template_star_history_end -->

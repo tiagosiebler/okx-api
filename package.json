@@ -86,10 +86,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tiagosiebler/okx-api"
+    "url": "git+https://github.com/sieblyio/okx-api.git"
   },
   "bugs": {
-    "url": "https://github.com/tiagosiebler/okx-api/issues"
+    "url": "https://github.com/sieblyio/okx-api/issues"
   },
-  "homepage": "https://github.com/tiagosiebler/okx-api#readme"
+  "homepage": "https://github.com/sieblyio/okx-api#readme"
 }
