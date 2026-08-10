@@ -89,22 +89,22 @@ npm install okx-api
 
 Check out our JavaScript/TypeScript/Node.js SDKs & Projects:
 
-- Visit our website: [https://Siebly.io](https://siebly.io/?ref=gh)
+- Visit our website: [https://Siebly.io](https://siebly.io/)
 - Try our REST API & WebSocket SDKs published on npmjs:
-  - [Bybit Node.js SDK: bybit-api](https://www.npmjs.com/package/bybit-api)
-  - [Kraken Node.js SDK: @siebly/kraken-api](https://www.npmjs.com/package/@siebly/kraken-api)
-  - [OKX Node.js SDK: okx-api](https://www.npmjs.com/package/okx-api)
-  - [Binance Node.js SDK: binance](https://www.npmjs.com/package/binance)
-  - [Gate (gate.com) Node.js SDK: gateio-api](https://www.npmjs.com/package/gateio-api)
-  - [Bitget Node.js SDK: bitget-api](https://www.npmjs.com/package/bitget-api)
-  - [Kucoin Node.js SDK: kucoin-api](https://www.npmjs.com/package/kucoin-api)
-  - [Coinbase Node.js SDK: coinbase-api](https://www.npmjs.com/package/coinbase-api)
-  - [Bitmart Node.js SDK: bitmart-api](https://www.npmjs.com/package/bitmart-api)
+  - [Bybit JavaScript SDK: bybit-api](https://www.npmjs.com/package/bybit-api)
+  - [Kraken JavaScript SDK: @siebly/kraken-api](https://www.npmjs.com/package/@siebly/kraken-api)
+  - [OKX JavaScript SDK: okx-api](https://www.npmjs.com/package/okx-api)
+  - [Binance JavaScript SDK: binance](https://www.npmjs.com/package/binance)
+  - [Gate (gate.com) JavaScript SDK: gateio-api](https://www.npmjs.com/package/gateio-api)
+  - [Bitget JavaScript SDK: bitget-api](https://www.npmjs.com/package/bitget-api)
+  - [Kucoin JavaScript SDK: kucoin-api](https://www.npmjs.com/package/kucoin-api)
+  - [Coinbase JavaScript SDK: coinbase-api](https://www.npmjs.com/package/coinbase-api)
+  - [HTX JavaScript SDK: @siebly/htx-api](https://www.npmjs.com/package/@siebly/htx-api)
 - Try my misc utilities:
   - [OrderBooks Node.js: orderbooks](https://www.npmjs.com/package/orderbooks)
   - [Crypto Exchange Account State Cache: accountstate](https://www.npmjs.com/package/accountstate)
 - Check out my examples:
-  - [awesome-crypto-examples Node.js](https://github.com/tiagosiebler/awesome-crypto-examples)
+  - [awesome-crypto-examples Node.js](https://github.com/sieblyio/awesome-crypto-examples)
   <!-- template_related_projects_end -->
 
 ## Documentation
@@ -573,7 +573,7 @@ Have my projects helped you? Share the love, there are many ways you can show yo
 - Sign up with my referral links:
   - OKX (receive a 20% fee discount!): https://www.okx.com/join/42013004
   - Binance (receive a 20% fee discount!): https://accounts.binance.com/register?ref=OKFFGIJJ
-  - HyperLiquid (receive a 4% fee discount!): https://app.hyperliquid.xyz/join/SDK
+  - HyperLiquid (receive a 4% fee discount!): https://app.hyperliquid.xyz/join/SIEBLY
   - Gate: https://www.gate.io/signup/NODESDKS?ref_type=103
 
 <!---
@@ -601,6 +601,6 @@ The following represents some of the known public projects that use this SDK on 
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tiagosiebler/bybit-api,sieblyio/okx-api,tiagosiebler/binance,tiagosiebler/bitget-api,tiagosiebler/bitmart-api,tiagosiebler/gateio-api,tiagosiebler/kucoin-api,tiagosiebler/coinbase-api,tiagosiebler/orderbooks,tiagosiebler/accountstate,tiagosiebler/awesome-crypto-examples&type=Date)](https://star-history.com/#tiagosiebler/bybit-api&sieblyio/okx-api&tiagosiebler/binance&tiagosiebler/bitget-api&tiagosiebler/bitmart-api&tiagosiebler/gateio-api&tiagosiebler/kucoin-api&tiagosiebler/coinbase-api&tiagosiebler/orderbooks&tiagosiebler/accountstate&tiagosiebler/awesome-crypto-examples&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=sieblyio/bybit-api,sieblyio/okx-api,sieblyio/binance,sieblyio/bitget-api,sieblyio/bitmart-api,sieblyio/gateio-api,sieblyio/kucoin-api,sieblyio/coinbase-api,sieblyio/orderbooks,sieblyio/accountstate,sieblyio/awesome-crypto-examples&type=Date)](https://star-history.com/#sieblyio/bybit-api&sieblyio/okx-api&sieblyio/binance&sieblyio/bitget-api&sieblyio/bitmart-api&sieblyio/gateio-api&sieblyio/kucoin-api&sieblyio/coinbase-api&sieblyio/orderbooks&sieblyio/accountstate&sieblyio/awesome-crypto-examples&Date)
 
 <!-- template_star_history_end -->
