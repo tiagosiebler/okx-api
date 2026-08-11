@@ -39,9 +39,16 @@ export interface WSAPIPlaceOrderRequestV5 {
   banAmend?: boolean;
   tradeQuoteCcy?: string;
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
-  /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
+  /**
+   * RPI taker access for limit/market/fok/ioc. Default false.
+   * Alias `isElpTakerAccess` accepted until 2026-10-31.
+   */
+  rpiTakerAccess?: boolean;
+  /** @deprecated Use `rpiTakerAccess`. Alias until 2026-10-31. */
   isElpTakerAccess?: boolean;
-  /** EVENTS: `"1"` for non-`post_only` orders when required (error 54086 if missing). */
+  /** RPI maker spacing: auto-round price when true. Only for ordType rpi. */
+  rpiPxRound?: boolean;
+  /** EVENTS: `"1"` for non-`post_only` orders when required (error 54086 if missing). Ignored since 2026-07-24. */
   speedBump?: string;
   /** EVENTS: `yes` or `no`. */
   outcome?: string;
@@ -64,7 +71,14 @@ export interface WSAPIAmendOrderRequestV5 {
   newPx?: string;
   newPxUsd?: string;
   newPxVol?: string;
+  /** Ignored since 2026-07-24 (event-contract speed bump removed). */
   speedBump?: string;
+  /** RPI taker access. Not inherited on amend - omit = false. */
+  rpiTakerAccess?: boolean;
+  /** @deprecated Use `rpiTakerAccess`. Alias until 2026-10-31. */
+  isElpTakerAccess?: boolean;
+  /** RPI maker spacing: auto-round price when true. Only for ordType rpi. */
+  rpiPxRound?: boolean;
   attachAlgoOrds?: AmendAttachedTrailingStop[];
 }
 

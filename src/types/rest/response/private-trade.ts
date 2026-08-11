@@ -285,6 +285,17 @@ export interface AlgoOrderDetailsResult {
   chaseVal?: string;
   maxChaseType?: string;
   maxChaseVal?: string;
+  /** Sub-order type for trigger orders: fok, ioc, chase, or empty. */
+  advanceOrdType?: string;
+  /** Chase params when advanceOrdType is chase. */
+  advChaseParams?: {
+    chaseType?: string;
+    chaseVal?: string;
+    maxChaseType?: string;
+    maxChaseVal?: string;
+  }[];
+  /** algoId(s) of algo order(s) spawned when trigger fires (chase). Empty before trigger. */
+  subAlgoIdList?: string[];
 }
 
 export interface AlgoOrderListItem {
@@ -340,6 +351,14 @@ export interface AlgoOrderListItem {
   chaseVal?: string;
   maxChaseType?: string;
   maxChaseVal?: string;
+  advanceOrdType?: string;
+  advChaseParams?: {
+    chaseType?: string;
+    chaseVal?: string;
+    maxChaseType?: string;
+    maxChaseVal?: string;
+  }[];
+  subAlgoIdList?: string[];
 }
 
 export interface HistoricAlgoOrder {
@@ -395,6 +414,14 @@ export interface HistoricAlgoOrder {
   chaseVal?: string;
   maxChaseType?: string;
   maxChaseVal?: string;
+  advanceOrdType?: string;
+  advChaseParams?: {
+    chaseType?: string;
+    chaseVal?: string;
+    maxChaseType?: string;
+    maxChaseVal?: string;
+  }[];
+  subAlgoIdList?: string[];
 }
 
 export interface CancelAllAfterResponse {

@@ -41,6 +41,16 @@ export interface OrderBook {
   ts: string;
 }
 
+/** RPI consolidated book level: [price, totalQty, nonRpiQty, count] */
+type OrderBookRpiLevel = [string, string, string, string];
+
+export interface OrderBookRpi {
+  asks: OrderBookRpiLevel[];
+  bids: OrderBookRpiLevel[];
+  ts: string;
+  seqId: number;
+}
+
 type timestamp = string;
 type openPrice = string;
 type highPrice = string;
@@ -105,7 +115,7 @@ export interface Instrument {
   stk: string;
   listTime: string;
   contTdSwTime?: string; // Continuous trading switch time. The switch time from call auction/prequote to continuous trading. Unix timestamp format in milliseconds.
-  preMktSwTime?: string; // The time premarket swap switched to normal swap. Unix timestamp format in milliseconds. Only applicable to premarket SWAP.
+  preMktSwTime?: string; // The time a pre-market instrument switches to normal trading, Unix ms. Applicable to pre-market SWAP and Pre-market X-Perp FUTURES.
   expTime: string;
   lever: string;
   tickSz: string;
@@ -131,7 +141,7 @@ export interface Instrument {
   maxTriggerSz: string;
   maxStopSz: string;
   /**
-   * e.g. `normal`, `pre_market`, `rebase_contract`, `xperp` (perpetual-style expiry futures, some FUTURES only).
+   * e.g. `normal`, `pre_market` (incl. Pre-market X-Perp FUTURES), `rebase_contract`, `xperp` (after Pre-market X-Perp converts).
    */
   ruleType: string;
   auctionEndTime: string;
@@ -149,6 +159,10 @@ export interface Instrument {
   shortPosRemainingQuota?: string;
   maxPlatOILmt?: string; // Platform-wide maximum position value (USD) for this instrument. Applicable to SWAP/FUTURES.
   groupId?: string; // Instrument trading fee group ID
+  /** Minimum spacing between RPI bid and RPI ask, in organic price levels. Default 4; 0 for Event Contracts. */
+  rpiMinLevel?: string;
+  /** Minimum distance from opposite-side organic best price for RPI spacing, in bps. */
+  rpiMinPxBand?: string;
   upcChg?: InstrumentUpcomingParamChange[];
 }
 
@@ -419,6 +433,17 @@ export interface EventContractMarket {
   fixTime: string;
   outcome: string;
   floorStrike: string;
+  /** Max expiration value for YES on `between` method. "INF" = no upper bound. "" for non-between. */
+  capStrike?: string;
+  /** Hit direction when method is `hit`: up | dn | "". */
+  hitDir?: string;
   settleValue: string;
   disputed: boolean;
+}
+
+export interface MmInstrumentType {
+  instId: string;
+  instType: string;
+  /** A | B-Crypto | B-TradFi */
+  pairType: string;
 }

@@ -30,6 +30,8 @@ export interface InviteeDetail {
   kycTime: string;
   region: string;
   affiliateCode: string;
+  /** Trading volume in selected periodType window (USDT). Only when periodType supplied. */
+  volPeriod?: string;
 }
 
 export type AffiliateInviteeListKycStatus = 'unverified' | 'verified';

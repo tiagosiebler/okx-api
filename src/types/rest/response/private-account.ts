@@ -295,7 +295,10 @@ export interface FeeGroup {
   taker: string;
   maker: string;
   groupId: string;
+  /** @deprecated Use `rpiMaker`. Alias until 2026-10-31. */
   elpMaker?: string;
+  /** RPI maker effective fee rate. "" if RPI not applicable. */
+  rpiMaker?: string;
 }
 
 export interface AccountFeeRate {
@@ -409,7 +412,7 @@ export interface AccountInstrument {
   lever: string;
   listTime: string;
   contTdSwTime: string; // Continuous trading switch time. The switch time from call auction/prequote to continuous trading. Unix timestamp format in milliseconds.
-  preMktSwTime: string; // The time premarket swap switched to normal swap. Unix timestamp format in milliseconds. Only applicable to premarket SWAP.
+  preMktSwTime: string; // The time a pre-market instrument switches to normal trading, Unix ms. Applicable to pre-market SWAP and Pre-market X-Perp FUTURES.
   lotSz: string;
   maxIcebergSz: string;
   maxLmtAmt: string;
@@ -429,7 +432,7 @@ export interface AccountInstrument {
   state: string;
   stk: string;
   tickSz: string;
-  /** Trading rule types: normal, pre_market, rebase_contract */
+  /** Trading rule types: normal, pre_market (incl. Pre-market X-Perp FUTURES), rebase_contract, xperp */
   ruleType: string;
   auctionEndTime: string;
   futureSettlement: boolean; // Whether daily settlement for expiry feature is enabled. Applicable to FUTURES cross.
@@ -449,8 +452,10 @@ export interface AccountInstrument {
   /** Remaining short position value (USD) the user is permitted to open. Applicable to SWAP/FUTURES. */
   shortPosRemainingQuota?: string;
   groupId?: string; // Instrument trading fee group ID
-  /** ELP maker permission. "0" = not enabled, "1" = enabled but no permission, "2" = enabled with permission */
+  /** @deprecated Use `rpi`. Alias until 2026-10-31. */
   elp?: string;
+  /** RPI maker permission. "0" = not enabled, "1" = enabled but no permission, "2" = enabled with permission */
+  rpi?: string;
   upcChg?: InstrumentUpcomingParamChange[];
 }
 

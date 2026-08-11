@@ -42,6 +42,11 @@ export interface GetAffiliatePerformanceSummaryRequest {
 
 export interface GetInviteeDetailRequest {
   uid: string;
+  /**
+   * Stats window for `volPeriod`: last_7d, last_30d, this_month, last_month, total, today, this_week.
+   * When omitted, volPeriod is not returned.
+   */
+  periodType?: Exclude<AffiliatePeriodType, 'custom'>;
 }
 
 export interface GetAffiliateInviteeListRequest {
@@ -58,6 +63,12 @@ export interface GetAffiliateInviteeListRequest {
   orderDir?: AffiliateOrderDir;
   kycStatus?: AffiliateKycStatus;
   subAffiliateUid?: string;
+  /** External user UIDs for exact match. Single or up to 100 comma-separated. */
+  uid?: string;
+  /** Filter lower bound on joinTime (Unix ms). Required with joinTimeEnd; max 90d span, not older than 180d. */
+  joinTimeBegin?: string;
+  /** Filter upper bound on joinTime (Unix ms). Required with joinTimeBegin. */
+  joinTimeEnd?: string;
 }
 
 export interface GetAffiliateLinkListRequest {
