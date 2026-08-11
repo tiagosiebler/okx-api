@@ -6919,6 +6919,333 @@ private setupDefaultEventListeners()
 // JSON.stringify({ ...data, target: 'WebSocket' }),
 
 ================
+File: src/websocket-client.ts
+================
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+⋮----
+import { APICredentials } from './types/shared.js';
+import {
+  WsAPIOperationResponseMap,
+  WSAPIRequestFlags,
+  WSAPIRequestOKX,
+  WsAPITopicRequestParamMap,
+  WsAPIWsKeyTopicMap,
+  WsAuthRequest,
+  WSOperation,
+  WsRequestOperationOKX,
+} from './types/websockets/ws-api.js';
+import { MessageEventLike, WsDataEvent } from './types/websockets/ws-events.js';
+import { WSClientConfigurableOptions } from './types/websockets/ws-general.js';
+import {
+  WsAuthRequestArg,
+  WsChannelSubUnSubRequestArg,
+} from './types/websockets/ws-request.js';
+import {
+  BaseWebsocketClient,
+  EmittableEvent,
+  MidflightWsRequestEvent,
+  WSClientEventMap,
+} from './util/BaseWSClient.js';
+import { DefaultLogger } from './util/logger.js';
+import {
+  isConnCountEvent,
+  isWSAPIResponse,
+  isWsDataEvent,
+  isWsErrorEvent,
+  isWsLoginEvent,
+  isWsSubscribeEvent,
+  isWsUnsubscribeEvent,
+  neverGuard,
+} from './util/typeGuards.js';
+import {
+  SignAlgorithm,
+  SignEncodeMethod,
+  signMessage,
+} from './util/webCryptoAPI.js';
+import {
+  getDemoWsKey,
+  getPromiseRefForWSAPIRequest,
+  getWsKeyForMarket,
+  getWsKeyForTopicChannel,
+  getWsUrlForWsKey,
+  isWsPong,
+  PRIVATE_WS_KEYS,
+  PUBLIC_WS_KEYS,
+  requiresWSAPITag,
+  validateWSAPITag,
+  WS_EVENT_CODE_ENUM,
+  WS_KEY_MAP,
+  WS_LOGGER_CATEGORY,
+  WsKey,
+  WsTopicRequest,
+} from './util/websocket-util.js';
+import { WSConnectedResult } from './util/WsStore.types.js';
+⋮----
+// Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
+export declare interface WebsocketClient {
+  on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
+    event: U,
+    listener: WSClientEventMap<WsKey>[U],
+  ): this;
+
+  emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
+    event: U,
+    ...args: Parameters<WSClientEventMap<WsKey>[U]>
+  ): boolean;
+}
+⋮----
+on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
+    event: U,
+    listener: WSClientEventMap<WsKey>[U],
+  ): this;
+⋮----
+emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
+    event: U,
+    ...args: Parameters<WSClientEventMap<WsKey>[U]>
+  ): boolean;
+⋮----
+export class WebsocketClient extends BaseWebsocketClient<
+⋮----
+constructor(options?: WSClientConfigurableOptions, logger?: DefaultLogger)
+⋮----
+/**
+   * Request connection of all dependent (public & private) websockets, instead of waiting for automatic connection by library
+   */
+public connectAll(): Promise<WSConnectedResult | undefined>[]
+⋮----
+public connectPublic(
+    businessEndpoint?: boolean,
+): Promise<WSConnectedResult | undefined>
+⋮----
+public connectPrivate(
+    businessEndpoint?: boolean,
+): Promise<WSConnectedResult | undefined>
+⋮----
+/**
+   * Ensures the WS API connection is active and ready.
+   *
+   * You do not need to call this, but if you call this before making any WS API requests,
+   * it can accelerate the first request (by preparing the connection in advance).
+   */
+public connectWSAPI(): Promise<unknown[]>
+⋮----
+/** This call automatically ensures the connection is active AND authenticated before resolving */
+⋮----
+/**
+   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
+   * @param wsEvents topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   */
+public subscribe(
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+): Promise<unknown>[]
+⋮----
+// Format and batch topic requests by WsKey (resolved dynamically)
+⋮----
+// Arrange into per-wsKey sorted lists
+⋮----
+/**
+   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
+   * @param wsTopics topic or list of topics
+   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   */
+public unsubscribe(
+    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
+    isPrivateTopic?: boolean,
+)
+⋮----
+// Format and batch topic requests by WsKey (resolved dynamically)
+⋮----
+// Arrange into per-wsKey sorted lists
+⋮----
+/**
+   *
+   *
+   * Internal methods required to integrate with the BaseWSClient
+   *
+   *
+   */
+⋮----
+public getMarketWsKey(type: 'private' | 'business'): WsKey
+⋮----
+// returns private or business ws key for the active api market
+// defaults to global
+// automatically resolves to demo trading wsKeys under the hood (WSClient)
+⋮----
+protected sendPingEvent(wsKey: WsKey): void
+⋮----
+protected sendPongEvent(wsKey: WsKey): void
+⋮----
+protected isWsPing(data: any): boolean
+⋮----
+protected isWsPong(data: any): boolean
+⋮----
+protected isPrivateTopicRequest(
+    _request: WsTopicRequest<string>,
+    wsKey: WsKey,
+): boolean
+⋮----
+protected getPrivateWSKeys(): WsKey[]
+⋮----
+protected isAuthOnConnectWsKey(wsKey: WsKey): boolean
+⋮----
+protected async getWsUrl(wsKey: WsKey): Promise<string>
+⋮----
+protected getMaxTopicsPerSubscribeEvent(): number | null
+⋮----
+/**
+   * @returns one or more correctly structured request events for performing a operations over WS. This can vary per exchange spec.
+   */
+protected async getWsRequestEvents(
+    operation: WSOperation,
+    requests: WsTopicRequest<string, object>[],
+): Promise<MidflightWsRequestEvent<WsRequestOperationOKX<object>>[]>
+⋮----
+// Previously used to track topics in a request. Keeping this for subscribe/unsubscribe requests, no need for incremental values
+⋮----
+/**
+      {
+        "op":"subscribe",
+        "args":[
+            {
+              "channel": "tickers",
+              "instId": "BTC-USDT"
+            },
+            {
+              "channel": "tickers",
+              "instId": "BTC-USDT"
+            }
+        ]
+      }
+    */
+⋮----
+// const request = {
+//   topic: 'tickers',
+//   payload: { instId: 'BTC-USDT' },
+// };
+// becomes:
+// const request = {
+//   channel: 'ticker',
+//   instId: 'BTC-USDT',
+// };
+⋮----
+private async signMessage(
+    paramsStr: string,
+    secret: string,
+    method: SignEncodeMethod,
+    algorithm: SignAlgorithm,
+): Promise<string>
+⋮----
+protected async getWsAuthRequestEvent(
+    wsKey: WsKey,
+    skipIsPublicWsKeyCheck: boolean,
+): Promise<WsRequestOperationOKX<WsAuthRequestArg> | null>
+⋮----
+// Filter out failed accounts
+⋮----
+private async getWsAuthSignature(
+    wsKey: WsKey,
+    credentials: APICredentials,
+): Promise<
+⋮----
+// const signatureExpiresAt = timestamp + 5;
+⋮----
+/**
+   * Abstraction called to sort ws events into emittable event types (response to a request, data update, etc)
+   */
+protected resolveEmittableEvents(
+    wsKey: WsKey,
+    event: MessageEventLike,
+): EmittableEvent[]
+⋮----
+/**
+       * WS API response handling
+       */
+⋮----
+// const eg1 = {
+//   id: '2',
+//   op: 'order',
+//   code: '1',
+//   msg: '',
+//   data: [
+//     {
+//       tag: '159881cb7207BCDE',
+//       ts: '1753783406701',
+//       ordId: '',
+//       clOrdId: '',
+//       sCode: '51008',
+//       sMsg: 'Order failed. Insufficient USDT balance in account.',
+//     },
+//   ],
+//   inTime: '1753783406701275',
+//   outTime: '1753783406702251',
+//   wsKey: 'prodPrivate',
+// };
+⋮----
+// check getPromiseRefForWSAPIRequest
+⋮----
+// WS API Success
+⋮----
+// messageType: typeof msg,
+// messageString: JSON.stringify(msg),
+⋮----
+// Successfully authenticated
+⋮----
+// this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
+⋮----
+// Queue immediate reconnection workflow
+⋮----
+// Emit notice to client for visibility
+⋮----
+// messageType: typeof msg,
+// messageString: JSON.stringify(msg),
+⋮----
+// fallback emit anyway
+⋮----
+/**
+   * OKX supports order placement via WebSockets. This is the WS API:
+   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
+   *
+   * For convenient promise-wrapped usage of the WS API, instance the WebsocketAPIClient class exported by this SDK.
+   *
+   * For demo trading, set demoTrading:true in the WS Client config.
+   *
+   * @returns a promise that resolves/rejects when a matching response arrives
+   */
+async sendWSAPIRequest<
+    TWSKey extends keyof WsAPIWsKeyTopicMap,
+    TWSOperation extends WsAPIWsKeyTopicMap[TWSKey],
+    TWSParams extends WsAPITopicRequestParamMap[TWSOperation],
+    TWSAPIResponse extends
+      WsAPIOperationResponseMap[TWSOperation] = WsAPIOperationResponseMap[TWSOperation],
+  >(
+    rawWsKey: WsKey,
+    operation: TWSOperation,
+    params: TWSParams & { signRequest?: boolean },
+    requestFlags?: WSAPIRequestFlags,
+): Promise<TWSAPIResponse>
+⋮----
+// If demo trading, enforce demo wskey for WS API calls
+⋮----
+// Ensure "args" is always wrapped as array
+⋮----
+// Store deferred promise, resolved within the "resolveEmittableEvents" method while parsing incoming events
+⋮----
+// Enriched WS API response includes wsKey & the request that was connected to the response
+type DeferredWSAPIResponse = TWSAPIResponse & {
+      request: WSAPIRequestOKX<object> & { wsKey: WsKey };
+    };
+⋮----
+// Enrich returned promise with request context for easier debugging
+⋮----
+// throw e;
+⋮----
+// Send event
+⋮----
+// Return deferred promise, so caller can await this call
+
+================
 File: webpack/webpack.config.cjs
 ================
 function generateConfig(name)
@@ -8112,333 +8439,6 @@ File: src/index.ts
 // REST/response
 ⋮----
 //
-
-================
-File: src/websocket-client.ts
-================
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-⋮----
-import { APICredentials } from './types/shared.js';
-import {
-  WsAPIOperationResponseMap,
-  WSAPIRequestFlags,
-  WSAPIRequestOKX,
-  WsAPITopicRequestParamMap,
-  WsAPIWsKeyTopicMap,
-  WsAuthRequest,
-  WSOperation,
-  WsRequestOperationOKX,
-} from './types/websockets/ws-api.js';
-import { MessageEventLike, WsDataEvent } from './types/websockets/ws-events.js';
-import { WSClientConfigurableOptions } from './types/websockets/ws-general.js';
-import {
-  WsAuthRequestArg,
-  WsChannelSubUnSubRequestArg,
-} from './types/websockets/ws-request.js';
-import {
-  BaseWebsocketClient,
-  EmittableEvent,
-  MidflightWsRequestEvent,
-  WSClientEventMap,
-} from './util/BaseWSClient.js';
-import { DefaultLogger } from './util/logger.js';
-import {
-  isConnCountEvent,
-  isWSAPIResponse,
-  isWsDataEvent,
-  isWsErrorEvent,
-  isWsLoginEvent,
-  isWsSubscribeEvent,
-  isWsUnsubscribeEvent,
-  neverGuard,
-} from './util/typeGuards.js';
-import {
-  SignAlgorithm,
-  SignEncodeMethod,
-  signMessage,
-} from './util/webCryptoAPI.js';
-import {
-  getDemoWsKey,
-  getPromiseRefForWSAPIRequest,
-  getWsKeyForMarket,
-  getWsKeyForTopicChannel,
-  getWsUrlForWsKey,
-  isWsPong,
-  PRIVATE_WS_KEYS,
-  PUBLIC_WS_KEYS,
-  requiresWSAPITag,
-  validateWSAPITag,
-  WS_EVENT_CODE_ENUM,
-  WS_KEY_MAP,
-  WS_LOGGER_CATEGORY,
-  WsKey,
-  WsTopicRequest,
-} from './util/websocket-util.js';
-import { WSConnectedResult } from './util/WsStore.types.js';
-⋮----
-// Type safety for on and emit handlers: https://stackoverflow.com/a/61609010/880837
-export declare interface WebsocketClient {
-  on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
-    event: U,
-    listener: WSClientEventMap<WsKey>[U],
-  ): this;
-
-  emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
-    event: U,
-    ...args: Parameters<WSClientEventMap<WsKey>[U]>
-  ): boolean;
-}
-⋮----
-on<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
-    event: U,
-    listener: WSClientEventMap<WsKey>[U],
-  ): this;
-⋮----
-emit<U extends keyof WSClientEventMap<WsKey, WsDataEvent>>(
-    event: U,
-    ...args: Parameters<WSClientEventMap<WsKey>[U]>
-  ): boolean;
-⋮----
-export class WebsocketClient extends BaseWebsocketClient<
-⋮----
-constructor(options?: WSClientConfigurableOptions, logger?: DefaultLogger)
-⋮----
-/**
-   * Request connection of all dependent (public & private) websockets, instead of waiting for automatic connection by library
-   */
-public connectAll(): Promise<WSConnectedResult | undefined>[]
-⋮----
-public connectPublic(
-    businessEndpoint?: boolean,
-): Promise<WSConnectedResult | undefined>
-⋮----
-public connectPrivate(
-    businessEndpoint?: boolean,
-): Promise<WSConnectedResult | undefined>
-⋮----
-/**
-   * Ensures the WS API connection is active and ready.
-   *
-   * You do not need to call this, but if you call this before making any WS API requests,
-   * it can accelerate the first request (by preparing the connection in advance).
-   */
-public connectWSAPI(): Promise<unknown[]>
-⋮----
-/** This call automatically ensures the connection is active AND authenticated before resolving */
-⋮----
-/**
-   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
-   * @param wsEvents topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
-   */
-public subscribe(
-    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean,
-): Promise<unknown>[]
-⋮----
-// Format and batch topic requests by WsKey (resolved dynamically)
-⋮----
-// Arrange into per-wsKey sorted lists
-⋮----
-/**
-   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
-   * @param wsTopics topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
-   */
-public unsubscribe(
-    wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
-    isPrivateTopic?: boolean,
-)
-⋮----
-// Format and batch topic requests by WsKey (resolved dynamically)
-⋮----
-// Arrange into per-wsKey sorted lists
-⋮----
-/**
-   *
-   *
-   * Internal methods required to integrate with the BaseWSClient
-   *
-   *
-   */
-⋮----
-public getMarketWsKey(type: 'private' | 'business'): WsKey
-⋮----
-// returns private or business ws key for the active api market
-// defaults to global
-// automatically resolves to demo trading wsKeys under the hood (WSClient)
-⋮----
-protected sendPingEvent(wsKey: WsKey): void
-⋮----
-protected sendPongEvent(wsKey: WsKey): void
-⋮----
-protected isWsPing(data: any): boolean
-⋮----
-protected isWsPong(data: any): boolean
-⋮----
-protected isPrivateTopicRequest(
-    _request: WsTopicRequest<string>,
-    wsKey: WsKey,
-): boolean
-⋮----
-protected getPrivateWSKeys(): WsKey[]
-⋮----
-protected isAuthOnConnectWsKey(wsKey: WsKey): boolean
-⋮----
-protected async getWsUrl(wsKey: WsKey): Promise<string>
-⋮----
-protected getMaxTopicsPerSubscribeEvent(): number | null
-⋮----
-/**
-   * @returns one or more correctly structured request events for performing a operations over WS. This can vary per exchange spec.
-   */
-protected async getWsRequestEvents(
-    operation: WSOperation,
-    requests: WsTopicRequest<string, object>[],
-): Promise<MidflightWsRequestEvent<WsRequestOperationOKX<object>>[]>
-⋮----
-// Previously used to track topics in a request. Keeping this for subscribe/unsubscribe requests, no need for incremental values
-⋮----
-/**
-      {
-        "op":"subscribe",
-        "args":[
-            {
-              "channel": "tickers",
-              "instId": "BTC-USDT"
-            },
-            {
-              "channel": "tickers",
-              "instId": "BTC-USDT"
-            }
-        ]
-      }
-    */
-⋮----
-// const request = {
-//   topic: 'tickers',
-//   payload: { instId: 'BTC-USDT' },
-// };
-// becomes:
-// const request = {
-//   channel: 'ticker',
-//   instId: 'BTC-USDT',
-// };
-⋮----
-private async signMessage(
-    paramsStr: string,
-    secret: string,
-    method: SignEncodeMethod,
-    algorithm: SignAlgorithm,
-): Promise<string>
-⋮----
-protected async getWsAuthRequestEvent(
-    wsKey: WsKey,
-    skipIsPublicWsKeyCheck: boolean,
-): Promise<WsRequestOperationOKX<WsAuthRequestArg> | null>
-⋮----
-// Filter out failed accounts
-⋮----
-private async getWsAuthSignature(
-    wsKey: WsKey,
-    credentials: APICredentials,
-): Promise<
-⋮----
-// const signatureExpiresAt = timestamp + 5;
-⋮----
-/**
-   * Abstraction called to sort ws events into emittable event types (response to a request, data update, etc)
-   */
-protected resolveEmittableEvents(
-    wsKey: WsKey,
-    event: MessageEventLike,
-): EmittableEvent[]
-⋮----
-/**
-       * WS API response handling
-       */
-⋮----
-// const eg1 = {
-//   id: '2',
-//   op: 'order',
-//   code: '1',
-//   msg: '',
-//   data: [
-//     {
-//       tag: '159881cb7207BCDE',
-//       ts: '1753783406701',
-//       ordId: '',
-//       clOrdId: '',
-//       sCode: '51008',
-//       sMsg: 'Order failed. Insufficient USDT balance in account.',
-//     },
-//   ],
-//   inTime: '1753783406701275',
-//   outTime: '1753783406702251',
-//   wsKey: 'prodPrivate',
-// };
-⋮----
-// check getPromiseRefForWSAPIRequest
-⋮----
-// WS API Success
-⋮----
-// messageType: typeof msg,
-// messageString: JSON.stringify(msg),
-⋮----
-// Successfully authenticated
-⋮----
-// this.logger.trace(`Ws subscribe reply:`, { ...msg, wsKey });
-⋮----
-// Queue immediate reconnection workflow
-⋮----
-// Emit notice to client for visibility
-⋮----
-// messageType: typeof msg,
-// messageString: JSON.stringify(msg),
-⋮----
-// fallback emit anyway
-⋮----
-/**
-   * OKX supports order placement via WebSockets. This is the WS API:
-   * https://www.okx.com/docs-v5/en/#order-book-trading-trade-ws-place-order
-   *
-   * For convenient promise-wrapped usage of the WS API, instance the WebsocketAPIClient class exported by this SDK.
-   *
-   * For demo trading, set demoTrading:true in the WS Client config.
-   *
-   * @returns a promise that resolves/rejects when a matching response arrives
-   */
-async sendWSAPIRequest<
-    TWSKey extends keyof WsAPIWsKeyTopicMap,
-    TWSOperation extends WsAPIWsKeyTopicMap[TWSKey],
-    TWSParams extends WsAPITopicRequestParamMap[TWSOperation],
-    TWSAPIResponse extends
-      WsAPIOperationResponseMap[TWSOperation] = WsAPIOperationResponseMap[TWSOperation],
-  >(
-    rawWsKey: WsKey,
-    operation: TWSOperation,
-    params: TWSParams & { signRequest?: boolean },
-    requestFlags?: WSAPIRequestFlags,
-): Promise<TWSAPIResponse>
-⋮----
-// If demo trading, enforce demo wskey for WS API calls
-⋮----
-// Ensure "args" is always wrapped as array
-⋮----
-// Store deferred promise, resolved within the "resolveEmittableEvents" method while parsing incoming events
-⋮----
-// Enriched WS API response includes wsKey & the request that was connected to the response
-type DeferredWSAPIResponse = TWSAPIResponse & {
-      request: WSAPIRequestOKX<object> & { wsKey: WsKey };
-    };
-⋮----
-// Enrich returned promise with request context for easier debugging
-⋮----
-// throw e;
-⋮----
-// Send event
-⋮----
-// Return deferred promise, so caller can await this call
 
 ================
 File: src/types/rest/request/account.ts
