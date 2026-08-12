@@ -42,9 +42,9 @@ export * from './types/rest/response/private-trade.js';
 export * from './types/rest/response/public-data.js';
 //
 export * from './types/shared.js';
+export * from './types/websockets/ws-api.js';
 export * from './types/websockets/ws-api-request.js';
 export * from './types/websockets/ws-api-response.js';
-export * from './types/websockets/ws-api.js';
 export * from './types/websockets/ws-events.js';
 export * from './types/websockets/ws-general.js';
 export * from './types/websockets/ws-request.js';
@@ -53,5 +53,5 @@ export * from './util/typeGuards.js';
 export * from './util/websocket-util.js';
 export * from './util/WsStore.js';
 export * from './websocket-api-client.js';
-export * from './websocket-client-legacy.js';
 export * from './websocket-client.js';
+export * from './websocket-client-legacy.js';
