@@ -83,6 +83,18 @@ export interface AttachAlgoOrdRequest {
   activePx?: string;
 }
 
+export interface AdvChaseParams {
+  chaseType?: string;
+  chaseVal?: string;
+  maxChaseType?: string;
+  maxChaseVal?: string;
+}
+
+export interface AdvChaseAmendParams {
+  newChaseVal?: string;
+  newMaxChaseVal?: string;
+}
+
 export interface AlgoOrderRequest {
   instId: string;
   tdMode: TradeMode;
@@ -120,7 +132,9 @@ export interface AlgoOrderRequest {
   timeInterval?: string;
   quickMgnType?: string;
   closeFraction?: numberInString;
-  advanceOrdType?: 'fok' | 'ioc' | '';
+  advanceOrdType?: 'fok' | 'ioc' | 'chase' | '';
+  /** Required when advanceOrdType is `chase` (FUTURES/SWAP trigger). */
+  advChaseParams?: AdvChaseParams[];
   attachAlgoOrds?: AttachAlgoOrdRequest[];
 }
 
@@ -132,8 +146,17 @@ export interface AmendOrderRequest {
   reqId?: string;
   newSz?: string;
   newPx?: string;
-  /** EVENTS: `"1"` for non-`post_only` amends when applicable. */
+  /**
+   * EVENTS: `"1"` for non-`post_only` amends when applicable.
+   * Ignored since 2026-07-24 (event-contract speed bump removed).
+   */
   speedBump?: string;
+  /** RPI taker access. Not inherited on amend - omit = false. Alias: isElpTakerAccess until 2026-10-31. */
+  rpiTakerAccess?: boolean;
+  /** @deprecated Use `rpiTakerAccess`. Alias until 2026-10-31. */
+  isElpTakerAccess?: boolean;
+  /** RPI maker spacing: auto-round price when true. Only for ordType rpi. */
+  rpiPxRound?: boolean;
   /**
    * Amend attached trailing stop (or related attach algo) — only one of newCallbackRatio / newCallbackSpread per item (2026-04-13).
    */
@@ -161,9 +184,11 @@ export interface AmendAlgoOrderRequest {
   newSlOrdPx?: string;
   newTpTriggerPxType?: 'last' | 'index' | 'mark';
   newSlTriggerPxType?: 'last' | 'index' | 'mark';
-  newTriggerPx: string;
-  newOrdPx: string;
+  newTriggerPx?: string;
+  newOrdPx?: string;
   newTriggerPxType?: 'last' | 'index' | 'mark';
+  /** Amend chase values on a pending trigger+chase order (pre-trigger). */
+  advChaseParams?: AdvChaseAmendParams[];
   attachAlgoOrds?: AlgoTriggerOrder[];
 }
 
@@ -255,10 +280,18 @@ export interface OrderRequest {
   tradeQuoteCcy?: string;
   /** Self trade prevention mode: cancel_maker, cancel_taker, cancel_both. Default is cancel_maker */
   stpMode?: 'cancel_maker' | 'cancel_taker' | 'cancel_both';
-  /** ELP taker access. true = can trade with ELP orders (speed bump applied). Default false. Only applicable to ioc orders */
+  /**
+   * RPI taker access for limit/market/fok/ioc. Default false. Speedbump when true.
+   * Alias `isElpTakerAccess` accepted until 2026-10-31.
+   */
+  rpiTakerAccess?: boolean;
+  /** @deprecated Use `rpiTakerAccess`. Alias until 2026-10-31. */
   isElpTakerAccess?: boolean;
+  /** RPI maker spacing: auto-round price when true. Only for ordType rpi. */
+  rpiPxRound?: boolean;
   /**
    * EVENTS: set to `"1"` for non-`post_only` orders. Error 54086 if missing when required.
+   * Ignored since 2026-07-24 (event-contract speed bump removed).
    */
   speedBump?: string;
   /** EVENTS: `yes` or `no`. */

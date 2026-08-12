@@ -64,6 +64,7 @@ export interface GetOptionTradesRequest {
 /**
  * @see GET /api/v5/public/market-data-history
  * Module 11: borrowing rate (T+2 typical, UTC+8 for timestamp parsing).
+ * Max query range (2026-08-06): 10 days for daily, 10 months for monthly (was 20).
  */
 export interface GetHistoricalMarketDataRequest {
   /**

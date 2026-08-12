@@ -129,7 +129,11 @@ export type WsPublicOrderBooksChannel =
   | 'books5'
   | 'bbo-tbt'
   | 'books-l2-tbt'
-  | 'books50-l2-tpt';
+  | 'books50-l2-tpt'
+  /** @deprecated Use `books-rpi`. ELP-only book; retired after 2026-10-31. */
+  | 'books-elp'
+  /** Consolidated organic + RPI depth (replaces books-elp). */
+  | 'books-rpi';
 
 export type WsPublicChannel =
   | 'instruments'

@@ -51,7 +51,9 @@ export type OrderType =
   | 'optimal_limit_ioc'
   | 'mmp'
   | 'mmp_and_post_only'
-  | 'elp';
+  | 'elp'
+  /** RPI maker (replaces `elp`; ELP alias accepted until 2026-10-31) */
+  | 'rpi';
 
 export type OrderState =
   | 'canceled'

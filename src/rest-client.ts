@@ -85,6 +85,7 @@ import {
   GetFundingRateRequest,
   WithdrawRequest,
 } from './types/rest/request/funding.js';
+import { GetGlpHistoricalPerformanceRequest } from './types/rest/request/glp.js';
 import {
   CloseContractGridPositionRequest,
   GetGridAlgoOrdersRequest,
@@ -94,6 +95,10 @@ import {
   MaxGridQuantityRequest,
   StopGridAlgoOrderRequest,
 } from './types/rest/request/grid-trading.js';
+import {
+  RedeemOkusdRequest,
+  SubscribeOkusdRequest,
+} from './types/rest/request/okusd.js';
 import {
   CandleRequest,
   EconomicCalendarRequest,
@@ -297,6 +302,15 @@ import {
   WithdrawResponse,
 } from './types/rest/response/private-funding.js';
 import {
+  GlpHistoricalPerformanceItem,
+  GlpTodayPerformance,
+} from './types/rest/response/private-glp.js';
+import {
+  OkusdLimits,
+  OkusdRedeemResult,
+  OkusdSubscribeResult,
+} from './types/rest/response/private-okusd.js';
+import {
   RecurringBuyOrder,
   RecurringBuyOrderResult,
   RecurringBuySubOrder,
@@ -367,9 +381,11 @@ import {
   InsuranceFund,
   InterestRateAndLoanQuota,
   MarketDataHistoryResult,
+  MmInstrumentType,
   OptionTrade,
   OptionTrades,
   OrderBook,
+  OrderBookRpi,
   PublicBorrowHistoryRecord,
   PublicFundingRate,
   SolStakingProductInfo,
@@ -1914,6 +1930,13 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/market/books', params);
   }
 
+  getRpiOrderBook(params: {
+    instId: string;
+    sz?: numberInString;
+  }): Promise<OrderBookRpi[]> {
+    return this.get('/api/v5/market/books-rpi', params);
+  }
+
   getFullOrderBook(params: {
     instId: string;
     sz?: string;
@@ -2301,6 +2324,13 @@ export class RestClient extends BaseRestClient {
 
   getInsuranceFund(params?: GetInsuranceFundRequest): Promise<InsuranceFund[]> {
     return this.get('/api/v5/public/insurance-fund', params);
+  }
+
+  getMmInstrumentTypes(params?: {
+    instType?: 'SPOT' | 'SWAP';
+    instId?: string;
+  }): Promise<MmInstrumentType[]> {
+    return this.get('/api/v5/public/mm-instrument-types', params);
   }
 
   getUnitConvert(params: UnitConvertRequest): Promise<UnitConvertData[]> {
@@ -3090,12 +3120,14 @@ export class RestClient extends BaseRestClient {
     );
   }
 
+  /** @deprecated Decommissioned 2026-07-14. Use order book trading APIs. */
   requestStableRewardsQuote(
     params: RequestStableRewardsQuoteRequest,
   ): Promise<StableRewardsQuote[]> {
     return this.postPrivate('/api/v5/finance/stable-rewards/quote', params);
   }
 
+  /** @deprecated Decommissioned 2026-07-14. Use order book trading APIs. */
   submitStableRewardsTrade(
     params: SubmitStableRewardsTradeRequest,
   ): Promise<StableRewardsTradeResult[]> {
@@ -3114,6 +3146,7 @@ export class RestClient extends BaseRestClient {
     return this.get('/api/v5/finance/stable-rewards/apy-history', params);
   }
 
+  /** @deprecated Decommissioned 2026-07-14. Use order book trading APIs. */
   getStableRewardsSubscribeRedeemHistory(
     params: GetStableRewardsSubscribeRedeemHistoryRequest,
   ): Promise<StableRewardsSubscribeRedeemHistoryItem[]> {
@@ -3121,6 +3154,42 @@ export class RestClient extends BaseRestClient {
       '/api/v5/finance/stable-rewards/subscribe-redeem-history',
       params,
     );
+  }
+
+  /**
+   *
+   * Financial product — OKUSD endpoints
+   *
+   */
+
+  getOkusdLimits(): Promise<OkusdLimits[]> {
+    return this.getPrivate('/api/v5/finance/okusd/limits');
+  }
+
+  subscribeOkusd(
+    params: SubscribeOkusdRequest,
+  ): Promise<OkusdSubscribeResult[]> {
+    return this.postPrivate('/api/v5/finance/okusd/subscribe', params);
+  }
+
+  redeemOkusd(params: RedeemOkusdRequest): Promise<OkusdRedeemResult[]> {
+    return this.postPrivate('/api/v5/finance/okusd/redeem', params);
+  }
+
+  /**
+   *
+   * GLP performance endpoints (market makers)
+   *
+   */
+
+  getGlpTodayPerformance(): Promise<GlpTodayPerformance[]> {
+    return this.getPrivate('/api/v5/users/glp/today-performance');
+  }
+
+  getGlpHistoricalPerformance(
+    params: GetGlpHistoricalPerformanceRequest,
+  ): Promise<GlpHistoricalPerformanceItem[]> {
+    return this.getPrivate('/api/v5/users/glp/historical-performance', params);
   }
 
   /**
