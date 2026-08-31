@@ -19,9 +19,6 @@
 
 [1]: https://www.npmjs.com/package/okx-api
 
-> [!TIP]
-> Upcoming change: As part of the [Siebly.io](https://siebly.io/?ref=ghokx) brand, this SDK is now hosted under our [Siebly.io GitHub organisation](https://github.com/sieblyio). The migration is seamless and requires no user changes.
-
 Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets:
 
 - Complete integration with OKX REST APIs, WebSockets & WebSocket APIs.
@@ -45,6 +42,7 @@ Complete, updated & performant Node.js SDK for the OKX(OKEX) APIs and WebSockets
     - See [examples/ws-api-client.ts](./examples/ws-api-client.ts) for a demonstration.
 - Browser support (via webpack bundle - see "Browser Usage" below).
 - QuickStart Guide: https://siebly.io/sdk/okx/javascript
+- OKX JavaScript Tutorial: https://siebly.io/sdk/okx/javascript/tutorial
 
 ## Table of Contents
 
@@ -123,7 +121,7 @@ Support my efforts to make algo trading accessible to all - register with my ref
 - [Binance](https://www.binance.com/en/register?ref=20983262)
 - [OKX](https://www.okx.com/join/18504944)
 
-For more ways to give thanks & support my efforts, visit [Contributions & Thanks](https://github.com/tiagosiebler/awesome-crypto-examples/wiki/Contributions-&-Thanks)!
+For more ways to give thanks & support my efforts, visit [Contributions & Thanks](https://github.com/sieblyio/awesome-crypto-examples/wiki/Contributions-&-Thanks)!
 
 ## Structure
 
