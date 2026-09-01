@@ -211,7 +211,7 @@ siebly:
         href: /examples/OKX
       - heading: Source repository
         summary: Browse SDK source, releases, issues, and endpoint coverage on GitHub.
-        href: https://github.com/tiagosiebler/okx-api
+        href: https://github.com/sieblyio/okx-api
 -->
 
 # OKX API JavaScript Tutorial for Node.js and TypeScript
@@ -230,7 +230,7 @@ The SDK handles OKX request signing, API passphrase authentication, regional hos
 **Key links**
 
 - OKX JavaScript SDK by Siebly: [`okx-api`](https://www.npmjs.com/package/okx-api)
-- GitHub repository: [`tiagosiebler/okx-api`](https://github.com/tiagosiebler/okx-api)
+- GitHub repository: [`sieblyio/okx-api`](https://github.com/sieblyio/okx-api)
 - SDK endpoint map: [OKX JavaScript endpoint reference](./endpointFunctionList.md)
 - SDK examples: [OKX SDK examples](https://siebly.io/examples/OKX)
 - OKX Global API docs: [OKX API documentation](https://www.okx.com/docs-v5/en/)
@@ -1942,7 +1942,7 @@ client.getTicker({ instId: 'BTC-USDT' }).then(console.log);
 
 - [OKX JavaScript SDK by Siebly](https://siebly.io/sdk/okx/javascript)
 - [`okx-api` on npm](https://www.npmjs.com/package/okx-api)
-- [OKX SDK source on GitHub](https://github.com/tiagosiebler/okx-api)
+- [OKX SDK source on GitHub](https://github.com/sieblyio/okx-api)
 - [OKX SDK examples on Siebly](https://siebly.io/examples/OKX)
 - [OKX SDK endpoint map](./endpointFunctionList.md)
 - [OKX Global API documentation](https://www.okx.com/docs-v5/en/)

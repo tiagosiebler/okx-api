@@ -1,6 +1,6 @@
 {
   "name": "okx-api",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "Complete Node.js SDK for OKX's REST APIs and WebSockets, with TypeScript & end-to-end tests",
   "scripts": {
     "test": "jest",
@@ -34,9 +34,9 @@
   "author": "Tiago Siebler (https://siebly.io)",
   "contributors": [],
   "dependencies": {
-    "@types/ws": "^8.18.1",
-    "axios": "^1.13.2",
-    "isomorphic-ws": "^5.0.0",
+    "@types/ws": "8.18.1",
+    "axios": "1.18.1",
+    "isomorphic-ws": "5.0.0",
     "ws": "8.21.1"
   },
   "devDependencies": {
@@ -57,6 +57,14 @@
     "ts-loader": "^9.5.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
+  },
+  "overrides": {
+    "brace-expansion@<2": "1.1.18",
+    "brace-expansion@>=2 <3": "2.1.4",
+    "brace-expansion@>=5 <6": "5.0.9",
+    "fast-uri@>=3 <4": "3.1.5",
+    "js-yaml@>=3 <4": "3.15.1",
+    "js-yaml@>=4 <5": "4.3.1"
   },
   "keywords": [
     "okx",
@@ -91,5 +99,5 @@
   "bugs": {
     "url": "https://github.com/sieblyio/okx-api/issues"
   },
-  "homepage": "https://github.com/sieblyio/okx-api#readme"
+  "homepage": "https://siebly.io/sdk/okx/javascript"
 }
