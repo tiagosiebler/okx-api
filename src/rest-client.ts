@@ -86,7 +86,11 @@ import {
   GetFundingRateRequest,
   WithdrawRequest,
 } from './types/rest/request/funding.js';
-import { GetGlpHistoricalPerformanceRequest } from './types/rest/request/glp.js';
+import {
+  GetGlpHistoricalPerformanceRequest,
+  GetGlpV2AssessmentDetailsRequest,
+  GetGlpV2PerformanceHistoryRequest,
+} from './types/rest/request/glp.js';
 import {
   CloseContractGridPositionRequest,
   GetGridAlgoOrdersRequest,
@@ -305,6 +309,9 @@ import {
 import {
   GlpHistoricalPerformanceItem,
   GlpTodayPerformance,
+  GlpV2AssessmentDetails,
+  GlpV2Overview,
+  GlpV2PerformanceHistory,
 } from './types/rest/response/private-glp.js';
 import {
   OkusdLimits,
@@ -3209,6 +3216,44 @@ export class RestClient extends BaseRestClient {
     params: GetGlpHistoricalPerformanceRequest,
   ): Promise<GlpHistoricalPerformanceItem[]> {
     return this.getPrivate('/api/v5/users/glp/historical-performance', params);
+  }
+
+  /**
+   *
+   * GLP API v2
+   * @see https://www.okx.com/docs-v5/en/ (2026-09-29)
+   *
+   */
+
+  /**
+   * Active GLP enrollments, current and estimated tiers, tier requirements, and week-to-date performance.
+   * A sub-account API key returns the master account's GLP data. No request parameters.
+   * @see GET /api/v5/users/glp/v2/overview
+   */
+  getGlpV2Overview(): Promise<GlpV2Overview[]> {
+    return this.getPrivate('/api/v5/users/glp/v2/overview');
+  }
+
+  /**
+   * Daily and week-to-date performance for one GLP product and trading side in the current assessment period.
+   * A sub-account API key returns the master account's GLP data.
+   * @see GET /api/v5/users/glp/v2/details
+   */
+  getGlpV2AssessmentDetails(
+    params: GetGlpV2AssessmentDetailsRequest,
+  ): Promise<GlpV2AssessmentDetails[]> {
+    return this.getPrivate('/api/v5/users/glp/v2/details', params);
+  }
+
+  /**
+   * Weekly assessment results, tier outcomes, and performance for one GLP product and trading side.
+   * A sub-account API key returns the master account's GLP data.
+   * @see GET /api/v5/users/glp/v2/history/performance
+   */
+  getGlpV2PerformanceHistory(
+    params: GetGlpV2PerformanceHistoryRequest,
+  ): Promise<GlpV2PerformanceHistory[]> {
+    return this.getPrivate('/api/v5/users/glp/v2/history/performance', params);
   }
 
   /**
