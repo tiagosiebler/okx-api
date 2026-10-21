@@ -1,7 +1,7 @@
 # Node.js & Typescript OKX (OKEX) API & WebSocket SDK
 
 [![E2E Tests](https://github.com/sieblyio/okx-api/actions/workflows/e2etest.yml/badge.svg?branch=master)](https://github.com/sieblyio/okx-api/actions/workflows/e2etest.yml)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sieblyio/okx-api)
+[![OKX Tutorial](https://img.shields.io/badge/OKX%20Tutorial-siebly.io-blue)](https://siebly.io/sdk/okx/javascript/tutorial)
 [![npm downloads](https://img.shields.io/npm/dt/okx-api)][1]
 [![npm version](https://img.shields.io/npm/v/okx-api)][1]
 [![npm size](https://img.shields.io/bundlephobia/min/okx-api/latest)][1]
