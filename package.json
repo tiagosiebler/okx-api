@@ -35,15 +35,15 @@
   "contributors": [],
   "dependencies": {
     "@types/ws": "8.18.1",
-    "axios": "1.18.1",
+    "axios": "1.20.0",
     "isomorphic-ws": "5.0.0",
     "ws": "8.21.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^22.17.2",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
+    "@typescript-eslint/eslint-plugin": "8.70.0",
+    "@typescript-eslint/parser": "8.70.0",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -59,12 +59,12 @@
     "webpack-cli": "^4.10.0"
   },
   "overrides": {
-    "brace-expansion@<2": "1.1.18",
-    "brace-expansion@>=2 <3": "2.1.4",
-    "brace-expansion@>=5 <6": "5.0.9",
-    "fast-uri@>=3 <4": "3.1.5",
-    "js-yaml@>=3 <4": "3.15.1",
-    "js-yaml@>=4 <5": "4.3.1"
+    "brace-expansion@<2": "1.1.21",
+    "brace-expansion@>=2 <3": "2.1.7",
+    "brace-expansion@>=5 <6": "5.0.12",
+    "fast-uri@>=3 <4": "3.1.8",
+    "js-yaml@>=3 <4": "3.15.2",
+    "js-yaml@>=4 <5": "4.3.2"
   },
   "keywords": [
     "okx",
